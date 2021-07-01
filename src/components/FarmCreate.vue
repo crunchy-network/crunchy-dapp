@@ -130,7 +130,7 @@
                       </el-form-item>
 
                       <el-form-item label="Service Fee" prop="serviceFeeId">
-                        <el-select v-model="form.serviceFeeId" placeholder="Select Service Fee">
+                        <el-select v-model="form.serviceFeeId" placeholder="Select Service Fee" style="width: 220px;">
                           <el-option
                             v-for="item in serviceFees"
                             :key="item.value"
