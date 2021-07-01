@@ -173,8 +173,8 @@
 
                         <el-col style="text-align: right;" :span="4" v-if="wallet.connected && farm.depositAmount > 0">{{ vueNumberFormat(farm.rewardsEarned) }}</el-col>
                         <el-col style="text-align: right;" :span="4" v-else>-</el-col>
-                        <el-col style="text-align: right;" :span="3" v-if="farm.apr > 0">{{ vueNumberFormat(farm.apr, {prefix: '', decimal: '.', thousand: ',', precision: 2}) }}%</el-col>
-                        <el-col style="text-align: right;" :span="3" v-if="farm.apr === '~'">Pending</el-col>
+                        <el-col style="text-align: right;" :span="3" v-if="farm.apr >= 0">{{ vueNumberFormat(farm.apr, {prefix: '', decimal: '.', thousand: ',', precision: 2}) }}%</el-col>
+                        <el-col style="text-align: right;" :span="3" v-else>Pending</el-col>
                         <el-col style="text-align: right;" :span="4" v-if="showUsd === false">{{ vueNumberFormat(farm.tvlTez) }} ꜩ</el-col>
                         <el-col style="text-align: right;" :span="4" v-if="showUsd === true">{{ vueNumberFormat(farm.tvlTez * farms.usdVwap, {prefix: '$', decimal: '.', thousand: ',', precision: 2}) }}</el-col>
                         <el-col style="text-align: right;" :span="3">{{ farm.multiplier }}x</el-col>
