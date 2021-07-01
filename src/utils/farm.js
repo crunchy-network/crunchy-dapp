@@ -95,6 +95,12 @@ export default {
       badges.verified = false;
     }
 
+    // DER
+    if (farm.owner === "tz1Vb19E2Hh4JcerACeF1AJPkPSL63d5KAcF") {
+      badges.verified = true;
+      badges.partner = true;
+    }
+
     return badges;
   },
 
