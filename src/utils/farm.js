@@ -42,6 +42,11 @@ export default {
       meta.thumbnailUri = "ipfs://QmXL3FZ5kcwXC8mdwkS1iCHS2qVoyg69ugBhU2ap8z1zcs";
     }
 
+    // Plenty
+    if (meta.tokenAddress === "KT1GRSvLoikDsXujKgZPsGLX8k8VvR2Tq95b") {
+      meta.thumbnailUri = "https://raw.githubusercontent.com/Plenty-DeFi/Plenty-Logo/main/PlentyTokenIcon.png";
+    }
+
     return meta;
   },
 
