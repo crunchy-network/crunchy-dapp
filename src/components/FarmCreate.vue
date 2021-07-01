@@ -379,14 +379,16 @@ export default {
 
       let start = this.form.startEndTime[0];
       const end = this.form.startEndTime[1];
-
-      let bonuses = _.orderBy(this.form.bonuses, 'endTime', 'asc');
-
       let effectiveSec = 0;
-      for (const bonus of bonuses) {
-        effectiveSec += (((bonus.endTime - start) / 1000) * parseInt(bonus.multiplier));
-        start = bonus.endTime;
+
+      if (this.form.bonuses.length && this.form.bonuses[0].endTime && this.form.bonuses[0].multiplier) {
+        let bonuses = _.orderBy(this.form.bonuses, 'endTime', 'asc');
+        for (const bonus of bonuses) {
+          effectiveSec += (((bonus.endTime - start) / 1000) * parseInt(bonus.multiplier));
+          start = bonus.endTime;
+        }
       }
+
       effectiveSec += ((end - start) / 1000);
 
       return BigNumber(this.form.rewardTokenAmount)
@@ -435,6 +437,12 @@ export default {
       const vm = this;
       this.$refs.form.validate((valid) => {
         if (valid) {
+          let bonuses = [];
+          for (const b of vm.form.bonuses) {
+            if (b.endTime && b.multiplier) {
+              bonuses.push(b);
+            }
+          }
           const params = {
             poolToken: {
               tokenType: vm.form.poolTokenType,
@@ -451,14 +459,18 @@ export default {
             startTime: vm.form.startEndTime[0],
             endTime: vm.form.startEndTime[1],
             lockDuration: 0,
-            bonuses: vm.form.bonuses,
+            bonuses: bonuses,
             serviceFeeId: vm.form.serviceFeeId
           };
           vm.loading = true;
-          vm.createFarm(params).then(() => {
-            vm.loading = false;
-            vm.$router.push({ name: 'farm-listing' });
-          });
+          vm.createFarm(params)
+            .then(() => {
+              vm.loading = false;
+              vm.$router.push({ name: 'farm-listing' });
+            })
+            .catch(() => {
+              vm.loading = false;
+            });
         } else {
           return false;
         }
