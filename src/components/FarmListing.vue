@@ -244,7 +244,9 @@
                           </el-col>
                           <el-col :span="8" style="padding: 10px 20px;">
                             <div style="margin-bottom: 8px;">
-                              <strong style="color: #1EC37F; font-size: 14px; text-transform: uppercase;" v-if="!farm.started">Farming starts {{ farm.startTime | moment("calendar") }}</strong>
+                              <strong style="color: #1EC37F; font-size: 14px; text-transform: uppercase;" v-if="!farm.started">
+                                  Farming starts {{ farm.startTime | moment("calendar") }} and lasts {{ farm.duration | humanizeDuration }}
+                              </strong>
                               <strong style="color: #757679; font-size: 14px; text-transform: uppercase;" v-if="farm.started && !farm.ended">Farming ends {{ farm.endTime | moment("dddd, MMMM Do YYYY, h:mm a") }}</strong>
                               <strong style="color: #555CFF; font-size: 14px; text-transform: uppercase;" v-if="farm.ended">Farming complete</strong>
                             </div>

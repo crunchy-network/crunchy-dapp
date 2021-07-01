@@ -71,6 +71,7 @@ export default {
                 flashFarm: ( (new Date(x.value.endTime)) - (new Date(x.value.startTime)) <= (86400 * 1000) ),
                 started: (new Date(x.value.startTime) < new Date()),
                 ended: (new Date(x.value.endTime) < new Date()),
+                duration: (new Date(x.value.endTime) - (new Date(x.value.startTime))),
                 badges: {
                   verified: false,
                   core: false,
