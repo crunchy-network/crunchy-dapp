@@ -447,12 +447,12 @@ export default {
             poolToken: {
               tokenType: vm.form.poolTokenType,
               tokenAddress: vm.form.poolTokenAddress,
-              tokenId: vm.form.poolTokenId
+              tokenId: vm.form.poolTokenId || 0
             },
             rewardToken: {
               tokenType: vm.form.rewardTokenType,
               tokenAddress: vm.form.rewardTokenAddress,
-              tokenId: vm.form.rewardTokenId
+              tokenId: vm.form.rewardTokenId || 0
             },
             rewardSupply: BigNumber(vm.form.rewardTokenAmount).times(BigNumber(10).pow(vm.form.rewardTokenDecimals)).idiv(1).toNumber(),
             rewardPerSec: vm.rewardAmountPerSecond,
@@ -468,7 +468,8 @@ export default {
               vm.loading = false;
               vm.$router.push({ name: 'farm-listing' });
             })
-            .catch(() => {
+            .catch((e) => {
+              console.log(e);
               vm.loading = false;
             });
         } else {
