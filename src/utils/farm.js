@@ -37,6 +37,11 @@ export default {
       meta.thumbnailUri = "ipfs://Qme7epqauUCDt6J1oqwqEiDVUBSUbCQg6e9j3QoJGkv3vP";
     }
 
+    // HEH
+    if (meta.tokenAddress === "KT1G1cCRNBgQ48mVDjopHjEmTN5Sbtar8nn9") {
+      meta.thumbnailUri = "ipfs://QmXL3FZ5kcwXC8mdwkS1iCHS2qVoyg69ugBhU2ap8z1zcs";
+    }
+
     return meta;
   },
 
