@@ -68,6 +68,20 @@ export default {
     // crunchy7
     if (farm.owner === "tz1RMXfVec1xFHznQvk48hzQjBuqeVL9LLUE") {
       badges.verified = true;
+
+      // DER
+      if (farm.rewardToken.address === "KT1SiFqDqeFcUi5vQVSvuxB2g4xz7WLBrDek") {
+        badges.partner = true;
+      }
+      if (farm.rewardToken.address === "KT1TCPf4DjgsseHj8ixRnCBgToqZbdFHQtPA") {
+        badges.partner = true;
+      }
+      if (farm.rewardToken.address === "KT1Wa2ncR8GbeQrW6Dbtpc8uTrK7q5CH4F2Q") {
+        badges.partner = true;
+      }
+      if (farm.rewardToken.address === "KT1M2Ws52krJrwJi1ZFsmVfazBiafWYKZTvd") {
+        badges.partner = true;
+      }
     }
 
     // XTZ/CRUNCH
