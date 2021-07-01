@@ -552,10 +552,17 @@ export default {
         }]
       }, {
         label: 'Staking',
-        options: [{
-          value: 'staked',
-          label: 'Staked'
-        }]
+        options: [
+          { value: 'staked', label: 'Staked' }
+        ]
+      }, {
+        label: 'Badges',
+        options: [
+          { value: 'verified', label: 'Verified' },
+          { value: 'core', label: 'Crunchy Core' },
+          { value: 'partner', label: 'Trusted Partner' },
+          { value: 'lpLocked', label: 'LP Locked' },
+        ]
       }]
     }
   },

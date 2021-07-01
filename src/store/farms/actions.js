@@ -610,8 +610,20 @@ export default {
         stakedMatches = false;
       }
 
+      // farm badges filter
+      let badgeMatches = true;
+      if (state.filters.includes('verified') || state.filters.includes('core') || state.filters.includes('partner') || state.filters.includes('lpLocked')) {
+        badgeMatches = false;
+
+        for (const b of ['verified', 'core', 'partner', 'lpLocked']) {
+          if (state.filters.includes(b) && farm.badges[b] === true) {
+            badgeMatches = true;
+          }
+        }
+      }
+
       // all groups must match
-      const visible = keywordsMatch && typeMatches && stakedMatches;
+      const visible = keywordsMatch && typeMatches && stakedMatches && badgeMatches;
 
       commit('updateFarm', merge(farm, { visible: visible }));
     }
