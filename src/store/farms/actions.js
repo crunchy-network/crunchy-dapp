@@ -107,6 +107,8 @@ export default {
         let rewardTokenMeta = teztools.findTokenInPriceFeed(farm.rewardToken, state.priceFeed);
         if (!rewardTokenMeta) {
           rewardTokenMeta = await getTokenMetadata(farm.rewardToken.address, farm.rewardToken.tokenId);
+          rewardTokenMeta.tokenAddress = farm.rewardToken.address;
+          rewardTokenMeta.tokenId = farm.rewardToken.tokenId;
         }
 
         // allow overrides

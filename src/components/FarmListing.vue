@@ -559,6 +559,14 @@ export default {
       }]
     }
   },
+  // watch: {
+  //   '$route.query': {
+  //     immediate: true,
+  //     handler(newVal) {
+  //       console.log("newVal", newVal);
+  //     }
+  //   }
+  // },
   computed: {
     ...mapState([
       'wallet',
