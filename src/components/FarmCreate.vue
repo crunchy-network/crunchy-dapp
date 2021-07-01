@@ -443,6 +443,14 @@ export default {
               bonuses.push(b);
             }
           }
+
+          let serviceFeeMultiplier = 1.015;
+          if (vm.form.serviceFeeId == '1') {
+            serviceFeeMultiplier = 1.010;
+          } else if (vm.form.serviceFeeId == '2') {
+            serviceFeeMultiplier = 1.005;
+          }
+
           const params = {
             poolToken: {
               tokenType: vm.form.poolTokenType,
@@ -455,6 +463,7 @@ export default {
               tokenId: vm.form.rewardTokenId || 0
             },
             rewardSupply: BigNumber(vm.form.rewardTokenAmount).times(BigNumber(10).pow(vm.form.rewardTokenDecimals)).idiv(1).toNumber(),
+            rewardSupplyApprove: BigNumber(vm.form.rewardTokenAmount).times(BigNumber(serviceFeeMultiplier)).times(BigNumber(10).pow(vm.form.rewardTokenDecimals)).idiv(1).toNumber(),
             rewardPerSec: vm.rewardAmountPerSecond,
             startTime: vm.form.startEndTime[0],
             endTime: vm.form.startEndTime[1],

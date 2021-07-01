@@ -497,7 +497,7 @@ export default {
               token_id: params.rewardToken.tokenId
             }
           }
-        ]) : rewardToken.methods.approve(state.contract, params.rewardSupply)
+        ]) : rewardToken.methods.approve(state.contract, params.rewardSupplyApprove)
       )
       .withContractCall(
         farmContract.methods.create(
