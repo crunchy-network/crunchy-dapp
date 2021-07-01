@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import tzkt from './../../utils/tzkt'
 import coingecko from './../../utils/coingecko'
 import teztools from './../../utils/teztools'
@@ -5,7 +6,7 @@ import ipfs from './../../utils/ipfs'
 import farmUtils from './../../utils/farm'
 import { getTokenMetadata, getContract, getBatch, getWalletContract } from './../../utils/tezos'
 import merge from 'deepmerge'
-import { BigNumber } from 'bignumber.js';
+import { BigNumber } from 'bignumber.js'
 
 export default {
 
@@ -296,7 +297,7 @@ export default {
     if (!farm.updating) {
       return Promise.all([
         farmUtils.getUserRecord(farm, rootState.wallet.pkh),
-        tzkt.getContractBigMapKeys(farm.poolToken.address, 'ledger', { key: rootState.wallet.pkh }),
+        tzkt.getContractBigMapKeys(farm.poolToken.address, 'ledger', { key: rootState.wallet.pkh, active: "true" }),
         tzkt.getContractBigMapKeys(farm.contract, 'farms', { key: farmId }),
         tzkt.getContractStorage(farm.poolToken.address),
       ]).then(values => {
@@ -458,6 +459,87 @@ export default {
         });
       });
     });
+  },
+
+  async createFarm({ state, rootState }, params) {
+    const farmContract = await getContract(state.contract);
+    const crunch = await getContract(state.crunchAddress);
+    const rewardToken = await getContract(params.rewardToken.tokenAddress);
+
+    let prevM = 0;
+    let bonuses = [];
+    for (const b of _.orderBy(params.bonuses, 'endTime', 'desc')) {
+      const m = parseInt(b.multiplier);
+      bonuses.push({ endTime: b.endTime.toISOString(), multiplier: m - prevM });
+      prevM = m;
+    }
+
+    const batch = await getBatch()
+      .withContractCall(
+        crunch.methods.update_operators([
+          {
+            add_operator: {
+              owner: rootState.wallet.pkh,
+              operator: state.contract,
+              token_id: 0
+            }
+          }
+        ])
+      )
+      .withContractCall(
+        params.rewardToken.tokenType === "fa2" ? rewardToken.methods.update_operators([
+          {
+            add_operator: {
+              owner: rootState.wallet.pkh,
+              operator: state.contract,
+              token_id: params.rewardToken.tokenId
+            }
+          }
+        ]) : rewardToken.methods.approve(state.contract, params.rewardSupply)
+      )
+      .withContractCall(
+        farmContract.methods.create(
+      
+          // poolToken
+          params.poolToken.tokenAddress, params.poolToken.tokenId, params.poolToken.tokenType, "unit",
+          
+          // rewardToken
+          params.rewardToken.tokenAddress, params.rewardToken.tokenId, params.rewardToken.tokenType, "unit",
+          
+          // rewardSupply
+          params.rewardSupply,
+          
+          // rewardPerSec
+          params.rewardPerSec,
+          
+          // startTime, endTime
+          params.startTime.toISOString(),
+          params.endTime.toISOString(),
+          
+          // lockDuration
+          params.lockDuration,
+          
+          // bonuses
+          _.orderBy(bonuses, 'endTime', 'asc'),
+          
+          // serviceFeeId
+          params.serviceFeeId
+        )
+      )
+      .withContractCall(
+        params.rewardToken.tokenType === "fa2" ? rewardToken.methods.update_operators([
+          {
+            remove_operator: {
+              owner: rootState.wallet.pkh,
+              operator: state.contract,
+              token_id: params.rewardToken.tokenId
+            }
+          }
+        ]) : rewardToken.methods.approve(state.contract, 0)
+      );
+
+    const tx = await batch.send();
+    return tx.confirmation();
   },
 
   expandFarmRow({ commit, state }, farmId) {
