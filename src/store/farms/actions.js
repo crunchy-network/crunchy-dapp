@@ -53,6 +53,7 @@ export default {
           let farms = {};
           for (const x of resp.data) {
             if (x.key == "13") continue; // bad catz
+            if (x.key == "55") continue; // bad HEH -> CLOVER
             const f = merge({ id: x.key, ...x.value },
               {
                 contract: state.contract,
