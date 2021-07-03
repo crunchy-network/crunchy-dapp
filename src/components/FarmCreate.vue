@@ -425,10 +425,10 @@ export default {
   watch: {
     form: {
       async handler(val) {
-        if (!val.rewardTokenThumbnailUri && val.rewardTokenType && val.rewardTokenAddress && val.rewardTokenId) {
+        if (!val.rewardTokenThumbnailUri && val.rewardTokenType && val.rewardTokenAddress && (val.rewardTokenType === 'fa1' || val.rewardTokenId)) {
           const validation = validateContractAddress(val.rewardTokenAddress);
           if (validation === ValidationResult.VALID) {
-            let rewardTokenMeta = await getTokenMetadata(val.rewardTokenAddress, val.rewardTokenId);
+            let rewardTokenMeta = await getTokenMetadata(val.rewardTokenAddress, val.rewardTokenId || 0);
             rewardTokenMeta = farmUtils.overrideMetadata(rewardTokenMeta);
             this.form.rewardTokenName = rewardTokenMeta.symbol || rewardTokenMeta.name;
             this.form.rewardTokenDecimals = rewardTokenMeta.decimals;

@@ -12,6 +12,10 @@ export default {
   },
 
   overrideMetadata (meta) {
+    if (!Object.prototype.hasOwnProperty.call(meta, 'thumbnailUri') && Object.prototype.hasOwnProperty.call(meta, 'icon')) {
+      meta.thumbnailUri = meta.icon;
+    }
+
     if (meta.tokenAddress === "KT1BHCumksALJQJ8q8to2EPigPW6qpyTr7Ng") {
       meta.name = "Crunchy";
     }
