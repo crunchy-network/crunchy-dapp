@@ -142,7 +142,7 @@
                   </el-col>
                 </el-row>
 
-                <el-row v-for="farm in orderedFarms" v-bind:key="farm.id" v-show="farm.visible" style="padding-bottom: 14px; font-size: 14px; font-weight: bold;" type="flex" align="top">
+                <el-row v-for="farm in orderedFarms" v-bind:key="farm.id" v-show="farm.visible" :data-farm-id="farm.id" style="padding-bottom: 14px; font-size: 14px; font-weight: bold;" type="flex" align="top">
                   <el-col :span="24">
                     <div
                       style="border: 1px solid #EBEEF5; border-radius: 14px;"
@@ -173,8 +173,11 @@
 
                         <el-col style="text-align: right;" :span="4" v-if="wallet.connected && farm.depositAmount > 0">{{ vueNumberFormat(farm.rewardsEarned) }}</el-col>
                         <el-col style="text-align: right;" :span="4" v-else>-</el-col>
-                        <el-col style="text-align: right;" :span="3" v-if="farm.apr >= 0">{{ vueNumberFormat(farm.apr, {prefix: '', decimal: '.', thousand: ',', precision: 2}) }}%</el-col>
+
+                        <el-col style="text-align: right; color: #555CFF; text-transform: uppercase;" :span="3" v-if="farm.ended">Complete</el-col>
+                        <el-col style="text-align: right;" :span="3" v-else-if="farm.apr >= 0">{{ vueNumberFormat(farm.apr, {prefix: '', decimal: '.', thousand: ',', precision: 2}) }}%</el-col>
                         <el-col style="text-align: right;" :span="3" v-else>Pending</el-col>
+
                         <el-col style="text-align: right;" :span="4" v-if="showUsd === false">{{ vueNumberFormat(farm.tvlTez) }} ꜩ</el-col>
                         <el-col style="text-align: right;" :span="4" v-if="showUsd === true">{{ vueNumberFormat(farm.tvlTez * farms.usdVwap, {prefix: '$', decimal: '.', thousand: ',', precision: 2}) }}</el-col>
                         <el-col style="text-align: right;" :span="3">{{ farm.multiplier }}x</el-col>
@@ -192,6 +195,12 @@
                               <el-col :span="10" style="font-weight: bold;">{{ vueNumberFormat(farm.rewardsEarned) }}</el-col>
                               <el-col :span="10">
                                 <el-button type="primary" :disabled="farm.started === false" style="border-radius: 10px; font-weight: bold; width: 100%" @click="harvestFarm(farm.id)">Harvest</el-button>
+                              </el-col>
+                            </el-row>
+                            <el-row v-else-if="farm.ended" type="flex" align="middle" justify="space-between">
+                              <el-col :span="10" style="font-weight: bold;">-</el-col>
+                              <el-col :span="10">
+                                <el-button type="primary" :disabled="true" style="border-radius: 10px; font-weight: bold; width: 100%">Harvest</el-button>
                               </el-col>
                             </el-row>
                             <el-row v-else type="flex" align="middle" justify="space-between">
@@ -557,6 +566,13 @@ export default {
         label: 'Staking',
         options: [
           { value: 'staked', label: 'Staked' }
+        ]
+      }, {
+        label: 'Status',
+        options: [
+          { value: 'pending', label: 'Pending' },
+          { value: 'running', label: 'Running' },
+          { value: 'ended', label: 'Complete' },
         ]
       }, {
         label: 'Badges',

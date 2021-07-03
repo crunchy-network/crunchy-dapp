@@ -611,6 +611,24 @@ export default {
         stakedMatches = false;
       }
 
+      // status filters
+      let statusMatches = true;
+      if (state.filters.includes('pending') || state.filters.includes('running') || state.filters.includes('ended')) {
+        statusMatches = false;
+
+        if (state.filters.includes('pending') && !farm.started) {
+          statusMatches = true;
+        }
+
+        if (state.filters.includes('running') && farm.started && !farm.ended) {
+          statusMatches = true;
+        }
+
+        if (state.filters.includes('ended') && farm.ended) {
+          statusMatches = true;
+        }
+      }
+
       // farm badges filter
       let badgeMatches = true;
       if (state.filters.includes('verified') || state.filters.includes('core') || state.filters.includes('partner') || state.filters.includes('lpLocked')) {
@@ -624,7 +642,7 @@ export default {
       }
 
       // all groups must match
-      const visible = keywordsMatch && typeMatches && stakedMatches && badgeMatches;
+      const visible = keywordsMatch && typeMatches && stakedMatches && statusMatches && badgeMatches;
 
       commit('updateFarm', merge(farm, { visible: visible }));
     }
