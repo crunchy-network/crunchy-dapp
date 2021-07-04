@@ -11,6 +11,15 @@ export default {
     return Object.prototype.hasOwnProperty.call(token.tokenType, 'fa2');
   },
 
+  getTokenLedgerKey (address) {
+    // HEH
+    if (address === "KT1G1cCRNBgQ48mVDjopHjEmTN5Sbtar8nn9") {
+      return 'balances';
+    }
+
+    return 'ledger';
+  },
+
   overrideMetadata (meta) {
     if (!Object.prototype.hasOwnProperty.call(meta, 'thumbnailUri') && Object.prototype.hasOwnProperty.call(meta, 'icon')) {
       meta.thumbnailUri = meta.icon;

@@ -301,7 +301,7 @@ export default {
     if (!farm.updating) {
       return Promise.all([
         farmUtils.getUserRecord(farm, rootState.wallet.pkh),
-        tzkt.getContractBigMapKeys(farm.poolToken.address, 'ledger', { key: rootState.wallet.pkh, active: "true" }),
+        tzkt.getContractBigMapKeys(farm.poolToken.address, farmUtils.getTokenLedgerKey(farm.poolToken.address), { key: rootState.wallet.pkh, active: "true" }),
         tzkt.getContractBigMapKeys(farm.contract, 'farms', { key: farmId }),
         tzkt.getContractStorage(farm.poolToken.address),
       ]).then(values => {
