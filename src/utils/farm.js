@@ -133,6 +133,11 @@ export default {
       badges.partner = true;
     }
 
+    // Hera
+    if (farm.owner === "tz1Xkw7smsrdxdW3Stq6PKwbayESUnK2y5VT") {
+      badges.verified = true;
+    }
+
     return badges;
   },
 
