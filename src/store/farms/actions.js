@@ -275,7 +275,6 @@ export default {
 
     if (!farm.updating) {
       const userRecord = farmUtils.getUserRecord(farm, state.storage.userRecords);
-      if (farm.id == 1) console.log("userRecord", userRecord);
       const farmStorage = state.storage.farms.find(f => f.key == farmId).value;
       const currentRewardMultiplier = farmUtils.getCurrentRewardMultiplier(farmStorage);
 
