@@ -1,4 +1,4 @@
-import tzkt from './tzkt'
+import _ from 'lodash'
 import { BigNumber } from 'bignumber.js';
 
 export default {
@@ -154,13 +154,10 @@ export default {
     return m || 1;
   },
 
-  async getUserRecord (farm, pkh) {
-    const res = await tzkt.getContractBigMapKeys(farm.contract, 'ledger', {
-      'key.nat': farm.id,
-      'key.address': pkh
-    });
+  getUserRecord (farm, userRecordsStorage) {
+    const res = userRecordsStorage.find(x => x.key.nat == farm.id);
 
-    if (res.data.length === 0) {
+    if (!res) {
       return {
         amount: 0,
         rewardDebt: 0,
@@ -169,9 +166,9 @@ export default {
       };
     }
 
-    const ret = res.data[0].value;
+    const ret = _.clone(res.value);
     ret.amountRaw = ret.amount;
-    ret.amount = parseInt(ret.amount) / (10 ** farm.poolToken.decimals);
+    ret.amount = BigNumber(ret.amount).div(BigNumber(10).pow(farm.poolToken.decimals)).toNumber();
     return ret;
   },
 

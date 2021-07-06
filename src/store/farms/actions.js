@@ -31,6 +31,23 @@ export default {
     });
   },
 
+  async updateFarmStorage({ commit, state, dispatch }) {
+    return tzkt.getContractBigMapKeys(state.contract, "farms")
+      .then(resp => {
+        commit('updateFarmStorage', resp.data);
+        setTimeout(() => { dispatch('updateFarmStorage') }, 30 * 1000);
+      });
+  },
+
+  async updateUserRecordStorage({ commit, state, rootState, dispatch }) {
+    if (!rootState.wallet.pkh) return;
+    return tzkt.getContractBigMapKeys(state.contract, "ledger", { 'key.address': rootState.wallet.pkh, 'active': 'true' })
+      .then(resp => {
+        commit('updateFarmUserRecordStorage', resp.data);
+        setTimeout(() => { dispatch('updateUserRecordStorage') }, 30 * 1000);
+      });
+  },
+
   updateTotalTvlTez({ commit, state }) {
     let total = 0;
     for (const farmId in state.data) {
@@ -45,54 +62,53 @@ export default {
   async fetchAllFarms({ commit, state, dispatch }) {
     dispatch('updateXtzUsdVwap');
     await dispatch('updateCurrentPrices');
+    await dispatch('updateFarmStorage');
 
     if (!state.loading && Object.keys(state.data).length === 0) {
       commit('updateFarmsLoading', true);
-      tzkt.getContractBigMapKeys(state.contract, "farms")
-        .then(resp => {
-          let farms = {};
-          for (const x of resp.data) {
-            if (x.key == "13") continue; // bad catz
-            if (x.key == "55") continue; // bad HEH -> CLOVER
-            const f = merge({ id: x.key, ...x.value },
-              {
-                contract: state.contract,
-                poolToken: { "name": "???", "symbol": "???", thumbnailUri: "https://static.thenounproject.com/png/796573-200.png" },
-                rewardToken: { "name": "???", "symbol": "???", thumbnailUri: "https://static.thenounproject.com/png/796573-200.png" },
-                depositAmount: "~",
-                rewardsEarned: "~",
-                tvlTez: "~",
-                apr: "~",
-                multiplier: "1",
-                rowExpanded: false,
-                init: false,
-                loading: false,
-                updating: false,
-                visible: true,
-                flashFarm: ( (new Date(x.value.endTime)) - (new Date(x.value.startTime)) <= (86400 * 1000) ),
-                started: (new Date(x.value.startTime) < new Date()),
-                ended: (new Date(x.value.endTime) < new Date()),
-                duration: (new Date(x.value.endTime) - (new Date(x.value.startTime))),
-                badges: {
-                  verified: false,
-                  core: false,
-                  partner: false,
-                  lpLocked: false
-                }
-              }
-            );
-            f.badges = farmUtils.getBadges(f);
-            farms[x.key] = f;
+      let farms = {};
+      for (const x of state.storage.farms) {
+        if (x.key == "13") continue; // bad catz
+        if (x.key == "55") continue; // bad HEH -> CLOVER
+        const f = merge({ id: x.key, ...x.value },
+          {
+            contract: state.contract,
+            poolToken: { "name": "???", "symbol": "???", thumbnailUri: "https://static.thenounproject.com/png/796573-200.png" },
+            rewardToken: { "name": "???", "symbol": "???", thumbnailUri: "https://static.thenounproject.com/png/796573-200.png" },
+            depositAmount: "~",
+            rewardsEarned: "~",
+            tvlTez: "~",
+            apr: "~",
+            multiplier: "1",
+            rowExpanded: false,
+            init: false,
+            loading: false,
+            updating: false,
+            visible: true,
+            flashFarm: ( (new Date(x.value.endTime)) - (new Date(x.value.startTime)) <= (86400 * 1000) ),
+            started: (new Date(x.value.startTime) < new Date()),
+            ended: (new Date(x.value.endTime) < new Date()),
+            duration: (new Date(x.value.endTime) - (new Date(x.value.startTime))),
+            badges: {
+              verified: false,
+              core: false,
+              partner: false,
+              lpLocked: false
+            }
           }
+        );
+        f.badges = farmUtils.getBadges(f);
+        farms[x.key] = f;
+      }
 
-          commit('updateFarmsData', farms);
-          commit('updateFarmsLoading', false);
+      commit('updateFarmsData', farms);
+      commit('updateFarmsLoading', false);
 
-          for (const farmId in farms) {
-            dispatch('initFarm', farmId);
-          }
-          dispatch('filterAllFarmRows')
-        });
+      for (const farmId in farms) {
+        dispatch('initFarm', farmId);
+      }
+
+      dispatch('filterAllFarmRows');
     }
   },
 
@@ -203,164 +219,136 @@ export default {
     const farm = state.data[farmId];
 
     if (!rootState.wallet.pkh) {
-      // return tzkt.getContractBigMapKeys(farm.contract, 'farms', { key: farmId }).then(farmStorage => {
-      //   let tvlTez = 0;
-      //   let poolTokenStorage = teztools.findTokenInPriceFeed(farm.poolToken, state.priceFeed);
-      //
-      //   if (!poolTokenStorage && farm.poolToken.isQuipuLp) {
-      //     poolTokenStorage = await tzkt.getContractStorage(farm.poolToken.address);
-      //     tvlTez = (new BigNumber(farmStorage.poolBalance).times(poolTokenStorage.tez_pool).idiv(poolTokenStorage.total_supply)).times(2).toNumber() / 1000000;
-      //   } else {
-      //     if (farm.poolToken.isQuipuLp) {
-      //     tvlTez = (new BigNumber(farmStorage.poolBalance).times(poolTokenStorage.tez_pool).idiv(poolTokenStorage.total_supply)).times(2).toNumber() / 1000000;
-      //
-      //     } else {
-      //       if (Object.prototype.hasOwnProperty.call(state.currentPrices, `${farm.poolToken.address}_${farm.poolToken.tokenId}`)) {
-      //         tvlTez = farmStorage.poolBalance * state.currentPrices[`${farm.poolToken.address}_${farm.poolToken.tokenId}`] / (10 ** farm.poolToken.decimals);
-      //       }
-      //     }
-      //   }
-      //
-      //   const multiplier = farmUtils.calcMultiplier(farm);
-      //
-      //   // calc rate per day
-      //   let apr = "~";
-      //   if (tvlTez > 0 && Object.prototype.hasOwnProperty.call(state.currentPrices, `${farm.rewardToken.address}_${farm.rewardToken.tokenId}`)) {
-      //       const rewardPerDay = (farmStorage.rewardPerSec * multiplier * 86400) / (10 ** farm.rewardToken.decimals);
-      //       const annualRewardTez = rewardPerDay * 365 * state.currentPrices[`${farm.rewardToken.address}_${farm.rewardToken.tokenId}`];
-      //       apr = (annualRewardTez / tvlTez) * 100;
-      //   }
-      //
-      //   commit('updateFarm', merge(farm, {
-      //     poolToken: { balance: 0 },
-      //     poolBalance: parseInt(farmStorage.poolBalance) / (10 ** farm.poolToken.decimals),
-      //     multiplier: multiplier,
-      //     tvlTez: tvlTez,
-      //     apr: apr,
-      //     depositAmount: 0,
-      //     rewardsEarned: 0,
-      //     init: true,
-      //     updating: false,
-      //     loading: false
-      //   }));
-      //
-      //   setTimeout(() => { dispatch('softUpdateFarm', farmId) }, 60 * 1000);
-      //
-      //   dispatch('updateTotalTvlTez');
-      //
-      //   return state.data[farmId];
-      // })
-      return Promise.all([
-        tzkt.getContractBigMapKeys(farm.contract, 'farms', { key: farmId }),
-        tzkt.getContractStorage(farm.poolToken.address),
-      ]).then(values => {
-        const farmStorage = values[0].data[0].value;
-        const poolTokenStorage = values[1].data.storage;
+      const farmStorage = state.storage.farms.find(f => f.key == farmId).value;
 
-        let tvlTez = 0;
-        if (farm.poolToken.isQuipuLp) {
-          tvlTez = (new BigNumber(farmStorage.poolBalance).times(poolTokenStorage.tez_pool).idiv(poolTokenStorage.total_supply)).times(2).toNumber() / 1000000;
-        } else {
-          if (Object.prototype.hasOwnProperty.call(state.currentPrices, `${farm.poolToken.address}_${farm.poolToken.tokenId}`)) {
-            tvlTez = farmStorage.poolBalance * state.currentPrices[`${farm.poolToken.address}_${farm.poolToken.tokenId}`] / (10 ** farm.poolToken.decimals);
-          }
+      let tvlTez = 0;
+      if (farm.poolToken.isQuipuLp) {
+        let poolTokenStorage = teztools.findTokenInPriceFeed(farm.poolToken, state.priceFeed);
+        if (!poolTokenStorage || !Object.prototype.hasOwnProperty.call(poolTokenStorage, 'qptTokenSupply')) {
+          const poolK = await tzkt.getContractStorage(farm.poolToken.address);
+          poolTokenStorage = {
+            tezPool: BigNumber(poolK.data.storage.tez_pool).div(BigNumber(10).pow(6)),
+            qptTokenSupply: BigNumber(poolK.data.storage.total_supply).div(BigNumber(10).pow(6))
+          };
         }
 
-        const multiplier = farmUtils.calcMultiplier(farm);
-
-        // calc rate per day
-        let apr = "~";
-        if (tvlTez > 0 && Object.prototype.hasOwnProperty.call(state.currentPrices, `${farm.rewardToken.address}_${farm.rewardToken.tokenId}`)) {
-            const rewardPerDay = (farmStorage.rewardPerSec * multiplier * 86400) / (10 ** farm.rewardToken.decimals);
-            const annualRewardTez = rewardPerDay * 365 * state.currentPrices[`${farm.rewardToken.address}_${farm.rewardToken.tokenId}`];
-            apr = (annualRewardTez / tvlTez) * 100;
+        tvlTez = BigNumber(farmStorage.poolBalance)
+          .div(BigNumber(10).pow(6))
+          .times(poolTokenStorage.tezPool)
+          .div(poolTokenStorage.qptTokenSupply)
+          .times(2).toNumber();
+      } else {
+        if (Object.prototype.hasOwnProperty.call(state.currentPrices, `${farm.poolToken.address}_${farm.poolToken.tokenId}`)) {
+          tvlTez = farmStorage.poolBalance * state.currentPrices[`${farm.poolToken.address}_${farm.poolToken.tokenId}`] / (10 ** farm.poolToken.decimals);
         }
+      }
 
-        commit('updateFarm', merge(farm, {
-          poolToken: { balance: 0 },
-          poolBalance: parseInt(farmStorage.poolBalance) / (10 ** farm.poolToken.decimals),
-          multiplier: multiplier,
-          tvlTez: tvlTez,
-          apr: apr,
-          depositAmount: 0,
-          rewardsEarned: 0,
-          init: true,
-          updating: false,
-          loading: false
-        }));
+      const multiplier = farmUtils.calcMultiplier(farm);
 
-        setTimeout(() => { dispatch('softUpdateFarm', farmId) }, 60 * 1000);
+      // calc rate per day
+      let apr = "~";
+      if (tvlTez > 0 && Object.prototype.hasOwnProperty.call(state.currentPrices, `${farm.rewardToken.address}_${farm.rewardToken.tokenId}`)) {
+          const rewardPerDay = (farmStorage.rewardPerSec * multiplier * 86400) / (10 ** farm.rewardToken.decimals);
+          const annualRewardTez = rewardPerDay * 365 * state.currentPrices[`${farm.rewardToken.address}_${farm.rewardToken.tokenId}`];
+          apr = (annualRewardTez / tvlTez) * 100;
+      }
 
-        dispatch('updateTotalTvlTez');
-        dispatch('filterAllFarmRows');
+      commit('updateFarm', merge(farm, {
+        poolBalance: parseInt(farmStorage.poolBalance) / (10 ** farm.poolToken.decimals),
+        multiplier: multiplier,
+        tvlTez: tvlTez,
+        apr: apr,
+        depositAmount: 0,
+        rewardsEarned: 0,
+        init: true,
+        updating: false,
+        loading: false
+      }));
 
-        return state.data[farmId];
-      });
+      setTimeout(() => { dispatch('softUpdateFarm', farmId) }, 60 * 1000);
+
+      dispatch('updateTotalTvlTez');
+      dispatch('filterAllFarmRows');
+
+      return state.data[farmId];
     }
 
     if (!farm.updating) {
-      return Promise.all([
-        farmUtils.getUserRecord(farm, rootState.wallet.pkh),
-        tzkt.getContractBigMapKeys(farm.poolToken.address, farmUtils.getTokenLedgerKey(farm.poolToken.address), { key: rootState.wallet.pkh, active: "true" }),
-        tzkt.getContractBigMapKeys(farm.contract, 'farms', { key: farmId }),
-        tzkt.getContractStorage(farm.poolToken.address),
-      ]).then(values => {
+      const userRecord = farmUtils.getUserRecord(farm, state.storage.userRecords);
+      if (farm.id == 1) console.log("userRecord", userRecord);
+      const farmStorage = state.storage.farms.find(f => f.key == farmId).value;
+      const currentRewardMultiplier = farmUtils.getCurrentRewardMultiplier(farmStorage);
 
-        const userRecord = values[0];
-        const poolTokenLedger = values[1];
-        const farmStorage = values[2].data[0].value;
-        const poolTokenStorage = values[3].data.storage;
-        const currentRewardMultiplier = farmUtils.getCurrentRewardMultiplier(farmStorage);
-
-        let tvlTez = 0;
-        if (farm.poolToken.isQuipuLp) {
-          tvlTez = (new BigNumber(farmStorage.poolBalance).times(poolTokenStorage.tez_pool).idiv(poolTokenStorage.total_supply)).times(2).toNumber() / 1000000;
-        } else {
-          if (Object.prototype.hasOwnProperty.call(state.currentPrices, `${farm.poolToken.address}_${farm.poolToken.tokenId}`)) {
-            tvlTez = farmStorage.poolBalance * state.currentPrices[`${farm.poolToken.address}_${farm.poolToken.tokenId}`] / (10 ** farm.poolToken.decimals);
-          }
+      let tvlTez = 0;
+      if (farm.poolToken.isQuipuLp) {
+        let poolTokenStorage = teztools.findTokenInPriceFeed(farm.poolToken, state.priceFeed);
+        if (!poolTokenStorage || !Object.prototype.hasOwnProperty.call(poolTokenStorage, 'qptTokenSupply')) {
+          const poolK = await tzkt.getContractStorage(farm.poolToken.address);
+          poolTokenStorage = {
+            tezPool: BigNumber(poolK.data.storage.tez_pool).div(BigNumber(10).pow(6)),
+            qptTokenSupply: BigNumber(poolK.data.storage.total_supply).div(BigNumber(10).pow(6))
+          };
         }
 
-        let poolTokenBal = 0;
-        if (poolTokenLedger.data.length) {
-          if (typeof poolTokenLedger.data[0].value === 'object') {
-            poolTokenBal = poolTokenLedger.data[0].value.balance;
-          } else {
-            poolTokenBal = poolTokenLedger.data[0].value;
-          }
-          poolTokenBal = poolTokenBal / (10 ** farm.poolToken.decimals);
+        tvlTez = BigNumber(farmStorage.poolBalance)
+          .div(BigNumber(10).pow(6))
+          .times(poolTokenStorage.tezPool)
+          .div(poolTokenStorage.qptTokenSupply)
+          .times(2).toNumber();
+      } else {
+        if (Object.prototype.hasOwnProperty.call(state.currentPrices, `${farm.poolToken.address}_${farm.poolToken.tokenId}`)) {
+          tvlTez = farmStorage.poolBalance * state.currentPrices[`${farm.poolToken.address}_${farm.poolToken.tokenId}`] / (10 ** farm.poolToken.decimals);
         }
+      }
 
-        const multiplier = farmUtils.calcMultiplier(farm);
+      const multiplier = farmUtils.calcMultiplier(farm);
 
-        // calc rate per day
-        let apr = "~";
-        if (tvlTez > 0 && Object.prototype.hasOwnProperty.call(state.currentPrices, `${farm.rewardToken.address}_${farm.rewardToken.tokenId}`)) {
-            const rewardPerDay = (farmStorage.rewardPerSec * multiplier * 86400) / (10 ** farm.rewardToken.decimals);
-            const annualRewardTez = rewardPerDay * 365 * state.currentPrices[`${farm.rewardToken.address}_${farm.rewardToken.tokenId}`];
-            apr = (annualRewardTez / tvlTez) * 100;
-        }
+      // calc rate per day
+      let apr = "~";
+      if (tvlTez > 0 && Object.prototype.hasOwnProperty.call(state.currentPrices, `${farm.rewardToken.address}_${farm.rewardToken.tokenId}`)) {
+        const rewardPerDay = (farmStorage.rewardPerSec * multiplier * 86400) / (10 ** farm.rewardToken.decimals);
+        const annualRewardTez = rewardPerDay * 365 * state.currentPrices[`${farm.rewardToken.address}_${farm.rewardToken.tokenId}`];
+        apr = (annualRewardTez / tvlTez) * 100;
+      }
 
-        commit('updateFarm', merge(farm, {
-          poolToken: { balance: poolTokenBal },
-          poolBalance: parseInt(farmStorage.poolBalance) / (10 ** farm.poolToken.decimals),
-          tvlTez: tvlTez,
-          multiplier: multiplier,
-          apr: apr,
-          depositAmount: userRecord.amount,
-          rewardsEarned: farmUtils.estimatePendingRewards(userRecord, farmStorage, currentRewardMultiplier).toNumber() / (10 ** farm.rewardToken.decimals),
-          init: true,
-          updating: false
-        }));
+      commit('updateFarm', merge(farm, {
+        poolBalance: parseInt(farmStorage.poolBalance) / (10 ** farm.poolToken.decimals),
+        tvlTez: tvlTez,
+        multiplier: multiplier,
+        apr: apr,
+        depositAmount: userRecord.amount,
+        rewardsEarned: farmUtils.estimatePendingRewards(userRecord, farmStorage, currentRewardMultiplier).toNumber() / (10 ** farm.rewardToken.decimals),
+        init: true,
+        updating: false
+      }));
 
-        setTimeout(() => { dispatch('softUpdateFarm', farmId) }, 30 * 1000);
+      setTimeout(() => { dispatch('softUpdateFarm', farmId) }, 30 * 1000);
 
-        dispatch('updateTotalTvlTez');
-        dispatch('filterAllFarmRows');
+      dispatch('updateTotalTvlTez');
+      dispatch('filterAllFarmRows');
 
-        return state.data[farmId];
-      });
+      return state.data[farmId];
     }
+  },
+
+  async getPoolTokenBalance({ state, rootState }, farmId) {
+    const farm = state.data[farmId];
+    return tzkt.getContractBigMapKeys(
+      farm.poolToken.address,
+      farmUtils.getTokenLedgerKey(farm.poolToken.address),
+      { key: rootState.wallet.pkh, active: "true" }
+    ).then(poolTokenLedger => {
+      let poolTokenBal = 0;
+      if (poolTokenLedger.data.length) {
+        if (typeof poolTokenLedger.data[0].value === 'object') {
+          poolTokenBal = poolTokenLedger.data[0].value.balance;
+        } else {
+          poolTokenBal = poolTokenLedger.data[0].value;
+        }
+        poolTokenBal = poolTokenBal / (10 ** farm.poolToken.decimals);
+      }
+      return poolTokenBal;
+    });
   },
 
   async stakeInFarm({ commit, dispatch, state, rootState }, payload) {
@@ -650,6 +638,7 @@ export default {
   },
 
   async walletConnected({ commit, state, dispatch }) {
+    await dispatch('updateUserRecordStorage');
     for (const farmId in state.data) {
       commit('updateFarm', merge(state.data[farmId], { loading: true }));
       dispatch('softUpdateFarm', farmId).then((f) => {

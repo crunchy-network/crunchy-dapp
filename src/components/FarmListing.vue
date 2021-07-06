@@ -633,7 +633,8 @@ export default {
       'expandAllFarmRows',
       'collapseAllFarmRows',
       'filterAllFarmRows',
-      'searchAllFarmRows'
+      'searchAllFarmRows',
+      'getPoolTokenBalance'
     ]),
 
     refresh() {
@@ -678,8 +679,9 @@ export default {
       }
       this.stakeForm.loading = true;
       this.stakeForm.visible = true;
-      await this.softUpdateFarm(farmId);
+      const bal = await this.getPoolTokenBalance(farmId);
       this.stakeForm.farm = this.farms.data[farmId];
+      this.stakeForm.farm.poolToken.balance = bal;
       this.stakeForm.loading = false;
     },
 

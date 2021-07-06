@@ -52,6 +52,7 @@ export default {
           updateBalanceInt: setInterval(() => dispatch('updateWalletBalance'), 15 * 1000)
         });
         dispatch('updateWalletBalance');
+        dispatch('walletConnected');
       }
     });
   },
@@ -59,7 +60,6 @@ export default {
   async changeWallet({ dispatch }) {
     requestPermissions().then(() => {
       dispatch('checkWalletConnected');
-      dispatch('walletConnected');
     });
   }
 

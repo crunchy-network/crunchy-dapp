@@ -48,6 +48,14 @@ export default {
 
   updatePriceFeed (state, feed) {
     state.priceFeed = feed;
+  },
+
+  updateFarmStorage (state, data) {
+    state.storage.farms = data;
+  },
+
+  updateFarmUserRecordStorage (state, data) {
+    state.storage.userRecords = data;
   }
 
 }

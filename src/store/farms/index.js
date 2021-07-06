@@ -12,6 +12,10 @@ export default {
     crdaoAddress: process.env.VUE_APP_CONTRACTS_CRDAO,
     priceFeed: [],
     currentPrices: {},
+    storage: {
+      farms: [],
+      userRecords: []
+    },
     usdVwap: 0,
     crunchTez: 0,
     crdaoTez: 0,
