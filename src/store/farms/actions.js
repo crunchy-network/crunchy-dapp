@@ -99,6 +99,10 @@ export default {
         // errant farms
         let errant = false;
         if (x.key == "75") errant = true;
+        if (x.key == "85") errant = true;
+        if (x.key == "84") errant = true;
+        if (x.key == "83") errant = true;
+
         if (x.value.rewardPerSec == "0") errant = true;
 
         const f = merge({ id: x.key, ...x.value },
