@@ -8,16 +8,27 @@ import { getTokenMetadata, getContract, getBatch, getWalletContract } from './..
 import merge from 'deepmerge'
 import { BigNumber } from 'bignumber.js'
 
+let updateXtzUsdVwapPromise = undefined;
+let updateCurrentPricesPromise = undefined;
+let updateFarmStoragePromise = undefined;
+
 export default {
 
-  async updateXtzUsdVwap({ commit, dispatch }) {
-    coingecko.getXtzUsdPrice().then(price => {
+  async _updateXtzUsdVwap({ commit, dispatch }) {
+    return coingecko.getXtzUsdPrice().then(price => {
       commit('updateXtzUsdVwap', price);
-      setTimeout(() => { dispatch('updateXtzUsdVwap') }, 5 * 60 * 1000);
+      setTimeout(() => { updateXtzUsdVwapPromise = dispatch('_updateXtzUsdVwap') }, 5 * 60 * 1000);
     })
   },
 
-  async updateCurrentPrices({ commit, dispatch }) {
+  async updateXtzUsdVwap({ dispatch }) {
+    if (!updateXtzUsdVwapPromise) {
+      updateXtzUsdVwapPromise = dispatch('_updateXtzUsdVwap');
+    }
+    return updateXtzUsdVwapPromise;
+  },
+
+  async _updateCurrentPrices({ commit, dispatch }) {
     return teztools.getPricefeed().then(feed => {
       let currentPrices = {};
       for (const token of feed.contracts) {
@@ -27,16 +38,30 @@ export default {
 
       commit('updatePriceFeed', feed.contracts);
       commit('updateCurrentPrices', currentPrices);
-      setTimeout(() => { dispatch('updateCurrentPrices') }, 60 * 1000);
+      setTimeout(() => { updateCurrentPricesPromise = dispatch('_updateCurrentPrices') }, 60 * 1000);
     });
   },
 
-  async updateFarmStorage({ commit, state, dispatch }) {
+  async updateCurrentPrices({ dispatch }) {
+    if (!updateCurrentPricesPromise) {
+      updateCurrentPricesPromise = dispatch('_updateCurrentPrices');
+    }
+    return updateCurrentPricesPromise;
+  },
+
+  async _updateFarmStorage({ commit, state, dispatch }) {
     return tzkt.getContractBigMapKeys(state.contract, "farms")
       .then(resp => {
         commit('updateFarmStorage', resp.data);
-        setTimeout(() => { dispatch('updateFarmStorage') }, 30 * 1000);
+        setTimeout(() => { updateFarmStoragePromise = dispatch('_updateFarmStorage') }, 30 * 1000);
       });
+  },
+
+  async updateFarmStorage({ dispatch }) {
+    if (!updateFarmStoragePromise) {
+      updateFarmStoragePromise = dispatch('_updateFarmStorage');
+    }
+    return updateFarmStoragePromise;
   },
 
   async updateUserRecordStorage({ commit, state, rootState, dispatch }) {
@@ -70,6 +95,12 @@ export default {
       for (const x of state.storage.farms) {
         if (x.key == "13") continue; // bad catz
         if (x.key == "55") continue; // bad HEH -> CLOVER
+
+        // errant farms
+        let errant = false;
+        if (x.key == "75") errant = true;
+        if (x.value.rewardPerSec == "0") errant = true;
+
         const f = merge({ id: x.key, ...x.value },
           {
             contract: state.contract,
@@ -85,6 +116,7 @@ export default {
             loading: false,
             updating: false,
             visible: true,
+            errant: errant,
             flashFarm: ( (new Date(x.value.endTime)) - (new Date(x.value.startTime)) <= (86400 * 1000) ),
             started: (new Date(x.value.startTime) < new Date()),
             ended: (new Date(x.value.endTime) < new Date()),
