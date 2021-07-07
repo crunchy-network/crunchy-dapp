@@ -186,6 +186,7 @@ export default {
               realTokenId: poolTokenMeta.tokenId
             },
             rewardToken: { ...rewardTokenMeta, address: rewardTokenMeta.tokenAddress },
+            rewardSupply: BigNumber(farm.rewardSupply).div(10 ** rewardTokenMeta.decimals).toNumber(),
             loading: true
           }));
           dispatch('softUpdateFarm', farmId).then(() => {
@@ -195,6 +196,7 @@ export default {
           commit('updateFarm', merge(farm, {
             poolToken: { isQuipuLp: isQuipuLp, ...poolTokenMeta, address: poolTokenMeta.tokenAddress },
             rewardToken: { ...rewardTokenMeta, address: rewardTokenMeta.tokenAddress },
+            rewardSupply: BigNumber(farm.rewardSupply).div(10 ** rewardTokenMeta.decimals).toNumber(),
             loading: true
           }));
           dispatch('softUpdateFarm', farmId).then(() => {
@@ -226,6 +228,7 @@ export default {
                       realTokenId: resp.data.storage.token_id
                     },
                     rewardToken: values[1],
+                    rewardSupply: BigNumber(farm.rewardSupply).div(10 ** values[1].decimals).toNumber(),
                     loading: true
                   }));
                   dispatch('softUpdateFarm', farmId).then(() => {
@@ -242,6 +245,7 @@ export default {
                   commit('updateFarm', merge(farm, {
                     poolToken: { isQuipuLp: isQuipuLp, ...values[0] },
                     rewardToken: values[1],
+                    rewardSupply: BigNumber(farm.rewardSupply).div(10 ** values[1].decimals).toNumber(),
                     loading: true
                   }));
                   dispatch('softUpdateFarm', farmId).then(() => {

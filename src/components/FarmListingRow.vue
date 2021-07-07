@@ -30,7 +30,10 @@
                         </el-col>
                         <el-col :span="3" style="font-weight: bold;">
                           <i class="fas fa-arrow-alt-right" style="color: #999; margin-left: 0px; margin-right: 6px;"></i>
-                          <el-avatar :src="farm.rewardToken.thumbnailUri" fit="cover" shape="circle" :size="40" style="position: relative; border: 4px solid #fff; vertical-align: middle;"></el-avatar>
+                          <el-tooltip placement="top" effect="light">
+                            <div slot="content"><span style="color: #1EC37F;">Total Rewards:</span> {{ vueNumberFormat(farm.rewardSupply) }} {{ farm.rewardToken.symbol }}</div>
+                            <el-avatar :src="farm.rewardToken.thumbnailUri" fit="cover" shape="circle" :size="40" style="position: relative; border: 4px solid #fff; vertical-align: middle;"></el-avatar>
+                          </el-tooltip>
                           <span style="margin-left: 14px;">{{ farm.rewardToken.symbol }}</span>
                         </el-col>
 
