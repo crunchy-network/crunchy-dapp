@@ -96,12 +96,15 @@ export default {
         if (x.key == "13") continue; // bad catz
         if (x.key == "55") continue; // bad HEH -> CLOVER
 
+        //if (x.key > "15") continue;
+
         // errant farms
         let errant = false;
         if (x.key == "75") errant = true;
         if (x.key == "85") errant = true;
         if (x.key == "84") errant = true;
         if (x.key == "83") errant = true;
+        if (x.key == "93") errant = true; // tz1e52CpddrybiDgawzvqRPXthy2hbAWGJba
 
         if (x.value.rewardPerSec == "0") errant = true;
 
@@ -151,7 +154,7 @@ export default {
   async initFarm({ commit, state, dispatch }, farmId) {
     const farm = state.data[farmId];
     if (!farm.loading) {
-      commit('updateFarm', merge(farm, { loading: true }));
+      commit('updateFarmLoading', { farmId, loading: true });
 
       let poolTokenMeta = teztools.findTokenInPriceFeed(farm.poolToken, state.priceFeed);
 
@@ -185,8 +188,8 @@ export default {
             rewardToken: { ...rewardTokenMeta, address: rewardTokenMeta.tokenAddress },
             loading: true
           }));
-          dispatch('softUpdateFarm', farmId).then((f) => {
-            commit('updateFarm', merge(f, { loading: false }));
+          dispatch('softUpdateFarm', farmId).then(() => {
+            commit('updateFarmLoading', { farmId, loading: false });
           });
         } else {
           commit('updateFarm', merge(farm, {
@@ -194,8 +197,8 @@ export default {
             rewardToken: { ...rewardTokenMeta, address: rewardTokenMeta.tokenAddress },
             loading: true
           }));
-          dispatch('softUpdateFarm', farmId).then((f) => {
-            commit('updateFarm', merge(f, { loading: false }));
+          dispatch('softUpdateFarm', farmId).then(() => {
+            commit('updateFarmLoading', { farmId, loading: false });
           });
         }
 
@@ -225,8 +228,8 @@ export default {
                     rewardToken: values[1],
                     loading: true
                   }));
-                  dispatch('softUpdateFarm', farmId).then((f) => {
-                    commit('updateFarm', merge(f, { loading: false }));
+                  dispatch('softUpdateFarm', farmId).then(() => {
+                    commit('updateFarmLoading', { farmId, loading: false });
                   });
                 });
             } else {
@@ -241,8 +244,8 @@ export default {
                     rewardToken: values[1],
                     loading: true
                   }));
-                  dispatch('softUpdateFarm', farmId).then((f) => {
-                    commit('updateFarm', merge(f, { loading: false }));
+                  dispatch('softUpdateFarm', farmId).then(() => {
+                    commit('updateFarmLoading', { farmId, loading: false });
                   });
                 });
             }
@@ -304,7 +307,7 @@ export default {
       setTimeout(() => { dispatch('softUpdateFarm', farmId) }, 60 * 1000);
 
       dispatch('updateTotalTvlTez');
-      dispatch('filterAllFarmRows');
+      dispatch('filterFarmRow', farmId);
 
       return state.data[farmId];
     }
@@ -360,7 +363,7 @@ export default {
       setTimeout(() => { dispatch('softUpdateFarm', farmId) }, 30 * 1000);
 
       dispatch('updateTotalTvlTez');
-      dispatch('filterAllFarmRows');
+      dispatch('filterFarmRow', farmId);
 
       return state.data[farmId];
     }
@@ -569,12 +572,12 @@ export default {
     return tx.confirmation();
   },
 
-  expandFarmRow({ commit, state }, farmId) {
-    commit('updateFarm', merge(state.data[farmId], { rowExpanded: true }));
+  expandFarmRow({ commit }, farmId) {
+    commit('updateFarmRowExpanded', { farmId, rowExpanded: true });
   },
 
-  collapseFarmRow({ commit, state }, farmId) {
-    commit('updateFarm', merge(state.data[farmId], { rowExpanded: false }));
+  collapseFarmRow({ commit }, farmId) {
+    commit('updateFarmRowExpanded', { farmId, rowExpanded: false });
   },
 
   expandAllFarmRows({ commit, state, dispatch }) {
@@ -591,93 +594,97 @@ export default {
     commit('updateFarmsExpanded', false);
   },
 
-  filterAllFarmRows({ commit, state }) {
-    for (const farmId in state.data) {
-      const farm = state.data[farmId];
+  filterFarmRow({ commit, state }, farmId) {
+    const farm = state.data[farmId];
 
-      // keyword search
-      let keywordsMatch = true;
-      if (state.searchInput.length) {
-        if (farm.poolToken.symbol.toLowerCase().includes(state.searchInput.toLowerCase()) ||
-          farm.poolToken.name.toLowerCase().includes(state.searchInput.toLowerCase()) ||
-          farm.rewardToken.symbol.toLowerCase().includes(state.searchInput.toLowerCase()) ||
-          farm.rewardToken.name.toLowerCase().includes(state.searchInput.toLowerCase())
-        ) {
-          keywordsMatch = true;
-        } else {
-          keywordsMatch = false;
-        }
+    // keyword search
+    let keywordsMatch = true;
+    if (state.searchInput.length) {
+      if (farm.poolToken.symbol.toLowerCase().includes(state.searchInput.toLowerCase()) ||
+        farm.poolToken.name.toLowerCase().includes(state.searchInput.toLowerCase()) ||
+        farm.rewardToken.symbol.toLowerCase().includes(state.searchInput.toLowerCase()) ||
+        farm.rewardToken.name.toLowerCase().includes(state.searchInput.toLowerCase())
+      ) {
+        keywordsMatch = true;
+      } else {
+        keywordsMatch = false;
       }
+    }
 
-      // farm type filter
-      let typeMatches = true;
-      if (state.filters.includes('farm') || state.filters.includes('garden') || state.filters.includes('flash')) {
-        typeMatches = false;
+    // farm type filter
+    let typeMatches = true;
+    if (state.filters.includes('farm') || state.filters.includes('garden') || state.filters.includes('flash')) {
+      typeMatches = false;
 
-        if (!farm.flashFarm) {
-          if (state.filters.includes('farm') && farm.tvlTez >= 10000) {
-            typeMatches = true;
-          }
-
-          if (state.filters.includes('garden') && farm.tvlTez < 10000) {
-            typeMatches = true;
-          }
+      if (!farm.flashFarm) {
+        if (state.filters.includes('farm') && farm.tvlTez >= 10000) {
+          typeMatches = true;
         }
 
-        if (state.filters.includes('flash') && farm.flashFarm) {
+        if (state.filters.includes('garden') && farm.tvlTez < 10000) {
           typeMatches = true;
         }
       }
 
-      // staked filters
-      let stakedMatches = true;
-      if (state.filters.includes('staked') && farm.depositAmount <= 0) {
-        stakedMatches = false;
+      if (state.filters.includes('flash') && farm.flashFarm) {
+        typeMatches = true;
+      }
+    }
+
+    // staked filters
+    let stakedMatches = true;
+    if (state.filters.includes('staked') && farm.depositAmount <= 0) {
+      stakedMatches = false;
+    }
+
+    // status filters
+    let statusMatches = true;
+    if (state.filters.includes('pending') || state.filters.includes('running') || state.filters.includes('ended')) {
+      statusMatches = false;
+
+      if (state.filters.includes('pending') && !farm.started) {
+        statusMatches = true;
       }
 
-      // status filters
-      let statusMatches = true;
-      if (state.filters.includes('pending') || state.filters.includes('running') || state.filters.includes('ended')) {
-        statusMatches = false;
-
-        if (state.filters.includes('pending') && !farm.started) {
-          statusMatches = true;
-        }
-
-        if (state.filters.includes('running') && farm.started && !farm.ended) {
-          statusMatches = true;
-        }
-
-        if (state.filters.includes('ended') && farm.ended) {
-          statusMatches = true;
-        }
+      if (state.filters.includes('running') && farm.started && !farm.ended) {
+        statusMatches = true;
       }
 
-      // farm badges filter
-      let badgeMatches = true;
-      if (state.filters.includes('verified') || state.filters.includes('core') || state.filters.includes('partner') || state.filters.includes('lpLocked')) {
-        badgeMatches = false;
+      if (state.filters.includes('ended') && farm.ended) {
+        statusMatches = true;
+      }
+    }
 
-        for (const b of ['verified', 'core', 'partner', 'lpLocked']) {
-          if (state.filters.includes(b) && farm.badges[b] === true) {
-            badgeMatches = true;
-          }
+    // farm badges filter
+    let badgeMatches = true;
+    if (state.filters.includes('verified') || state.filters.includes('core') || state.filters.includes('partner') || state.filters.includes('lpLocked')) {
+      badgeMatches = false;
+
+      for (const b of ['verified', 'core', 'partner', 'lpLocked']) {
+        if (state.filters.includes(b) && farm.badges[b] === true) {
+          badgeMatches = true;
         }
       }
+    }
 
-      // all groups must match
-      const visible = keywordsMatch && typeMatches && stakedMatches && statusMatches && badgeMatches;
+    // all groups must match
+    const visible = keywordsMatch && typeMatches && stakedMatches && statusMatches && badgeMatches;
 
-      commit('updateFarm', merge(farm, { visible: visible }));
+    commit('updateFarmVisible', { farmId, visible });
+  },
+
+  filterAllFarmRows({ state, dispatch }) {
+    for (const farmId in state.data) {
+      dispatch('filterFarmRow', farmId);
     }
   },
 
   async walletConnected({ commit, state, dispatch }) {
     await dispatch('updateUserRecordStorage');
     for (const farmId in state.data) {
-      commit('updateFarm', merge(state.data[farmId], { loading: true }));
-      dispatch('softUpdateFarm', farmId).then((f) => {
-        commit('updateFarm', merge(f, { loading: false }));
+      commit('updateFarmLoading', { farmId, loading: true });
+      dispatch('softUpdateFarm', farmId).then(() => {
+        commit('updateFarmLoading', { farmId, loading: false });
       });
     }
   }

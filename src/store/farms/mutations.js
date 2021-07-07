@@ -24,6 +24,18 @@ export default {
     state.data[farm.id] = farm;
   },
 
+  updateFarmRowExpanded (state, { farmId, rowExpanded }) {
+    state.data[farmId].rowExpanded = rowExpanded;
+  },
+
+  updateFarmVisible (state, { farmId, visible }) {
+    state.data[farmId].visible = visible;
+  },
+
+  updateFarmLoading (state, { farmId, loading }) {
+    state.data[farmId].loading = loading;
+  },
+
   updateXtzUsdVwap (state, price) {
     state.usdVwap = price;
   },
