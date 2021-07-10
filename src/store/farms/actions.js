@@ -108,6 +108,17 @@ export default {
 
         if (x.value.rewardPerSec == "0") errant = true;
 
+        // Some date stuff
+        const nowD = new Date();
+        const startTimeD = new Date(x.value.startTime);
+        const endTimeD = new Date(x.value.endTime);
+        const duration = endTimeD - startTimeD;
+
+        // hide farms that have been completed and no long have any stake left in them
+        const isEnded = (endTimeD < nowD);
+        if (isEnded && x.value.poolBalance == "0") continue;
+        if (errant && x.value.poolBalance == "0") continue;
+
         const f = merge({ id: x.key, ...x.value },
           {
             contract: state.contract,
@@ -124,10 +135,10 @@ export default {
             updating: false,
             visible: true,
             errant: errant,
-            flashFarm: ( (new Date(x.value.endTime)) - (new Date(x.value.startTime)) <= (86400 * 1000) ),
-            started: (new Date(x.value.startTime) < new Date()),
-            ended: (new Date(x.value.endTime) < new Date()),
-            duration: (new Date(x.value.endTime) - (new Date(x.value.startTime))),
+            flashFarm: (duration <= (86400 * 1000)),
+            started: (startTimeD < nowD),
+            ended: isEnded,
+            duration: duration,
             badges: {
               verified: false,
               core: false,
