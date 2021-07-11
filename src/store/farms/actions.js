@@ -114,9 +114,18 @@ export default {
         const endTimeD = new Date(x.value.endTime);
         const duration = endTimeD - startTimeD;
 
-        // hide farms that have been completed and no long have any stake left in them
-        const isEnded = (endTimeD < nowD);
+        // baseline farm is complete check
+        let isEnded = (endTimeD < nowD);
+
+        // show farms as complete that have paid out all rewards
+        if (x.value.rewardPaid == x.value.rewardSupply) {
+          isEnded = true;
+        }
+
+        // hide farms that have been completed with no stake left
         if (isEnded && x.value.poolBalance == "0") continue;
+
+        // hide farms with errors and no stake left
         if (errant && x.value.poolBalance == "0") continue;
 
         const f = merge({ id: x.key, ...x.value },
