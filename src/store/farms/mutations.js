@@ -36,6 +36,10 @@ export default {
     state.data[farmId].loading = loading;
   },
 
+  updateFarmRewardsEarned (state, { farmId, rewardsEarned }) {
+    state.data[farmId].rewardsEarned = rewardsEarned;
+  },
+
   updateXtzUsdVwap (state, price) {
     state.usdVwap = price;
   },

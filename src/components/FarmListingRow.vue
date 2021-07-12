@@ -37,7 +37,14 @@
                           <span style="margin-left: 14px;">{{ farm.rewardToken.symbol }}</span>
                         </el-col>
 
-                        <el-col style="text-align: right;" :span="4" v-if="wallet.connected && farm.depositAmount > 0">{{ vueNumberFormat(farm.rewardsEarned) }}</el-col>
+                        <el-col style="text-align: right;" :span="4" v-if="wallet.connected && farm.depositAmount > 0">
+                          <!-- <ICountUp
+                            :delay="countUpDelay"
+                            :endVal="farm.rewardsEarned"
+                            :options="countUpOpts"
+                          /> -->
+                          {{ vueNumberFormat(farm.rewardsEarned) }}
+                        </el-col>
                         <el-col style="text-align: right;" :span="4" v-else>-</el-col>
 
                         <el-col style="text-align: right; color: #F64947; text-transform: uppercase;" :span="3" v-if="farm.errant">Error</el-col>
@@ -197,6 +204,7 @@
 
 <script>
 import { CollapseTransition } from "@ivanv/vue-collapse-transition";
+// import ICountUp from 'vue-countup-v2';
 import { mapState, mapActions } from 'vuex'
 import farmUtils from './../utils/farm';
 
@@ -204,11 +212,23 @@ export default {
   name: 'FarmListingRow',
   props: [ 'farm', 'showUsd' ],
   components: {
-    CollapseTransition
+    CollapseTransition,
+    // ICountUp
   },
   data() {
     return {
-      localAbbrevTimeZone: new Date().toLocaleTimeString('en-us',{ timeZoneName:'short' }).split(' ')[2]
+      localAbbrevTimeZone: new Date().toLocaleTimeString('en-us',{ timeZoneName:'short' }).split(' ')[2],
+      // countUpDelay: 0,
+      // countUpOpts: {
+      //   useEasing: true,
+      //   useGrouping: true,
+      //   decimalPlaces: 4,
+      //   duration: 2,
+      //   separator: ',',
+      //   decimal: '.',
+      //   prefix: '',
+      //   suffix: ''
+      // }
     }
   },
   computed: {

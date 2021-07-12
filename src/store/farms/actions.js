@@ -210,6 +210,7 @@ export default {
             loading: true
           }));
           dispatch('softUpdateFarm', farmId).then(() => {
+            dispatch('updateFarmRewardsEarned', farmId);
             commit('updateFarmLoading', { farmId, loading: false });
           });
         } else {
@@ -220,6 +221,7 @@ export default {
             loading: true
           }));
           dispatch('softUpdateFarm', farmId).then(() => {
+            dispatch('updateFarmRewardsEarned', farmId);
             commit('updateFarmLoading', { farmId, loading: false });
           });
         }
@@ -252,6 +254,7 @@ export default {
                     loading: true
                   }));
                   dispatch('softUpdateFarm', farmId).then(() => {
+                    dispatch('updateFarmRewardsEarned', farmId);
                     commit('updateFarmLoading', { farmId, loading: false });
                   });
                 });
@@ -269,6 +272,7 @@ export default {
                     loading: true
                   }));
                   dispatch('softUpdateFarm', farmId).then(() => {
+                    dispatch('updateFarmRewardsEarned', farmId);
                     commit('updateFarmLoading', { farmId, loading: false });
                   });
                 });
@@ -391,6 +395,22 @@ export default {
 
       return state.data[farmId];
     }
+  },
+
+  async updateFarmRewardsEarned({ state, rootState, commit, dispatch }, farmId) {
+    const farm = state.data[farmId];
+    if (rootState.wallet.pkh) {
+      const userRecord = farmUtils.getUserRecord(farm, state.storage.userRecords);
+      if (userRecord.amount > 0) {
+        const farmStorage = state.storage.farms.find(f => f.key == farmId).value;
+        const currentRewardMultiplier = farmUtils.getCurrentRewardMultiplier(farmStorage);
+        const pendingRewards = farmUtils.estimatePendingRewards(userRecord, farmStorage, currentRewardMultiplier);
+        const rewardsEarned = pendingRewards.div(BigNumber(10).pow(farm.rewardToken.decimals)).toNumber();
+        commit('updateFarmRewardsEarned', { farmId, rewardsEarned });
+      }
+    }
+
+    setTimeout(() => { dispatch('updateFarmRewardsEarned', farmId) }, 1 * 1000);
   },
 
   async getPoolTokenBalance({ state, rootState }, farmId) {

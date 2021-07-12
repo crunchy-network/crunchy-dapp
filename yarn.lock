@@ -3149,6 +3149,11 @@ cosmiconfig@^5.0.0:
     js-yaml "^3.13.1"
     parse-json "^4.0.0"
 
+countup.js@^2.0.7:
+  version "2.0.7"
+  resolved "https://registry.yarnpkg.com/countup.js/-/countup.js-2.0.7.tgz#56b72a87fc0ee3cadb38356c246ccac88fb0a8cc"
+  integrity sha512-FO0nQdvG1iQwHp28wdvkErxnNUSbdkzztqZ6YNHKLHydngD2tdiKEW8dFrqpahF3tj+Ma70h0vyYrCBzxlVWdg==
+
 create-ecdh@^4.0.0:
   version "4.0.4"
   resolved "https://registry.npm.taobao.org/create-ecdh/download/create-ecdh-4.0.4.tgz?cache=0&sync_timestamp=1596557469480&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fcreate-ecdh%2Fdownload%2Fcreate-ecdh-4.0.4.tgz#d6e7f4bffa66736085a0762fd3a632684dabcc4e"
@@ -9186,6 +9191,11 @@ vue-cli-plugin-element@~1.0.1:
   version "1.0.1"
   resolved "https://registry.npm.taobao.org/vue-cli-plugin-element/download/vue-cli-plugin-element-1.0.1.tgz#34e58fb65b36cf59afaf14f503288e5e578b1554"
   integrity sha1-NOWPtls2z1mvrxT1AyiOXleLFVQ=
+
+vue-countup-v2@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/vue-countup-v2/-/vue-countup-v2-4.0.0.tgz#061a1ac8ee4aa207bb9d23d2bcc1d53a5f7c3675"
+  integrity sha512-XjKeHo1ndRlJtXvHd6B1eWOpbrJDdNU3rdYZwVPv2YlUXbvthsBT4kms5Fc/mn9RdXPrMX2H/ktAAQtKjWFisw==
 
 vue-eslint-parser@^7.0.0:
   version "7.6.0"
