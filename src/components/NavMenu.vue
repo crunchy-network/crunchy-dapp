@@ -7,6 +7,12 @@
       <i class="fa-2x fas fa-square" aria-hidden="true"></i>
     </router-link>
 
+    <router-link tag="li" class="el-menu-item" :to="{ name: 'deep-freezer-listing' }" active-class="is-active">
+      <i class="fad fa-refrigerator"></i>
+      <span>Deep Freezers</span>
+      <i class="fa-2x fas fa-square" aria-hidden="true"></i>
+    </router-link>
+
     <router-link tag="li" class="el-menu-item" :to="{ name: 'farm-listing' }" active-class="is-active">
       <i class="fad fa-tractor"></i>
       <span>Farms</span>
