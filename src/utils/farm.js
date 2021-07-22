@@ -138,6 +138,12 @@ export default {
       badges.verified = true;
     }
 
+    // Kalam
+    if (farm.owner === "tz1XNtKE6t9TnocwZ2Ae5s249M45EKvfp2o5") {
+      badges.verified = true;
+      badges.partner = true;
+    }
+
     return badges;
   },
 
