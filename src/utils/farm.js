@@ -60,6 +60,13 @@ export default {
       meta.thumbnailUri = "https://raw.githubusercontent.com/Plenty-DeFi/Plenty-Logo/main/PlentyTokenIcon.png";
     }
 
+    // LB
+    if (meta.tokenAddress === "KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo") {
+      meta.symbol = "tzBTC";
+      meta.name = "tzBTC";
+      meta.thumbnailUri = "https://tzbtc.io/wp-content/uploads/2020/03/tzbtc_logo_single.svg";
+    }
+
     return meta;
   },
 

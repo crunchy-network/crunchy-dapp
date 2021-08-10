@@ -535,6 +535,19 @@ export default {
           matches.push({ value: "XTZ/" + (t.symbol || t.name) + " LP", type: t.type, address: t.address, tokenId: 0, isQuipuLp: true, thumbnailUri: t.thumbnailUri });
         }
       }
+
+      // liquidity baking
+      if ("liquidity baking".includes(keywords.toLowerCase()) || 'tzbtc'.includes(keywords.toLowerCase())) {
+        matches.push({
+          value: "XTZ/tzBTC LP (Liquidity Baking)",
+          type: 'fa1',
+          address: 'KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo',
+          tokenId: 0,
+          isQuipuLp: true,
+          thumbnailUri: "https://tzbtc.io/wp-content/uploads/2020/03/tzbtc_logo_single.svg"
+        });
+      }
+
       cb(matches);
     },
 

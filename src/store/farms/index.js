@@ -10,6 +10,8 @@ export default {
     crdaoLpAddress: process.env.VUE_APP_CONTRACTS_QUIPU_CRDAO,
     crunchAddress: process.env.VUE_APP_CONTRACTS_CRUNCH,
     crdaoAddress: process.env.VUE_APP_CONTRACTS_CRDAO,
+    lbDexAddress: process.env.VUE_APP_CONTRACTS_LB_DEX,
+    lbLpAddress: process.env.VUE_APP_CONTRACTS_LB_LPTOKEN,
     priceFeed: [],
     currentPrices: {},
     storage: {

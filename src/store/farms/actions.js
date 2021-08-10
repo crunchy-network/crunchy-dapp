@@ -200,6 +200,7 @@ export default {
             poolToken: {
               ...poolTokenMeta,
               isQuipuLp: isQuipuLp,
+              isLbLp: false,
               decimals: 6,
               tokenId: farm.poolToken.tokenId,
               realTokenAddress: poolTokenMeta.tokenAddress,
@@ -215,7 +216,7 @@ export default {
           });
         } else {
           commit('updateFarm', merge(farm, {
-            poolToken: { isQuipuLp: isQuipuLp, ...poolTokenMeta, address: poolTokenMeta.tokenAddress },
+            poolToken: { isQuipuLp: isQuipuLp, isLbLp: false, ...poolTokenMeta, address: poolTokenMeta.tokenAddress },
             rewardToken: { ...rewardTokenMeta, address: rewardTokenMeta.tokenAddress },
             rewardSupply: BigNumber(farm.rewardSupply).div(10 ** rewardTokenMeta.decimals).toNumber(),
             loading: true
@@ -228,56 +229,102 @@ export default {
 
       // fallback to rpc storage
       } else {
-        tzkt.getContractStorage(farm.poolToken.address)
-          .then(resp => {
-            const isQuipuLp = Object.prototype.hasOwnProperty.call(resp.data, 'dex_lambdas') &&
-              Object.prototype.hasOwnProperty.call(resp.data, 'token_lambdas');
 
-            if (isQuipuLp) {
-              Promise.all([
-                getTokenMetadata(resp.data.storage.token_address, resp.data.storage.token_id || 0)
-                  .catch(() => { return { thumbnailUri: "https://static.thenounproject.com/png/796573-200.png" } }),
-                getTokenMetadata(farm.rewardToken.address, farm.rewardToken.tokenId)
-              ]).then(values => {
-                  values[0].thumbnailUri = ipfs.transformUri(values[0].thumbnailUri);
-                  values[1].thumbnailUri = ipfs.transformUri(values[1].thumbnailUri);
-                  commit('updateFarm', merge(farm, {
-                    poolToken: {
-                      ...values[0],
-                      isQuipuLp: isQuipuLp,
-                      decimals: 6,
-                      realTokenAddress: resp.data.storage.token_address,
-                      realTokenId: resp.data.storage.token_id
-                    },
-                    rewardToken: values[1],
-                    rewardSupply: BigNumber(farm.rewardSupply).div(10 ** values[1].decimals).toNumber(),
-                    loading: true
-                  }));
-                  dispatch('softUpdateFarm', farmId).then(() => {
-                    dispatch('updateFarmRewardsEarned', farmId);
-                    commit('updateFarmLoading', { farmId, loading: false });
-                  });
-                });
-            } else {
-              Promise.all([
-                getTokenMetadata(farm.poolToken.address, farm.poolToken.tokenId),
-                getTokenMetadata(farm.rewardToken.address, farm.rewardToken.tokenId)
-              ]).then(values => {
-                  values[0].thumbnailUri = ipfs.transformUri(values[0].thumbnailUri);
-                  values[1].thumbnailUri = ipfs.transformUri(values[1].thumbnailUri);
-                  commit('updateFarm', merge(farm, {
-                    poolToken: { isQuipuLp: isQuipuLp, ...values[0] },
-                    rewardToken: values[1],
-                    rewardSupply: BigNumber(farm.rewardSupply).div(10 ** values[1].decimals).toNumber(),
-                    loading: true
-                  }));
-                  dispatch('softUpdateFarm', farmId).then(() => {
-                    dispatch('updateFarmRewardsEarned', farmId);
-                    commit('updateFarmLoading', { farmId, loading: false });
-                  });
-                });
-            }
+        // Liquidity Baking
+        const force = false;
+        if (force || farm.poolToken.address === state.lbDexAddress) {
+
+          Promise.all([
+            tzkt.getContractStorage(state.lbDexAddress),
+            getTokenMetadata(state.lbLpAddress, 0)
+              .catch(() => { return { tokenAddress: state.lbLpAddress, tokenId: 0 } }),
+            getTokenMetadata(farm.rewardToken.address, farm.rewardToken.tokenId)
+          ]).then(values => {
+            let resp = values[0];
+            let poolTokenMeta = values[1];
+            let rewardTokenMeta = values[2];
+
+            // allow overrides
+            poolTokenMeta = farmUtils.overrideMetadata(poolTokenMeta);
+            rewardTokenMeta = farmUtils.overrideMetadata(rewardTokenMeta);
+
+            poolTokenMeta.thumbnailUri = ipfs.transformUri(poolTokenMeta.thumbnailUri);
+            rewardTokenMeta.thumbnailUri = ipfs.transformUri(rewardTokenMeta.thumbnailUri);
+
+            commit('updateFarm', merge(farm, {
+              poolToken: {
+                ...resp.data,
+                ...poolTokenMeta,
+                isQuipuLp: false,
+                isLbLp: true,
+                decimals: 0,
+                address: state.lbDexAddress,
+                realTokenAddress: resp.data.tokenAddress,
+                realTokenId: 0
+              },
+              rewardToken: rewardTokenMeta,
+              rewardSupply: BigNumber(farm.rewardSupply).div(10 ** values[1].decimals).toNumber(),
+              loading: true
+            }));
+            dispatch('softUpdateFarm', farmId).then(() => {
+              dispatch('updateFarmRewardsEarned', farmId);
+              commit('updateFarmLoading', { farmId, loading: false });
+            });
           });
+
+        } else {
+          tzkt.getContractStorage(farm.poolToken.address)
+            .then(resp => {
+              const isQuipuLp = Object.prototype.hasOwnProperty.call(resp.data, 'dex_lambdas') &&
+                Object.prototype.hasOwnProperty.call(resp.data, 'token_lambdas');
+            
+              if (isQuipuLp) {
+                Promise.all([
+                  getTokenMetadata(resp.data.storage.token_address, resp.data.storage.token_id || 0)
+                    .catch(() => { return { thumbnailUri: "https://static.thenounproject.com/png/796573-200.png" } }),
+                  getTokenMetadata(farm.rewardToken.address, farm.rewardToken.tokenId)
+                ]).then(values => {
+                    values[0].thumbnailUri = ipfs.transformUri(values[0].thumbnailUri);
+                    values[1].thumbnailUri = ipfs.transformUri(values[1].thumbnailUri);
+                    commit('updateFarm', merge(farm, {
+                      poolToken: {
+                        ...values[0],
+                        isQuipuLp: isQuipuLp,
+                        isLbLp: false,
+                        decimals: 6,
+                        realTokenAddress: resp.data.storage.token_address,
+                        realTokenId: resp.data.storage.token_id
+                      },
+                      rewardToken: values[1],
+                      rewardSupply: BigNumber(farm.rewardSupply).div(10 ** values[1].decimals).toNumber(),
+                      loading: true
+                    }));
+                    dispatch('softUpdateFarm', farmId).then(() => {
+                      dispatch('updateFarmRewardsEarned', farmId);
+                      commit('updateFarmLoading', { farmId, loading: false });
+                    });
+                  });
+              } else {
+                Promise.all([
+                  getTokenMetadata(farm.poolToken.address, farm.poolToken.tokenId),
+                  getTokenMetadata(farm.rewardToken.address, farm.rewardToken.tokenId)
+                ]).then(values => {
+                    values[0].thumbnailUri = ipfs.transformUri(values[0].thumbnailUri);
+                    values[1].thumbnailUri = ipfs.transformUri(values[1].thumbnailUri);
+                    commit('updateFarm', merge(farm, {
+                      poolToken: { isQuipuLp: isQuipuLp, isLbLp: false, ...values[0] },
+                      rewardToken: values[1],
+                      rewardSupply: BigNumber(farm.rewardSupply).div(10 ** values[1].decimals).toNumber(),
+                      loading: true
+                    }));
+                    dispatch('softUpdateFarm', farmId).then(() => {
+                      dispatch('updateFarmRewardsEarned', farmId);
+                      commit('updateFarmLoading', { farmId, loading: false });
+                    });
+                  });
+              }
+            });
+        }
       }
     }
   },
@@ -289,7 +336,19 @@ export default {
       const farmStorage = state.storage.farms.find(f => f.key == farmId).value;
 
       let tvlTez = 0;
-      if (farm.poolToken.isQuipuLp) {
+      if (farm.poolToken.isLbLp) {
+        const poolK = await tzkt.getContractStorage(farm.poolToken.address);
+        const poolTokenStorage = {
+          tezPool: BigNumber(poolK.data.xtzPool).div(BigNumber(10).pow(6)),
+          qptTokenSupply: BigNumber(poolK.data.lqtTotal)
+        };
+
+        tvlTez = BigNumber(farmStorage.poolBalance)
+          .times(poolTokenStorage.tezPool)
+          .div(poolTokenStorage.qptTokenSupply)
+          .times(2).toNumber();
+          console.log("tvlTez", tvlTez);
+      } else if (farm.poolToken.isQuipuLp) {
         let poolTokenStorage = teztools.findTokenInPriceFeed(farm.poolToken, state.priceFeed);
         if (!poolTokenStorage || !Object.prototype.hasOwnProperty.call(poolTokenStorage, 'qptTokenSupply')) {
           const poolK = await tzkt.getContractStorage(farm.poolToken.address);
@@ -346,7 +405,18 @@ export default {
       const currentRewardMultiplier = farmUtils.getCurrentRewardMultiplier(farmStorage);
 
       let tvlTez = 0;
-      if (farm.poolToken.isQuipuLp) {
+      if (farm.poolToken.isLbLp) {
+        const poolK = await tzkt.getContractStorage(farm.poolToken.address);
+        const poolTokenStorage = {
+          tezPool: BigNumber(poolK.data.xtzPool).div(BigNumber(10).pow(6)),
+          qptTokenSupply: BigNumber(poolK.data.lqtTotal)
+        };
+
+        tvlTez = BigNumber(farmStorage.poolBalance)
+          .times(poolTokenStorage.tezPool)
+          .div(poolTokenStorage.qptTokenSupply)
+          .times(2).toNumber();
+      } else if (farm.poolToken.isQuipuLp) {
         let poolTokenStorage = teztools.findTokenInPriceFeed(farm.poolToken, state.priceFeed);
         if (!poolTokenStorage || !Object.prototype.hasOwnProperty.call(poolTokenStorage, 'qptTokenSupply')) {
           const poolK = await tzkt.getContractStorage(farm.poolToken.address);
