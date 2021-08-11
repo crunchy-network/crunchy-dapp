@@ -17,6 +17,11 @@ export default {
       return 'balances';
     }
 
+    // LB
+    if (address === "KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo") {
+      return 'tokens';
+    }
+
     return 'ledger';
   },
 

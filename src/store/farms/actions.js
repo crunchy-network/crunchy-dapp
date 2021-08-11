@@ -232,7 +232,7 @@ export default {
 
         // Liquidity Baking
         const force = false;
-        if (force || farm.poolToken.address === state.lbDexAddress) {
+        if (force || farm.poolToken.address === state.lbLpAddress) {
 
           Promise.all([
             tzkt.getContractStorage(state.lbDexAddress),
@@ -258,12 +258,13 @@ export default {
                 isQuipuLp: false,
                 isLbLp: true,
                 decimals: 0,
-                address: state.lbDexAddress,
+                address: state.lbLpAddress,
+                tokenId: 0,
                 realTokenAddress: resp.data.tokenAddress,
                 realTokenId: 0
               },
               rewardToken: rewardTokenMeta,
-              rewardSupply: BigNumber(farm.rewardSupply).div(10 ** values[1].decimals).toNumber(),
+              rewardSupply: BigNumber(farm.rewardSupply).div(10 ** rewardTokenMeta.decimals).toNumber(),
               loading: true
             }));
             dispatch('softUpdateFarm', farmId).then(() => {
@@ -337,7 +338,7 @@ export default {
 
       let tvlTez = 0;
       if (farm.poolToken.isLbLp) {
-        const poolK = await tzkt.getContractStorage(farm.poolToken.address);
+        const poolK = await tzkt.getContractStorage(state.lbDexAddress);
         const poolTokenStorage = {
           tezPool: BigNumber(poolK.data.xtzPool).div(BigNumber(10).pow(6)),
           qptTokenSupply: BigNumber(poolK.data.lqtTotal)
@@ -406,7 +407,7 @@ export default {
 
       let tvlTez = 0;
       if (farm.poolToken.isLbLp) {
-        const poolK = await tzkt.getContractStorage(farm.poolToken.address);
+        const poolK = await tzkt.getContractStorage(state.lbDexAddress);
         const poolTokenStorage = {
           tezPool: BigNumber(poolK.data.xtzPool).div(BigNumber(10).pow(6)),
           qptTokenSupply: BigNumber(poolK.data.lqtTotal)
