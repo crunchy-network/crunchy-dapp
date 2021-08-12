@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@ivanv/vue-collapse-transition": "^1.0.2",
+    "@airgap/beacon-sdk": "^2.3.1",
     "@taquito/beacon-wallet": "^10.0.0",
     "@taquito/taquito": "^10.0.0",
     "@taquito/tzip12": "^10.0.0",

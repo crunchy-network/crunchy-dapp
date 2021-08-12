@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@airgap/beacon-sdk@^2.3.0":
+"@airgap/beacon-sdk@^2.3.0", "@airgap/beacon-sdk@^2.3.1":
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/@airgap/beacon-sdk/-/beacon-sdk-2.3.1.tgz#555a76b85854914a0789eca72e591a716c1f0a21"
   integrity sha512-KhlerqRlI9LxkxY6sq5ar5g6KuzEEGEacnMg7AWxL/Pdq3WXGfMrdzVOO+4wOgB8f1/A8MRn0l/zjwAFZqAvYA==
