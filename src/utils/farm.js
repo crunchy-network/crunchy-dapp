@@ -156,6 +156,12 @@ export default {
       badges.partner = true;
     }
 
+    // Rocket
+    if (farm.owner === "tz1b3jALDX5NdMocNSpyYRDeq18NTtzjtnWE") {
+      badges.verified = true;
+      badges.partner = true;
+    }
+
     return badges;
   },
 
