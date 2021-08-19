@@ -148,7 +148,7 @@
       </el-alert>
       <el-alert
         v-if="form.serviceFeeId === '1'"
-        :title="`Upon unlock, you will receive back ${form.input - (form.input * 0.010) } ${form.lpTokenName} LP tokens.`"
+        :title="`Upon unlock, you will receive back ${vueNumberFormat(form.input - (form.input * 0.010))} ${form.lpTokenName} LP tokens.`"
         type="info"
         show-icon
         :closable="false"
@@ -156,7 +156,7 @@
       </el-alert>
       <el-alert
         v-if="form.serviceFeeId === '2'"
-        :title="`Upon unlock, you will receive back ${form.input - (form.input * 0.005) } ${form.lpTokenName} LP tokens.`"
+        :title="`Upon unlock, you will receive back ${vueNumberFormat(form.input - (form.input * 0.005))} ${form.lpTokenName} LP tokens.`"
         type="info"
         show-icon
         :closable="false"
