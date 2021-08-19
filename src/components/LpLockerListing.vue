@@ -15,8 +15,8 @@
           </el-col>
           <el-col :span="12">
             <div class="grid-content" style="text-align: right;">
-              <!-- <el-button @click="$router.push({name: 'farm-create'})" type="primary" round style="font-weight: bold;"><i class="fas fa-plus" style="margin-right: 6px;"></i> Create a Farm</el-button>
-              <el-divider direction="vertical"></el-divider> -->
+              <el-button @click="showCreateDialog" type="primary" round style="font-weight: bold;"><i class="fas fa-lock-alt" style="margin-right: 6px;"></i> Lock LP Tokens</el-button>
+              <el-divider direction="vertical"></el-divider>
               <NavWallet />
             </div>
           </el-col>
@@ -80,6 +80,8 @@
           </el-col>
         </el-row>
 
+        <LpLockerCreateDialog ref="createDialog" />
+
       </el-main>
 
   </div>
@@ -90,12 +92,14 @@ import _ from 'lodash';
 import { mapState, mapActions } from 'vuex'
 import NavWallet from './NavWallet.vue';
 import LpLockerListingRow from './LpLockerListingRow.vue';
+import LpLockerCreateDialog from './LpLockerCreateDialog.vue';
 
 export default {
   name: 'LpLockerListing',
   components: {
     NavWallet,
-    LpLockerListingRow
+    LpLockerListingRow,
+    LpLockerCreateDialog
   },
   data() {
     return {
@@ -122,6 +126,10 @@ export default {
 
     refresh() {
       this.fetchAllLpLocks();
+    },
+
+    showCreateDialog() {
+      this.$refs.createDialog.showDialog();
     }
 
   }

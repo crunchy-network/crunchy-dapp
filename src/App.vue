@@ -254,12 +254,12 @@ i.fa-icon-right {
     padding: 30px !important;
     padding-top: 0px !important;
 }
-.stake-dialog input {
+.lock-dialog input, .stake-dialog input {
     border-radius: 12px;
     border-width: 2px;
     padding: 20px !important;
 }
-.stake-dialog .el-input__suffix {
+.stake-dialog .el-input__suffix, .lock-dialog .el-input__suffix {
     line-height: 44px;
     padding-right: 12px;
 }
@@ -269,6 +269,16 @@ i.fa-icon-right {
 .stake-dialog .el-form-item__error {
     right: 14px;
     left: auto;
+}
+.lock-dialog .el-date-editor.el-input, .lock-dialog .el-date-editor.el-input__inner {
+    width: 100% !important;
+}
+.lock-dialog .el-alert {
+    border-radius: 12px;
+    font-size: 12px;
+}
+.lock-dialog .el-alert__title {
+    font-size: 12px !important;
 }
 .el-dialog__headerbtn {
     border: 1px solid #EBEEF5 !important;

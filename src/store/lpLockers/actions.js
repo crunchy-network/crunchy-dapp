@@ -2,6 +2,8 @@ import tzkt from './../../utils/tzkt'
 import teztools from './../../utils/teztools'
 import coingecko from './../../utils/coingecko'
 import ipfs from './../../utils/ipfs'
+import farmUtils from './../../utils/farm'
+import { getContract, getBatch } from './../../utils/tezos'
 import merge from 'deepmerge'
 import { BigNumber } from 'bignumber.js'
 
@@ -13,7 +15,7 @@ export default {
     })
   },
 
-  async updateLpCurrentPrices() {
+  async updateLpCurrentPrices({ commit }) {
     return teztools.getPricefeed().then(feed => {
       let currentPrices = {};
       for (const token of feed.contracts) {
@@ -21,7 +23,8 @@ export default {
         currentPrices[`${token.tokenAddress}_${tokenId}`] = token.currentPrice;
       }
 
-      return { priceFeed: feed.contracts, currentPrices };
+      commit('updatePriceFeed', feed.contracts);
+      commit('updateCurrentPrices', currentPrices);
     });
   },
 
@@ -34,7 +37,7 @@ export default {
 
   async fetchAllLpLocks({ state, commit, dispatch }) {
     dispatch('updateLpXtzUsdVwap');
-    const { priceFeed } = await dispatch('updateLpCurrentPrices');
+    await dispatch('updateLpCurrentPrices');
     const lockStorage = await dispatch('updateLpLockStorage');
 
     if (!state.loading && Object.keys(state.data).length === 0) {
@@ -49,7 +52,7 @@ export default {
           }
         );
 
-        let tokenMeta = teztools.findTokenInPriceFeed(l.token, priceFeed);
+        let tokenMeta = teztools.findTokenInPriceFeed(l.token, state.priceFeed);
         if (tokenMeta) {
           tokenMeta.thumbnailUri = ipfs.transformUri(tokenMeta.thumbnailUri);
 
@@ -101,7 +104,106 @@ export default {
       commit('updateLpLocksData', locks);
       commit('updateLpLocksLoading', false);
     }
+  },
 
+  async getLpBalance({ rootState }, tokenAddress) {
+    return tzkt.getContractBigMapKeys(
+      tokenAddress,
+      farmUtils.getTokenLedgerKey(tokenAddress),
+      { key: rootState.wallet.pkh, active: "true" }
+    ).then(tokenLedger => {
+      let tokenBal = BigNumber(0);
+      if (tokenLedger.data.length) {
+        if (typeof tokenLedger.data[0].value === 'object') {
+          tokenBal = BigNumber(tokenLedger.data[0].value.balance);
+        } else {
+          tokenBal = BigNumber(tokenLedger.data[0].value);
+        }
+        if (tokenAddress === "KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo") {
+          tokenBal = tokenBal.idiv(1);
+        } else {
+          tokenBal = tokenBal.div(BigNumber(10).pow(6));
+        }
+      }
+      console.log("tokenBal.toNumber", tokenBal.toNumber());
+      return tokenBal.toNumber();
+    });
+  },
+
+  async createLpLock({ state, rootState }, params) {
+    const locker = await getContract(state.contract);
+    const crunch = await getContract(state.crunchAddress);
+    const lpToken = await getContract(params.lpToken.address);
+
+    let amount = BigNumber(params.amount).times(BigNumber(10).pow(6)).idiv(1).toNumber();
+    if (params.lpToken.address === "KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo") {
+      amount = BigNumber(params.amount).idiv(1).toNumber();
+    }
+
+    const batch = await getBatch()
+      .withContractCall(
+        crunch.methods.update_operators([
+          {
+            add_operator: {
+              owner: rootState.wallet.pkh,
+              operator: state.contract,
+              token_id: 0
+            }
+          }
+        ])
+      )
+      .withContractCall(
+        params.lpToken.tokenType === "fa2" ? lpToken.methods.update_operators([
+          {
+            add_operator: {
+              owner: rootState.wallet.pkh,
+              operator: state.contract,
+              token_id: params.lpToken.tokenId
+            }
+          }
+        ]) : lpToken.methods.approve(state.contract, amount)
+      )
+      .withContractCall(
+        locker.methods.lock(
+    
+          // tokenAddress, tokenId, (fa1 | fa2), unit
+          params.lpToken.address, params.lpToken.tokenId, params.lpToken.tokenType, "unit",
+          
+          // amount to lock
+          amount,
+          
+          // lockEndTime
+          params.lockEndTime,
+          
+          // serviceFeeId
+          params.serviceFeeId
+        )
+      )
+      .withContractCall(
+        params.lpToken.tokenType === "fa2" ? lpToken.methods.update_operators([
+          {
+            remove_operator: {
+              owner: rootState.wallet.pkh,
+              operator: state.contract,
+              token_id: params.lpToken.tokenId
+            }
+          }
+        ]) : lpToken.methods.approve(state.contract, 0)
+      )
+      .withContractCall(
+        crunch.methods.update_operators([
+          {
+            remove_operator: {
+              owner: rootState.wallet.pkh,
+              operator: state.contract,
+              token_id: 0
+            }
+          }
+        ])
+      );
+
+    const tx = await batch.send();
+    return tx.confirmation();
   }
 
 }
