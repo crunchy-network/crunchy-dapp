@@ -35,6 +35,17 @@ export default {
       });
   },
 
+  updateLpLocksTotalTvlTez({ commit, state }) {
+    let total = 0;
+    for (const id in state.data) {
+      const tvl = Number(state.data[id].tvlTez);
+      if (!Number.isNaN(tvl)) {
+        total += Number(tvl);
+      }
+    }
+    commit('updateLpLocksTotalTvlTez', total);
+  },
+
   async fetchAllLpLocks({ state, commit, dispatch }) {
     dispatch('updateLpXtzUsdVwap');
     await dispatch('updateLpCurrentPrices');
@@ -66,8 +77,8 @@ export default {
         if (!tokenMeta || !Object.prototype.hasOwnProperty.call(tokenMeta, 'qptTokenSupply')) {
           const poolK = await tzkt.getContractStorage(l.token.address);
           tokenMeta = {
-            tezPool: BigNumber(poolK.data.storage.tez_pool).div(BigNumber(10).pow(6)),
-            qptTokenSupply: BigNumber(poolK.data.storage.total_supply).div(BigNumber(10).pow(6))
+            tezPool: BigNumber(poolK.data.storage.tez_pool).div(BigNumber(10).pow(6)).toNumber(),
+            qptTokenSupply: BigNumber(poolK.data.storage.total_supply).div(BigNumber(10).pow(6)).toNumber()
           };
         }
 
@@ -103,6 +114,8 @@ export default {
 
       commit('updateLpLocksData', locks);
       commit('updateLpLocksLoading', false);
+
+      dispatch('updateLpLocksTotalTvlTez');
     }
   },
 

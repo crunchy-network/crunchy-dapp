@@ -20,6 +20,10 @@ export default {
 
   updatePriceFeed (state, feed) {
     state.priceFeed = feed;
+  },
+
+  updateLpLocksTotalTvlTez (state, total) {
+    state.totalTvlTez = total;
   }
 
 }
