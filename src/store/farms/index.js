@@ -16,7 +16,8 @@ export default {
     currentPrices: {},
     storage: {
       farms: [],
-      userRecords: []
+      userRecords: [],
+      vaults: {}
     },
     usdVwap: 0,
     crunchTez: 0,

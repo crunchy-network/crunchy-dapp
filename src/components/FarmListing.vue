@@ -35,10 +35,11 @@
                 <div class="grid-content" style="height: 100%;">
                   <el-card v-loading="farms.loading" class="box-card" shadow="never" style="height: 100%; background: #f4f4f4;">
                     <el-avatar shape="circle" icon="fas fa-farm" :size="48" style="background: #1EC37F; font-size: 24px;"></el-avatar>
+                    <el-avatar shape="circle" icon="fas fa-user-cowboy" :size="48" style="font-size: 24px; float: right;"></el-avatar>
                     <div style="font-size: 24px; font-weight: bold; margin-top: 14px; margin-bottom: 8px;">
-                      {{ totalFarms.toFixed(0) }}
+                      {{ totalFarms.toFixed(0) }} <span style="float: right;">{{ vueNumberFormat(farms.storage.vaults.activeKeys, {prefix: '', decimal: '.', thousand: ',', precision: 0}) }}</span>
                     </div>
-                    <h2 style="color: #191B1F; opacity: 0.4; font-size: 14px; margin-bottom: 0px;">Active Farms</h2>
+                    <h2 style="color: #191B1F; opacity: 0.4; font-size: 14px; margin-bottom: 0px;">Active Farms <span style="float: right;">Farmers</span></h2>
                   </el-card>
                 </div>
               </el-col>

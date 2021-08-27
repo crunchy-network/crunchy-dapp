@@ -73,6 +73,13 @@ export default {
       });
   },
 
+  async updateVaultStorage({ commit, state }) {
+    return tzkt.getContractBigMap(state.contract, "vaults")
+      .then(resp => {
+        commit('updateVaultStorage', resp.data);
+      });
+  },
+
   updateTotalTvlTez({ commit, state }) {
     let total = 0;
     for (const farmId in state.data) {
@@ -90,8 +97,11 @@ export default {
     if (!state.loading && Object.keys(state.data).length === 0) {
       commit('updateFarmsLoading', true);
 
-      await dispatch('updateCurrentPrices');
-      await dispatch('updateFarmStorage');
+      await Promise.allSettled([
+        dispatch('updateCurrentPrices'),
+        dispatch('updateFarmStorage'),
+        dispatch('updateVaultStorage')
+      ]);
 
       let farms = {};
       for (const x of state.storage.farms) {

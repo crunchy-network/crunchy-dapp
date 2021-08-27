@@ -10,6 +10,10 @@ export default {
     return makeReqest(`/v1/bigmaps/${id}/keys`)
   },
 
+  async getContractBigMap (address, name, params = {}) {
+    return makeReqest(`/v1/contracts/${address}/bigmaps/${name}`, params)
+  },
+
   async getContractBigMapKeys (address, name, params = {}) {
     return makeReqest(`/v1/contracts/${address}/bigmaps/${name}/keys`, params)
   },

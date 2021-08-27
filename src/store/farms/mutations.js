@@ -72,6 +72,10 @@ export default {
 
   updateFarmUserRecordStorage (state, data) {
     state.storage.userRecords = data;
+  },
+
+  updateVaultStorage (state, data) {
+    state.storage.vaults = data;
   }
 
 }
