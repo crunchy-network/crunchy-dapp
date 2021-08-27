@@ -162,6 +162,36 @@ export default {
       badges.partner = true;
     }
 
+    // Teztopia (UNO)
+    if (farm.owner === "tz1VPZyh4ZHjDDpgvznqQQXUCLcV7g91WGMz") {
+      badges.verified = true;
+    }
+
+    // tezonians
+    if (farm.owner === "tz1UvkN6NDmGtkBB84svr5MRWsqQxMmM5chq") {
+      badges.verified = true;
+    }
+
+    // XTZ/RCKT
+    if (farm.poolToken.address === "KT1B7NqoQQkALYPS9fdxrcjGMQST6Wv4yy3h") {
+      badges.lpLocked = true;
+    }
+
+    // XTZ/UNO
+    if (farm.poolToken.address === "KT1Cq3pyv6QEXugsAC2iyXr7ecFqN7fJVTnA") {
+      badges.lpLocked = true;
+    }
+
+    // XTZ/GOT
+    if (farm.poolToken.address === "KT1JyPE1BWdYoRGBvvKhEPbcVRd3C9NCCwQC") {
+      badges.lpLocked = true;
+    }
+
+    // XTZ/TDAO
+    if (farm.poolToken.address === "KT1X6dAh8fwQMkWC9yh4yuvkJaS5NjqY4NvW") {
+      badges.lpLocked = true;
+    }
+
     return badges;
   },
 
