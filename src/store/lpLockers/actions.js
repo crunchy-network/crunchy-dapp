@@ -48,11 +48,13 @@ export default {
 
   async fetchAllLpLocks({ state, commit, dispatch }) {
     dispatch('updateLpXtzUsdVwap');
-    await dispatch('updateLpCurrentPrices');
-    const lockStorage = await dispatch('updateLpLockStorage');
 
     if (!state.loading && Object.keys(state.data).length === 0) {
       commit('updateLpLocksLoading', true);
+
+      await dispatch('updateLpCurrentPrices');
+      const lockStorage = await dispatch('updateLpLockStorage');
+
       let locks = {};
       for (const x of lockStorage) {
         let l = merge({ id: x.key, ...x.value },
