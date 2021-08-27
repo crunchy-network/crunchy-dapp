@@ -192,6 +192,11 @@ export default {
       badges.lpLocked = true;
     }
 
+    // XTZ/XI
+    if (farm.poolToken.address === "KT1PmYoCF5FkiL6GxZfgWZSV4W7R7HU6Xnnd") {
+      badges.lpLocked = true;
+    }
+
     return badges;
   },
 
