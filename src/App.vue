@@ -328,4 +328,7 @@ i.fa-icon-right {
 .el-input__suffix {
     right: 14px !important;
 }
+.lp-locker-progress .el-progress__text {
+    font-size: 10px !important;
+}
 </style>
