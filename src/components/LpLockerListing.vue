@@ -80,11 +80,12 @@
                 </div>
               </el-col>
               <el-col :span="8">
-                <div class="grid-content" style="height: 100%;">
+                <div class="grid-content lp-locker-progress" style="height: 100%;">
                   <el-card v-loading="lpLockers.loading" class="box-card" shadow="never" style="height: 100%;">
                     <el-avatar shape="circle" :size="48" style="background: #555CFF;">
                       <img src="./../assets/svg-icons/lock.svg" style="width: 24px; height: 24px; padding: 12px;">
                     </el-avatar>
+                    <el-progress :percentage="totalTvlTezPct" type="circle" :width="48" :stroke-width="8" color="#555CFF" style="float: right;"></el-progress>
                     <div style="font-size: 24px; font-weight: bold; margin-top: 14px; margin-bottom: 8px;">
                       {{ vueNumberFormat(lpLockers.totalTvlTez) }} ꜩ
                     </div>
@@ -220,13 +221,17 @@ export default {
     },
 
     totalTokensLockedPct: function () {
-      return ((this.totalTokensLocked / this.totalTokens) * 100).toFixed(0);
+      return ((this.totalTokensLocked / this.totalTokens) * 100).toFixed(1);
     },
 
     totalLiquidityTez: function () {
       return Object.values(this.lpLockers.data).reduce((prev, current) => {
         return prev.plus(BigNumber(current.totalLiquidityTez))
       }, BigNumber(0)).toNumber();
+    },
+
+    totalTvlTezPct: function () {
+      return ((this.lpLockers.totalTvlTez / this.totalLiquidityTez) * 100).toFixed(1);
     }
   },
   created() {
