@@ -86,11 +86,13 @@ export default {
 
   async fetchAllFarms({ commit, state, dispatch }) {
     dispatch('updateXtzUsdVwap');
-    await dispatch('updateCurrentPrices');
-    await dispatch('updateFarmStorage');
 
     if (!state.loading && Object.keys(state.data).length === 0) {
       commit('updateFarmsLoading', true);
+
+      await dispatch('updateCurrentPrices');
+      await dispatch('updateFarmStorage');
+
       let farms = {};
       for (const x of state.storage.farms) {
         if (x.key == "13") continue; // bad catz
