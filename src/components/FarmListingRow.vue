@@ -38,6 +38,22 @@
                           </el-tooltip>
                           XTZ/{{ farm.poolToken.symbol }}
                         </el-col>
+
+                        <el-col v-else-if="farm.poolToken.isPlentyLp" :span="4" style="font-weight: bold;">
+                          <el-tooltip content="PlentySwap" placement="top" effect="light">
+                            <img src="https://raw.githubusercontent.com/Plenty-DeFi/Plenty-Logo/main/Plenty%20Liquidity%20Provider%20Token.png" style="position: absolute; left: 8px; top: 22px; width: 18px; height: 18px" />
+                          </el-tooltip>
+                          <el-avatar :src="farm.poolToken.token1.thumbnailUri" fit="cover" shape="circle" :size="40" style="position: relative; border: 4px solid #fff; vertical-align: middle;"></el-avatar>
+                          <el-tooltip placement="top" effect="light">
+                            <div slot="content">
+                              <div style="color: #1EC37F; text-align: center; font-weight: bold; margin-bottom: 8px; text-transform: uppercase;">Total Staked</div>
+                              <div style="text-align: center;">{{ vueNumberFormat(farm.poolBalance) }} {{ farm.poolToken.token1.symbol }}/{{ farm.poolToken.token2.symbol }}</div>
+                            </div>
+                            <el-avatar :src="farm.poolToken.token2.thumbnailUri" fit="cover" shape="circle" :size="40" style="position: relative; border: 4px solid #fff; vertical-align: middle; margin-left: -18px; margin-right: 14px;"></el-avatar>
+                          </el-tooltip>
+                          {{ farm.poolToken.token1.symbol }}/{{ farm.poolToken.token2.symbol }}
+                        </el-col>
+
                         <el-col v-else :span="4" style="font-weight: bold;">
                           <el-tooltip v-if="farm.errant" content="Farm Error" placement="top" effect="light">
                             <i class="fas fa-exclamation-triangle" style="position: absolute; left: 10px; top: 22px; color: #F64947; font-size: 18px;"></i>
@@ -128,6 +144,7 @@
                           <el-col :span="8" v-if="wallet.connected" style="padding: 10px 20px; border-right: 1px solid #EBEEF5;">
                             <div style="margin-bottom: 8px;">
                               <strong v-if="farm.poolToken.isQuipuLp || farm.poolToken.isLbLp" style="color: #757679; font-size: 14px;">LP STAKED</strong>
+                              <strong v-if="farm.poolToken.isPlentyLp" style="color: #757679; font-size: 14px;">PLP STAKED</strong>
                               <strong v-else style="color: #757679; font-size: 14px;">{{ farm.poolToken.symbol }} STAKED</strong>
                             </div>
                             <el-row type="flex" align="middle" justify="space-between">
@@ -150,10 +167,11 @@
                             </el-row>
                             <div style="margin-top: 16px;">
                               <el-link v-if="farm.poolToken.isLbLp" style="color: #555CFF; font-weight: bold;" href="https://tzkt.io/KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5/dex" target="_blank">Get XTZ/{{ farm.poolToken.symbol }} LP <i class="far fa-external-link fa-icon-right"></i></el-link>
+                              <el-link v-if="farm.poolToken.isPlentyLp" style="color: #555CFF; font-weight: bold;" :href="`https://www.plentydefi.com/liquidity/add?tokenA=${farm.poolToken.token1.symbol}&tokenB=${farm.poolToken.token2.symbol}`" target="_blank">Get {{ farm.poolToken.token1.symbol }}/{{ farm.poolToken.token2.symbol }} PLP <i class="far fa-external-link fa-icon-right"></i></el-link>
                               <el-link v-if="farm.poolToken.isQuipuLp && isFa1(farm.poolToken)" style="color: #555CFF; font-weight: bold;" :href="`https://quipuswap.com/invest/add-liquidity/${farm.poolToken.realTokenAddress}`" target="_blank">Get XTZ/{{ farm.poolToken.symbol }} LP <i class="far fa-external-link fa-icon-right"></i></el-link>
                               <el-link v-if="farm.poolToken.isQuipuLp && isFa2(farm.poolToken)" style="color: #555CFF; font-weight: bold;" :href="`https://quipuswap.com/invest/add-liquidity/${farm.poolToken.realTokenAddress}_${farm.poolToken.realTokenId}`" target="_blank">Get XTZ/{{ farm.poolToken.symbol }} LP <i class="far fa-external-link fa-icon-right"></i></el-link>
-                              <el-link v-if="farm.poolToken.isQuipuLp === false && farm.poolToken.isLbLp === false && isFa1(farm.poolToken)" style="color: #555CFF; font-weight: bold;" :href="`https://quipuswap.com/swap?from=tez&to=${farm.poolToken.address}`" target="_blank">Buy {{ farm.poolToken.symbol }} <i class="far fa-external-link fa-icon-right"></i></el-link>
-                              <el-link v-if="farm.poolToken.isQuipuLp === false && farm.poolToken.isLbLp === false && isFa2(farm.poolToken)" style="color: #555CFF; font-weight: bold;" :href="`https://quipuswap.com/swap?from=tez&to=${farm.poolToken.address}_${farm.poolToken.tokenId}`" target="_blank">Buy {{ farm.poolToken.symbol }} <i class="far fa-external-link fa-icon-right"></i></el-link>
+                              <el-link v-if="farm.poolToken.isQuipuLp === false && farm.poolToken.isLbLp === false && farm.poolToken.isPlentyLp === false && isFa1(farm.poolToken)" style="color: #555CFF; font-weight: bold;" :href="`https://quipuswap.com/swap?from=tez&to=${farm.poolToken.address}`" target="_blank">Buy {{ farm.poolToken.symbol }} <i class="far fa-external-link fa-icon-right"></i></el-link>
+                              <el-link v-if="farm.poolToken.isQuipuLp === false && farm.poolToken.isLbLp === false && farm.poolToken.isPlentyLp === false && isFa2(farm.poolToken)" style="color: #555CFF; font-weight: bold;" :href="`https://quipuswap.com/swap?from=tez&to=${farm.poolToken.address}_${farm.poolToken.tokenId}`" target="_blank">Buy {{ farm.poolToken.symbol }} <i class="far fa-external-link fa-icon-right"></i></el-link>
                             </div>
                           </el-col>
                           <el-col :span="8" v-if="wallet.connected === false" style="padding: 10px 20px; border-right: 1px solid #EBEEF5;">

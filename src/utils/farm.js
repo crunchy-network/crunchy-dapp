@@ -17,6 +17,11 @@ export default {
       return 'balances';
     }
 
+    // Plenty kUSD/USDtz
+    if (address === "KT1HEdGi7rq1zgZ68dhAtKMZYKeD3EM5vYdf") {
+      return 'balances';
+    }
+
     // LB
     if (address === "KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo") {
       return 'tokens';
@@ -36,6 +41,9 @@ export default {
 
     if (meta.tokenAddress === "KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV") {
       meta.thumbnailUri = "https://kolibri-data.s3.amazonaws.com/logo.png";
+      meta.decimals = 18;
+      meta.symbol = 'kUSD';
+      meta.name = "Kolibri USD";
     }
 
     if (meta.tokenAddress === "KT1KEsRsSMvSkgZ9CwYy5fPA1e4j3TEpuiKK") {
@@ -70,6 +78,14 @@ export default {
       meta.symbol = "tzBTC";
       meta.name = "tzBTC";
       meta.thumbnailUri = "https://tzbtc.io/wp-content/uploads/2020/03/tzbtc_logo_single.svg";
+    }
+
+    // USDtz
+    if (meta.tokenAddress === "KT1LN4LPSqTMS7Sd2CJw4bbDGRkMv2t68Fy9") {
+      meta.symbol = "USDtz";
+      meta.name = "USDtz";
+      meta.thumbnailUri = "https://quipuswap.com/tokens/usdtz.png";
+      meta.decimals = 6;
     }
 
     return meta;

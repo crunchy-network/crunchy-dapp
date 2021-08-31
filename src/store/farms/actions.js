@@ -213,6 +213,7 @@ export default {
               ...poolTokenMeta,
               isQuipuLp: isQuipuLp,
               isLbLp: false,
+              isPlentyLp: false,
               decimals: 6,
               tokenId: farm.poolToken.tokenId,
               realTokenAddress: poolTokenMeta.tokenAddress,
@@ -228,7 +229,7 @@ export default {
           });
         } else {
           commit('updateFarm', merge(farm, {
-            poolToken: { isQuipuLp: isQuipuLp, isLbLp: false, ...poolTokenMeta, address: poolTokenMeta.tokenAddress },
+            poolToken: { isQuipuLp: isQuipuLp, isLbLp: false, isPlentyLp: false, ...poolTokenMeta, address: poolTokenMeta.tokenAddress },
             rewardToken: { ...rewardTokenMeta, address: rewardTokenMeta.tokenAddress },
             rewardSupply: BigNumber(farm.rewardSupply).div(10 ** rewardTokenMeta.decimals).toNumber(),
             loading: true
@@ -269,6 +270,7 @@ export default {
                 ...poolTokenMeta,
                 isQuipuLp: false,
                 isLbLp: true,
+                isPlentyLp: false,
                 decimals: 0,
                 address: state.lbLpAddress,
                 tokenId: 0,
@@ -290,7 +292,10 @@ export default {
             .then(resp => {
               const isQuipuLp = Object.prototype.hasOwnProperty.call(resp.data, 'dex_lambdas') &&
                 Object.prototype.hasOwnProperty.call(resp.data, 'token_lambdas');
-            
+
+              const isPlentyLp = Object.prototype.hasOwnProperty.call(resp.data, 'exchangeAddress') &&
+                Object.prototype.hasOwnProperty.call(resp.data, 'securityCheck');
+
               if (isQuipuLp) {
                 Promise.all([
                   getTokenMetadata(resp.data.storage.token_address, resp.data.storage.token_id || 0)
@@ -304,6 +309,7 @@ export default {
                         ...values[0],
                         isQuipuLp: isQuipuLp,
                         isLbLp: false,
+                        isPlentyLp: false,
                         decimals: 6,
                         realTokenAddress: resp.data.storage.token_address,
                         realTokenId: resp.data.storage.token_id
@@ -317,6 +323,58 @@ export default {
                       commit('updateFarmLoading', { farmId, loading: false });
                     });
                   });
+
+              // Plenty AMM
+              } else if (isPlentyLp) {
+                  tzkt.getContractStorage(resp.data.exchangeAddress)
+                    .then(exchangeResp => {
+                      Promise.all([
+                        getTokenMetadata(exchangeResp.data.token1Address, exchangeResp.data.token1Id)
+                          .catch(() => { return {
+                            tokenAddress: exchangeResp.data.token1Address,
+                            tokenId: exchangeResp.data.token1Id,
+                            thumbnailUri: "https://static.thenounproject.com/png/796573-200.png"
+                          }}),
+                        getTokenMetadata(exchangeResp.data.token2Address, exchangeResp.data.token2Id)
+                          .catch(() => { return {
+                            tokenAddress: exchangeResp.data.token2Address,
+                            tokenId: exchangeResp.data.token2Id,
+                            thumbnailUri: "https://static.thenounproject.com/png/796573-200.png"
+                          }}),
+                        getTokenMetadata(farm.rewardToken.address, farm.rewardToken.tokenId)
+                      ]).then(values => {
+                        const token1Meta = farmUtils.overrideMetadata(values[0]);
+                        const token2Meta = farmUtils.overrideMetadata(values[1]);
+                        const rewardMeta = farmUtils.overrideMetadata(values[2]);
+
+                        token1Meta.thumbnailUri = ipfs.transformUri(token1Meta.thumbnailUri);
+                        token2Meta.thumbnailUri = ipfs.transformUri(token2Meta.thumbnailUri);
+                        rewardMeta.thumbnailUri = ipfs.transformUri(rewardMeta.thumbnailUri);
+
+                        commit('updateFarm', merge(farm, {
+                          poolToken: {
+                            ...resp,
+                            isQuipuLp: false,
+                            isLbLp: false,
+                            isPlentyLp: true,
+                            decimals: 12,
+                            name: token1Meta.name + '/' + token2Meta.name,
+                            symbol: token1Meta.symbol + '/' + token2Meta.symbol,
+                            token1: token1Meta,
+                            token2: token2Meta
+                          },
+                          rewardToken: rewardMeta,
+                          rewardSupply: BigNumber(farm.rewardSupply).div(BigNumber(10).pow(rewardMeta.decimals)).toNumber(),
+                          loading: true
+                        }));
+                        dispatch('softUpdateFarm', farmId).then(() => {
+                          dispatch('updateFarmRewardsEarned', farmId);
+                          commit('updateFarmLoading', { farmId, loading: false });
+                        });
+                      });
+                    });
+
+              // single token staking
               } else {
                 Promise.all([
                   getTokenMetadata(farm.poolToken.address, farm.poolToken.tokenId),
@@ -325,7 +383,7 @@ export default {
                     values[0].thumbnailUri = ipfs.transformUri(values[0].thumbnailUri);
                     values[1].thumbnailUri = ipfs.transformUri(values[1].thumbnailUri);
                     commit('updateFarm', merge(farm, {
-                      poolToken: { isQuipuLp: isQuipuLp, isLbLp: false, ...values[0] },
+                      poolToken: { isQuipuLp: false, isLbLp: false, isPlentyLp: false, ...values[0] },
                       rewardToken: values[1],
                       rewardSupply: BigNumber(farm.rewardSupply).div(10 ** values[1].decimals).toNumber(),
                       loading: true
