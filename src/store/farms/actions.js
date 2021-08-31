@@ -353,7 +353,6 @@ export default {
 
                         commit('updateFarm', merge(farm, {
                           poolToken: {
-                            ...resp,
                             isQuipuLp: false,
                             isLbLp: false,
                             isPlentyLp: true,
@@ -361,7 +360,10 @@ export default {
                             name: token1Meta.name + '/' + token2Meta.name,
                             symbol: token1Meta.symbol + '/' + token2Meta.symbol,
                             token1: token1Meta,
-                            token2: token2Meta
+                            token1Pool: exchangeResp.data.token1_pool,
+                            token2: token2Meta,
+                            token2Pool: exchangeResp.data.token2_pool,
+                            totalSupply: exchangeResp.data.totalSupply
                           },
                           rewardToken: rewardMeta,
                           rewardSupply: BigNumber(farm.rewardSupply).div(BigNumber(10).pow(rewardMeta.decimals)).toNumber(),
@@ -418,7 +420,7 @@ export default {
           .times(poolTokenStorage.tezPool)
           .div(poolTokenStorage.qptTokenSupply)
           .times(2).toNumber();
-          console.log("tvlTez", tvlTez);
+
       } else if (farm.poolToken.isQuipuLp) {
         let poolTokenStorage = teztools.findTokenInPriceFeed(farm.poolToken, state.priceFeed);
         if (!poolTokenStorage || !Object.prototype.hasOwnProperty.call(poolTokenStorage, 'qptTokenSupply')) {
@@ -434,6 +436,21 @@ export default {
           .times(poolTokenStorage.tezPool)
           .div(poolTokenStorage.qptTokenSupply)
           .times(2).toNumber();
+
+      } else if (farm.poolToken.isPlentyLp) {
+        if (
+          Object.prototype.hasOwnProperty.call(state.currentPrices, `${farm.poolToken.token1.tokenAddress}_${farm.poolToken.token1.tokenId}`) &&
+          Object.prototype.hasOwnProperty.call(state.currentPrices, `${farm.poolToken.token2.tokenAddress}_${farm.poolToken.token2.tokenId}`)
+        ) {
+          const token1Price = state.currentPrices[`${farm.poolToken.token1.tokenAddress}_${farm.poolToken.token1.tokenId}`];
+          const token2Price = state.currentPrices[`${farm.poolToken.token2.tokenAddress}_${farm.poolToken.token2.tokenId}`];
+
+          const token1TotalXtz = BigNumber(farm.poolToken.token1Pool).div(BigNumber(10).pow(farm.poolToken.token1.decimals)).times(token1Price);
+          const token2TotalXtz = BigNumber(farm.poolToken.token2Pool).div(BigNumber(10).pow(farm.poolToken.token2.decimals)).times(token2Price);
+          const xtzPerLp = token1TotalXtz.plus(token2TotalXtz).div(farm.poolToken.totalSupply);
+          tvlTez = BigNumber(farmStorage.poolBalance).times(xtzPerLp).toNumber();
+        }
+
       } else {
         if (Object.prototype.hasOwnProperty.call(state.currentPrices, `${farm.poolToken.address}_${farm.poolToken.tokenId}`)) {
           tvlTez = farmStorage.poolBalance * state.currentPrices[`${farm.poolToken.address}_${farm.poolToken.tokenId}`] / (10 ** farm.poolToken.decimals);
@@ -487,6 +504,7 @@ export default {
           .times(poolTokenStorage.tezPool)
           .div(poolTokenStorage.qptTokenSupply)
           .times(2).toNumber();
+
       } else if (farm.poolToken.isQuipuLp) {
         let poolTokenStorage = teztools.findTokenInPriceFeed(farm.poolToken, state.priceFeed);
         if (!poolTokenStorage || !Object.prototype.hasOwnProperty.call(poolTokenStorage, 'qptTokenSupply')) {
@@ -502,6 +520,21 @@ export default {
           .times(poolTokenStorage.tezPool)
           .div(poolTokenStorage.qptTokenSupply)
           .times(2).toNumber();
+
+      } else if (farm.poolToken.isPlentyLp) {
+        if (
+          Object.prototype.hasOwnProperty.call(state.currentPrices, `${farm.poolToken.token1.tokenAddress}_${farm.poolToken.token1.tokenId}`) &&
+          Object.prototype.hasOwnProperty.call(state.currentPrices, `${farm.poolToken.token2.tokenAddress}_${farm.poolToken.token2.tokenId}`)
+        ) {
+          const token1Price = state.currentPrices[`${farm.poolToken.token1.tokenAddress}_${farm.poolToken.token1.tokenId}`];
+          const token2Price = state.currentPrices[`${farm.poolToken.token2.tokenAddress}_${farm.poolToken.token2.tokenId}`];
+
+          const token1TotalXtz = BigNumber(farm.poolToken.token1Pool).div(BigNumber(10).pow(farm.poolToken.token1.decimals)).times(token1Price);
+          const token2TotalXtz = BigNumber(farm.poolToken.token2Pool).div(BigNumber(10).pow(farm.poolToken.token2.decimals)).times(token2Price);
+          const xtzPerLp = token1TotalXtz.plus(token2TotalXtz).div(farm.poolToken.totalSupply);
+          tvlTez = BigNumber(farmStorage.poolBalance).times(xtzPerLp).toNumber();
+        }
+
       } else {
         if (Object.prototype.hasOwnProperty.call(state.currentPrices, `${farm.poolToken.address}_${farm.poolToken.tokenId}`)) {
           tvlTez = farmStorage.poolBalance * state.currentPrices[`${farm.poolToken.address}_${farm.poolToken.tokenId}`] / (10 ** farm.poolToken.decimals);
