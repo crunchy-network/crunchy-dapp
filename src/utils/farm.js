@@ -213,6 +213,12 @@ export default {
       badges.lpLocked = true;
     }
 
+    // Youves
+    if (farm.owner === "tz1P9on812SP1uG5cP9PQmPHrdKgaJgfakSc") {
+      badges.verified = true;
+      badges.partner = true;
+    }
+
     return badges;
   },
 
