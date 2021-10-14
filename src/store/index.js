@@ -5,6 +5,7 @@ import lpLockers from './lpLockers'
 import farms from './farms'
 import burnRecord from './burnRecord'
 import wtz from './wtz'
+import rckt from './rckt'
 
 Vue.use(Vuex)
 
@@ -14,6 +15,7 @@ export default new Vuex.Store({
     farms: farms,
     burnRecord: burnRecord,
     wallet: wallet,
-    wtz: wtz
+    wtz: wtz,
+    rckt: rckt
   }
 })

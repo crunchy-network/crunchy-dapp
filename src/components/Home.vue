@@ -18,7 +18,10 @@
         <el-divider></el-divider>
       </el-header>
       <el-main style="margin-top: 90px;">
-        <el-row :gutter="20" type="flex">
+
+        <RocketSwap />
+
+        <el-row :gutter="20" type="flex" style="margin-top: 35px;">
           <el-col :span="16">
             <div class="grid-content" style="height: 100%;">
               <el-card class="box-card" shadow="never" style="height: 100%;">
@@ -77,13 +80,15 @@
 <script>
 import NavWallet from './NavWallet.vue';
 import DaasCard from './DaasCard.vue';
+import RocketSwap from './RocketSwap.vue';
 import { mapState } from 'vuex'
 
 export default {
   name: 'Home',
   components: {
     NavWallet,
-    DaasCard
+    DaasCard,
+    RocketSwap
   },
   computed: {
     ...mapState([
