@@ -421,7 +421,7 @@ export default {
     ]),
 
     orderedFarms: function () {
-      return _.orderBy(this.farms.data, 'tvlTez', 'desc');
+      return _.orderBy(this.farms.data, ['ended', 'badges.core', 'tvlTez'], ['asc', 'desc', 'desc']);
     },
 
     totalFarms: function () {
