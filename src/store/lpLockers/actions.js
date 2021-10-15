@@ -67,7 +67,9 @@ export default {
 
         let tokenMeta = teztools.findTokenInPriceFeed(l.token, state.priceFeed);
         if (tokenMeta) {
-          tokenMeta.thumbnailUri = ipfs.transformUri(tokenMeta.thumbnailUri);
+          if (tokenMeta.thumbnailUri) {
+            tokenMeta.thumbnailUri = ipfs.transformUri(tokenMeta.thumbnailUri);
+          }
 
         // fallback to rpc storage
         } else {

@@ -204,8 +204,13 @@ export default {
         poolTokenMeta = farmUtils.overrideMetadata(poolTokenMeta);
         rewardTokenMeta = farmUtils.overrideMetadata(rewardTokenMeta);
 
-        poolTokenMeta.thumbnailUri = ipfs.transformUri(poolTokenMeta.thumbnailUri);
-        rewardTokenMeta.thumbnailUri = ipfs.transformUri(rewardTokenMeta.thumbnailUri);
+        if (Object.prototype.hasOwnProperty.call(poolTokenMeta, 'thumbnailUri')) {
+          poolTokenMeta.thumbnailUri = ipfs.transformUri(poolTokenMeta.thumbnailUri);
+        }
+
+        if (Object.prototype.hasOwnProperty.call(rewardTokenMeta, 'thumbnailUri')) {
+          rewardTokenMeta.thumbnailUri = ipfs.transformUri(rewardTokenMeta.thumbnailUri);
+        }
 
         if (isQuipuLp) {
           commit('updateFarm', merge(farm, {
@@ -261,8 +266,13 @@ export default {
             poolTokenMeta = farmUtils.overrideMetadata(poolTokenMeta);
             rewardTokenMeta = farmUtils.overrideMetadata(rewardTokenMeta);
 
-            poolTokenMeta.thumbnailUri = ipfs.transformUri(poolTokenMeta.thumbnailUri);
-            rewardTokenMeta.thumbnailUri = ipfs.transformUri(rewardTokenMeta.thumbnailUri);
+            if (Object.prototype.hasOwnProperty.call(poolTokenMeta, 'thumbnailUri')) {
+              poolTokenMeta.thumbnailUri = ipfs.transformUri(poolTokenMeta.thumbnailUri);
+            }
+
+            if (Object.prototype.hasOwnProperty.call(rewardTokenMeta, 'thumbnailUri')) {
+              rewardTokenMeta.thumbnailUri = ipfs.transformUri(rewardTokenMeta.thumbnailUri);
+            }
 
             commit('updateFarm', merge(farm, {
               poolToken: {
@@ -835,11 +845,11 @@ export default {
       typeMatches = false;
 
       if (!farm.flashFarm) {
-        if (state.filters.includes('farm') && farm.tvlTez >= 10000) {
+        if (state.filters.includes('farm') && (farm.tvlTez >= 10000 || farm.badges.core === true)) {
           typeMatches = true;
         }
 
-        if (state.filters.includes('garden') && farm.tvlTez < 10000) {
+        if (state.filters.includes('garden') && (farm.tvlTez < 10000 || farm.badges.core === true)) {
           typeMatches = true;
         }
       }

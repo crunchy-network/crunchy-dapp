@@ -5,6 +5,7 @@ import LpLockerListing from './../components/LpLockerListing.vue'
 import FarmListing from './../components/FarmListing.vue'
 import FarmCreate from './../components/FarmCreate.vue'
 import FirePit from './../components/FirePit.vue'
+import WtzMain from './../components/WtzMain.vue'
 // import Bakery from './../components/Bakery.vue'
 
 Vue.use(VueRouter);
@@ -12,6 +13,8 @@ Vue.use(VueRouter);
 const routes = [
   { name: 'home', path: '/', component: Home },
   // { path: '/', redirect: '/farms' },
+
+  { name: 'wtz', path: '/wtz', component: WtzMain },
 
   { name: 'deep-freezer-listing', path: '/freezers', component: LpLockerListing },
 

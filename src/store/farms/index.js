@@ -17,7 +17,9 @@ export default {
     storage: {
       farms: [],
       userRecords: [],
-      vaults: {}
+      vaults: {
+        activeKeys: 0
+      }
     },
     usdVwap: 0,
     crunchTez: 0,
