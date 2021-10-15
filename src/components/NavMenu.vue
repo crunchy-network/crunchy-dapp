@@ -16,6 +16,12 @@
       <span>Deep Freezers</span>
     </router-link>
 
+    <router-link tag="li" class="el-menu-item" :to="{ name: 'ifo' }" active-class="is-active">
+      <i class="fad fa-tractor"></i>
+      <span>IFO</span>
+      <i class="fa-2x fas fa-square" aria-hidden="true"></i>
+    </router-link>
+
     <router-link tag="li" class="el-menu-item" :to="{ name: 'farm-listing' }" active-class="is-active">
       <i class="fak fa-crunchy-farm"></i>
       <span>Farms</span>
