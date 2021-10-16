@@ -61,6 +61,20 @@ body,
   height: 100%;
 }
 
+/* FONT WEIGHTS */
+h1, h2, h3 {
+    font-weight: 600 !important;
+}
+.grid-content h2 + span {
+    font-weight: 300 !important;
+}
+.el-form--label-top .el-form-item__label {
+    font-weight: 500 !important;
+}
+
+
+
+
 .el-footer {
   text-align: center;
   margin-top: 100px;

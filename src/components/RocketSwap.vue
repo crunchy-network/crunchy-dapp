@@ -37,8 +37,8 @@
                     </el-form-item>
                     <div class="current-balance" style="border-radius: 22px; background: #FFEECC; padding: 12px 20px;">
                       <el-row type="flex" align="middle" justify="space-between">
-                        <el-col :span="8" style="color: #8C8477; font-size: 12px; font-weight: bold;">BALANCE</el-col>
-                        <el-col :span="16" style="font-size: 12px; color: #303133; font-weight: bold; text-align: right;">{{ vueNumberFormat(rckt.balanceRckt) }} RCKT</el-col>
+                        <el-col :span="8" style="color: #8C8477; font-size: 12px;">BALANCE</el-col>
+                        <el-col :span="16" style="font-size: 12px; color: #303133; font-weight: 600; text-align: right;">{{ vueNumberFormat(rckt.balanceRckt) }} RCKT</el-col>
                       </el-row>
                     </div>
                   </el-col>
@@ -92,8 +92,8 @@
                     </el-form-item>
                     <div class="current-balance" style="border-radius: 22px; background: #FFEECC; padding: 12px 20px;">
                       <el-row type="flex" align="middle" justify="space-between">
-                        <el-col :span="8" style="color: #8C8477; font-size: 12px; font-weight: bold;">BALANCE</el-col>
-                        <el-col :span="16" style="font-size: 12px; color: #303133; font-weight: bold; text-align: right;">{{ vueNumberFormat(rckt.balanceRkdao) }} rkDAO</el-col>
+                        <el-col :span="8" style="color: #8C8477; font-size: 12px;">BALANCE</el-col>
+                        <el-col :span="16" style="font-size: 12px; color: #303133; font-weight: 600; text-align: right;">{{ vueNumberFormat(rckt.balanceRkdao) }} rkDAO</el-col>
                       </el-row>
                     </div>
                   </el-col>
