@@ -2,22 +2,22 @@
   <el-menu :router="true">
 
     <router-link tag="li" class="el-menu-item" :to="{ name: 'home' }" exact active-class="is-active">
-      <i class="fad fa-home-alt"></i>
+      <i class="fak fa-crunchy-home"></i>
       <span>Home</span>
     </router-link>
 
     <router-link tag="li" class="el-menu-item" :to="{ name: 'wtz' }" active-class="is-active">
-      <i class="fad fa-coins"></i>
+      <i class="fak fa-crunchy-tez"></i>
       <span>WTZ</span>
     </router-link>
 
     <router-link tag="li" class="el-menu-item" :to="{ name: 'deep-freezer-listing' }" active-class="is-active">
-      <i class="fad fa-refrigerator"></i>
+      <i class="fak fa-crunchy-meat-locker"></i>
       <span>Deep Freezers</span>
     </router-link>
 
     <router-link tag="li" class="el-menu-item" :to="{ name: 'farm-listing' }" active-class="is-active">
-      <i class="fad fa-tractor"></i>
+      <i class="fak fa-crunchy-farm"></i>
       <span>Farms</span>
     </router-link>
 
@@ -27,7 +27,7 @@
     </router-link> -->
 
     <router-link tag="li" class="el-menu-item" :to="{ name: 'fire-pit' }" active-class="is-active">
-      <i class="fad fa-fire-alt"></i>
+      <i class="fas fa-fire-alt"></i>
       <span>Fire Pit</span>
     </router-link>
 
@@ -67,11 +67,11 @@ export default {
     line-height: 50px !important;
     margin-bottom: 5px;
 
-    i.fad {
+    i.fas, i.fak {
         margin-right: 14px;
         width: 24px;
         text-align: center;
-        font-size: 18px;
+        font-size: 24px;
         vertical-align: middle;
     }
 

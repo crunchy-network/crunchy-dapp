@@ -16,7 +16,7 @@
           </el-col>
           <el-col :span="12">
             <div class="grid-content" style="text-align: right;">
-              <el-button @click="$router.push({name: 'farm-create'})" type="primary" round style="font-weight: bold;"><i class="fas fa-plus" style="margin-right: 6px;"></i> Create a Farm</el-button>
+              <el-button @click="$router.push({name: 'farm-create'})" type="primary" round style="font-weight: bold;"><i class="fak fa-crunchy-farm-add" style="margin-right: 6px;"></i> Create a Farm</el-button>
               <el-divider direction="vertical"></el-divider>
               <NavWallet />
             </div>

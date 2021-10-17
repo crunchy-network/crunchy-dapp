@@ -101,7 +101,7 @@
 
                   </el-col>
                   <el-col :span="4" style="text-align: center;">
-                    <el-button @click="switchMode" :class="mode" type="info" icon="far fa-exchange" style="border-radius: 10px; width: 40px; padding: 11px;"></el-button>
+                    <el-button @click="switchMode" :class="mode" type="info" icon="fak fa-crunchy-swap" style="border-radius: 10px; width: 40px; padding: 11px;"></el-button>
                   </el-col>
                   <el-col :span="10" style="position: relative;">
                     <h3 style="margin: 0; margin-bottom: 8px;">You Get</h3>

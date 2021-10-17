@@ -227,7 +227,7 @@
                                   trigger="hover"
                                   content="LP Liquidity Locked"
                                   popper-class="farm-verified">
-                                  <el-avatar slot="reference" icon="far fa-lock-alt" style="color: #1EC37F; background: #e9f9f2; border-color: #a5e7cc; border: 1px solid #a5e7cc; margin-right: 14px;"></el-avatar>
+                                  <el-avatar slot="reference" icon="fak fa-crunchy-locked" style="color: #1EC37F; background: #e9f9f2; border-color: #a5e7cc; border: 1px solid #a5e7cc; margin-right: 14px;"></el-avatar>
                                 </el-popover>
                               </el-col>
                               <!-- <el-col :span="6" style="text-align: right;">
