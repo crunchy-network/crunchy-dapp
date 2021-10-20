@@ -1,7 +1,18 @@
 <template>
-  <div style="display: inline-block;">
-    <el-button type="success" round plain v-if="wallet.connected === false" @click="connectWallet"><i class="fad fa-wallet"></i> Connect Wallet</el-button>
-    <el-avatar src="https://www.tinygraphs.com/labs/isogrids/hexa/crunchy.network?theme=base&numcolors=4&size=220&fmt=svg" v-if="wallet.connected === false" style="vertical-align: middle; margin-left: 12px; background: #fff;"></el-avatar>
+  <div style="display: inline-block">
+    <el-button
+      type="success"
+      round
+      plain
+      v-if="wallet.connected === false"
+      @click="connectWallet"
+      ><i class="fad fa-wallet"></i> Connect Wallet</el-button
+    >
+    <el-avatar
+      src="https://www.tinygraphs.com/labs/isogrids/hexa/crunchy.network?theme=base&numcolors=4&size=220&fmt=svg"
+      v-if="wallet.connected === false"
+      style="vertical-align: middle; margin-left: 12px; background: #fff"
+    ></el-avatar>
     <el-popover
       v-if="wallet.connected === true"
       placement="bottom-end"
@@ -10,45 +21,57 @@
       trigger="hover"
     >
       <div>
-        <strong>{{`${(wallet.balance.toNumber() / 1000000).toFixed(3)} ꜩ`}}</strong>
+        <strong>{{
+          `${(wallet.balance.toNumber() / 1000000).toFixed(3)} ꜩ`
+        }}</strong>
         <el-divider></el-divider>
         <el-row type="flex" align="middle" justify="space-between">
           <el-col :span="12">
-            <el-button type="text" size="mini" round plain @click="changeWallet">Switch Account</el-button>
+            <el-button type="text" size="mini" round plain @click="changeWallet"
+              >Switch Account</el-button
+            >
           </el-col>
-          <el-col :span="12" style="text-align: right;">
-            <el-button type="danger" size="mini" round plain @click="disconnectWallet">Disconnect</el-button>
+          <el-col :span="12" style="text-align: right">
+            <el-button
+              type="danger"
+              size="mini"
+              round
+              plain
+              @click="disconnectWallet"
+              >Disconnect</el-button
+            >
           </el-col>
         </el-row>
       </div>
       <el-button slot="reference" type="primary" round plain>
-        {{ $async(wallet.pkhDomain, `tez-domain-${wallet.pkh}`) || `${wallet.pkh.substr(0, 6)}...${wallet.pkh.substr(-6)}` }} <i class="fad fa-angle-down fa-icon-right"></i>
+        {{
+          $async(wallet.pkhDomain, `tez-domain-${wallet.pkh}`) ||
+          `${wallet.pkh.substr(0, 6)}...${wallet.pkh.substr(-6)}`
+        }}
+        <i class="fad fa-angle-down fa-icon-right"></i>
       </el-button>
     </el-popover>
-    <el-avatar :src="`https://www.tinygraphs.com/labs/isogrids/hexa/${wallet.pkh}?theme=heatwave&numcolors=4&size=220&fmt=svg`" v-if="wallet.connected === true" style="vertical-align: middle; margin-left: 12px; background: #fff;"></el-avatar>
+    <el-avatar
+      :src="`https://www.tinygraphs.com/labs/isogrids/hexa/${wallet.pkh}?theme=heatwave&numcolors=4&size=220&fmt=svg`"
+      v-if="wallet.connected === true"
+      style="vertical-align: middle; margin-left: 12px; background: #fff"
+    ></el-avatar>
   </div>
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions } from "vuex";
 
 export default {
-  name: 'NavWallet',
+  name: "NavWallet",
   computed: {
-    ...mapState([
-      'wallet'
-    ])
+    ...mapState(["wallet"]),
   },
   methods: {
-    ...mapActions([
-      'connectWallet',
-      'disconnectWallet',
-      'changeWallet'
-    ])
-  }
-}
+    ...mapActions(["connectWallet", "disconnectWallet", "changeWallet"]),
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-
 </style>
