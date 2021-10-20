@@ -1,16 +1,16 @@
-import { BigNumber } from 'bignumber.js';
-import actions from './actions'
-import mutations from './mutations'
+import { BigNumber } from "bignumber.js";
+import actions from "./actions";
+import mutations from "./mutations";
 
 export default {
   state: {
     connected: false,
     network: process.env.VUE_APP_TEZOS_NETWORK,
-    pkh: '',
-    pkhDomain: Promise.resolve(''),
+    pkh: "Hello",
+    pkhDomain: Promise.resolve(""),
     balance: new BigNumber(0),
-    updateBalanceInt: null
+    updateBalanceInt: null,
   },
   actions,
-  mutations
-}
+  mutations,
+};
