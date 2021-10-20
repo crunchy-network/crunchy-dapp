@@ -1,5 +1,5 @@
 <template>
-                <el-row :data-farm-id="farm.id" style="padding-bottom: 14px; font-size: 14px; font-weight: bold;" type="flex" align="top">
+                <el-row :data-farm-id="farm.id" style="padding-bottom: 14px; font-size: 14px; font-weight: 600;" type="flex" align="top">
                   <el-col :span="24">
                     <div
                       style="border: 1px solid #EBEEF5; border-radius: 14px;"
@@ -108,32 +108,32 @@
                         <el-row type="flex" align="top" style="padding: 10px 20px;">
                           <el-col v-if="wallet.connected" :span="8" style="padding: 10px 20px; border-right: 1px solid #EBEEF5;">
                             <div style="margin-bottom: 8px;">
-                              <strong style="color: #757679; font-size: 14px;">EST. {{ farm.rewardToken.symbol }} EARNED</strong>
+                              <strong style="color: #757679; font-size: 14px; font-weight: 600;">EST. {{ farm.rewardToken.symbol }} EARNED</strong>
                             </div>
                             <el-row v-if="farm.errant" type="flex" align="middle" justify="space-between">
-                              <el-col :span="24" style="font-weight: bold; color: #F64947;">
+                              <el-col :span="24" style="font-weight: 600; color: #F64947;">
                                 An issue has been detected with the rewards of this farm. Please unstake all tokens.
                               </el-col>
                             </el-row>
                             <el-row v-else-if="farm.depositAmount > 0" type="flex" align="middle" justify="space-between">
-                              <el-col :span="10" style="font-weight: bold;">{{ vueNumberFormat(farm.rewardsEarned) }}</el-col>
+                              <el-col :span="10" style="font-weight: 600;">{{ vueNumberFormat(farm.rewardsEarned) }}</el-col>
                               <el-col :span="10">
                                 <el-button type="primary" :disabled="farm.started === false" style="border-radius: 10px; font-weight: bold; width: 100%" @click="harvestFarm(farm.id)">Harvest</el-button>
                               </el-col>
                             </el-row>
                             <el-row v-else-if="farm.ended" type="flex" align="middle" justify="space-between">
-                              <el-col :span="10" style="font-weight: bold;">-</el-col>
+                              <el-col :span="10" style="font-weight: 600;">-</el-col>
                               <el-col :span="10">
                                 <el-button type="primary" :disabled="true" style="border-radius: 10px; font-weight: bold; width: 100%">Harvest</el-button>
                               </el-col>
                             </el-row>
                             <el-row v-else type="flex" align="middle" justify="space-between">
                               <el-col :span="24">
-                                <el-button type="success" style="border-radius: 10px; font-weight: bold; width: 100%;" @click="$emit('request-stake-farm', farm.id)">Stake Now to Earn Rewards</el-button>
+                                <el-button type="success" style="border-radius: 10px; font-weight: 600; width: 100%;" @click="$emit('request-stake-farm', farm.id)">Stake Now to Earn Rewards</el-button>
                               </el-col>
                             </el-row>
                             <div style="margin-top: 16px;">
-                              <el-link style="color: #555CFF; font-weight: bold;" :href="`https://better-call.dev/${wallet.network}/${farm.rewardToken.address}`" target="_blank">View {{ farm.rewardToken.symbol }} Contract <i class="far fa-external-link fa-icon-right"></i></el-link>
+                              <el-link style="color: #555CFF; font-weight: 600;" :href="`https://better-call.dev/${wallet.network}/${farm.rewardToken.address}`" target="_blank">View {{ farm.rewardToken.symbol }} Contract <i class="far fa-external-link fa-icon-right"></i></el-link>
                             </div>
                           </el-col>
                           <el-col v-if="wallet.connected === false" :span="8" style="padding: 10px 20px; border-right: 1px solid #EBEEF5;">
@@ -143,12 +143,12 @@
                           </el-col>
                           <el-col :span="8" v-if="wallet.connected" style="padding: 10px 20px; border-right: 1px solid #EBEEF5;">
                             <div style="margin-bottom: 8px;">
-                              <strong v-if="farm.poolToken.isQuipuLp || farm.poolToken.isLbLp" style="color: #757679; font-size: 14px;">LP STAKED</strong>
-                              <strong v-if="farm.poolToken.isPlentyLp" style="color: #757679; font-size: 14px;">PLP STAKED</strong>
-                              <strong v-else style="color: #757679; font-size: 14px;">{{ farm.poolToken.symbol }} STAKED</strong>
+                              <strong v-if="farm.poolToken.isQuipuLp || farm.poolToken.isLbLp" style="color: #757679; font-size: 14px; font-weight: 600;">LP STAKED</strong>
+                              <strong v-else-if="farm.poolToken.isPlentyLp" style="color: #757679; font-size: 14px; font-weight: 600;">PLP STAKED</strong>
+                              <strong v-else style="color: #757679; font-size: 14px; font-weight: 600;">{{ farm.poolToken.symbol }} STAKED</strong>
                             </div>
                             <el-row type="flex" align="middle" justify="space-between">
-                              <el-col v-if="farm.depositAmount > 0" :span="14" style="font-weight: bold;">
+                              <el-col v-if="farm.depositAmount > 0" :span="14" style="font-weight: 600;">
                                 {{ vueNumberFormat(farm.depositAmount) }}
                                 <el-popover
                                   placement="bottom"
@@ -159,37 +159,37 @@
                                   <el-tag slot="reference" type="primary" size="medium" effect="plain" style="margin-left: 14px; cursor: help;">{{ vueNumberFormat(farm.depositAmount / farm.poolBalance * 100, {prefix: '', decimal: '.', thousand: ',', precision: 2}) }}%</el-tag>
                                 </el-popover>
                               </el-col>
-                              <el-col v-else :span="14" style="font-weight: bold;">-</el-col>
+                              <el-col v-else :span="14" style="font-weight: 600;">-</el-col>
                               <el-col :span="10" style="text-align: right;">
                                 <el-button type="info" plain style="border-radius: 10px; padding: 12px 14px;" :disabled="farm.ended || farm.errant" @click="$emit('request-stake-farm', farm.id)"><i class="fas fa-plus"></i></el-button>
                                 <el-button type="info" plain style="border-radius: 10px; padding: 12px 14px;" :disabled="farm.depositAmount <= 0" @click="$emit('request-unstake-farm', farm.id)"><i class="fas fa-minus"></i></el-button>
                               </el-col>
                             </el-row>
                             <div style="margin-top: 16px;">
-                              <el-link v-if="farm.poolToken.isLbLp" style="color: #555CFF; font-weight: bold;" href="https://tzkt.io/KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5/dex" target="_blank">Get XTZ/{{ farm.poolToken.symbol }} LP <i class="far fa-external-link fa-icon-right"></i></el-link>
-                              <el-link v-if="farm.poolToken.isPlentyLp" style="color: #555CFF; font-weight: bold;" :href="`https://www.plentydefi.com/liquidity/add?tokenA=${farm.poolToken.token1.symbol}&tokenB=${farm.poolToken.token2.symbol}`" target="_blank">Get {{ farm.poolToken.token1.symbol }}/{{ farm.poolToken.token2.symbol }} PLP <i class="far fa-external-link fa-icon-right"></i></el-link>
-                              <el-link v-if="farm.poolToken.isQuipuLp && isFa1(farm.poolToken)" style="color: #555CFF; font-weight: bold;" :href="`https://quipuswap.com/invest/add-liquidity/${farm.poolToken.realTokenAddress}`" target="_blank">Get XTZ/{{ farm.poolToken.symbol }} LP <i class="far fa-external-link fa-icon-right"></i></el-link>
-                              <el-link v-if="farm.poolToken.isQuipuLp && isFa2(farm.poolToken)" style="color: #555CFF; font-weight: bold;" :href="`https://quipuswap.com/invest/add-liquidity/${farm.poolToken.realTokenAddress}_${farm.poolToken.realTokenId}`" target="_blank">Get XTZ/{{ farm.poolToken.symbol }} LP <i class="far fa-external-link fa-icon-right"></i></el-link>
-                              <el-link v-if="farm.poolToken.isQuipuLp === false && farm.poolToken.isLbLp === false && farm.poolToken.isPlentyLp === false && isFa1(farm.poolToken)" style="color: #555CFF; font-weight: bold;" :href="`https://quipuswap.com/swap?from=tez&to=${farm.poolToken.address}`" target="_blank">Buy {{ farm.poolToken.symbol }} <i class="far fa-external-link fa-icon-right"></i></el-link>
-                              <el-link v-if="farm.poolToken.isQuipuLp === false && farm.poolToken.isLbLp === false && farm.poolToken.isPlentyLp === false && isFa2(farm.poolToken)" style="color: #555CFF; font-weight: bold;" :href="`https://quipuswap.com/swap?from=tez&to=${farm.poolToken.address}_${farm.poolToken.tokenId}`" target="_blank">Buy {{ farm.poolToken.symbol }} <i class="far fa-external-link fa-icon-right"></i></el-link>
+                              <el-link v-if="farm.poolToken.isLbLp" style="color: #555CFF; font-weight: 600;" href="https://tzkt.io/KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5/dex" target="_blank">Get XTZ/{{ farm.poolToken.symbol }} LP <i class="far fa-external-link fa-icon-right"></i></el-link>
+                              <el-link v-if="farm.poolToken.isPlentyLp" style="color: #555CFF; font-weight: 600;" :href="`https://www.plentydefi.com/liquidity/add?tokenA=${farm.poolToken.token1.symbol}&tokenB=${farm.poolToken.token2.symbol}`" target="_blank">Get {{ farm.poolToken.token1.symbol }}/{{ farm.poolToken.token2.symbol }} PLP <i class="far fa-external-link fa-icon-right"></i></el-link>
+                              <el-link v-if="farm.poolToken.isQuipuLp && isFa1(farm.poolToken)" style="color: #555CFF; font-weight: 600;" :href="`https://quipuswap.com/invest/add-liquidity/${farm.poolToken.realTokenAddress}`" target="_blank">Get XTZ/{{ farm.poolToken.symbol }} LP <i class="far fa-external-link fa-icon-right"></i></el-link>
+                              <el-link v-if="farm.poolToken.isQuipuLp && isFa2(farm.poolToken)" style="color: #555CFF; font-weight: 600;" :href="`https://quipuswap.com/invest/add-liquidity/${farm.poolToken.realTokenAddress}_${farm.poolToken.realTokenId}`" target="_blank">Get XTZ/{{ farm.poolToken.symbol }} LP <i class="far fa-external-link fa-icon-right"></i></el-link>
+                              <el-link v-if="farm.poolToken.isQuipuLp === false && farm.poolToken.isLbLp === false && farm.poolToken.isPlentyLp === false && isFa1(farm.poolToken)" style="color: #555CFF; font-weight: 600;" :href="`https://quipuswap.com/swap?from=tez&to=${farm.poolToken.address}`" target="_blank">Buy {{ farm.poolToken.symbol }} <i class="far fa-external-link fa-icon-right"></i></el-link>
+                              <el-link v-if="farm.poolToken.isQuipuLp === false && farm.poolToken.isLbLp === false && farm.poolToken.isPlentyLp === false && isFa2(farm.poolToken)" style="color: #555CFF; font-weight: 600;" :href="`https://quipuswap.com/swap?from=tez&to=${farm.poolToken.address}_${farm.poolToken.tokenId}`" target="_blank">Buy {{ farm.poolToken.symbol }} <i class="far fa-external-link fa-icon-right"></i></el-link>
                             </div>
                           </el-col>
                           <el-col :span="8" v-if="wallet.connected === false" style="padding: 10px 20px; border-right: 1px solid #EBEEF5;">
-                            <div style="margin-bottom: 8px;"><strong style="color: #757679; font-size: 14px;">START FARMING</strong></div>
+                            <div style="margin-bottom: 8px;"><strong style="color: #757679; font-size: 14px; font-weight: 600;">START FARMING</strong></div>
                             <el-button type="success" @click="connectWallet" style="border-radius: 10px; font-weight: bold; width: 100%;">Connect Wallet</el-button>
                           </el-col>
                           <el-col :span="8" v-if="farm.errant" style="padding: 10px 20px;">
                             <div style="margin-bottom: 8px;">
-                              <strong style="color: #F64947; font-size: 14px; text-transform: uppercase;">Farming Error Detected</strong>
+                              <strong style="color: #F64947; font-size: 14px; font-weight: 600; text-transform: uppercase;">Farming Error Detected</strong>
                             </div>
                           </el-col>
                           <el-col :span="8" v-if="farm.errant === false" style="padding: 10px 20px;">
                             <div style="margin-bottom: 8px;">
-                              <strong style="color: #1EC37F; font-size: 14px; text-transform: uppercase;" v-if="!farm.started">
+                              <strong style="color: #1EC37F; font-size: 14px; font-weight: 600; text-transform: uppercase;" v-if="!farm.started">
                                   Farming starts {{ farm.startTime | moment("calendar") }} {{ localAbbrevTimeZone }} and lasts {{ farm.duration | humanizeDuration }}
                               </strong>
-                              <strong style="color: #757679; font-size: 14px; text-transform: uppercase;" v-if="farm.started && !farm.ended">Farming ends {{ farm.endTime | moment("dddd, MMMM Do YYYY, h:mm a") }} {{ localAbbrevTimeZone }}</strong>
-                              <strong style="color: #555CFF; font-size: 14px; text-transform: uppercase;" v-if="farm.ended">Farming complete</strong>
+                              <strong style="color: #757679; font-size: 14px; font-weight: 600; text-transform: uppercase;" v-if="farm.started && !farm.ended">Farming ends {{ farm.endTime | moment("dddd, MMMM Do YYYY, h:mm a") }} {{ localAbbrevTimeZone }}</strong>
+                              <strong style="color: #555CFF; font-size: 14px; font-weight: 600; text-transform: uppercase;" v-if="farm.ended">Farming complete</strong>
                             </div>
                             <el-row type="flex" align="middle" justify="space-between">
                               <el-col :span="18">
@@ -227,7 +227,7 @@
                                   trigger="hover"
                                   content="LP Liquidity Locked"
                                   popper-class="farm-verified">
-                                  <el-avatar slot="reference" icon="far fa-lock-alt" style="color: #1EC37F; background: #e9f9f2; border-color: #a5e7cc; border: 1px solid #a5e7cc; margin-right: 14px;"></el-avatar>
+                                  <el-avatar slot="reference" icon="fak fa-crunchy-locked" style="color: #1EC37F; background: #e9f9f2; border-color: #a5e7cc; border: 1px solid #a5e7cc; margin-right: 14px;"></el-avatar>
                                 </el-popover>
                               </el-col>
                               <!-- <el-col :span="6" style="text-align: right;">

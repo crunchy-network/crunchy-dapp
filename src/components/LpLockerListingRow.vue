@@ -1,5 +1,5 @@
 <template>
-  <el-row :data-lock-id="locker.id" style="padding-bottom: 14px; font-size: 14px; font-weight: bold;" type="flex" align="top">
+  <el-row :data-lock-id="locker.id" style="padding-bottom: 14px; font-size: 14px; font-weight: 600;" type="flex" align="top">
     <el-col :span="24">
       <div
         style="border: 1px solid #EBEEF5; border-radius: 14px;"
@@ -20,7 +20,7 @@
             <span style="margin-right: 6px" v-if="showUsd === false">{{ vueNumberFormat(locker.tvlTez) }} ꜩ</span>
             <span style="margin-right: 6px" v-if="showUsd === true">{{ vueNumberFormat(locker.tvlTez * lpLockers.usdVwap, {prefix: '$', decimal: '.', thousand: ',', precision: 2}) }}</span>
             <el-tooltip content="Total Value Locked" placement="top" effect="light">
-              <div slot="content"><span style="color: #1EC37F;">{{ vueNumberFormat(locker.percentLocked, {prefix: '', decimal: '.', thousand: ',', precision: 2}) }}% of LP Locked</span></div>
+              <div slot="content"><span style="color: #1EC37F; font-weight: 600;">{{ vueNumberFormat(locker.percentLocked, {prefix: '', decimal: '.', thousand: ',', precision: 2}) }}% of LP Locked</span></div>
               <el-progress :percentage="locker.percentLocked" :format="format" type="circle" :width="24" :stroke-width="5" color="#1EC37F" style="vertical-align: middle;"></el-progress>
             </el-tooltip>
           </el-col>
