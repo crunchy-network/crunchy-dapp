@@ -18,7 +18,8 @@
 
     
     <router-link tag="li" class="el-menu-item" :to="{ name: 'ifo' }" active-class="is-active">
-      <i class="fak fa-crunchy-farm"></i>
+      <!-- <i class="fak fa-crunchy-farm"></i> -->
+      <i class="fak fa-solid fa-tractor"></i>
       <span>IFO</span>
     </router-link>
 

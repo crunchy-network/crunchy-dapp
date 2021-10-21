@@ -4,7 +4,7 @@
     <div id="wrapper">
       <el-row :gutter="40">
         <el-col :xs="24" :md="12"
-          ><el-card class="grid-content box box-card">
+          ><el-card class="grid-content box top-box box-card">
             <div class="column-center">
               <div class="logo-wrapper">
                 <img src="./../assets/pixel.png" class="logo" />
@@ -56,7 +56,7 @@
           </el-card>
         </el-col>
         <el-col :xs="24" :md="12"
-          ><el-card class="grid-content box swap-box box-card">
+          ><el-card class="grid-content box top-box swap-box box-card">
             <div class="column-center">
               <h1 class="swap-title">Token Swap Details</h1>
               <div>
@@ -440,6 +440,10 @@ export default {
   @media all and (max-width: 996px) {
     padding: 25px 30px;
   }
+}
+
+.top-box {
+  min-height: 390px;
 }
 
 .column-center {
