@@ -4,7 +4,7 @@
     <div id="wrapper">
       <el-row :gutter="40">
         <el-col :xs="24" :md="12"
-          ><div class="grid-content box">
+          ><el-card class="grid-content box box-card">
             <div class="column-center">
               <div class="logo-wrapper">
                 <img src="./../assets/pixel.png" class="logo" />
@@ -53,10 +53,10 @@
               for the PXL token. This is just the beginning from a proven team
               with an exciting roadmap.
             </p>
-          </div>
+          </el-card>
         </el-col>
         <el-col :xs="24" :md="12"
-          ><div class="grid-content box swap-box">
+          ><el-card class="grid-content box swap-box box-card">
             <div class="column-center">
               <h1 class="swap-title">Token Swap Details</h1>
               <div>
@@ -76,7 +76,7 @@
                 successful by visitiing tzkt.io and searching your address.
               </p>
             </div>
-          </div></el-col
+          </el-card></el-col
         >
       </el-row>
       <el-row :gutter="30">
@@ -100,7 +100,10 @@
                   </div>
 
                   <div class="data-col">
-                    <p>12 days 21 hr 15 min</p>
+                    <p>
+                      {{ displayDays }} days {{ displayHours }} hr
+                      {{ displayMinutes }} min
+                    </p>
                   </div>
                 </div>
 
@@ -110,7 +113,7 @@
                   </div>
 
                   <div class="data-col">
-                    <p>$XTZ/CRUNCH LP</p>
+                    <p>$XTZ</p>
                   </div>
                 </div>
 
@@ -120,7 +123,7 @@
                   </div>
 
                   <div class="data-col">
-                    <p>$RCKT</p>
+                    <p>$PIXEL</p>
                   </div>
                 </div>
               </div>
@@ -140,7 +143,7 @@
                   </div>
 
                   <div class="data-col">
-                    <p>100 LP</p>
+                    <p>TBA</p>
                   </div>
                 </div>
 
@@ -150,7 +153,7 @@
                   </div>
 
                   <div class="data-col">
-                    <p>1%</p>
+                    <p>TBA</p>
                   </div>
                 </div>
 
@@ -160,7 +163,7 @@
                   </div>
 
                   <div class="data-col">
-                    <p>162 $RCKT</p>
+                    <p>TBA</p>
                   </div>
                 </div>
 
@@ -170,7 +173,7 @@
                   </div>
 
                   <div class="data-col">
-                    <p>1 LP</p>
+                    <p>TBA</p>
                   </div>
                 </div>
               </div>
@@ -190,7 +193,7 @@
                   </div>
 
                   <div class="data-col">
-                    <p>40,000,000 $XTZ</p>
+                    <p>TBA</p>
                   </div>
                 </div>
 
@@ -200,7 +203,7 @@
                   </div>
 
                   <div class="data-col">
-                    <p>100,000 $XTZ</p>
+                    <p>TBA</p>
                   </div>
                 </div>
 
@@ -210,12 +213,21 @@
                   </div>
 
                   <div class="data-col">
-                    <p>50,000 $XTZ</p>
+                    <p>TBA</p>
                   </div>
                 </div>
               </div>
 
-              <el-button type="primary">Farm</el-button>
+              <el-button
+                type="primary"
+                style="
+                  border-radius: 12px;
+                  font-weight: bold;
+                  padding: 12px 20px;
+                  margin-left: 0;
+                "
+                >FARM</el-button
+              >
             </div>
           </div>
         </el-col>
@@ -234,7 +246,7 @@
               </div>
 
               <div class="data-col">
-                <p>01 August 2021 10:00:00 EST</p>
+                <p>30 October 2021 10:00:00 UTC</p>
               </div>
             </div>
 
@@ -244,7 +256,7 @@
               </div>
 
               <div class="data-col">
-                <p>14 August 2021 10:00:00 EST</p>
+                <p>1 November 2021 10:00:00 UTC</p>
               </div>
             </div>
 
@@ -254,7 +266,7 @@
               </div>
 
               <div class="data-col">
-                <p>1 $RCKT = 0.005 $XTZ</p>
+                <p>TBA</p>
               </div>
             </div>
 
@@ -264,7 +276,7 @@
               </div>
 
               <div class="data-col">
-                <p>500,000 $XTZ</p>
+                <p>TBA</p>
               </div>
             </div>
 
@@ -274,7 +286,7 @@
               </div>
 
               <div class="data-col">
-                <p>100,000,000 $RCKT</p>
+                <p>15,000,000 $PIXEL</p>
               </div>
             </div>
           </div>
@@ -291,7 +303,7 @@
               </div>
 
               <div class="data-col">
-                <p>Rocket</p>
+                <p>Pixel POTUS</p>
               </div>
             </div>
 
@@ -301,7 +313,7 @@
               </div>
 
               <div class="data-col">
-                <p>RCKT</p>
+                <p>PIXEL</p>
               </div>
             </div>
 
@@ -311,7 +323,7 @@
               </div>
 
               <div class="data-col">
-                <p>125,000,000</p>
+                <p>10,500,000</p>
               </div>
             </div>
 
@@ -321,7 +333,7 @@
               </div>
 
               <div class="data-col">
-                <p>500,000,000</p>
+                <p>100,000,000</p>
               </div>
             </div>
 
@@ -343,9 +355,58 @@
 
 <script>
 import AppBar from "./AppBar.vue";
+
 export default {
   components: { AppBar },
+  data: () => ({
+    displayDays: "",
+    displayHours: "",
+    displayMinutes: "",
+  }),
   name: "IFO",
+  computed: {
+    _seconds() {
+      return 1000;
+    },
+    _minutes() {
+      return this._seconds * 60;
+    },
+    _hours() {
+      return this._minutes * 60;
+    },
+    _days() {
+      return this._hours * 24;
+    },
+  },
+  methods: {
+    formatCount(value) {
+      return value < 10 ? "0" + value : value;
+    },
+    showTimer() {
+      const timer = setInterval(() => {
+        const startDate = new Date("30 October 2021 10:00 UTC").getTime();
+        const currentDate = new Date().getTime();
+        const dateDifference = startDate - currentDate;
+
+        if (dateDifference <= 0) {
+          clearInterval(timer);
+        }
+
+        const days = Math.floor(dateDifference / this._days);
+        const hours = Math.floor((dateDifference % days) / this._hours);
+        const minutes = Math.floor(
+          (dateDifference % this._hours) / this._minutes
+        );
+
+        this.displayDays = this.formatCount(days);
+        this.displayHours = this.formatCount(hours);
+        this.displayMinutes = this.formatCount(minutes);
+      }, 1000);
+    },
+  },
+  mounted() {
+    this.showTimer();
+  },
 };
 </script>
 
