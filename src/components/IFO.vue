@@ -286,7 +286,7 @@
               </div>
 
               <div class="data-col">
-                <p>15,000,000 $PIXEL</p>
+                <p>5,000,000 $PXL</p>
               </div>
             </div>
           </div>
@@ -333,7 +333,7 @@
               </div>
 
               <div class="data-col">
-                <p>5,000,000</p>
+                <p>100,000,000</p>
               </div>
             </div>
 
