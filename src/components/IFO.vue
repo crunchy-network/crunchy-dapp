@@ -61,7 +61,7 @@
               <h1 class="swap-title">Token Swap Details</h1>
               <div>
                 <p>Token Swap Rate</p>
-                <p class="mid"><b>0.005 $XTZ</b></p>
+                <p class="mid"><b>TBA</b></p>
               </div>
 
               <p class="text-left swap-text">
@@ -109,7 +109,7 @@
 
                 <div class="detail-row">
                   <div class="data-col">
-                    <p>Farm:</p>
+                    <p>Farm with:</p>
                   </div>
 
                   <div class="data-col">
