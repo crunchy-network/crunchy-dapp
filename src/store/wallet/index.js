@@ -6,7 +6,7 @@ export default {
   state: {
     connected: false,
     network: process.env.VUE_APP_TEZOS_NETWORK,
-    pkh: "Hello",
+    pkh: "",
     pkhDomain: Promise.resolve(""),
     balance: new BigNumber(0),
     updateBalanceInt: null,
