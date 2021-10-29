@@ -386,17 +386,17 @@ export default {
       const timer = setInterval(() => {
         const startDate = new Date("30 October 2021 14:00 UTC").getTime();
         const currentDate = new Date().getTime();
-        const dateDifference = startDate - currentDate;
+        let dateDifference = startDate - currentDate;
 
         if (dateDifference <= 0) {
           clearInterval(timer);
         }
 
         const days = Math.floor(dateDifference / this._days);
-        const hours = Math.floor((dateDifference % days) / this._hours);
-        const minutes = Math.floor(
-          (dateDifference % this._hours) / this._minutes
-        );
+        dateDifference -= days * this._days;
+        const hours = Math.floor(dateDifference / this._hours) % 24;
+        dateDifference -= hours * this._hours;
+        const minutes = Math.floor(dateDifference / this._minutes) % 60;
 
         this.displayDays = this.formatCount(days);
         this.displayHours = this.formatCount(hours);
