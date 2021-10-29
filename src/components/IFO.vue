@@ -61,7 +61,7 @@
               <h1 class="swap-title">Token Swap Details</h1>
               <div>
                 <p>Token Swap Rate</p>
-                <p class="mid"><b>TBA</b></p>
+                <p class="mid"><b>0.004 $XTZ</b></p>
               </div>
 
               <p class="text-left swap-text">
@@ -246,7 +246,7 @@
               </div>
 
               <div class="data-col">
-                <p>30 October 2021 10:00:00 UTC</p>
+                <p>30 October 2021 14:00:00 UTC</p>
               </div>
             </div>
 
@@ -256,7 +256,7 @@
               </div>
 
               <div class="data-col">
-                <p>1 November 2021 10:00:00 UTC</p>
+                <p>1 November 2021 14:00:00 UTC</p>
               </div>
             </div>
 
@@ -266,7 +266,7 @@
               </div>
 
               <div class="data-col">
-                <p>TBA</p>
+                <p>0.004 $XTZ</p>
               </div>
             </div>
 
@@ -286,7 +286,7 @@
               </div>
 
               <div class="data-col">
-                <p>5,000,000 $PXL</p>
+                <p>6,000,000 $PXL</p>
               </div>
             </div>
           </div>
