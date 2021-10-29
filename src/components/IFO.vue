@@ -384,7 +384,7 @@ export default {
     },
     showTimer() {
       const timer = setInterval(() => {
-        const startDate = new Date("30 October 2021 10:00 UTC").getTime();
+        const startDate = new Date("30 October 2021 14:00 UTC").getTime();
         const currentDate = new Date().getTime();
         const dateDifference = startDate - currentDate;
 
