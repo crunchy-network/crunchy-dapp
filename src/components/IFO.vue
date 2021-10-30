@@ -61,7 +61,7 @@
               <h1 class="swap-title">Token Swap Details</h1>
               <div>
                 <p>Token Swap Rate</p>
-                <p class="mid"><b>0.004 $XTZ</b></p>
+                <p class="mid"><b>0.0042 $XTZ</b></p>
               </div>
 
               <p class="text-left swap-text">
@@ -218,16 +218,11 @@
                 </div>
               </div>
 
-              <el-button
-                type="primary"
-                style="
-                  border-radius: 12px;
-                  font-weight: bold;
-                  padding: 12px 20px;
-                  margin-left: 0;
-                "
-                >FARM</el-button
-              >
+              <div style="width: 100%; margin-top: 18px;">
+                <el-button v-if="wallet.connected === false" type="success" @click="connectWallet" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px;">Connect Wallet</el-button>
+                <el-button v-else type="primary" @click="showStakeDialog" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px;">FARM</el-button>
+              </div>
+
             </div>
           </div>
         </el-col>
@@ -266,7 +261,7 @@
               </div>
 
               <div class="data-col">
-                <p>0.004 $XTZ</p>
+                <p>0.0042 $XTZ</p>
               </div>
             </div>
 
@@ -350,11 +345,40 @@
         </el-col>
       </el-row>
     </div>
+
+  <el-dialog title="Commit XTZ" :visible.sync="form.visible" width="380px" class="stake-dialog">
+    <p>Commit XTZ to harvest PXL.</p>
+    <el-form :model="form" ref="form" label-position="top" hide-required-asterisk>
+      <div class="current-balance" style="border-radius: 22px; background: #FFEECC; padding: 12px 20px; margin-bottom: 18px;">
+        <el-row type="flex" align="middle" justify="space-between">
+          <el-col :span="8" style="font-size: 12px;">BALANCE</el-col>
+          <el-col :span="16" style="color: #303133; font-weight: bold; text-align: right;">{{ vueNumberFormat(wallet.balance.toNumber() / 1000000) }}</el-col>
+        </el-row>
+      </div>
+      <el-form-item
+        label="Commit"
+        prop="input"
+        :rules="[
+          { type: 'number', required: true, message: 'Enter an amount', transform: (v) => Number(v) },
+          { type: 'number', min: 0.000001, message: 'Enter a valid amount (at least 0.000001)', transform: (v) => Number(v) }
+        ]"
+        style="margin-bottom: 14px;"
+      >
+        <el-input v-model="form.input" label="Commit">
+          <span slot="suffix">XTZ</span>
+        </el-input>
+      </el-form-item>
+      <el-button type="success" size="small" round style="margin-bottom: 22px;" @click="form.input = ((wallet.balance.toNumber() / 1000000) - 0.5)">USE MAX</el-button>
+      <el-button type="primary" @click="stakeIfo" style="border-radius: 12px; font-weight: bold; width: 100%; padding: 20px; margin-left: 0;">COMMIT</el-button>
+    </el-form>
+  </el-dialog>
   </div>
+
 </template>
 
 <script>
 import AppBar from "./AppBar.vue";
+import { mapState, mapActions } from 'vuex'
 
 export default {
   components: { AppBar },
@@ -362,9 +386,16 @@ export default {
     displayDays: "",
     displayHours: "",
     displayMinutes: "",
+    form: {
+      input: "",
+      visible: false
+    },
   }),
   name: "IFO",
   computed: {
+    ...mapState([
+      'wallet'
+    ]),
     _seconds() {
       return 1000;
     },
@@ -379,6 +410,10 @@ export default {
     },
   },
   methods: {
+    ...mapActions([
+      'connectWallet'
+    ]),
+
     formatCount(value) {
       return value < 10 ? "0" + value : value;
     },
@@ -403,6 +438,15 @@ export default {
         this.displayMinutes = this.formatCount(minutes);
       }, 1000);
     },
+
+    showStakeDialog() {
+      this.form.input = "";
+      if (Object.prototype.hasOwnProperty.call(this.$refs, 'form')) {
+        this.$refs.form.resetFields();
+      }
+      this.form.visible = true;
+    }
+
   },
   mounted() {
     this.showTimer();
