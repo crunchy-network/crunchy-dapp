@@ -16,9 +16,12 @@
       <span>Deep Freezers</span>
     </router-link>
 
+    <router-link tag="li" class="el-menu-item" :to="{ name: 'pie-slicer' }" active-class="is-active">
+      <i class="fak fa-crunchy-pie"></i>
+      <span>Pie Slicer</span>
+    </router-link>
     
     <router-link tag="li" class="el-menu-item" :to="{ name: 'ifo' }" active-class="is-active">
-      <!-- <i class="fak fa-crunchy-farm"></i> -->
       <i class="fak fa-regular fa-farm"></i>
       <span>IFO</span>
     </router-link>
