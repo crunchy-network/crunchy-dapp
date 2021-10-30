@@ -61,7 +61,7 @@
               <h1 class="swap-title">Token Swap Details</h1>
               <div>
                 <p>Token Swap Rate</p>
-                <p class="mid"><b>0.0042 $XTZ</b></p>
+                <p class="mid"><b>{{ ifo.data.swapRate }} $XTZ</b></p>
               </div>
 
               <p class="text-left swap-text">
@@ -80,7 +80,7 @@
         >
       </el-row>
       <el-row :gutter="30">
-        <el-col class="tier-wrapper" :xs="24" :md="8">
+        <el-col class="tier-wrapper" :xs="24" :md="8" v-loading="ifo.loading">
           <div class="grid-content box tier-box">
             <div class="column-center">
               <h1 class="title">Initial Farm Offering</h1>
@@ -96,7 +96,8 @@
 
                 <div class="detail-row">
                   <div class="data-col">
-                    <p>Launching in:</p>
+                    <p v-if="!live">Launching in:</p>
+                    <p v-if="live">Ends in:</p>
                   </div>
 
                   <div class="data-col">
@@ -143,7 +144,7 @@
                   </div>
 
                   <div class="data-col">
-                    <p>TBA</p>
+                    <p>{{ vueNumberFormat(ifo.data.userRecord.committed) }} XTZ</p>
                   </div>
                 </div>
 
@@ -153,7 +154,7 @@
                   </div>
 
                   <div class="data-col">
-                    <p>TBA</p>
+                    <p>{{ vueNumberFormat(ifo.data.userRecord.committedPercent, {prefix: '', decimal: '.', thousand: ',', precision: 2}) }}%</p>
                   </div>
                 </div>
 
@@ -163,7 +164,7 @@
                   </div>
 
                   <div class="data-col">
-                    <p>TBA</p>
+                    <p>{{ vueNumberFormat(ifo.data.userRecord.projectedHarvest) }} PXL</p>
                   </div>
                 </div>
 
@@ -173,7 +174,7 @@
                   </div>
 
                   <div class="data-col">
-                    <p>TBA</p>
+                    <p>{{ vueNumberFormat(ifo.data.userRecord.projectedFee) }} XTZ</p>
                   </div>
                 </div>
               </div>
@@ -193,7 +194,7 @@
                   </div>
 
                   <div class="data-col">
-                    <p>TBA</p>
+                    <p>{{ vueNumberFormat(ifo.data.totalRaised) }} XTZ</p>
                   </div>
                 </div>
 
@@ -203,7 +204,7 @@
                   </div>
 
                   <div class="data-col">
-                    <p>TBA</p>
+                    <p>{{ vueNumberFormat(ifo.data.raisingGoal) }} XTZ</p>
                   </div>
                 </div>
 
@@ -220,7 +221,7 @@
 
               <div style="width: 100%; margin-top: 18px;">
                 <el-button v-if="wallet.connected === false" type="success" @click="connectWallet" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px;">Connect Wallet</el-button>
-                <el-button v-else type="primary" @click="showStakeDialog" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px;">FARM</el-button>
+                <el-button v-else :disabled="!live" type="primary" @click="showStakeDialog" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px;">FARM</el-button>
               </div>
 
             </div>
@@ -261,7 +262,7 @@
               </div>
 
               <div class="data-col">
-                <p>0.0042 $XTZ</p>
+                <p>{{ ifo.data.swapRate }} $XTZ</p>
               </div>
             </div>
 
@@ -271,7 +272,7 @@
               </div>
 
               <div class="data-col">
-                <p>TBA</p>
+                <p>{{ vueNumberFormat(ifo.data.totalRaised) }} XTZ</p>
               </div>
             </div>
 
@@ -281,7 +282,7 @@
               </div>
 
               <div class="data-col">
-                <p>6,000,000 $PXL</p>
+                <p>{{ vueNumberFormat(ifo.data.offeringSupply, {prefix: '', decimal: '.', thousand: ',', precision: 0}) }} $PXL</p>
               </div>
             </div>
           </div>
@@ -369,7 +370,7 @@
         </el-input>
       </el-form-item>
       <el-button type="success" size="small" round style="margin-bottom: 22px;" @click="form.input = ((wallet.balance.toNumber() / 1000000) - 0.5)">USE MAX</el-button>
-      <el-button type="primary" @click="stakeIfo" style="border-radius: 12px; font-weight: bold; width: 100%; padding: 20px; margin-left: 0;">COMMIT</el-button>
+      <el-button type="primary" @click="form.visible = false; stakeIfo(form.input)" style="border-radius: 12px; font-weight: bold; width: 100%; padding: 20px; margin-left: 0;">COMMIT</el-button>
     </el-form>
   </el-dialog>
   </div>
@@ -390,11 +391,14 @@ export default {
       input: "",
       visible: false
     },
+    live: false,
+    ended: false
   }),
   name: "IFO",
   computed: {
     ...mapState([
-      'wallet'
+      'wallet',
+      'ifo'
     ]),
     _seconds() {
       return 1000;
@@ -409,21 +413,38 @@ export default {
       return this._hours * 24;
     },
   },
+  created() {
+    this.refresh();
+  },
   methods: {
     ...mapActions([
-      'connectWallet'
+      'connectWallet',
+      'loadIfoData',
+      'stakeIfo'
     ]),
+
+    refresh() {
+      this.loadIfoData();
+    },
 
     formatCount(value) {
       return value < 10 ? "0" + value : value;
     },
     showTimer() {
+      const vm = this;
+      // vm.live = true;
+      vm.live = (new Date().getTime() > new Date("30 October 2021 14:00 UTC").getTime());
       const timer = setInterval(() => {
-        const startDate = new Date("30 October 2021 14:00 UTC").getTime();
+        let startDate = new Date("30 October 2021 14:00 UTC").getTime();
+        if (vm.live) {
+          startDate = new Date("01 November 2021 14:00 UTC").getTime();
+        }
+
         const currentDate = new Date().getTime();
         let dateDifference = startDate - currentDate;
 
-        if (dateDifference <= 0) {
+        if (vm.live && dateDifference <= 0) {
+          vm.ended = true;
           clearInterval(timer);
         }
 
