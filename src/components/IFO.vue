@@ -4,7 +4,7 @@
     <div id="wrapper">
       <el-row :gutter="40">
         <el-col :xs="24" :md="12"
-          ><el-card class="grid-content box top-box box-card">
+          ><el-card class="grid-content box top-box box-card" shadow="never">
             <div class="column-center">
               <div class="logo-wrapper">
                 <img src="./../assets/pixel.png" class="logo" />
