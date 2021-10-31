@@ -61,7 +61,7 @@
                       >
                         <el-input v-model="form.inputXtz" label="XTZ Input" @input="form.outputWtz = calcXtzToWtz(form.inputXtz)">
                           <span slot="suffix">
-                            <el-button type="text" size="small" style="color: #1EC37F; font-weight: bold;" @click="form.inputXtz = (wallet.balance.toNumber() / 1000000); form.outputWtz = calcXtzToWtz(form.inputXtz)">USE MAX</el-button>
+                            <el-button type="text" size="small" style="color: #1EC37F; font-weight: bold;" @click="form.inputXtz = ((wallet.balance.toNumber() / 1000000) - 0.5); form.outputWtz = calcXtzToWtz(form.inputXtz)">USE MAX</el-button>
                           </span>
                         </el-input>
                       </el-form-item>

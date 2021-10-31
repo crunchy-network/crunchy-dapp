@@ -4,7 +4,7 @@
     <div id="wrapper">
       <el-row :gutter="40">
         <el-col :xs="24" :md="12"
-          ><el-card class="grid-content box top-box box-card">
+          ><el-card class="grid-content box top-box box-card" shadow="never">
             <div class="column-center">
               <div class="logo-wrapper">
                 <img src="./../assets/pixel.png" class="logo" />
@@ -53,15 +53,20 @@
               for the PXL token. This is just the beginning from a proven team
               with an exciting roadmap.
             </p>
+
+            <div class="swap-box space-top">
+              <p>Token Swap Rate</p>
+              <p class="mid"><b>{{ ifo.data.swapRate }} $XTZ</b></p>
+            </div>
           </el-card>
         </el-col>
         <el-col :xs="24" :md="12"
-          ><el-card class="grid-content box top-box swap-box box-card">
-            <div class="column-center">
+          ><el-card class="grid-content box top-box swap-box box-card" v-loading="ifo.loading">
+            <!-- <div class="column-center">
               <h1 class="swap-title">Token Swap Details</h1>
               <div>
                 <p>Token Swap Rate</p>
-                <p class="mid"><b>0.004 $XTZ</b></p>
+                <p class="mid"><b>{{ ifo.data.swapRate }} $XTZ</b></p>
               </div>
 
               <p class="text-left swap-text">
@@ -75,13 +80,7 @@
                 Once you have participated, you can verify your transaction was
                 successful by visitiing tzkt.io and searching your address.
               </p>
-            </div>
-          </el-card></el-col
-        >
-      </el-row>
-      <el-row :gutter="30">
-        <el-col class="tier-wrapper" :xs="24" :md="8">
-          <div class="grid-content box tier-box">
+            </div> -->
             <div class="column-center">
               <h1 class="title">Initial Farm Offering</h1>
 
@@ -96,7 +95,8 @@
 
                 <div class="detail-row">
                   <div class="data-col">
-                    <p>Launching in:</p>
+                    <p v-if="!live">Launching in:</p>
+                    <p v-if="live">Ends in:</p>
                   </div>
 
                   <div class="data-col">
@@ -143,7 +143,7 @@
                   </div>
 
                   <div class="data-col">
-                    <p>TBA</p>
+                    <p>{{ vueNumberFormat(ifo.data.userRecord.committed) }} XTZ</p>
                   </div>
                 </div>
 
@@ -153,7 +153,7 @@
                   </div>
 
                   <div class="data-col">
-                    <p>TBA</p>
+                    <p>{{ vueNumberFormat(ifo.data.userRecord.committedPercent, {prefix: '', decimal: '.', thousand: ',', precision: 2}) }}%</p>
                   </div>
                 </div>
 
@@ -163,7 +163,7 @@
                   </div>
 
                   <div class="data-col">
-                    <p>TBA</p>
+                    <p>{{ vueNumberFormat(ifo.data.userRecord.projectedHarvest) }} PXL</p>
                   </div>
                 </div>
 
@@ -173,7 +173,7 @@
                   </div>
 
                   <div class="data-col">
-                    <p>TBA</p>
+                    <p>{{ vueNumberFormat(ifo.data.userRecord.projectedFee) }} XTZ</p>
                   </div>
                 </div>
               </div>
@@ -193,7 +193,7 @@
                   </div>
 
                   <div class="data-col">
-                    <p>TBA</p>
+                    <p>{{ vueNumberFormat(ifo.data.totalRaised) }} XTZ</p>
                   </div>
                 </div>
 
@@ -203,7 +203,7 @@
                   </div>
 
                   <div class="data-col">
-                    <p>TBA</p>
+                    <p>{{ vueNumberFormat(ifo.data.raisingGoal) }} XTZ</p>
                   </div>
                 </div>
 
@@ -218,22 +218,22 @@
                 </div>
               </div>
 
-              <el-button
-                type="primary"
-                style="
-                  border-radius: 12px;
-                  font-weight: bold;
-                  padding: 12px 20px;
-                  margin-left: 0;
-                "
-                >FARM</el-button
-              >
-            </div>
-          </div>
-        </el-col>
-      </el-row>
+              <div style="width: 100%; margin-top: 18px;">
+                <el-button v-if="wallet.connected === false" type="success" @click="connectWallet" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px;">Connect Wallet</el-button>
+                <el-button v-else :disabled="!live" type="primary" @click="showStakeDialog" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px;">FARM</el-button>
+              </div>
 
-      <el-row :gutter="40">
+            </div>
+          </el-card></el-col
+        >
+      </el-row>
+      <!-- <el-row :gutter="30">
+        <el-col class="tier-wrapper" :xs="24" :md="8">
+          
+        </el-col>
+      </el-row> -->
+
+      <el-row class="tier-wrapper" :gutter="40">
         <el-col :xs="24" :md="12">
           <div class="grid-content box info-box">
             <div class="column-center">
@@ -266,7 +266,7 @@
               </div>
 
               <div class="data-col">
-                <p>0.004 $XTZ</p>
+                <p>{{ ifo.data.swapRate }} $XTZ</p>
               </div>
             </div>
 
@@ -276,7 +276,7 @@
               </div>
 
               <div class="data-col">
-                <p>TBA</p>
+                <p>{{ vueNumberFormat(ifo.data.totalRaised) }} XTZ</p>
               </div>
             </div>
 
@@ -286,7 +286,7 @@
               </div>
 
               <div class="data-col">
-                <p>6,000,000 $PXL</p>
+                <p>{{ vueNumberFormat(ifo.data.offeringSupply, {prefix: '', decimal: '.', thousand: ',', precision: 0}) }} $PXL</p>
               </div>
             </div>
           </div>
@@ -350,11 +350,40 @@
         </el-col>
       </el-row>
     </div>
+
+  <el-dialog title="Commit XTZ" :visible.sync="form.visible" width="380px" class="stake-dialog">
+    <p>Commit XTZ to harvest PXL.</p>
+    <el-form :model="form" ref="form" label-position="top" hide-required-asterisk>
+      <div class="current-balance" style="border-radius: 22px; background: #FFEECC; padding: 12px 20px; margin-bottom: 18px;">
+        <el-row type="flex" align="middle" justify="space-between">
+          <el-col :span="8" style="font-size: 12px;">BALANCE</el-col>
+          <el-col :span="16" style="color: #303133; font-weight: bold; text-align: right;">{{ vueNumberFormat(wallet.balance.toNumber() / 1000000) }}</el-col>
+        </el-row>
+      </div>
+      <el-form-item
+        label="Commit"
+        prop="input"
+        :rules="[
+          { type: 'number', required: true, message: 'Enter an amount', transform: (v) => Number(v) },
+          { type: 'number', min: 0.000001, message: 'Enter a valid amount (at least 0.000001)', transform: (v) => Number(v) }
+        ]"
+        style="margin-bottom: 14px;"
+      >
+        <el-input v-model="form.input" label="Commit">
+          <span slot="suffix">XTZ</span>
+        </el-input>
+      </el-form-item>
+      <el-button type="success" size="small" round style="margin-bottom: 22px;" @click="form.input = ((wallet.balance.toNumber() / 1000000) - 0.5)">USE MAX</el-button>
+      <el-button type="primary" @click="form.visible = false; stakeIfo(form.input)" style="border-radius: 12px; font-weight: bold; width: 100%; padding: 20px; margin-left: 0;">COMMIT</el-button>
+    </el-form>
+  </el-dialog>
   </div>
+
 </template>
 
 <script>
 import AppBar from "./AppBar.vue";
+import { mapState, mapActions } from 'vuex'
 
 export default {
   components: { AppBar },
@@ -362,9 +391,19 @@ export default {
     displayDays: "",
     displayHours: "",
     displayMinutes: "",
+    form: {
+      input: "",
+      visible: false
+    },
+    live: false,
+    ended: false
   }),
   name: "IFO",
   computed: {
+    ...mapState([
+      'wallet',
+      'ifo'
+    ]),
     _seconds() {
       return 1000;
     },
@@ -378,31 +417,61 @@ export default {
       return this._hours * 24;
     },
   },
+  created() {
+    this.refresh();
+  },
   methods: {
+    ...mapActions([
+      'connectWallet',
+      'loadIfoData',
+      'stakeIfo'
+    ]),
+
+    refresh() {
+      this.loadIfoData();
+    },
+
     formatCount(value) {
       return value < 10 ? "0" + value : value;
     },
     showTimer() {
+      const vm = this;
+      // vm.live = true;
+      vm.live = (new Date().getTime() > new Date("30 October 2021 14:00 UTC").getTime());
       const timer = setInterval(() => {
-        const startDate = new Date("30 October 2021 14:00 UTC").getTime();
-        const currentDate = new Date().getTime();
-        const dateDifference = startDate - currentDate;
+        let startDate = new Date("30 October 2021 14:00 UTC").getTime();
+        if (vm.live) {
+          startDate = new Date("01 November 2021 14:00 UTC").getTime();
+        }
 
-        if (dateDifference <= 0) {
+        const currentDate = new Date().getTime();
+        let dateDifference = startDate - currentDate;
+
+        if (vm.live && dateDifference <= 0) {
+          vm.ended = true;
           clearInterval(timer);
         }
 
         const days = Math.floor(dateDifference / this._days);
-        const hours = Math.floor((dateDifference % days) / this._hours);
-        const minutes = Math.floor(
-          (dateDifference % this._hours) / this._minutes
-        );
+        dateDifference -= days * this._days;
+        const hours = Math.floor(dateDifference / this._hours) % 24;
+        dateDifference -= hours * this._hours;
+        const minutes = Math.floor(dateDifference / this._minutes) % 60;
 
         this.displayDays = this.formatCount(days);
         this.displayHours = this.formatCount(hours);
         this.displayMinutes = this.formatCount(minutes);
       }, 1000);
     },
+
+    showStakeDialog() {
+      this.form.input = "";
+      if (Object.prototype.hasOwnProperty.call(this.$refs, 'form')) {
+        this.$refs.form.resetFields();
+      }
+      this.form.visible = true;
+    }
+
   },
   mounted() {
     this.showTimer();
@@ -443,7 +512,7 @@ export default {
 }
 
 .top-box {
-  min-height: 390px;
+  min-height: 480px;
 }
 
 .column-center {
@@ -510,6 +579,10 @@ p.mid {
 
 .swap-box {
   text-align: center;
+}
+
+.space-top{
+  margin-top: 30px;
 }
 
 .swap-title {
@@ -583,6 +656,7 @@ p.mid {
   color: rgba(117, 118, 121, 0.6);
   font-weight: 800;
   font-size: 12px;
+  text-align: left;
 }
 
 .detail-row .data-col:nth-child(2) p {
