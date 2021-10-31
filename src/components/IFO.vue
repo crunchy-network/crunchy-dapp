@@ -56,7 +56,7 @@
 
             <div class="swap-box space-top">
               <p>Token Swap Rate</p>
-              <p class="mid"><b>0.0042 $XTZ</b></p>
+              <p class="mid"><b>{{ ifo.data.swapRate }} $XTZ</b></p>
             </div>
           </el-card>
         </el-col>
