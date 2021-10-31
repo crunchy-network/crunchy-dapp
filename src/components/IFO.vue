@@ -53,11 +53,16 @@
               for the PXL token. This is just the beginning from a proven team
               with an exciting roadmap.
             </p>
+
+            <div class="swap-box space-top">
+              <p>Token Swap Rate</p>
+              <p class="mid"><b>0.004 $XTZ</b></p>
+            </div>
           </el-card>
         </el-col>
         <el-col :xs="24" :md="12"
           ><el-card class="grid-content box top-box swap-box box-card">
-            <div class="column-center">
+            <!-- <div class="column-center">
               <h1 class="swap-title">Token Swap Details</h1>
               <div>
                 <p>Token Swap Rate</p>
@@ -75,13 +80,7 @@
                 Once you have participated, you can verify your transaction was
                 successful by visitiing tzkt.io and searching your address.
               </p>
-            </div>
-          </el-card></el-col
-        >
-      </el-row>
-      <el-row :gutter="30">
-        <el-col class="tier-wrapper" :xs="24" :md="8">
-          <div class="grid-content box tier-box">
+            </div> -->
             <div class="column-center">
               <h1 class="title">Initial Farm Offering</h1>
 
@@ -229,11 +228,16 @@
                 >FARM</el-button
               >
             </div>
-          </div>
-        </el-col>
+          </el-card></el-col
+        >
       </el-row>
+      <!-- <el-row :gutter="30">
+        <el-col class="tier-wrapper" :xs="24" :md="8">
+          
+        </el-col>
+      </el-row> -->
 
-      <el-row :gutter="40">
+      <el-row class="tier-wrapper" :gutter="40">
         <el-col :xs="24" :md="12">
           <div class="grid-content box info-box">
             <div class="column-center">
@@ -443,7 +447,7 @@ export default {
 }
 
 .top-box {
-  min-height: 390px;
+  min-height: 480px;
 }
 
 .column-center {
@@ -510,6 +514,10 @@ p.mid {
 
 .swap-box {
   text-align: center;
+}
+
+.space-top{
+  margin-top: 30px;
 }
 
 .swap-title {
@@ -583,6 +591,7 @@ p.mid {
   color: rgba(117, 118, 121, 0.6);
   font-weight: 800;
   font-size: 12px;
+  text-align: left;
 }
 
 .detail-row .data-col:nth-child(2) p {
