@@ -51,7 +51,7 @@ export default {
       userRecord.committedPercent = BigNumber(userRecordStorage.value.amount).div(dividend).times(100).toNumber();
       userRecord.projectedHarvest = BigNumber(userRecordStorage.value.amount).div(dividend).times(BigNumber(storage.ifo.offeringSupply)).div(BigNumber(10).pow(6)).toNumber();
       userRecord.projectedFee = userRecord.committed;
-      if (storage.ifo.totalRaised > storage.ifo.raisingGoal) {
+      if (BigNumber(storage.ifo.totalRaised).gt(storage.ifo.raisingGoal)) {
         userRecord.projectedFee = BigNumber(userRecordStorage.value.amount).div(dividend).times(BigNumber(storage.ifo.raisingGoal)).div(BigNumber(10).pow(6)).toNumber();
       }
     }
