@@ -87,6 +87,13 @@ export default {
           });
         });
       });
+  },
+
+  async walletConnected({ commit, dispatch }) {
+    commit('updateIfoLoading', true);
+    dispatch('softUpdateIfo').then(() => {
+      commit('updateIfoLoading', false);
+    });
   }
 
 };
