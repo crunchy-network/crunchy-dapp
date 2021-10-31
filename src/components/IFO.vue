@@ -61,7 +61,7 @@
           </el-card>
         </el-col>
         <el-col :xs="24" :md="12"
-          ><el-card class="grid-content box top-box swap-box box-card">
+          ><el-card class="grid-content box top-box swap-box box-card" v-loading="ifo.loading">
             <!-- <div class="column-center">
               <h1 class="swap-title">Token Swap Details</h1>
               <div>
