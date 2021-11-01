@@ -303,7 +303,7 @@
               </div>
 
               <div class="data-col">
-                <p>Pixel POTUS</p>
+                <p>Pixel</p>
               </div>
             </div>
 
