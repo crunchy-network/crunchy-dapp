@@ -16,6 +16,7 @@ export default {
       endTime: "",
       started: false,
       ended: false,
+      harvesting: false,
       userRecord: {
         committed: 0,
         committedPercent: 0,

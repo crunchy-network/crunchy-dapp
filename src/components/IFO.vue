@@ -95,8 +95,8 @@
 
                 <div class="detail-row">
                   <div class="data-col">
-                    <p v-if="!live">Launching in:</p>
-                    <p v-if="live">Ends in:</p>
+                    <p v-if="!live">Harvest Begins in:</p>
+                    <p v-if="live">Harvesting Ends in:</p>
                   </div>
 
                   <div class="data-col">
@@ -220,7 +220,8 @@
 
               <div style="width: 100%; margin-top: 18px;">
                 <el-button v-if="wallet.connected === false" type="success" @click="connectWallet" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px;">Connect Wallet</el-button>
-                <el-button v-else :disabled="!live" type="primary" @click="showStakeDialog" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px;">FARM</el-button>
+                <!-- <el-button v-else :disabled="!live" type="primary" @click="showStakeDialog" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px;">FARM</el-button> -->
+                <el-button v-else :disabled="!live" type="primary" @click="harvestIfo" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px;">HARVEST</el-button>
               </div>
 
             </div>
@@ -424,7 +425,8 @@ export default {
     ...mapActions([
       'connectWallet',
       'loadIfoData',
-      'stakeIfo'
+      'stakeIfo',
+      'harvestIfo'
     ]),
 
     refresh() {
@@ -437,11 +439,11 @@ export default {
     showTimer() {
       const vm = this;
       // vm.live = true;
-      vm.live = (new Date().getTime() > new Date("30 October 2021 14:00 UTC").getTime());
+      vm.live = (new Date().getTime() > new Date("01 November 2021 18:00 UTC").getTime());
       const timer = setInterval(() => {
-        let startDate = new Date("30 October 2021 14:00 UTC").getTime();
+        let startDate = new Date("01 November 2021 18:00 UTC").getTime();
         if (vm.live) {
-          startDate = new Date("01 November 2021 14:00 UTC").getTime();
+          startDate = new Date("01 November 2021 18:00 UTC").getTime() + (1296000 * 1000);
         }
 
         const currentDate = new Date().getTime();

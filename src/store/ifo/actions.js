@@ -36,6 +36,7 @@ export default {
     const nowD = new Date();
     const startTimeD = new Date(storage.ifo.startTime);
     const endTimeD = new Date(storage.ifo.endTime);
+    const harvestTimeD = new Date(storage.ifo.harvestTime);
     const isEnded = (endTimeD < nowD);
 
     let userRecord = {
@@ -65,6 +66,7 @@ export default {
       endTime: storage.ifo.endTime,
       started: (startTimeD < nowD),
       ended: isEnded,
+      harvesting: (harvestTimeD < nowD),
       userRecord: userRecord
     });
 
@@ -80,6 +82,21 @@ export default {
     ifoContract.methods
       .deposit()
       .send({ amount: amountB, mutez: true }).then(tx => {
+        commit('updateIfoLoading', true);
+        tx.confirmation().then(() => {
+          dispatch('softUpdateIfo').then(() => {
+            commit('updateIfoLoading', false);
+          });
+        });
+      });
+  },
+
+  async harvestIfo({ commit, dispatch, state }) {
+    const ifoContract = await getWalletContract(state.contracts.pixel);
+
+    ifoContract.methods
+      .harvest()
+      .send().then(tx => {
         commit('updateIfoLoading', true);
         tx.confirmation().then(() => {
           dispatch('softUpdateIfo').then(() => {
