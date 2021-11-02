@@ -218,6 +218,13 @@
                 </div>
               </div>
 
+              <div v-if="wallet.connected && ifo.data.harvesting" style="border-radius: 22px; background: #FFEECC; padding: 12px 0px; width: 100%; margin-top: 18px;">
+                <el-row type="flex" align="middle" justify="space-between" style="margin: 0 20px;">
+                  <el-col :span="8" style="color: #8C8477; font-size: 12px; text-align: left;">PENDING HARVEST</el-col>
+                  <el-col :span="16" style="font-size: 12px; color: #303133; font-weight: 600; text-align: right;">{{ vueNumberFormat(ifo.data.userRecord.pendingHarvest) }} PXL</el-col>
+                </el-row>
+              </div>
+
               <div style="width: 100%; margin-top: 18px;">
                 <el-button v-if="wallet.connected === false" type="success" @click="connectWallet" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px;">Connect Wallet</el-button>
                 <!-- <el-button v-else :disabled="!live" type="primary" @click="showStakeDialog" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px;">FARM</el-button> -->
