@@ -27,12 +27,12 @@
         </div>
 
         <el-row>
-          <el-button plain round type="primary" style="font-weight: bold">
+          <el-button  plain round type="primary" style="font-weight: bold; background: #fff">
             <i style="margin-right: 10px" class="far fa-external-link-alt"></i>
             OBJKT
           </el-button>
 
-          <el-button plain round type="primary" style="font-weight: bold">
+          <el-button plain round type="primary" style="font-weight: bold; background: #fff">
             <i style="margin-right: 10px" class="far fa-external-link-alt"></i>
             Tzkt
           </el-button>
@@ -40,7 +40,7 @@
       </div>
 
       <el-row :gutter="30">
-        <el-col :xs="24" :md="8">
+        <el-col :xs="24" :md="9">
           <div class="art-wrapper margin-bottom-32">
             <el-button
               style="
@@ -110,17 +110,17 @@
             </div>
           </el-card>
         </el-col>
-        <el-col :xs="24" :md="14">
+        <el-col :xs="24" :md="15">
           <el-card>
             <div class="row-between">
               <el-row>
                 <el-button round @click="setTab('slices')" :style="active !== 'slices' && 'color: rgba(25, 27, 31,0.5)'" :type="active === 'slices' ? 'primary' : 'text'">
                   Slices
                 </el-button>
-                <el-button round @click="setTab('buyout')" :style="active !== 'buyout' && 'color: rgba(25, 27, 31,0.5)'" :type="active === 'buyout' ? 'primary' : 'text'">
+                <el-button disabled round @click="setTab('buyout')" :style="active !== 'buyout' && 'color: rgba(25, 27, 31,0.5)'" :type="active === 'buyout' ? 'primary' : 'text'">
                   Buyout
                 </el-button>
-                <el-button round @click="setTab('reserve')" :style="active !== 'reserve' && 'color: rgba(25, 27, 31,0.5)'" :type="active === 'reserve' ? 'primary' : 'text'">
+                <el-button disabled round @click="setTab('reserve')" :style="active !== 'reserve' && 'color: rgba(25, 27, 31,0.5)'" :type="active === 'reserve' ? 'primary' : 'text'">
                   Set Reserve
                 </el-button>
               </el-row>
@@ -159,14 +159,7 @@
                       </span>
                     </el-row>
 
-                    <h2
-                      style="
-                        color: #191b1f;
-                        opacity: 0.4;
-                        font-size: 14px;
-                        margin-bottom: 0px;
-                      "
-                    >
+                    <h2 style="color: #191b1f; opacity: 0.4; font-size: 14px; margin-bottom: 0px;">
                       ≈ $700,000
                     </h2>
                   </div>
@@ -189,35 +182,24 @@
                   </div>
                   <div>
                     <el-row>
-                      <span
-                        style="
-                          font-weight: 700;
-                          margin-top: 0px;
-                          font-size: 24px;
-                        "
-                      >
+                      <span style="font-weight: 700; margin-top: 0px; font-size: 24px;">
                         29.51%
                       </span>
                     </el-row>
 
-                    <h2
-                      style="
-                        color: #191b1f;
-                        opacity: 0.4;
-                        font-size: 14px;
-                        margin-bottom: 0px;
-                      "
-                    >
+                    <h2 style="color: #191b1f; opacity: 0.4; font-size: 14px; margin-bottom: 0px; ">
                       ≈ 29,51.954 GHOST
                     </h2>
                   </div>
                 </el-card>
-                    
               </el-col>
             </el-row>
 
             <el-divider class="margin-bottom-24" />
-            
+
+            <div style="width: 100%; position: relative">
+              <PieSwapForm />
+            </div>
           </el-card>
         </el-col>
       </el-row>
@@ -226,13 +208,21 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import AppBar from "./AppBar.vue";
+import PieSwapForm from "./PieSwapForm.vue";
 export default {
-  components: { AppBar },
+  components: { AppBar, PieSwapForm },
   name: "PieSlicer",
   data: () => ({
     active: "slices",
   }),
+  computed: {
+    ...mapState(["wallet"]),
+  },
+  created() {
+    this.refresh();
+  },
   methods: {
     setTab(type) {
       if (["slices", "buyout", "reserve"].includes(type)) {
@@ -244,6 +234,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "../crunchy-variables.scss";
+@import "~element-ui/packages/theme-chalk/src/common/var";
+
 nav {
   display: flex;
   align-items: center;
@@ -256,6 +249,7 @@ nav {
   }
   span:first-child {
     color: #555cff;
+    cursor: pointer;
   }
 
   i {
