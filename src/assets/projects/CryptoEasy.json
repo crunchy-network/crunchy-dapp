@@ -1,0 +1,23 @@
+{
+    "name": "CryptoEasy",
+    "description": "CryptoEasy’s mission is to facilitate for everyone access to digital assets, irrespective of their specific applications, platforms, and ecosystems. To achieve it, CryptoEasy is building the leading DeFi platform on the Tezos Blockchain, focused on personalized multi-asset portfolios leveraging its native utility token — $EASY — to simplify the investing process.",
+    "swapRate": 0.0326,
+    "startDate": "2021-09-25T14:00:00.000Z",
+    "endDate": "2021-09-25T15:00:00.000Z",
+    "projectLogo": "",
+    "tokenLogo": "",
+    "contractId": "KT1QgAtLPu3SNq9c6DPLanwL5bvfX3rgh2CS",
+    "tokenName": "EASY",
+    "links": [
+        {"name": "Medium", "link": "https://pixelpotus.medium.com/"},
+        {"name": "Twitter", "link": "https://twitter.com/PixelPotus"},
+        {"name": "Discord", "link": "https://discord.com/invite/CbdbvwtwkM"},
+        {"name": "Telegram", "link": "https://t.me/pixelpotus"}
+    ],
+    "poolSize": 20000000,
+    "accessTypes": [
+        "Triangulum",
+        "Milky Way",
+        "Andromeda"
+    ]
+}

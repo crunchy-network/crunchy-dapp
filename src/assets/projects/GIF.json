@@ -1,0 +1,23 @@
+{
+    "name": "GIF Games",
+    "description": "The Governance token for all things gif.games related, giving $GIF holders rights to create proposals, vote, obtain different perks related to our games, and get early access to any new game releases. \n Gif.games is building blockchain games on Tezos, Tezotopia (https://tezotop.io/) is only the beginning. Become part of this Decentralized Autonomous Organization (DAO), hold $GIF and help shape the future of gif.games.",
+    "swapRate": 0.0275,
+    "startDate": "2021-08-28T10:00:00.000Z",
+    "endDate": "2021-08-28T11:00:00.000Z",
+    "projectLogo": "",
+    "tokenLogo": "",
+    "contractId": "KT1XTxpQvo7oRCqp85LikEZgAZ22uDxhbWJv",
+    "tokenName": "GIF",
+    "links": [
+        {"name": "Medium", "link": "https://pixelpotus.medium.com/"},
+        {"name": "Twitter", "link": "https://twitter.com/PixelPotus"},
+        {"name": "Discord", "link": "https://discord.com/invite/CbdbvwtwkM"},
+        {"name": "Telegram", "link": "https://t.me/pixelpotus"}
+    ],
+    "poolSize": 20000000,
+    "accessTypes": [
+        "Triangulum",
+        "Milky Way",
+        "Andromeda"
+    ]
+}

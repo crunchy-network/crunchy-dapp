@@ -1,0 +1,39 @@
+<template>
+    <div id="#ifo">
+        <AppBar /> 
+        <el-main>
+            <el-row type="flex" class="ifo-list" style="margin-top: 25px;">
+                <el-col :span="24">
+                    <div class="grid-content">
+                        <el-card class="box-card">
+                            <el-row type="flex" align="middle" style="color: #757679; font-size: 14px; font-weight: 600; border-bottom: 2px solid #f4f4f4; padding-bottom: 14px; margin-bottom: 14px;">
+                                <el-col :span="24">
+                                    <el-row :gutter="20" type="flex" align="middle" style="padding: 0 20px;">
+                                        <el-col  :span="7">Pool</el-col>
+                                        <el-col  :span="7">Access</el-col>
+                                        <el-col  style="text-align: right;"  :span="5">Pool Size</el-col>
+                                        <el-col  style="text-align: right;"  :span="5">Launching</el-col>
+                                    </el-row>
+                                </el-col>
+                            </el-row>
+                            <IFOListRow v-for="project in projects" :project="project" :key="project.name" />
+                        </el-card>
+                    </div>
+                </el-col>
+            </el-row>
+        </el-main>
+    </div>
+</template>
+
+<script>
+    import AppBar from "./AppBar.vue";
+    import IFOListRow from './IFOListRow.vue'
+    import { gatherAllProjectJsonFiles } from '../lib/JsonHelper'
+    export default {
+        components: {AppBar, IFOListRow},
+        data: () => ({
+            projects: gatherAllProjectJsonFiles()
+        })
+
+    }
+</script>

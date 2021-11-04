@@ -1,0 +1,23 @@
+{
+    "name": "GoEureka",
+    "description": "Booking platforms charge hotels up to 30% in commission and prioritize property searches based on this commissions. GOeureka will operate on a unbiased and transparent business model where all hotels are treated equal. Our goal is to drive cost efficiencies for travellers by creating a platform that runs on a fixed commission structure of 5% and to deliver additional member benefits through the use of the GOT token.",
+    "swapRate": 0.02,
+    "startDate": "2021-07-12T10:00:00.000Z",
+    "endDate": "2021-07-12T10:00:00.000Z",
+    "projectLogo": "",
+    "tokenLogo": "",
+    "contractId": "KT1XTxpQvo7oRCqp85LikEZgAZ22uDxhbWJv",
+    "tokenName": "GOT",
+    "links": [
+        {"name": "Medium", "link": "https://pixelpotus.medium.com/"},
+        {"name": "Twitter", "link": "https://twitter.com/PixelPotus"},
+        {"name": "Discord", "link": "https://discord.com/invite/CbdbvwtwkM"},
+        {"name": "Telegram", "link": "https://t.me/pixelpotus"}
+    ],
+    "poolSize": 5000000,
+    "accessTypes": [
+        "Triangulum",
+        "Milky Way",
+        "Andromeda"
+    ]
+}

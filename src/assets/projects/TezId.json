@@ -1,0 +1,23 @@
+{
+    "name": "tezId",
+    "description": "TezID is an identity oracle for Tezos. It allows users to prove that they own certain digital property such as an email address, phone number and even government issued ID’s. Building on their secure proofsystem TezID aims to bring opt-in KYC proofs for the entire Tezos ecosystem! They will also bring custom prooftypes and decentralized proofs to the table in the future. Their token $IDZ will be used to incetivise TezID usage and reach, and to capture the value created by their oracle.",
+    "swapRate": 0.0042,
+    "startDate": "2021-09-12T14:00:00.000Z",
+    "endDate": "2021-09-12T14:00:00.000Z",
+    "projectLogo": "",
+    "tokenLogo": "",
+    "contractId": "",
+    "tokenName": "IDZ",
+    "links": [
+        {"name": "Medium", "link": "https://pixelpotus.medium.com/"},
+        {"name": "Twitter", "link": "https://twitter.com/PixelPotus"},
+        {"name": "Discord", "link": "https://discord.com/invite/CbdbvwtwkM"},
+        {"name": "Telegram", "link": "https://t.me/pixelpotus"}
+    ],
+    "poolSize": 20000000,
+    "accessTypes": [
+        "Triangulum",
+        "Milky Way",
+        "Andromeda"
+    ]
+}
