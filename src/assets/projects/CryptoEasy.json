@@ -5,7 +5,7 @@
     "startDate": "2021-09-25T14:00:00.000Z",
     "endDate": "2021-09-25T15:00:00.000Z",
     "projectLogo": "",
-    "tokenLogo": "",
+    "tokenLogo": "EASY.png",
     "contractId": "KT1QgAtLPu3SNq9c6DPLanwL5bvfX3rgh2CS",
     "tokenName": "EASY",
     "links": [
@@ -18,6 +18,7 @@
     "accessTypes": [
         "Triangulum",
         "Milky Way",
-        "Andromeda"
+        "Andromeda",
+        "FCFS"
     ]
 }

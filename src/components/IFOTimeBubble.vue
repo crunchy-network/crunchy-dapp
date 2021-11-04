@@ -1,6 +1,6 @@
 <template>
   <div class="countdown">
-      <div v-if="days > 0 || hours > 0 || minutes > 0 || seconds > 0"> 
+      <div v-if="days > 0 || hours > 0 || minutes > 0 || seconds > 0" class="countdown__bubble"> 
         <div v-if="days > 0" class="countdown__block">
             <div class="countdown__digit">{{ days | twoDigits }}</div>
             <div class="countdown__text">days</div>
@@ -19,7 +19,7 @@
         </div>
       </div>
     <div v-if="days <= 0 && hours <= 0 && minutes <= 0 && seconds <= 0"> 
-        <div class="placeholderText">
+        <div :class="calcPlaceholderClass(endDate)">
             {{calcPlaceholderText(endDate)}}    
         </div>
     </div>
@@ -88,18 +88,27 @@ export default {
           }else{
               return "Completed"
           }
+      },
+      calcPlaceholderClass(endDate){
+          let now = new Date();
+          if(now < endDate){
+              return "inProgress"
+          }else{
+              return "completed"
+          }
       }
   }
 }
 </script>
 <style lang="scss">
 .countdown{
+    display: inline-block;
   &__block {
+    display: inline-block;
+    margin-right: 5px;
     text-align: center;
-    padding: 0px 15px;
-    position: relative;
+    width: 50px;
     &:first-child{
-      padding-left: 0;
       .countdown__digit{
         &:before{
           display: none;
@@ -112,16 +121,29 @@ export default {
   }
   &__text {
     text-transform: uppercase;
-    margin-bottom: 5px;
   }
   &__digit {
     font-weight: bold;
     line-height: 1;
-    margin-bottom: 5px;
-    &:before{
-      content: ":";
-      left: -5px;
-    }
+  
   }
+.inProgress  {
+    padding: 5px 10px;
+    border-radius: 20px;
+    border: 1px solid #0D63FF;
+    background: rgba(13, 97, 255, 0.2);
+}
+.countdown__bubble  {
+    padding: 5px 10px;
+    border-radius: 20px;
+    border: 1px solid #0D63FF;
+    background: rgba(13, 97, 255, 0.2);
+}
+.completed {
+    padding: 5px 10px;
+    border-radius: 20px;
+    border: 1px solid #F94E4E;
+    background: rgba(249, 78, 78, 0.2);
+}
 }
 </style>

@@ -9,3 +9,10 @@ export function gatherAllProjectJsonFiles() {
     all.sort((a,b)=>{ return (new Date(b.startDate) - new Date(a.startDate))})
     return all;
 }
+
+export function importAll(r) {
+    let files = {};
+    r.keys().map((item) => { files[item.replace('./', '')] = r(item); });
+    return files;
+  }
+  

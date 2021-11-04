@@ -2,6 +2,19 @@
     <div id="#ifo">
         <AppBar /> 
         <el-main>
+            <el-row :gutter="40" type="flex" style="margin-bottom: 50px;" >
+                <el-col :span="12">
+                    <div class="grid-content">
+                      <IFOCard />
+                    </div>
+                </el-col>
+                <el-col :span="12">
+                     <div class="grid-content">
+                        <el-card class="box-card">
+                        </el-card>
+                    </div>
+                </el-col>
+            </el-row>
             <el-row type="flex" class="ifo-list" style="margin-top: 25px;">
                 <el-col :span="24">
                     <div class="grid-content">
@@ -29,8 +42,9 @@
     import AppBar from "./AppBar.vue";
     import IFOListRow from './IFOListRow.vue'
     import { gatherAllProjectJsonFiles } from '../lib/JsonHelper'
+    import IFOCard from "./IFOCard.vue"
     export default {
-        components: {AppBar, IFOListRow},
+        components: {AppBar, IFOListRow, IFOCard},
         data: () => ({
             projects: gatherAllProjectJsonFiles()
         })
