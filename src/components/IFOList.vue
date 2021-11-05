@@ -10,8 +10,7 @@
                 </el-col>
                 <el-col :span="12">
                      <div class="grid-content">
-                        <el-card class="box-card">
-                        </el-card>
+                        <IFOFirst :project="projects[0]" />
                     </div>
                 </el-col>
             </el-row>
@@ -41,10 +40,11 @@
 <script>
     import AppBar from "./AppBar.vue";
     import IFOListRow from './IFOListRow.vue'
+    import IFOFirst from './IFOFirst.vue'
     import { gatherAllProjectJsonFiles } from '../lib/JsonHelper'
     import IFOCard from "./IFOCard.vue"
     export default {
-        components: {AppBar, IFOListRow, IFOCard},
+        components: {AppBar, IFOListRow, IFOCard, IFOFirst},
         data: () => ({
             projects: gatherAllProjectJsonFiles()
         })
