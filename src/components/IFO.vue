@@ -2,56 +2,29 @@
   <div id="#ifo">
     <AppBar />
     <div id="wrapper">
-      <el-row :gutter="40">
+      <el-row :gutter="40" v-if="!loading">
         <el-col :xs="24" :md="12"
           ><el-card class="grid-content box top-box box-card" shadow="never">
             <div class="column-center">
               <div class="logo-wrapper">
-                <img src="./../assets/pixel.png" class="logo" />
+                <img :src="images[project.projectLogo]" class="logo" />
               </div>
             </div>
 
             <div class="socials">
-              <a
-                href="https://pixelpotus.medium.com/"
-                rel="nonreffere"
-                target="_blank"
+              <a 
+                v-for="link in project.links" 
+                :key="link.name"
+                :href="link.link"
+                rel="noreffere"
+                target="blank"
                 class="social-link"
               >
-                Medium
-              </a>
-              <a
-                href="https://twitter.com/PixelPotus"
-                rel="nonreffere"
-                target="_blank"
-                class="social-link"
-              >
-                Twitter
-              </a>
-              <a
-                href="https://discord.gg/CbdbvwtwkM"
-                rel="nonreffere"
-                target="_blank"
-                class="social-link"
-              >
-                Discord
-              </a>
-              <a
-                href="https://t.me/pixelpotus"
-                rel="nonreffere"
-                target="_blank"
-                class="social-link"
-              >
-                Telegram
+                {{link.name}}
               </a>
             </div>
             <p>
-              Pixel is bringing gamification to NFTs and Defi. Their first
-              project, PixelPotus.com, is an early collectable on Tezos and has
-              been in the top 5 on DappRadar for months. The Pixel Debates TCG
-              release is quickly approaching and will be the first major utility
-              for the PXL token. This is just the beginning from a proven team
-              with an exciting roadmap.
+             {{project.description}}
             </p>
 
             <div class="swap-box space-top">
@@ -123,7 +96,7 @@
                   </div>
 
                   <div class="data-col">
-                    <p>$PXL</p>
+                    <p>${{project.tokenSymbol}}</p>
                   </div>
                 </div>
               </div>
@@ -254,7 +227,7 @@
               </div>
 
               <div class="data-col">
-                <p>30 October 2021 14:00:00 UTC</p>
+                <p>{{project.startDate | moment("calendar")}}</p>
               </div>
             </div>
 
@@ -264,7 +237,7 @@
               </div>
 
               <div class="data-col">
-                <p>1 November 2021 14:00:00 UTC</p>
+                <p>{{project.endDate | moment("calendar")}}</p>
               </div>
             </div>
 
@@ -294,7 +267,7 @@
               </div>
 
               <div class="data-col">
-                <p>{{ vueNumberFormat(ifo.data.offeringSupply, {prefix: '', decimal: '.', thousand: ',', precision: 0}) }} $PXL</p>
+                <p>{{ vueNumberFormat(ifo.data.offeringSupply, {prefix: '', decimal: '.', thousand: ',', precision: 0}) }} ${{project.tokenSymbol}}</p>
               </div>
             </div>
           </div>
@@ -311,7 +284,7 @@
               </div>
 
               <div class="data-col">
-                <p>Pixel</p>
+                <p>{{project.tokenName}}</p>
               </div>
             </div>
 
@@ -321,7 +294,7 @@
               </div>
 
               <div class="data-col">
-                <p>PXL</p>
+                <p>{{project.tokenSymbol}}</p>
               </div>
             </div>
 
@@ -392,10 +365,13 @@
 <script>
 import AppBar from "./AppBar.vue";
 import { mapState, mapActions } from 'vuex'
-
+import { gatherAllProjectJsonFiles, importAll } from '../lib/JsonHelper'
 export default {
   components: { AppBar },
   data: () => ({
+    project: null,
+    images: importAll(require.context('../assets/project_images', false, /\.(png|jpe?g|svg)$/)),
+    loading: true,
     displayDays: "",
     displayHours: "",
     displayMinutes: "",
@@ -427,6 +403,11 @@ export default {
   },
   created() {
     this.refresh();
+    this.fetchProject();
+  },
+    watch: {
+    // call again the method if the route changes
+    '$route': 'fetchProject'
   },
   methods: {
     ...mapActions([
@@ -436,6 +417,12 @@ export default {
       'harvestIfo'
     ]),
 
+    fetchProject() {
+      let project = gatherAllProjectJsonFiles().find((p)=>{ return(p.tokenName === this.$route.params.tokenName)})
+      console.log(this.$route.params.tokenName)
+      this.project = project;
+      this.loading = false;
+    },
     refresh() {
       this.loadIfoData();
     },

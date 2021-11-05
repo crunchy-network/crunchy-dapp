@@ -8,6 +8,7 @@
     "tokenLogo": "GIF.png",
     "contractId": "KT1XTxpQvo7oRCqp85LikEZgAZ22uDxhbWJv",
     "tokenName": "GIF",
+    "tokenSymbol": "GIF",
     "links": [
         {"name": "Medium", "link": "https://pixelpotus.medium.com/"},
         {"name": "Twitter", "link": "https://twitter.com/PixelPotus"},

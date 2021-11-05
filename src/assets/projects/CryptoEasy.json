@@ -8,6 +8,7 @@
     "tokenLogo": "EASY.png",
     "contractId": "KT1QgAtLPu3SNq9c6DPLanwL5bvfX3rgh2CS",
     "tokenName": "EASY",
+    "tokenSymbol": "EASY",
     "links": [
         {"name": "Medium", "link": "https://pixelpotus.medium.com/"},
         {"name": "Twitter", "link": "https://twitter.com/PixelPotus"},
