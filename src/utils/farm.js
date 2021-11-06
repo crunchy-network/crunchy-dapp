@@ -219,6 +219,12 @@ export default {
       badges.partner = true;
     }
 
+    // IDZ
+    if (farm.owner === "tz1LhLCpSCHnZjHJ1xtwRbVLiZZp9krmqGdw") {
+      badges.verified = true;
+      badges.lpLocked = true;
+    }
+
     return badges;
   },
 

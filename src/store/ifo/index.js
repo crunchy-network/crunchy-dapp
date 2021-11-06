@@ -14,13 +14,19 @@ export default {
       swapRate: 0,
       startTime: "",
       endTime: "",
+      harvestTime: "",
       started: false,
       ended: false,
+      harvesting: false,
+      harvestDuration: 0,
       userRecord: {
         committed: 0,
         committedPercent: 0,
         projectedHarvest: 0,
-        projectedFee: 0
+        projectedFee: 0,
+        amountHarvested: 0,
+        pendingHarvest: 0,
+        lastHarvest: ""
       }
     }
   },

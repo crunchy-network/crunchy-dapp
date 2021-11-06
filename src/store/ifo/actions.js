@@ -28,7 +28,7 @@ export default {
     }
   },
 
-  async softUpdateIfo({ commit, dispatch }) {
+  async softUpdateIfo({ commit, dispatch, state }) {
     const storage = await dispatch('updateIfoStorage');
     const userRecordStorage = await dispatch('updateIfoUserRecord');
 
@@ -36,24 +36,33 @@ export default {
     const nowD = new Date();
     const startTimeD = new Date(storage.ifo.startTime);
     const endTimeD = new Date(storage.ifo.endTime);
+    const harvestTimeD = new Date(storage.ifo.harvestTime);
     const isEnded = (endTimeD < nowD);
+    const isHarvesting = (harvestTimeD < nowD);
 
-    let userRecord = {
-      committed: 0,
-      committedPercent: 0,
-      projectedHarvest: 0,
-      projectedFee: 0
-    };
+    let userRecord = state.data.userRecord;
 
     if (userRecordStorage) {
       const dividend = BigNumber.max(storage.ifo.totalRaised, storage.ifo.raisingGoal);
       userRecord.committed = BigNumber(userRecordStorage.value.amount).div(BigNumber(10).pow(6)).toNumber();
       userRecord.committedPercent = BigNumber(userRecordStorage.value.amount).div(dividend).times(100).toNumber();
+      userRecord.amountHarvested = BigNumber(userRecordStorage.value.amountHarvested).div(dividend).times(BigNumber(storage.ifo.offeringSupply)).div(BigNumber(10).pow(6)).toNumber();
+      userRecord.lastHarvest = new Date(userRecordStorage.value.lastHarvest);
       userRecord.projectedHarvest = BigNumber(userRecordStorage.value.amount).div(dividend).times(BigNumber(storage.ifo.offeringSupply)).div(BigNumber(10).pow(6)).toNumber();
       userRecord.projectedFee = userRecord.committed;
       if (BigNumber(storage.ifo.totalRaised).gt(storage.ifo.raisingGoal)) {
         userRecord.projectedFee = BigNumber(userRecordStorage.value.amount).div(dividend).times(BigNumber(storage.ifo.raisingGoal)).div(BigNumber(10).pow(6)).toNumber();
       }
+    } else {
+      userRecord = {
+        committed: 0,
+        committedPercent: 0,
+        projectedHarvest: 0,
+        projectedFee: 0,
+        amountHarvested: 0,
+        pendingHarvest: 0,
+        lastHarvest: ""
+      };
     }
 
     commit('updateIfoData', {
@@ -64,12 +73,49 @@ export default {
       startTime: storage.ifo.startTime,
       endTime: storage.ifo.endTime,
       started: (startTimeD < nowD),
+      harvestTime: storage.ifo.harvestTime,
       ended: isEnded,
+      harvesting: isHarvesting,
+      harvestDuration: parseInt(storage.ifo.harvestDuration),
       userRecord: userRecord
     });
 
     if (!isEnded) {
       setTimeout(() => { dispatch('softUpdateIfo') }, 30 * 1000);
+    }
+
+    if (isHarvesting && userRecord.committed > 0 && userRecord.amountHarvested < userRecord.projectedHarvest && userRecord.pendingHarvest === 0) {
+      setTimeout(() => { dispatch('updatePendingHarvest') }, 1 * 1000);
+    }
+  },
+
+  async updatePendingHarvest({ commit, dispatch, state }) {
+    const nowD = new Date();
+    const harvestTimeD = new Date(state.data.harvestTime);
+    const harvestEndTimeD = new Date(harvestTimeD.getTime() + (state.data.harvestDuration * 1000));
+    const isHarvestingEnded = (harvestEndTimeD < nowD);
+    const isHarvesting = (harvestTimeD < nowD);
+
+    let userRecord = state.data.userRecord;
+
+    if (isHarvestingEnded) {
+      state.data.userRecord.pendingHarvest = userRecord.projectedHarvest - userRecord.amountHarvested;
+      return commit('updateIfoData', state.data);
+    }
+
+    const harvestPerSec = userRecord.projectedHarvest / state.data.harvestDuration;
+    const numSec = (nowD - userRecord.lastHarvest) / 1000;
+    userRecord.pendingHarvest = harvestPerSec * numSec;
+
+    if (userRecord.amountHarvested + userRecord.pendingHarvest > userRecord.projectedHarvest) {
+      userRecord.pendingHarvest = userRecord.projectedHarvest - userRecord.amountHarvested;
+    }
+
+    state.data.userRecord = userRecord;
+    commit('updateIfoData', state.data);
+
+    if (isHarvesting && userRecord.committed > 0 && userRecord.amountHarvested < userRecord.projectedHarvest) {
+      setTimeout(() => { dispatch('updatePendingHarvest') }, 1 * 1000);
     }
   },
 
@@ -82,6 +128,21 @@ export default {
       .send({ amount: amountB, mutez: true }).then(tx => {
         commit('updateIfoLoading', true);
         tx.confirmation().then(() => {
+          dispatch('softUpdateIfo').then(() => {
+            commit('updateIfoLoading', false);
+          });
+        });
+      });
+  },
+
+  async harvestIfo({ commit, dispatch, state }) {
+    const ifoContract = await getWalletContract(state.contracts.pixel);
+
+    ifoContract.methods
+      .harvest()
+      .send().then(tx => {
+        commit('updateIfoLoading', true);
+        tx.confirmation(2).then(() => {
           dispatch('softUpdateIfo').then(() => {
             commit('updateIfoLoading', false);
           });
