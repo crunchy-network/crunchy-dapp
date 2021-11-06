@@ -27,12 +27,12 @@
         </div>
 
         <el-row>
-          <el-button plain round type="primary" style="font-weight: bold; background: #fff">
+          <el-button plain round type="primary" style="font-weight: bold; background: #fff; color: #555CFF;">
             <i style="margin-right: 10px" class="far fa-external-link-alt"></i>
             OBJKT
           </el-button>
 
-          <el-button plain round type="primary" style="font-weight: bold; background: #fff">
+          <el-button plain round type="primary" style="font-weight: bold; background: #fff; color: #555CFF;">
             <i style="margin-right: 10px" class="far fa-external-link-alt"></i>
             Tzkt
           </el-button>
@@ -40,8 +40,8 @@
       </div>
 
       <el-row type="flex" justify="space-around" :gutter="30">
-        <el-col :xs="24" :md="8">
-          <div class="art-wrapper margin-bottom-32">
+        <el-col :xs="24" :md="10">
+          <div class="art-wrapper margin-bottom-16">
             <el-button
               style="
                 position: absolute;
@@ -60,7 +60,7 @@
           </div>
 
           <el-card
-            class="margin-bottom-32"
+            class="margin-bottom-16"
             style="
               background: rgba(25, 27, 31, 0.05);
               border: 1px solid rgba(25, 27, 31, 0.1);
@@ -285,6 +285,10 @@ nav {
 
 .margin-bottom-32 {
   margin-bottom: 32px;
+}
+
+.margin-bottom-16 {
+  margin-bottom: 16px;
 }
 
 .margin-bottom-24 {
