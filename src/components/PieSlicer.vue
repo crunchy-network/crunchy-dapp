@@ -27,7 +27,7 @@
         </div>
 
         <el-row>
-          <el-button  plain round type="primary" style="font-weight: bold; background: #fff">
+          <el-button plain round type="primary" style="font-weight: bold; background: #fff">
             <i style="margin-right: 10px" class="far fa-external-link-alt"></i>
             OBJKT
           </el-button>
@@ -39,8 +39,8 @@
         </el-row>
       </div>
 
-      <el-row :gutter="30">
-        <el-col :xs="24" :md="9">
+      <el-row type="flex" justify="space-around" :gutter="30">
+        <el-col :xs="24" :md="8">
           <div class="art-wrapper margin-bottom-32">
             <el-button
               style="
@@ -110,7 +110,7 @@
             </div>
           </el-card>
         </el-col>
-        <el-col :xs="24" :md="15">
+        <el-col :xs="24" :md="14" :lg="12" :xl="10">
           <el-card>
             <div class="row-between">
               <el-row>
@@ -236,6 +236,11 @@ export default {
 <style lang="scss" scoped>
 @import "../crunchy-variables.scss";
 @import "~element-ui/packages/theme-chalk/src/common/var";
+
+.el-button {
+  font-family: "Poppins";
+  font-weight: 600;
+}
 
 nav {
   display: flex;
