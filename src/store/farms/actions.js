@@ -599,10 +599,16 @@ export default {
 
   async getPoolTokenBalance({ state, rootState }, farmId) {
     const farm = state.data[farmId];
+
+    let params =  { key: rootState.wallet.pkh, active: "true" };
+    if (farm.poolToken.address === "KT1Xqiz99Q5mLebyERrPjAhVodysyebkhYFb") {
+        params =  { "key.address": rootState.wallet.pkh, "key.nat": farm.poolToken.tokenId, active: "true" };
+    }
+
     return tzkt.getContractBigMapKeys(
       farm.poolToken.address,
       farmUtils.getTokenLedgerKey(farm.poolToken.address),
-      { key: rootState.wallet.pkh, active: "true" }
+      params
     ).then(poolTokenLedger => {
       let poolTokenBal = 0;
       if (poolTokenLedger.data.length) {
