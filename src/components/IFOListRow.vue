@@ -1,6 +1,7 @@
 <template>
-    <el-row style="padding-bottom: 14px; font-size: 14px; font-weight: 600;" type="flex" align="top">
+    <el-row style="padding-bottom: 14px; font-size: 14px; font-weight: 600;" type="flex" align="top" >
         <el-col :span="24">
+            <router-link :to="`/ifo/${project.tokenName}`">
             <div style="border: 1px solid #EBEEF5; border-radius: 14px; color: #8C8D8F; font-size: 16px">
                  <el-row :gutter="20" class="farm-row" style="margin-left: 0; margin-right: 0;" type="flex" align="middle">
                     <el-col :span="7" style="font-weight: bold;">
@@ -20,6 +21,7 @@
                     </el-col> 
                  </el-row>
             </div>
+            </router-link>
         </el-col>
     </el-row>
 </template>

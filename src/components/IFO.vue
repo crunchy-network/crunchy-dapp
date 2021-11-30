@@ -433,11 +433,11 @@ export default {
     showTimer() {
       const vm = this;
       // vm.live = true;
-      vm.live = (new Date().getTime() > new Date("01 November 2021 18:00 UTC").getTime());
+      vm.live = (new Date().getTime() > new Date(this.project.startDate).getTime());
       const timer = setInterval(() => {
-        let startDate = new Date("01 November 2021 18:00 UTC").getTime();
+        let startDate = new  new Date(this.project.startDate).getTime();
         if (vm.live) {
-          startDate = new Date("01 November 2021 18:00 UTC").getTime() + (1296000 * 1000);
+          startDate = new new Date(this.project.startDate).getTime() + (1296000 * 1000);
         }
 
         const currentDate = new Date().getTime();
