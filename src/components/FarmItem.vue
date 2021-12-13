@@ -46,12 +46,12 @@
           <el-row type="flex">
             <div style="margin-right: 16px" class="legend-bar">
               <div style="margin-right: 8px; background: #555CFF" class="circle"></div>
-              <p>Farm Total Value</p>
+              <h2>Farm Total Value</h2>
             </div>
 
             <div style="margin-right: 16px" class="legend-bar">
               <div style="margin-right: 8px; background: #1EC391" class="circle"></div>
-              <p>Farm Liquidity</p>
+              <h2>Farm Liquidity</h2>
             </div>
           </el-row>
           <el-row>
@@ -85,9 +85,9 @@
               <div style="flex: 1">
                 <el-row type="flex" justify="space-between">
                   <div>
-                    <p style="margin: 0 0 16px 0; font-size: 14px; color: #191B1F; opacity: 0.4; font-weight: 800">
+                    <h2 style="margin: 0 0 16px 0; font-size: 14px; color: #191B1F; opacity: 0.4; font-weight: 800">
                       CRUNCH EARNED
-                    </p>
+                    </h2>
                     <h2 style="margin: 0px">
                       3.9363829643
                     </h2>
@@ -110,9 +110,9 @@
               <div style="flex: 1">
                 <el-row type="flex" justify="space-between">
                   <div>
-                    <p style="margin: 0 0 16px 0; font-size: 14px; color: #191B1F; opacity: 0.4; font-weight: 800">
+                    <h2 style="margin: 0 0 16px 0; font-size: 14px; color: #191B1F; opacity: 0.4; font-weight: 800">
                       LP TOKENS STAKED
-                    </p>
+                    </h2>
                     <h2 style="margin: 0px; display: flex; align-items: center">
                       <el-avatar shape="circle" :size="20" style="background: #191B1F; margin-right: 3px">
                         <img src="./../assets/svg-icons/lock.svg" style="width: 10px; margin: auto;" />
@@ -145,12 +145,12 @@
             <div>
               <el-row type="flex" justify="space-between" :gutter="10">
                 <el-col>
-                  <p style="margin: 0 0 12px 0; font-size: 14px; color: #191B1F; opacity: 0.4; font-weight: 800">
+                  <h2 style="margin: 0 0 12px 0; font-size: 14px; color: #191B1F; opacity: 0.4; font-weight: 800">
                     CURRENT BONUS
-                  </p>
+                  </h2>
 
                   <h2 style="margin: 0px; font-size: 24px">40X</h2>
-                  <p style="margin: 0; font-size: 14px; color: #191B1F; font-weight: 800"><span style=" opacity: 0.4">Farm Ends on </span>4 Mar 2021</p>
+                  <h2 style="margin: 0; font-size: 14px; color: #191B1F; font-weight: 800"><span style=" opacity: 0.4">Farm Ends on </span>4 Mar 2021</h2>
                 </el-col>
 
                 <el-button style="padding-left: 14px; padding-right: 14px;" type="primary" plain icon="fal fa-calendar"> </el-button>
@@ -165,7 +165,7 @@
 
         <el-col :xs="24" :lg="16" :xl="17">
           <h2 style="margin-bottom: 0px; font-size: 24px">Farm History</h2>
-          <p style="font-size:16px; color: #191B1F; font-weight: 300; opacity: 0.5; margin-bottom: 19px; margin-top: 5px;">Recent Farm Transactions</p>
+          <h2 style="font-size:16px; color: #191B1F; font-weight: 300; opacity: 0.5; margin-bottom: 19px; margin-top: 5px;">Recent Farm Transactions</h2>
 
           <el-card>
             <FarmHistoryTable
@@ -192,7 +192,7 @@
 
         <el-col :xs="24" :lg="8" :xl="7">
           <el-card>
-            <p style="margin: 10px 0 24px 0; font-size: 14px; color: rgba(25,27,31,.40); font-weight: 800">TOP FARMERS • (OUT OF 12,513)</p>
+            <h2 style="margin: 10px 0 24px 0; font-size: 14px; color: rgba(25,27,31,.40); font-weight: 800">TOP FARMERS • (OUT OF 12,513)</h2>
 
             <div v-for="(item, index) in farmersList" :key="index">
               <TopFarmerItem :first="index === 0" :last="index + 1 === farmersList.length" :name="item.name" :position="item.position" :own="item.own" />
@@ -308,7 +308,7 @@ nav {
     height: 20px;
     border-radius: 50%;
   }
-  p {
+  h2 {
     font-weight: 800;
     font-size: 14px;
     margin: 0;

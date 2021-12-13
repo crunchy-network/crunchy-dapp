@@ -6,10 +6,10 @@
       </div>
 
       <div class="text-content">
-        <p class="top">
+        <h2 class="top">
           <span :style="position === '1st' && 'color: #555cff;'">{{ position }}</span> • <span style="color: #191B1F">{{ name }}</span>
-        </p>
-        <p style="font-size: 14px; opacity: 0.6; font-weight: 300 ;color: #191B1F;">Own {{ own }} % of Total Farm</p>
+        </h2>
+        <h2 style="font-size: 14px; opacity: 0.6; font-weight: 300 ;color: #191B1F;">Own {{ own }} % of Total Farm</h2>
       </div>
     </el-row>
 

@@ -11,10 +11,10 @@
 
         <div class="content-body">
           <div>
-            <p :style="item.status === 'active' && 'opacity: 1'" class="text">
+            <h2 :style="item.status === 'active' && 'opacity: 1'" class="text">
               {{ dateFormater(item.date) }}
-            </p>
-            <p v-if="item.status === 'active'" class="text days-left">{{ item.daysLeft }} day{{ item.daysLeft > 1 && "s" }} left</p>
+            </h2>
+            <h2 v-if="item.status === 'active'" class="text days-left">{{ item.daysLeft }} day{{ item.daysLeft > 1 && "s" }} left</h2>
           </div>
 
           <div :class="'multiple ' + item.status">{{ item.multiple }}x</div>
@@ -50,10 +50,6 @@ export default {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-}
-
-p {
-  margin: 0;
 }
 
 .indicator-side-bar {

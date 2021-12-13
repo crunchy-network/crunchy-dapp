@@ -2,16 +2,16 @@
   <div style="overflow-x: auto">
     <div :style="getGridColumn()" class="column-grid" id="columns">
       <div v-for="(column, index) in columns" :key="index" class="column-title">
-        <p :style="handleColumnTextStyles(column.align)">{{ column.name }}</p>
+        <h2 :style="handleColumnTextStyles(column.align)">{{ column.name }}</h2>
       </div>
     </div>
 
     <div v-for="(item, index) in data" :key="index" id="data-accessor">
       <div :style="getGridColumn()" class="column-grid column-data ">
         <div v-for="(column, index) in columns" :key="index">
-          <p class="data-item " :style="handleColumnTextStyles(column.align, column.color)">
+          <h2 class="data-item " :style="handleColumnTextStyles(column.align, column.color)">
             {{ column.operation ? column.operation(item[column.accessor]) : item[column.accessor] || "-" }}
-          </p>
+          </h2>
         </div>
       </div>
     </div>
@@ -25,9 +25,9 @@
         <i class="fal fa-angle-left"></i>
       </el-button>
 
-      <p style="font-weight: 800; color: #191B1F; opacity: 0.5; margin: 0 19px;">
+      <h2 style="font-weight: 800; color: #191B1F; opacity: 0.5; margin: 0 19px;">
         1 out of 12,300
-      </p>
+      </h2>
       <el-button>
         <i class="fal fa-angle-right"></i>
       </el-button>
@@ -94,7 +94,7 @@ export default {
   display: grid;
   gap: 40px;
   > div,
-  > p {
+  > h2 {
     max-width: 200px;
     word-wrap: break-word;
     &::-webkit-scrollbar {
