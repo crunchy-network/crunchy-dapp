@@ -7,6 +7,7 @@ import FarmCreate from './../components/FarmCreate.vue'
 import FirePit from './../components/FirePit.vue'
 import WtzMain from './../components/WtzMain.vue'
 import IFO from './../components/IFO.vue'
+import HomeWallet from './../components/HomeWallet.vue'
 // import Bakery from './../components/Bakery.vue'
 
 Vue.use(VueRouter);
@@ -14,7 +15,8 @@ Vue.use(VueRouter);
 const routes = [
   { name: 'home', path: '/', component: Home },
   // { path: '/', redirect: '/farms' },
-
+  
+  { name: 'home-wallet', path: '/home-wallet', component: HomeWallet },
   { name: 'wtz', path: '/wtz', component: WtzMain },
 
   { name: 'deep-freezer-listing', path: '/freezers', component: LpLockerListing },
