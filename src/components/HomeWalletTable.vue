@@ -92,9 +92,9 @@ export default {
   border-bottom: 2px solid rgba(25, 27, 31, 0.05);
 }
 
-.column-title {
+.column-title h2 {
   font-weight: 800;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 19px;
   letter-spacing: 0.02em;
   color: #191b1f;
@@ -127,7 +127,7 @@ export default {
 
 .data-item {
   font-weight: 600;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 19px;
   text-align: right;
   letter-spacing: 0.02em;
