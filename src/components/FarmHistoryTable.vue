@@ -25,7 +25,7 @@
         <i class="fal fa-angle-left"></i>
       </el-button>
 
-      <h2 style="font-weight: 800; color: #191B1F; opacity: 0.5; margin: 0 19px;">
+      <h2 style="font-weight: 800;font-size: 14px; color: #191B1F; opacity: 0.5; margin: 0 19px;">
         1 out of 12,300
       </h2>
       <el-button>
@@ -81,9 +81,9 @@ export default {
   border-bottom: 2px solid rgba(25, 27, 31, 0.05);
 }
 
-.column-title {
+.column-title h2 {
   font-weight: 800;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 19px;
   letter-spacing: 0.02em;
   color: #191b1f;
@@ -105,7 +105,7 @@ export default {
 
 .data-item {
   font-weight: 800;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 19px;
   text-align: right;
   letter-spacing: 0.02em;
