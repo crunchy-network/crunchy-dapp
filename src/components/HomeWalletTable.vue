@@ -85,9 +85,10 @@ export default {
 }
 
 #columns {
-  padding: 0 20px;
+  padding: 0 40px;
   padding-top: 10px;
   padding-bottom: 28px;
+  margin-bottom: 20px;
   border-bottom: 2px solid rgba(25, 27, 31, 0.05);
 }
 
@@ -115,12 +116,13 @@ export default {
 }
 
 .column-data {
-  padding: 20px;
+  padding: 20px 40px;
 }
 
 .column-data:hover {
   background: #f3f3f3;
   border-radius: 20px;
+  transition: 0.36s ease all;
 }
 
 .data-item {
@@ -132,9 +134,9 @@ export default {
   color: #191b1f;
 }
 
-.column-data {
-  margin-top: 42px;
-}
+// .column-data {
+//   margin-top: 10px;
+// }
 
 #pagination {
   margin-top: 32px;

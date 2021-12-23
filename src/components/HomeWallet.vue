@@ -69,20 +69,14 @@
           History
         </p>
       </div>
-      <div>
+      <div v-if="activeTab === 'portfolio'">
         <el-card>
           <home-wallet-table
             :columns="[
               { name: 'Asset', accessor: 'asset', align: 'left', operation: insertAssetIcon, html: true },
               { name: 'Balance', accessor: 'balance' },
-              {
-                name: 'Price',
-                accessor: 'price',
-              },
-              {
-                name: 'Value',
-                accessor: 'value',
-              },
+              {name: 'Price', accessor: 'price',},
+              { name: 'Value', accessor: 'value',},
               { name: '', accessor: '', html: true, operation: handleTrade },
             ]"
             :data="tabledata"
@@ -144,7 +138,7 @@ export default {
       }
     },
     handleTrade() {
-      return "<el-button style='color: #555CFF; font-weight: 600' type='text'> Trade </el-button>";
+      return "<el-button style='color: #555CFF; font-weight: 600' type='text'> TRADE </el-button>";
     },
     insertAssetIcon(column) {
       return `<img src="${column?.icon}" style="width: 50px; margin-right: 20px" alt=""> ${column?.asset}`;
