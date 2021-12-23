@@ -31,7 +31,7 @@
         <i class="fal fa-angle-left"></i>
       </el-button>
 
-      <h2 style="font-weight: 800; color: #191B1F; opacity: 0.5; margin: 0 19px;">
+      <h2 style="font-weight: 800; font-size: 14px; color: #191B1F; opacity: 0.5; margin: 0 19px;">
         1 out of 12,300
       </h2>
       <el-button>
