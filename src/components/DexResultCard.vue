@@ -1,7 +1,7 @@
 <template>
-  <div style="margin-bottom: 16px; position: relative">
+  <div style="margin-bottom: 10px; position: relative">
     <div v-if="best" class="best">BEST</div>
-    <el-card style="border: 1px solid rgba(25, 27, 31, 0.1)" v-bind:style="best && 'border-color: #555CFF;'" body-style="padding: 20px 17px">
+    <el-card style="border: 1px solid rgba(25, 27, 31, 0.1)" v-bind:style="best && 'border-color: #555CFF;'" body-style="padding: 12px 10px">
       <el-row type="flex" justify="space-between" align="center">
         <div>
           <h2 style="margin: 0; font-size: 16px; color: #191B1F; font-weight: 500 !important; ">
