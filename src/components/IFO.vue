@@ -500,6 +500,8 @@ export default {
 #ifo {
   position: relative;
   width: 100%;
+  max-width: 1450px;
+  margin: 0 auto;
   margin-top: 100px;
 }
 

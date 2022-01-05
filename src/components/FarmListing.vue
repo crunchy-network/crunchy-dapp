@@ -2,7 +2,7 @@
   <div id="farm-listing">
 
       <!-- class="hidden-sm-and-down" -->
-      <el-header style="position: fixed; height: 90px; top: 0; left: 230px; right: 0; background: #fff; z-index: 999;">
+      <el-header style="position: fixed; height: 90px; top: 0; left: 230px; right: 0; background: #fff; z-index: 999; border-bottom: 1px solid #e8e8e9;">
         <el-row type="flex" class="row-bg" justify="space-between">
           <el-col :span="6">
             <div class="grid-content">
@@ -22,7 +22,6 @@
             </div>
           </el-col>
         </el-row>
-        <el-divider></el-divider>
       </el-header>
 
       <!-- class="hidden-sm-and-down" -->
@@ -33,7 +32,7 @@
             <el-row :gutter="20" type="flex">
               <el-col :span="8">
                 <div class="grid-content" style="height: 100%;">
-                  <el-card v-loading="farms.loading" class="box-card" shadow="never" style="height: 100%; background: #f4f4f4;">
+                  <el-card v-loading="farms.loading" class="box-card" shadow="never" style="height: 100%;">
                     <el-avatar shape="circle" icon="fas fa-farm" :size="48" style="background: #1EC37F; font-size: 24px;"></el-avatar>
                     <el-avatar shape="circle" icon="fas fa-user-cowboy" :size="48" style="font-size: 24px; float: right;"></el-avatar>
                     <div style="font-size: 24px; font-weight: 600; margin-top: 14px; margin-bottom: 8px;">
@@ -501,5 +500,7 @@ export default {
     #farm-listing {
         position: relative;
         width: 100%;
+        max-width: 1450px;
+        margin: 0 auto;
     }
 </style>
