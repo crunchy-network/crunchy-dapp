@@ -7,12 +7,12 @@
     </router-link>
 
     <router-link tag="li" class="el-menu-item" :to="{ name: 'wtz' }" active-class="is-active">
-      <i class="fak fa-crunchy-tez"></i>
+      <i class="fak fa-crunchy-tez-alt"></i>
       <span>WTZ</span>
     </router-link>
 
     <router-link tag="li" class="el-menu-item" :to="{ name: 'deep-freezer-listing' }" active-class="is-active">
-      <i class="fak fa-crunchy-meat-locker"></i>
+      <i class="fak fa-crunchy-locker"></i>
       <span>Deep Freezers</span>
     </router-link>
 

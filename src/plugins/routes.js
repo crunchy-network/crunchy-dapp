@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from './../components/Home.vue'
 import LpLockerListing from './../components/LpLockerListing.vue'
+import LpLockerItem from './../components/LpLockerItem.vue'
 import FarmListing from './../components/FarmListing.vue'
 import FarmCreate from './../components/FarmCreate.vue'
 import FirePit from './../components/FirePit.vue'
@@ -18,6 +19,7 @@ const routes = [
   { name: 'wtz', path: '/wtz', component: WtzMain },
 
   { name: 'deep-freezer-listing', path: '/freezers', component: LpLockerListing },
+  { name: 'deep-freezer-item', path: '/freezers/item', component: LpLockerItem },
   { name: 'ifo', path: '/ifo', component: IFO },
   { name: 'farm-listing', path: '/farms', component: FarmListing },
   { name: 'farm-create', path: '/farms/create', component: FarmCreate },
