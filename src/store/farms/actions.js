@@ -12,17 +12,22 @@ let updateXtzUsdVwapPromise = undefined;
 let updateCurrentPricesPromise = undefined;
 let updateFarmStoragePromise = undefined;
 
+const tokenMetadataCache = {};
 const getFarmTokenMetadata = async (address, tokenId) => {
-  let meta = await getTokenMetadata(address, tokenId)
-    .catch(() => { return {
-      thumbnailUri: "https://static.thenounproject.com/png/796573-200.png"
-    }});
-  meta = merge(meta, { tokenAddress: address, tokenId: tokenId });
-  meta = farmUtils.overrideMetadata(meta);
-  if (Object.prototype.hasOwnProperty.call(meta, 'thumbnailUri')) {
-    meta.thumbnailUri = ipfs.transformUri(meta.thumbnailUri);
+  const cacheKey = `${address}:${tokenId}`;
+  if (!Object.prototype.hasOwnProperty.call(tokenMetadataCache, cacheKey)) {
+    let meta = await getTokenMetadata(address, tokenId)
+      .catch(() => { return {
+        thumbnailUri: "https://static.thenounproject.com/png/796573-200.png"
+      }});
+    meta = merge(meta, { tokenAddress: address, tokenId: tokenId });
+    meta = farmUtils.overrideMetadata(meta);
+    if (Object.prototype.hasOwnProperty.call(meta, 'thumbnailUri')) {
+      meta.thumbnailUri = ipfs.transformUri(meta.thumbnailUri);
+    }
+    tokenMetadataCache[cacheKey] = meta;
   }
-  return meta;
+  return tokenMetadataCache[cacheKey];
 };
 
 export default {
