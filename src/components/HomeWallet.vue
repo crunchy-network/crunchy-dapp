@@ -17,13 +17,13 @@
     <el-main style="margin-top: 100px">
       <el-row type="flex" justify="space-between" :gutter="40">
         <el-col :xs="24" :md="7">
-          <el-card class="top">
+          <el-card v-loading="homeWallet.loading" class="top">
             <h2 style="font-weight: 600; font-size:16px; color: #757679ff">
               Net Worth
             </h2>
 
             <h2 style="font-weight: 600; font-size: 28px; margin-bottom: 0">
-              $400,000
+              {{ vueNumberFormat(homeWallet.netWorth, { prefix: "$", decimal: ".", thousand: ",", precision: 2 }) }}
             </h2>
           </el-card>
         </el-col>
@@ -32,24 +32,24 @@
           <el-divider direction="vertical"> </el-divider>
         </el-col>
         <el-col :xs="24" :md="7">
-          <el-card class="top">
+          <el-card v-loading="homeWallet.loading" class="top">
             <h2 style="font-weight: 600; font-size:16px; color: #757679ff">
               CRUNCH Balance
             </h2>
 
             <h2 style="font-weight: 600; font-size: 28px; margin-bottom: 0">
-              250,000
+              {{ vueNumberFormat(homeWallet.crunchBal, { prefix: "", decimal: ".", thousand: ",", precision: 4 }) }}
             </h2>
           </el-card>
         </el-col>
         <el-col :xs="24" :md="7">
-          <el-card class="top">
+          <el-card v-loading="homeWallet.loading" class="top">
             <h2 style="font-weight: 600; font-size:16px; color: #757679ff">
               crDAO Balance
             </h2>
 
             <h2 style="font-weight: 600; font-size: 28px; margin-bottom: 0">
-              1.3
+              {{ vueNumberFormat(homeWallet.crDaoBal, { prefix: "", decimal: ".", thousand: ",", precision: 4 }) }}
             </h2>
           </el-card>
         </el-col>
@@ -70,16 +70,16 @@
         </p>
       </div>
       <div v-if="activeTab === 'portfolio'">
-        <el-card>
+        <el-card v-loading="homeWallet.loading">
           <home-wallet-table
             :columns="[
               { name: 'Asset', accessor: 'asset', align: 'left', operation: insertAssetIcon, html: true },
-              { name: 'Balance', accessor: 'balance' },
-              {name: 'Price', accessor: 'price',},
-              { name: 'Value', accessor: 'value',},
-              { name: '', accessor: '', html: true, operation: handleTrade },
+              { name: 'Balance', accessor: 'balance', vnfConfig: { prefix: '', decimal: '.', thousand: ',', precision: 4 } },
+              { name: 'Price', accessor: 'price', vnfConfig: { prefix: '$', decimal: '.', thousand: ',', precision: 2 } },
+              { name: 'Value', accessor: 'value', vnfConfig: { prefix: '$', decimal: '.', thousand: ',', precision: 2 } },
+              { name: '', accessor: '', html: true },
             ]"
-            :data="tabledata"
+            :data="homeWallet.assets"
           />
         </el-card>
       </div>
@@ -88,6 +88,7 @@
 </template>
 
 <script>
+import { mapState, mapActions } from "vuex";
 import HomeWalletTable from "./HomeWalletTable.vue";
 import NavWallet from "./NavWallet.vue";
 export default {
@@ -96,39 +97,28 @@ export default {
   data() {
     return {
       activeTab: "portfolio",
-      tabledata: [
-        {
-          asset: "EASY",
-          balance: "200,000",
-          price: "$0.23",
-          value: "$46,000",
-          icon: "https://res.cloudinary.com/melvin-manni/image/upload/v1640189402/samples/xksnrwhellld4rma4uc8.svg",
-        },
-        {
-          asset: "GIF",
-          balance: "50,000",
-          price: "$1",
-          value: "$50,000",
-          icon: "https://res.cloudinary.com/melvin-manni/image/upload/v1640189398/samples/bcwvt8dhfcns7hq9z2nc.svg",
-        },
-        {
-          asset: "IDZ",
-          balance: "10,000",
-          price: "$0.40",
-          value: "$4,000",
-          icon: "https://res.cloudinary.com/melvin-manni/image/upload/v1640189401/samples/osb32qhsrb1nocptmc3t.svg",
-        },
-        {
-          asset: "CRUNCH",
-          balance: "250,000",
-          price: "$1.20",
-          value: "$300,000",
-          icon: "https://res.cloudinary.com/melvin-manni/image/upload/v1640189400/samples/ykojhvxwce82tm4n5rso.svg",
-        },
-      ],
+      tabledata: [],
     };
   },
+  computed: {
+    ...mapState(["homeWallet"]),
+    ...mapActions(["loadWalletAsssets"]),
+  },
+  mounted() {
+    setTimeout(() => {
+      this.loadWalletAsssets;
+    }, 1000);
+  },
+  created() {
+    setInterval(() => {
+      this.reload();
+    }, 1000 * 60 * 5);
+  },
   methods: {
+    reload() {
+      this.loadWalletAsssets;
+      this.homeWallet.loading;
+    },
     isActiveTab(tab) {
       return this.activeTab === tab && " border-bottom: 6px solid #555CFF; color: #555CFF";
     },
@@ -141,8 +131,12 @@ export default {
       return "<el-button style='color: #555CFF; font-weight: 600' type='text'> TRADE </el-button>";
     },
     insertAssetIcon(column) {
-      return `<img src="${column?.icon}" style="width: 50px; margin-right: 20px" alt=""> ${column?.asset}`;
+      return `<div style="max-width: 45px; max-height: 45px; display: flex; align-items:center"><img src="${column?.icon}" style="width: 100%; height: 100%; margin-right: 20px" alt=""> ${column?.asset}</div>`;
     },
+    // formatTableUSD(_, item) {
+    //   console.log(VueNumberFormat(item, { prefix: "$", decimal: ".", thousand: ",", precision: 4 }));
+    //   return "";
+    // },
   },
 };
 </script>

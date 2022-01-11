@@ -6,7 +6,7 @@
       </div>
     </div>
 
-    <div v-for="(item, index) in data" :key="index" id="data-accessor">
+    <div v-for="(item, index) in visibleData" :key="index" id="data-accessor">
       <div :style="getGridColumn()" class="column-grid column-data ">
         <div v-for="(column, index) in columns" :key="index">
           <div
@@ -16,29 +16,36 @@
             v-html="column.operation ? column.operation(item) : item[column.accessor] || '<div></div>'"
           ></div>
           <h2 v-if="!column.html" class="data-item " :style="handleColumnTextStyles(column.align, column.color)">
-            {{ column.operation ? column.operation(item) : item[column.accessor] || "-" }}
+            {{
+              column.operation
+                ? column.operation(item, item[column.accessor])
+                : column.vnfConfig
+                ? vueNumberFormat(item[column.accessor], column.vnfConfig || {})
+                : item[column.accessor] || "-"
+            }}
           </h2>
         </div>
       </div>
     </div>
 
     <div id="pagination">
-      <el-button style="margin-right: 12px">
+      <el-button @click="handleStart" :disabled="currentPage === 0" style="margin-right: 12px">
         <i class="fal fa-angle-left"></i>
         <i class="fal fa-angle-left"></i>
       </el-button>
-      <el-button>
+      <el-button @click="handlePrevPage" :disabled="currentPage === 0">
         <i class="fal fa-angle-left"></i>
       </el-button>
 
       <h2 style="font-weight: 800; font-size: 14px; color: #191B1F; opacity: 0.5; margin: 0 19px;">
-        1 out of 12,300
+        {{ vueNumberFormat(nextPage > pages ? pages : nextPage, { prefix: "", decimal: ".", thousand: ",", precision: 0 }) }} out of
+        {{ vueNumberFormat(pages, { prefix: "", decimal: ".", thousand: ",", precision: 0 }) }}
       </h2>
-      <el-button>
+      <el-button @click="handleNextPage" :disabled="nextPage + 1 > pages">
         <i class="fal fa-angle-right"></i>
       </el-button>
 
-      <el-button style="margin-left: 12px">
+      <el-button @click="handleEnd" :disabled="nextPage + 1 > pages" style="margin-left: 12px">
         <i class="fal fa-angle-right"></i>
         <i class="fal fa-angle-right"></i>
       </el-button>
@@ -48,15 +55,28 @@
 <script>
 export default {
   name: "HomeWalletTable",
+  data() {
+    return { currentPage: 0, visibleData: [], pages: 0, nextPage: 1, prevPage: 0 };
+  },
   props: {
-    columns: Array.of({
-      name: String,
-      accessor: String,
-      color: { type: String, default: "#191B1F" },
-      operation: Function,
-      align: { type: String, default: "right" },
-    }),
+    // @columns
+    // Array.of({
+    //   name: String,
+    //   accessor: String,
+    //   color: { type: String, default: "#191B1F" },
+    //   operation: Function,
+    //   align: { type: String, default: "right" },
+    // vnfConfig config details for vueNumberFormat
+    // })
+    columns: Array,
     data: Array,
+  },
+  watch: {
+    data: function() {
+      if (this.data.length > 0) {
+        this.paginationHandler();
+      }
+    },
   },
   methods: {
     getGridColumn() {
@@ -73,6 +93,53 @@ export default {
     },
     handleHtmlJustify(alignment) {
       return `justify-content: ${alignment || "right"}`;
+    },
+
+    paginationHandler() {
+      this.pages = Math.ceil(this.data.length / 8);
+
+      this.handleVisibleData();
+    },
+
+    handleVisibleData() {
+      const next = this.nextPage > this.pages ? this.pages : this.nextPage;
+      this.visibleData = this.data.slice((next - 1) * 8, this.nextPage * 8 > this.data.length ? this.data.length : next * 8);
+    },
+
+    handleNextPage() {
+      if (this.nextPage + 1 <= this.pages) {
+        this.currentPage = this.nextPage;
+        this.prevPage = this.nextPage - 1;
+        this.nextPage = this.nextPage + 1;
+        this.handleVisibleData();
+      }
+    },
+
+    handlePrevPage() {
+      if (this.prevPage - 1 >= 0) {
+        this.currentPage = this.prevPage;
+        this.nextPage = this.prevPage + 1;
+        this.prevPage = this.prevPage - 1;
+        this.handleVisibleData();
+      }
+    },
+
+    handleEnd() {
+      if (this.currentPage !== this.pages) {
+        this.currentPage = this.pages;
+        this.nextPage = this.pages;
+        this.prevPage = this.pages - 1;
+        this.handleVisibleData();
+      }
+    },
+
+    handleStart() {
+      if (this.currentPage !== 0) {
+        this.currentPage = 0;
+        this.nextPage = 1;
+        this.prevPage = 0;
+        this.handleVisibleData();
+      }
     },
   },
 };
