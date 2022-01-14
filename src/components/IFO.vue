@@ -1,57 +1,30 @@
 <template>
-  <div id="#ifo">
+  <div id="#ifo" style=" max-width: 1450px;margin: auto;">
     <AppBar />
     <div id="wrapper">
-      <el-row :gutter="40">
+      <el-row :gutter="40" v-if="!loading">
         <el-col :xs="24" :md="12"
-          ><el-card class="grid-content box top-box box-card" shadow="never">
+          ><el-card class="grid-content box top-box box-card" shadow="never" style="min-height: 489px">
             <div class="column-center">
               <div class="logo-wrapper">
-                <img src="./../assets/pixel.png" class="logo" />
+                <img :src="images[project.projectLogo]" class="logo" />
               </div>
             </div>
 
             <div class="socials">
-              <a
-                href="https://pixelpotus.medium.com/"
-                rel="nonreffere"
-                target="_blank"
+              <a 
+                v-for="link in project.links" 
+                :key="link.name"
+                :href="link.link"
+                rel="noreffere"
+                target="blank"
                 class="social-link"
               >
-                Medium
-              </a>
-              <a
-                href="https://twitter.com/PixelPotus"
-                rel="nonreffere"
-                target="_blank"
-                class="social-link"
-              >
-                Twitter
-              </a>
-              <a
-                href="https://discord.gg/CbdbvwtwkM"
-                rel="nonreffere"
-                target="_blank"
-                class="social-link"
-              >
-                Discord
-              </a>
-              <a
-                href="https://t.me/pixelpotus"
-                rel="nonreffere"
-                target="_blank"
-                class="social-link"
-              >
-                Telegram
+                {{link.name}}
               </a>
             </div>
             <p>
-              Pixel is bringing gamification to NFTs and Defi. Their first
-              project, PixelPotus.com, is an early collectable on Tezos and has
-              been in the top 5 on DappRadar for months. The Pixel Debates TCG
-              release is quickly approaching and will be the first major utility
-              for the PXL token. This is just the beginning from a proven team
-              with an exciting roadmap.
+             {{project.description}}
             </p>
 
             <div class="swap-box space-top">
@@ -60,7 +33,7 @@
             </div>
           </el-card>
         </el-col>
-        <el-col :xs="24" :md="12"
+        <el-col :xs="24" :md="12" v-if="project.isIFO"
           ><el-card class="grid-content box top-box swap-box box-card" v-loading="ifo.loading">
             <!-- <div class="column-center">
               <h1 class="swap-title">Token Swap Details</h1>
@@ -81,7 +54,7 @@
                 successful by visitiing tzkt.io and searching your address.
               </p>
             </div> -->
-            <div class="column-center">
+            <div class="column-center" >
               <h1 class="title">Initial Farm Offering</h1>
 
               <div class="data-section">
@@ -100,9 +73,12 @@
                   </div>
 
                   <div class="data-col">
-                    <p>
+                    <p v-if="new Date().getTime() < new Date(project.endTime).getTime()">
                       {{ displayDays }} days {{ displayHours }} hr
                       {{ displayMinutes }} min
+                    </p>
+                    <p v-if="new Date().getTime() > new Date(project.endTime).getTime()">
+                      Ended
                     </p>
                   </div>
                 </div>
@@ -123,7 +99,7 @@
                   </div>
 
                   <div class="data-col">
-                    <p>$PXL</p>
+                    <p>${{project.tokenSymbol}}</p>
                   </div>
                 </div>
               </div>
@@ -226,9 +202,9 @@
               </div>
 
               <div style="width: 100%; margin-top: 18px;">
-                <el-button v-if="wallet.connected === false" type="success" @click="connectWallet" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px;">Connect Wallet</el-button>
+                <el-button v-if="wallet.connected === false" type="success" @click="connectWallet" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px; color: #ffffff;">Connect Wallet</el-button>
                 <!-- <el-button v-else :disabled="!live" type="primary" @click="showStakeDialog" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px;">FARM</el-button> -->
-                <el-button v-else :disabled="!live" type="primary" @click="harvestIfo" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px;">HARVEST</el-button>
+                <el-button v-else :disabled="!live" type="primary" @click="harvestIfo" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px; color:#ffffff; ">HARVEST</el-button>
               </div>
 
             </div>
@@ -240,10 +216,9 @@
           
         </el-col>
       </el-row> -->
-
-      <el-row class="tier-wrapper" :gutter="40">
-        <el-col :xs="24" :md="12">
-          <div class="grid-content box info-box">
+      <el-row :gutter="40" style="margin-top: 1em;">
+          <el-col :xs="24" :md="12">
+            <el-card class="grid-content  box-card info-box" >
             <div class="column-center">
               <h1 class="title">Pool Info</h1>
             </div>
@@ -254,7 +229,7 @@
               </div>
 
               <div class="data-col">
-                <p>30 October 2021 14:00:00 UTC</p>
+                <p>{{project.startTime | moment("calendar")}}</p>
               </div>
             </div>
 
@@ -264,7 +239,7 @@
               </div>
 
               <div class="data-col">
-                <p>1 November 2021 14:00:00 UTC</p>
+                <p>{{project.endDate | moment("calendar")}}</p>
               </div>
             </div>
 
@@ -294,13 +269,13 @@
               </div>
 
               <div class="data-col">
-                <p>{{ vueNumberFormat(ifo.data.offeringSupply, {prefix: '', decimal: '.', thousand: ',', precision: 0}) }} $PXL</p>
+                <p>{{ vueNumberFormat(ifo.data.offeringSupply, {prefix: '', decimal: '.', thousand: ',', precision: 0}) }} ${{project.tokenSymbol}}</p>
               </div>
             </div>
-          </div>
+          </el-card>
         </el-col>
-        <el-col :xs="24" :md="12">
-          <div class="grid-content box info-box">
+       <el-col :xs="24" :md="12">
+            <el-card class="grid-content  box-card info-box" >
             <div class="column-center">
               <h1 class="title">Token Information</h1>
             </div>
@@ -311,7 +286,7 @@
               </div>
 
               <div class="data-col">
-                <p>Pixel</p>
+                <p>{{project.tokenName}}</p>
               </div>
             </div>
 
@@ -321,7 +296,7 @@
               </div>
 
               <div class="data-col">
-                <p>PXL</p>
+                <p>{{project.tokenSymbol}}</p>
               </div>
             </div>
 
@@ -354,7 +329,7 @@
                 <p>6</p>
               </div>
             </div>
-          </div>
+            </el-card>
         </el-col>
       </el-row>
     </div>
@@ -392,10 +367,13 @@
 <script>
 import AppBar from "./AppBar.vue";
 import { mapState, mapActions } from 'vuex'
-
+import { gatherAllProjectJsonFiles, importAll } from '../lib/JsonHelper'
 export default {
   components: { AppBar },
   data: () => ({
+    project: null,
+    images: importAll(require.context('../assets/project_images', false, /\.(png|jpe?g|svg)$/)),
+    loading: true,
     displayDays: "",
     displayHours: "",
     displayMinutes: "",
@@ -426,7 +404,12 @@ export default {
     },
   },
   created() {
+    this.fetchProject();
     this.refresh();
+  },
+    watch: {
+    // call again the method if the route changes
+    '$route': 'fetchProject'
   },
   methods: {
     ...mapActions([
@@ -436,8 +419,14 @@ export default {
       'harvestIfo'
     ]),
 
+    fetchProject() {
+      let project = gatherAllProjectJsonFiles().find((p)=>{ return(p.tokenName === this.$route.params.tokenName)})
+      console.log(this.$route.params.tokenName)
+      this.project = project;
+      this.loading = false;
+    },
     refresh() {
-      this.loadIfoData();
+        this.loadIfoData();
     },
 
     formatCount(value) {
@@ -446,15 +435,15 @@ export default {
     showTimer() {
       const vm = this;
       // vm.live = true;
-      vm.live = (new Date().getTime() > new Date("01 November 2021 18:00 UTC").getTime());
+      vm.live = (new Date().getTime() > new Date(this.project.startTime).getTime());
       const timer = setInterval(() => {
-        let startDate = new Date("01 November 2021 18:00 UTC").getTime();
+        let startTime = new Date(this.project.startTime).getTime();
         if (vm.live) {
-          startDate = new Date("01 November 2021 18:00 UTC").getTime() + (1296000 * 1000);
+          startTime =new Date(this.project.startTime).getTime() + (1296000 * 1000);
         }
 
         const currentDate = new Date().getTime();
-        let dateDifference = startDate - currentDate;
+        let dateDifference = startTime - currentDate;
 
         if (vm.live && dateDifference <= 0) {
           vm.ended = true;
@@ -500,8 +489,6 @@ export default {
 #ifo {
   position: relative;
   width: 100%;
-  max-width: 1450px;
-  margin: 0 auto;
   margin-top: 100px;
 }
 
@@ -664,7 +651,7 @@ p.mid {
 }
 
 .detail-row .data-col p {
-  color: rgba(117, 118, 121, 0.6);
+  color: #757679;
   font-weight: 800;
   font-size: 12px;
   text-align: left;
@@ -672,7 +659,7 @@ p.mid {
 
 .detail-row .data-col:nth-child(2) p {
   text-align: right;
-  color: #757679;
+  color: #303133;
   font-weight: 700;
   font-size: 14px;
 }
@@ -682,7 +669,7 @@ p.mid {
   font-size: 20px;
   line-height: 30px;
   text-align: center;
-  color: #757679;
+  color: #303133;
   margin-bottom: 15px;
 }
 
@@ -695,6 +682,13 @@ p.mid {
     padding-bottom: 0px;
     margin-bottom: 0px;
   }
+}
+
+.el-col {
+    color: #303133;
+}
+.el-card *{
+    color: #303133;
 }
 
 @media all and (max-width: 1200px) {
