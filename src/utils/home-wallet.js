@@ -3,21 +3,8 @@ import BigNumber from "bignumber.js";
 import coingecko from "./coingecko";
 import ipfs from "./ipfs";
 
-const makeReqest = async ({ contract, id }) => {
-  return axios.get(`${process.env.VUE_APP_TEZTOOLS_API_URL}/token/${contract}_${id}/price`);
-};
-
-// const sortArrObjDesc = (array = [], param = "") => {
-//   for (let i = 0; i < array.length; i++) {
-//     if (i !== 0) {
-//       const t = array[i];
-//       if (array[i - 1][param] > array[i][param]) {
-//         array[i] = array[i - 1];
-//         array[i - 1] = t;
-//       }
-//     }
-//   }
-//   return array;
+// const makeReqest = async ({ contract, id }) => {
+//   return axios.get(`${process.env.VUE_APP_TEZTOOLS_API_URL}/token/${contract}${id ? "_" + id : ""}/price`);
 // };
 
 export default {
@@ -50,16 +37,19 @@ export default {
         });
       }
 
+      // Get all wallet prices
+
+      const {
+        data: { contracts: prices },
+      } = await axios.get("https://api.teztools.io/v1/prices");
+
       for (let i = 0; i < balances.length; i++) {
+        const currentPrice =
+          prices.filter((val) => val.symbol === balances[i].symbol).length > 0
+            ? prices.filter((val) => val.symbol === balances[i].symbol)[0].currentPrice
+            : new BigNumber(0);
         const bal = new BigNumber(balances[i]?.balance);
         const balance = bal.div(new BigNumber(10).pow(balances[i]?.decimals));
-
-        const {
-          data: { currentPrice },
-        } = await makeReqest({
-          contract: balances[i]?.contract,
-          id: balances[i]?.token_id,
-        });
 
         const price = new BigNumber(currentPrice).multipliedBy(new BigNumber(usdMul));
         const value = balance.multipliedBy(price);

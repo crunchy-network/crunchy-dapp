@@ -1,20 +1,5 @@
 <template>
   <div>
-    <el-header style="position: fixed; height: 90px; top: 0; left: 230px; right: 0; background: #fff; z-index: 999;">
-      <el-row type="flex" class="row-bg" justify="space-between">
-        <el-col :span="6">
-          <div class="grid-content"></div>
-        </el-col>
-        <el-col :span="12">
-          <div class="grid-content" style="text-align: right;">
-            <nav-wallet />
-          </div>
-        </el-col>
-      </el-row>
-      <el-divider></el-divider>
-    </el-header>
-
-    <el-main style="margin-top: 100px">
       <el-row type="flex" justify="space-between" :gutter="40">
         <el-col :xs="24" :md="7">
           <el-card v-loading="homeWallet.loading" class="top">
@@ -56,18 +41,18 @@
       </el-row>
 
       <div class="tab-wrapper">
-        <p class="tab-text" :style="isActiveTab('portfolio')" @click="setActiveTab('portfolio')">
+        <button class="tab-text" :style="isActiveTab('portfolio')" @click="setActiveTab('portfolio')">
           Portfolio
-        </p>
-        <p class="tab-text" :style="isActiveTab('nfts')" @click="setActiveTab('nfts')">
+        </button>
+        <button class="tab-text" disabled :style="isActiveTab('nfts')" @click="setActiveTab('nfts')">
           NFTs
-        </p>
-        <p class="tab-text" :style="isActiveTab('farming')" @click="setActiveTab('farming')">
+        </button>
+        <button class="tab-text" disabled :style="isActiveTab('farming')" @click="setActiveTab('farming')">
           Farming
-        </p>
-        <p class="tab-text" :style="isActiveTab('history')" @click="setActiveTab('history')">
+        </button>
+        <button class="tab-text" disabled :style="isActiveTab('history')" @click="setActiveTab('history')">
           History
-        </p>
+        </button>
       </div>
       <div v-if="activeTab === 'portfolio'">
         <el-card v-loading="homeWallet.loading">
@@ -83,16 +68,14 @@
           />
         </el-card>
       </div>
-    </el-main>
   </div>
 </template>
 
 <script>
 import { mapState, mapActions } from "vuex";
 import HomeWalletTable from "./HomeWalletTable.vue";
-import NavWallet from "./NavWallet.vue";
 export default {
-  components: { NavWallet, HomeWalletTable },
+  components: { HomeWalletTable },
   name: "HomeWallet",
   data() {
     return {
@@ -173,5 +156,11 @@ export default {
   cursor: pointer;
   transition: 0.3s ease all;
   margin: 0;
+  border: 0;
+  background: transparent;
+  &:disabled {
+    color: #191b1f66;
+    cursor: not-allowed;
+  }
 }
 </style>
