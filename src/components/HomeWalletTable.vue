@@ -116,7 +116,7 @@ export default {
     },
 
     handlePrevPage() {
-      if (this.prevPage - 1 >= 0) {
+      if (this.currentPage > 0) {
         this.currentPage = this.prevPage;
         this.nextPage = this.prevPage + 1;
         this.prevPage = this.prevPage - 1;

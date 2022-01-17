@@ -11,7 +11,7 @@ export default {
   async fetchAssetsBal(pkh) {
     const assets = [];
     try {
-      const {
+      let {
         data: { balances },
       } = await axios.get(`https://api.better-call.dev/v1/account/mainnet/${pkh}/token_balances`);
       const usdMul = await coingecko.getXtzUsdPrice();
@@ -43,17 +43,23 @@ export default {
         data: { contracts: prices },
       } = await axios.get("https://api.teztools.io/v1/prices");
 
+      balances = balances.filter((val) => !val.artifact_uri);
+      console.log(balances);
+
       for (let i = 0; i < balances.length; i++) {
         const currentPrice =
           prices.filter((val) => val.tokenAddress === balances[i].contract).length > 0
-            ? prices.filter((val) => val.tokenAddress === balances[i].contract)[0].currentPrice
+            ? prices.filter((val) => val.tokenAddress === balances[i].contract)[0]?.currentPrice
             : new BigNumber(0);
+        const thumbnailUri =
+          prices.filter((val) => val.tokenAddress === balances[i].contract).length > 0 &&
+          prices.filter((val) => val.tokenAddress === balances[i].contract)[0]?.thumbnailUri;
         const bal = new BigNumber(balances[i]?.balance);
         const balance = bal.div(new BigNumber(10).pow(balances[i]?.decimals));
 
         const price = new BigNumber(currentPrice).multipliedBy(new BigNumber(usdMul));
         const value = balance.multipliedBy(price);
-        const icon = ipfs.transformUri(balances[i]?.thumbnail_uri);
+        const icon = ipfs.transformUri(balances[i]?.thumbnail_uri || thumbnailUri || "");
 
         const valObj = {
           asset: balances[i]?.symbol,

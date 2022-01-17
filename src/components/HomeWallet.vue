@@ -1,73 +1,73 @@
 <template>
   <div>
-      <el-row type="flex" justify="space-between" :gutter="40">
-        <el-col :xs="24" :md="7">
-          <el-card v-loading="homeWallet.loading" class="top">
-            <h2 style="font-weight: 600; font-size:16px; color: #757679ff">
-              Net Worth
-            </h2>
+    <el-row type="flex" justify="space-between" :gutter="40">
+      <el-col :xs="24" :md="7">
+        <el-card v-loading="homeWallet.loading" class="top">
+          <h2 style="font-weight: 600; font-size:16px; color: #757679ff">
+            Net Worth
+          </h2>
 
-            <h2 style="font-weight: 600; font-size: 28px; margin-bottom: 0">
-              {{ vueNumberFormat(homeWallet.netWorth, { prefix: "$", decimal: ".", thousand: ",", precision: 2 }) }}
-            </h2>
-          </el-card>
-        </el-col>
-
-        <el-col style="flex: 1;display: flex; justify-content: center; align-items: center">
-          <el-divider direction="vertical"> </el-divider>
-        </el-col>
-        <el-col :xs="24" :md="7">
-          <el-card v-loading="homeWallet.loading" class="top">
-            <h2 style="font-weight: 600; font-size:16px; color: #757679ff">
-              CRUNCH Balance
-            </h2>
-
-            <h2 style="font-weight: 600; font-size: 28px; margin-bottom: 0">
-              {{ vueNumberFormat(homeWallet.crunchBal, { prefix: "", decimal: ".", thousand: ",", precision: 4 }) }}
-            </h2>
-          </el-card>
-        </el-col>
-        <el-col :xs="24" :md="7">
-          <el-card v-loading="homeWallet.loading" class="top">
-            <h2 style="font-weight: 600; font-size:16px; color: #757679ff">
-              crDAO Balance
-            </h2>
-
-            <h2 style="font-weight: 600; font-size: 28px; margin-bottom: 0">
-              {{ vueNumberFormat(homeWallet.crDaoBal, { prefix: "", decimal: ".", thousand: ",", precision: 4 }) }}
-            </h2>
-          </el-card>
-        </el-col>
-      </el-row>
-
-      <div class="tab-wrapper">
-        <button class="tab-text" :style="isActiveTab('portfolio')" @click="setActiveTab('portfolio')">
-          Portfolio
-        </button>
-        <button class="tab-text" disabled :style="isActiveTab('nfts')" @click="setActiveTab('nfts')">
-          NFTs
-        </button>
-        <button class="tab-text" disabled :style="isActiveTab('farming')" @click="setActiveTab('farming')">
-          Farming
-        </button>
-        <button class="tab-text" disabled :style="isActiveTab('history')" @click="setActiveTab('history')">
-          History
-        </button>
-      </div>
-      <div v-if="activeTab === 'portfolio'">
-        <el-card v-loading="homeWallet.loading">
-          <home-wallet-table
-            :columns="[
-              { name: 'Asset', accessor: 'asset', align: 'left', operation: insertAssetIcon, html: true },
-              { name: 'Balance', accessor: 'balance', vnfConfig: { prefix: '', decimal: '.', thousand: ',', precision: 4 } },
-              { name: 'Price', accessor: 'price', vnfConfig: { prefix: '$', decimal: '.', thousand: ',', precision: 2 } },
-              { name: 'Value', accessor: 'value', vnfConfig: { prefix: '$', decimal: '.', thousand: ',', precision: 2 } },
-              { name: '', accessor: '', html: true },
-            ]"
-            :data="homeWallet.assets"
-          />
+          <h2 style="font-weight: 600; font-size: 28px; margin-bottom: 0">
+            {{ vueNumberFormat(homeWallet.netWorth, { prefix: "$", decimal: ".", thousand: ",", precision: 2 }) }}
+          </h2>
         </el-card>
-      </div>
+      </el-col>
+
+      <el-col style="flex: 1;display: flex; justify-content: center; align-items: center">
+        <el-divider direction="vertical"> </el-divider>
+      </el-col>
+      <el-col :xs="24" :md="7">
+        <el-card v-loading="homeWallet.loading" class="top">
+          <h2 style="font-weight: 600; font-size:16px; color: #757679ff">
+            CRUNCH Balance
+          </h2>
+
+          <h2 style="font-weight: 600; font-size: 28px; margin-bottom: 0">
+            {{ vueNumberFormat(homeWallet.crunchBal, { prefix: "", decimal: ".", thousand: ",", precision: 4 }) }}
+          </h2>
+        </el-card>
+      </el-col>
+      <el-col :xs="24" :md="7">
+        <el-card v-loading="homeWallet.loading" class="top">
+          <h2 style="font-weight: 600; font-size:16px; color: #757679ff">
+            crDAO Balance
+          </h2>
+
+          <h2 style="font-weight: 600; font-size: 28px; margin-bottom: 0">
+            {{ vueNumberFormat(homeWallet.crDaoBal, { prefix: "", decimal: ".", thousand: ",", precision: 4 }) }}
+          </h2>
+        </el-card>
+      </el-col>
+    </el-row>
+
+    <div class="tab-wrapper">
+      <button class="tab-text" :style="isActiveTab('portfolio')" @click="setActiveTab('portfolio')">
+        Portfolio
+      </button>
+      <button class="tab-text" disabled :style="isActiveTab('nfts')" @click="setActiveTab('nfts')">
+        NFTs
+      </button>
+      <button class="tab-text" disabled :style="isActiveTab('farming')" @click="setActiveTab('farming')">
+        Farming
+      </button>
+      <button class="tab-text" disabled :style="isActiveTab('history')" @click="setActiveTab('history')">
+        History
+      </button>
+    </div>
+    <div v-if="activeTab === 'portfolio'">
+      <el-card v-loading="homeWallet.loading">
+        <home-wallet-table
+          :columns="[
+            { name: 'Asset', accessor: 'asset', align: 'left', operation: insertAssetIcon, html: true },
+            { name: 'Balance', accessor: 'balance', vnfConfig: { prefix: '', decimal: '.', thousand: ',', precision: 4 } },
+            { name: 'Price', accessor: 'price', vnfConfig: { prefix: '$', decimal: '.', thousand: ',', precision: 2 } },
+            { name: 'Value', accessor: 'value', vnfConfig: { prefix: '$', decimal: '.', thousand: ',', precision: 2 } },
+            { name: '', accessor: '', html: true },
+          ]"
+          :data="homeWallet.assets"
+        />
+      </el-card>
+    </div>
   </div>
 </template>
 
@@ -90,7 +90,7 @@ export default {
   mounted() {
     setTimeout(() => {
       this.loadWalletAsssets;
-    }, 1000);
+    }, 300);
   },
   created() {
     setInterval(() => {
