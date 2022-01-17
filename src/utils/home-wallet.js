@@ -45,8 +45,8 @@ export default {
 
       for (let i = 0; i < balances.length; i++) {
         const currentPrice =
-          prices.filter((val) => val.symbol === balances[i].symbol).length > 0
-            ? prices.filter((val) => val.symbol === balances[i].symbol)[0].currentPrice
+          prices.filter((val) => val.contract === balances[i].contract).length > 0
+            ? prices.filter((val) => val.contract === balances[i].contract)[0].currentPrice
             : new BigNumber(0);
         const bal = new BigNumber(balances[i]?.balance);
         const balance = bal.div(new BigNumber(10).pow(balances[i]?.decimals));
