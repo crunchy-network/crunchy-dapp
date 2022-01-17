@@ -9,6 +9,7 @@
         right: 0;
         background: #fff;
         z-index: 999;
+        border-bottom: 1px solid #e8e8e9;
       "
     >
       <el-row type="flex" class="row-bg" justify="space-between">
@@ -21,7 +22,6 @@
           </div>
         </el-col>
       </el-row>
-      <el-divider></el-divider>
     </el-header>
     <div class="spacing"></div>
   </div>

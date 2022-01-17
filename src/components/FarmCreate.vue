@@ -2,7 +2,7 @@
   <div id="farm-create" class="farm-create">
 
       <!-- class="hidden-sm-and-down" -->
-      <el-header style="position: fixed; height: 90px; top: 0; left: 230px; right: 0; background: #fff; z-index: 999;">
+      <el-header style="position: fixed; height: 90px; top: 0; left: 230px; right: 0; background: #fff; z-index: 999; border-bottom: 1px solid #e8e8e9;">
         <el-row type="flex" class="row-bg" justify="space-between">
           <el-col :span="6">
           </el-col>
@@ -12,7 +12,6 @@
             </div>
           </el-col>
         </el-row>
-        <el-divider></el-divider>
       </el-header>
 
       <!-- class="hidden-sm-and-down" -->
@@ -27,14 +26,12 @@
           </el-col>
         </el-row>
 
-        <el-row type="flex" style="margin-top: 25px;">
-          <el-col :span="24">
-            <div class="grid-content">
-              <el-card class="box-card" shadow="never" v-loading="loading">
-                <el-form ref="form" :model="form" :rules="rules" label-width="135px" label-position="right">
+        <el-form ref="form" :model="form" :rules="rules" label-width="135px" label-position="right">
 
-                  <el-row type="flex">
-                    <el-col :span="15">
+        <el-row :gutter="20" type="flex" style="margin-top: 25px;">
+          <el-col :span="16">
+            <div class="grid-content" style="height: 100%;">
+              <el-card class="box-card" shadow="always" v-loading="loading" style="height: 100%;">
 
                       <el-alert
                         title="Helpful Tip"
@@ -164,11 +161,14 @@
                         </el-select>
                       </el-form-item>
 
-                    </el-col>
-                    <el-col :span="1" style="border-right: 2px solid #DCDFE6;">
-                    </el-col>
-                    <el-col :span="8">
-                      <div style="padding-left: 20px">
+              </el-card>
+            </div>
+          </el-col>
+
+          <el-col :span="8">
+            <div class="grid-content" style="height: 100%;">
+              <el-card class="box-card" shadow="never" style="height: 100%;">
+
                         <h3 style="margin-top: 0;">Farm Summary</h3>
                         <el-row type="flex" align="middle" style="font-size: 14px; margin-bottom: 14px;">
                           <el-col :span="8" style="font-weight: bold;">Pool Token:</el-col>
@@ -245,26 +245,19 @@
                           <el-col :span="16" v-if="form.serviceFeeId.length === 0 || form.rewardTokenName.length === 0">--</el-col>
                         </el-row>
 
-                        <el-divider></el-divider>
-
-                        <el-row type="flex" style="font-size: 14px; margin-bottom: 14px;">
-                          <el-col :span="8" style="font-weight: bold;"></el-col>
-                          <el-col :span="16">
-                            <el-button v-if="wallet.connected" type="primary" @click="onSubmit" style="border-radius: 10px; font-weight: bold;">Create Farm</el-button>
-                            <el-button v-if="wallet.connected === false" type="success" @click="connectWallet" style="border-radius: 10px; font-weight: bold;">Connect Wallet</el-button>
-                          </el-col>
-                        </el-row>
-
-                      </div>
-                    </el-col>
-
-                  </el-row>
-
-                </el-form>
               </el-card>
             </div>
           </el-col>
         </el-row>
+
+        <el-row :gutter="20" type="flex" style="margin-top: 25px;">
+          <el-col :span="8" :offset="16" style="text-align: right;">
+            <el-button v-if="wallet.connected" type="primary" @click="onSubmit" style="border-radius: 10px; font-weight: bold;">Create Farm</el-button>
+            <el-button v-if="wallet.connected === false" type="success" @click="connectWallet" style="border-radius: 10px; font-weight: bold;">Connect Wallet</el-button>
+          </el-col>
+        </el-row>
+
+        </el-form>
 
       </el-main>
 
@@ -605,6 +598,8 @@ export default {
 #farm-create {
     position: relative;
     width: 100%;
+    max-width: 1450px;
+    margin: 0 auto;
 }
 
 
