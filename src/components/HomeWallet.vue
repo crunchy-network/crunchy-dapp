@@ -88,9 +88,7 @@ export default {
     ...mapActions(["loadWalletAsssets"]),
   },
   mounted() {
-    setTimeout(() => {
-      this.loadWalletAsssets;
-    }, 300);
+    this.loadWalletAsssets;
   },
   created() {
     setInterval(() => {
