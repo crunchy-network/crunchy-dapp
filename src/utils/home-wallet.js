@@ -55,28 +55,36 @@ export default {
       const {
         data: { contracts: prices },
       } = await axios.get("https://api.teztools.io/v1/prices");
-      console.log(prices);
       // filter out NFTs by checking for artifactURI and token symbol or alias
-      balances = balances.filter((val) => !val.token?.metadata?.artifactUri && (val?.token?.metadata?.symbol || val?.token?.contract?.alias));
+      balances = balances.filter((val) => !val.token?.metadata?.artifactUri && (val?.token?.metadata?.symbol || val?.token?.contract?.alias) && !val.toke?.metadata?.formats);
+      // console.log(balances);
 
       // map through all the balances to sort data
       for (let i = 0; i < balances.length; i++) {
         // get current price of token
         const currentPrice =
-          prices.filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address).length > 0
-            ? prices.filter(
-                (val) => val.tokenAddress === balances[i]?.token?.contract?.address && (val.tokenId ? val.tokenId === balances[i]?.token?.tokenId : true)
-              )[0]?.currentPrice
-            : new BigNumber(0);
+          prices.filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address).length === 1
+            ? prices.filter((val) =>val.tokenAddress === balances[i]?.token?.contract?.address
+               )[0]?.currentPrice
+            :          prices.filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address).filter((val)=>val.symbol === balances[i]?.token?.metadata?.symbol).length > 0
+            ? prices.filter((val) =>val.tokenAddress === balances[i]?.token?.contract?.address
+               ).filter((val)=>val.symbol === balances[i]?.token?.metadata?.symbol)[0]?.currentPrice
+            :  new BigNumber(0);
 
         // get token uri from prices :: This is because  balance does not return  some tokens thumbnail
         const thumbnailUri =
           prices.filter((val) => val.tokenAddress === balances[i].token?.contract.address).length > 0 &&
           prices.filter((val) => val.tokenAddress === balances[i].token?.contract.address)[0]?.thumbnailUri;
 
+        const decimals =
+          prices.filter((val) => val.tokenAddress === balances[i].token?.contract.address).length > 0 &&
+          prices.filter((val) => val.tokenAddress === balances[i].token?.contract.address)[0]?.decimals;
+
         // Data filter and calculations
         const bal = new BigNumber(balances[i]?.balance);
-        const balance = bal.div(new BigNumber(10).pow(balances[i]?.token?.metadata?.decimals || (balances[i]?.token?.standard !== "fa1.2" ? 6 : 3)));
+        const balance = bal.div(
+          new BigNumber(10).pow(balances[i]?.token?.metadata?.decimals || decimals || (balances[i]?.token?.standard !== "fa1.2" ? 6 : 3))
+        );
 
         const price = new BigNumber(currentPrice).multipliedBy(new BigNumber(usdMul));
         const value = balance.multipliedBy(price);
