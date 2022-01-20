@@ -112,7 +112,8 @@ export default {
       return "<el-button style='color: #555CFF; font-weight: 600' type='text'> TRADE </el-button>";
     },
     insertAssetIcon(column) {
-      return `<div style="max-width: 45px; max-height: 45px; display: flex; align-items:center"><img src="${column?.icon}" style="width: 100%; height: 100%; margin-right: 20px" alt=""> ${column?.asset}</div>`;
+      return `<div style="width: 36px; mheight: 36px; display: flex; align-items:center"><img src="${column?.icon}" style="width: 100%; margin-right: 20px" alt=""> ${column?.asset}</div>`;
+
     },
     // formatTableUSD(_, item) {
     //   console.log(VueNumberFormat(item, { prefix: "$", decimal: ".", thousand: ",", precision: 4 }));

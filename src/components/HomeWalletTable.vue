@@ -185,7 +185,7 @@ export default {
 
 .column-data {
   padding: 10px 20px;
-  height: 83px;
+  /* height: 83px; */
   min-width: 720px;
 }
 
