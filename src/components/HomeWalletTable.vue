@@ -152,11 +152,12 @@ export default {
 }
 
 #columns {
-  padding: 0 40px;
+  padding: 0 20px;
   padding-top: 10px;
-  padding-bottom: 28px;
-  margin-bottom: 20px;
-  border-bottom: 2px solid rgba(25, 27, 31, 0.05);
+  border-bottom: 2px solid rgb(244, 244, 244);
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+  min-width: 720px;
 }
 
 .column-title h2 {
@@ -183,7 +184,9 @@ export default {
 }
 
 .column-data {
-  padding: 20px 40px;
+  padding: 10px 20px;
+  height: 83px;
+  min-width: 720px;
 }
 
 .column-data:hover {
