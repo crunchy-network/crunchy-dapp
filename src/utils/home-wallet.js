@@ -56,7 +56,9 @@ export default {
         data: { contracts: prices },
       } = await axios.get("https://api.teztools.io/v1/prices");
       // filter out NFTs by checking for artifactURI and token symbol or alias
-      balances = balances.filter((val) => !val.token?.metadata?.artifactUri && (val?.token?.metadata?.symbol || val?.token?.contract?.alias) && !val.toke?.metadata?.formats);
+      balances = balances.filter(
+        (val) => !val.token?.metadata?.artifactUri && (val?.token?.metadata?.symbol || val?.token?.contract?.alias) && !val.toke?.metadata?.formats
+      );
       // console.log(balances);
 
       // map through all the balances to sort data
@@ -64,12 +66,14 @@ export default {
         // get current price of token
         const currentPrice =
           prices.filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address).length === 1
-            ? prices.filter((val) =>val.tokenAddress === balances[i]?.token?.contract?.address
-               )[0]?.currentPrice
-            :          prices.filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address).filter((val)=>val.symbol === balances[i]?.token?.metadata?.symbol).length > 0
-            ? prices.filter((val) =>val.tokenAddress === balances[i]?.token?.contract?.address
-               ).filter((val)=>val.symbol === balances[i]?.token?.metadata?.symbol)[0]?.currentPrice
-            :  new BigNumber(0);
+            ? prices.filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address)[0]?.currentPrice
+            : prices
+                .filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address)
+                .filter((val) => val.symbol === balances[i]?.token?.metadata?.symbol).length > 0
+            ? prices
+                .filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address)
+                .filter((val) => val.symbol === balances[i]?.token?.metadata?.symbol)[0]?.currentPrice
+            : false;
 
         // get token uri from prices :: This is because  balance does not return  some tokens thumbnail
         const thumbnailUri =
@@ -98,7 +102,9 @@ export default {
           value: value.toNumber(),
           contract: balances[i]?.token?.contract?.address,
         };
-        assets.push(valObj);
+        if (currentPrice) {
+          assets.push(valObj);
+        }
       }
       const { data: xtzBal } = await axios.get(`https://staging.api.tzkt.io/v1/accounts/${pkh}/balance`);
 
