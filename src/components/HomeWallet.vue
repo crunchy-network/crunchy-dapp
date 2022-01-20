@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
 import HomeWalletTable from "./HomeWalletTable.vue";
 export default {
   components: { HomeWalletTable },
@@ -85,10 +85,18 @@ export default {
   },
   computed: {
     ...mapState(["homeWallet"]),
+    ...mapGetters(["getPkh"]),
     ...mapActions(["loadWalletAsssets"]),
   },
+  watch: {
+    getPkh() {
+      this.loadWalletAsssets;
+    },
+  },
   mounted() {
-    this.loadWalletAsssets;
+    setTimeout(() => {
+      this.loadWalletAsssets;
+    }, 300);
   },
   created() {
     setInterval(() => {
@@ -113,7 +121,6 @@ export default {
     },
     insertAssetIcon(column) {
       return `<div style="width: 36px; mheight: 36px; display: flex; align-items:center"><img src="${column?.icon}" style="width: 100%; margin-right: 20px" alt=""> ${column?.asset}</div>`;
-
     },
     // formatTableUSD(_, item) {
     //   console.log(VueNumberFormat(item, { prefix: "$", decimal: ".", thousand: ",", precision: 4 }));
