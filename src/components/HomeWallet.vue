@@ -8,7 +8,11 @@
           </h2>
 
           <h2 style="font-weight: 600; font-size: 28px; margin-bottom: 0">
-            {{ vueNumberFormat(homeWallet.netWorth, { prefix: "$", decimal: ".", thousand: ",", precision: 2 }) }}
+            {{
+              showTz
+                ? vueNumberFormat(homeWallet.netWorth, { prefix: "ꜩ", decimal: ".", thousand: ",", precision: 4 })
+                : vueNumberFormat(homeWallet.netWorthUsd, { prefix: "$", decimal: ".", thousand: ",", precision: 2 })
+            }}
           </h2>
         </el-card>
       </el-col>
@@ -56,16 +60,49 @@
     </div>
     <div v-if="activeTab === 'portfolio'">
       <el-card v-loading="homeWallet.loading">
-        <home-wallet-table
-          :columns="[
-            { name: 'Asset', accessor: 'asset', align: 'left', operation: insertAssetIcon, html: true },
-            { name: 'Balance', accessor: 'balance', vnfConfig: { prefix: '', decimal: '.', thousand: ',', precision: 4 } },
-            { name: 'Price', accessor: 'price', vnfConfig: { prefix: '$', decimal: '.', thousand: ',', precision: 2 } },
-            { name: 'Value', accessor: 'value', vnfConfig: { prefix: '$', decimal: '.', thousand: ',', precision: 2 } },
-            { name: '', accessor: '', html: true },
-          ]"
-          :data="homeWallet.assets"
-        />
+        <div style="overflow-x: auto;">
+          <div style="min-width: 740px;">
+            <el-row
+              type="flex"
+              align="middle"
+              style="color: #757679; font-size: 14px; font-weight: 600; border-bottom: 2px solid #f4f4f4; padding-bottom: 14px; margin-bottom: 14px;"
+            >
+              <el-col :span="24">
+                <el-row :gutter="20" type="flex" align="middle" style="padding: 0 20px;">
+                  <el-col :span="6">Asset</el-col>
+                  <el-col style="text-align: right;" :span="5">Balance</el-col>
+                  <el-col style="text-align: right;" :span="5">Price </el-col>
+                  <el-col style="text-align: right;" :span="5">Value</el-col>
+                  <el-col style="text-align: right;" :span="3"></el-col>
+                </el-row>
+              </el-col>
+            </el-row>
+
+            <PortfolioWalletRow v-for="(asset, index) in tabledata" :key="index" :asset="asset" :showTz="showTz" />
+            <div id="pagination">
+              <el-button @click="handleStart" :disabled="currentPage === 0" style="margin-right: 12px">
+                <i class="fal fa-angle-left"></i>
+                <i class="fal fa-angle-left"></i>
+              </el-button>
+              <el-button @click="handlePrevPage" :disabled="currentPage === 0">
+                <i class="fal fa-angle-left"></i>
+              </el-button>
+
+              <h2 style="font-weight: 800; font-size: 14px; color: #191B1F; opacity: 0.5; margin: 0 19px;">
+                {{ vueNumberFormat(nextPage > pages ? pages : nextPage, { prefix: "", decimal: ".", thousand: ",", precision: 0 }) }} out of
+                {{ vueNumberFormat(pages, { prefix: "", decimal: ".", thousand: ",", precision: 0 }) }}
+              </h2>
+              <el-button @click="handleNextPage" :disabled="nextPage + 1 > pages">
+                <i class="fal fa-angle-right"></i>
+              </el-button>
+
+              <el-button @click="handleEnd" :disabled="nextPage + 1 > pages" style="margin-left: 12px">
+                <i class="fal fa-angle-right"></i>
+                <i class="fal fa-angle-right"></i>
+              </el-button>
+            </div>
+          </div>
+        </div>
       </el-card>
     </div>
   </div>
@@ -73,30 +110,37 @@
 
 <script>
 import { mapState, mapActions, mapGetters } from "vuex";
-import HomeWalletTable from "./HomeWalletTable.vue";
+// import HomeWalletTable from "./HomeWalletTable.vue";
+import PortfolioWalletRow from "./PortfolioWalletRow.vue";
 export default {
-  components: { HomeWalletTable },
+  components: { PortfolioWalletRow },
   name: "HomeWallet",
   data() {
     return {
       activeTab: "portfolio",
       tabledata: [],
+      showTz: false,
+      currentPage: 0,
+      pages: 0,
+      nextPage: 1,
+      prevPage: 0,
     };
   },
   computed: {
     ...mapState(["homeWallet"]),
-    ...mapGetters(["getPkh"]),
+    ...mapGetters(["getPkh", "getAssets"]),
     ...mapActions(["loadWalletAsssets"]),
   },
   watch: {
     getPkh() {
-      this.loadWalletAsssets;
+      this.reload();
+    },
+    getAssets() {
+      this.paginationHandler();
     },
   },
   mounted() {
-    setTimeout(() => {
-      this.loadWalletAsssets;
-    }, 300);
+    this.reload();
   },
   created() {
     setInterval(() => {
@@ -106,7 +150,6 @@ export default {
   methods: {
     reload() {
       this.loadWalletAsssets;
-      this.homeWallet.loading;
     },
     isActiveTab(tab) {
       return this.activeTab === tab && " border-bottom: 6px solid #555CFF; color: #555CFF";
@@ -116,16 +159,61 @@ export default {
         this.activeTab = tab;
       }
     },
-    handleTrade() {
-      return "<el-button style='color: #555CFF; font-weight: 600' type='text'> TRADE </el-button>";
+
+    paginationHandler() {
+      this.pages = Math.ceil(this.homeWallet.assets.length / 8);
+      this.handleVisibleData();
     },
-    insertAssetIcon(column) {
-      return `<div style="width: 36px; mheight: 36px; display: flex; align-items:center"><img src="${column?.icon}" style="width: 100%; margin-right: 20px" alt=""> ${column?.asset}</div>`;
+
+    handleVisibleData() {
+      const next = this.nextPage > this.pages ? this.pages : this.nextPage;
+      this.tabledata = this.homeWallet.assets.slice(
+        (next - 1) * 8,
+        this.nextPage * 8 > this.homeWallet.assets.length ? this.homeWallet.assets.length : next * 8
+      );
     },
-    // formatTableUSD(_, item) {
-    //   console.log(VueNumberFormat(item, { prefix: "$", decimal: ".", thousand: ",", precision: 4 }));
-    //   return "";
-    // },
+
+    handleNextPage() {
+      if (this.nextPage + 1 <= this.pages) {
+        this.currentPage = this.nextPage;
+        this.prevPage = this.nextPage - 1;
+        this.nextPage = this.nextPage + 1;
+        this.handleVisibleData();
+      }
+    },
+
+    handlePrevPage() {
+      if (this.currentPage > 0) {
+        this.currentPage = this.prevPage;
+        this.nextPage = this.prevPage + 1;
+        this.prevPage = this.prevPage - 1;
+        this.handleVisibleData();
+      }
+    },
+
+    handleEnd() {
+      if (this.currentPage !== this.pages) {
+        this.currentPage = this.pages;
+        this.nextPage = this.pages;
+        this.prevPage = this.pages - 1;
+        this.handleVisibleData();
+      }
+    },
+
+    handleStart() {
+      if (this.currentPage !== 0) {
+        this.currentPage = 0;
+        this.nextPage = 1;
+        this.prevPage = 0;
+        this.handleVisibleData();
+      }
+    },
+    resetPagination() {
+      this.currentPage = 0;
+      this.pages = 0;
+      this.nextPage = 1;
+      this.prevPage = 0;
+    },
   },
 };
 </script>
@@ -167,6 +255,25 @@ export default {
   &:disabled {
     color: #191b1f66;
     cursor: not-allowed;
+  }
+}
+
+#pagination {
+  margin-top: 32px;
+  padding: 20px 0 8px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 2px solid rgba(25, 27, 31, 0.05);
+  .el-button {
+    width: 42px;
+    height: 42px;
+    color: rgba(25, 27, 31, 0.5);
+    padding: 13px;
+    background: rgba(25, 27, 31, 0.04);
+    border: 1px solid rgba(25, 27, 31, 0.2);
+    box-sizing: border-box;
+    border-radius: 8px;
   }
 }
 </style>

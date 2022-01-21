@@ -11,6 +11,10 @@ export default {
     state.netWorth = value;
   },
 
+  updateNetworthUsd(state, value) {
+    state.netWorthUsd = value;
+  },
+
   updateCrDAOBal(state, value) {
     state.crDaoBal = value;
   },
