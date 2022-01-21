@@ -21,14 +21,14 @@
           </el-col>
           <el-col style="text-align: right;" :span="5">
             {{
-              showTz
+              !showUsd
                 ? vueNumberFormat(asset.price, { prefix: "ꜩ", decimal: ".", thousand: ",", precision: 4 })
                 : vueNumberFormat(asset.priceUsd, { prefix: "$", decimal: ".", thousand: ",", precision: 2 })
             }}
           </el-col>
           <el-col style="text-align: right;" :span="5">
             {{
-              showTz
+              !showUsd
                 ? vueNumberFormat(asset.value, { prefix: "ꜩ", decimal: ".", thousand: ",", precision: 4 })
                 : vueNumberFormat(asset.valueUsd, { prefix: "$", decimal: ".", thousand: ",", precision: 2 })
             }}
@@ -45,7 +45,7 @@
 <script>
 export default {
   name: "PortfolioWalletRow",
-  props: ["asset", "showTz"],
+  props: ["asset", "showUsd"],
 };
 </script>
 

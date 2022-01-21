@@ -9,7 +9,7 @@
 
           <h2 style="font-weight: 600; font-size: 28px; margin-bottom: 0">
             {{
-              showTz
+              !showUsd
                 ? vueNumberFormat(homeWallet.netWorth, { prefix: "ꜩ", decimal: ".", thousand: ",", precision: 4 })
                 : vueNumberFormat(homeWallet.netWorthUsd, { prefix: "$", decimal: ".", thousand: ",", precision: 2 })
             }}
@@ -59,6 +59,20 @@
       </button>
     </div>
     <div v-if="activeTab === 'portfolio'">
+      <el-row style="margin-bottom: 10px" :gutter="20" type="flex" align="bottom">
+        <el-col :span="8">
+          <div class="grid-content">
+            <!-- <h2 style="margin-top: 0; margin-bottom: 5px;">Farms &amp; Gardens</h2> -->
+          </div>
+        </el-col>
+        <el-col :span="16">
+          <div class="grid-content" style="text-align: right;">
+            <el-switch style="margin-right: 24px;" v-model="showUsd" active-color="#1EC37F" inactive-color="#555CFF" active-text="USD" inactive-text="XTZ">
+            </el-switch>
+          </div>
+        </el-col>
+      </el-row>
+
       <el-card v-loading="homeWallet.loading">
         <div style="overflow-x: auto;">
           <div style="min-width: 740px;">
@@ -78,7 +92,7 @@
               </el-col>
             </el-row>
 
-            <PortfolioWalletRow v-for="(asset, index) in tabledata" :key="index" :asset="asset" :showTz="showTz" />
+            <PortfolioWalletRow v-for="(asset, index) in tabledata" :key="index" :asset="asset" :showUsd="showUsd" />
             <div id="pagination">
               <el-button @click="handleStart" :disabled="currentPage === 0" style="margin-right: 12px">
                 <i class="fal fa-angle-left"></i>
@@ -119,7 +133,7 @@ export default {
     return {
       activeTab: "portfolio",
       tabledata: [],
-      showTz: false,
+      showUsd: false,
       currentPage: 0,
       pages: 0,
       nextPage: 1,
