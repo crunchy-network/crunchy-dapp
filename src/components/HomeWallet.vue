@@ -67,7 +67,7 @@
         </el-col>
         <el-col :span="16">
           <div class="grid-content" style="text-align: right;">
-            <el-switch style="margin-right: 24px;" v-model="showUsd" active-color="#1EC37F" inactive-color="#555CFF" active-text="USD" inactive-text="XTZ">
+            <el-switch :disabled="homeWallet.loading" style="margin-right: 24px;" v-model="showUsd" active-color="#1EC37F" inactive-color="#555CFF" active-text="USD" inactive-text="XTZ">
             </el-switch>
           </div>
         </el-col>
