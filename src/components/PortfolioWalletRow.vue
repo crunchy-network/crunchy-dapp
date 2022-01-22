@@ -16,26 +16,26 @@
             </el-row>
           </el-col>
 
-          <el-col style="text-align: right;" :span="5">
+          <el-col style="text-align: right;" :span="6">
             {{ vueNumberFormat(asset.balance, { prefix: "", decimal: ".", thousand: ",", precision: 4 }) }}
           </el-col>
-          <el-col style="text-align: right;" :span="5">
+          <el-col style="text-align: right;" :span="6">
             {{
               !showUsd
                 ? vueNumberFormat(asset.price, { prefix: "ꜩ", decimal: ".", thousand: ",", precision: 4 })
                 : vueNumberFormat(asset.priceUsd, { prefix: "$", decimal: ".", thousand: ",", precision: 2 })
             }}
           </el-col>
-          <el-col style="text-align: right;" :span="5">
+          <el-col style="text-align: right;" :span="6">
             {{
               !showUsd
                 ? vueNumberFormat(asset.value, { prefix: "ꜩ", decimal: ".", thousand: ",", precision: 4 })
                 : vueNumberFormat(asset.valueUsd, { prefix: "$", decimal: ".", thousand: ",", precision: 2 })
             }}
           </el-col>
-          <el-col style="text-align: right;" :span="3">
+          <!-- <el-col style="text-align: right;" :span="3">
             <el-button style="color: #555CFF; font-weight: 600" type="text"> TRADE </el-button>
-          </el-col>
+          </el-col> -->
         </el-row>
       </div>
     </el-col>

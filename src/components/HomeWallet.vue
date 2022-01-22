@@ -91,10 +91,10 @@
               <el-col :span="24">
                 <el-row :gutter="20" type="flex" align="middle" style="padding: 0 20px;">
                   <el-col :span="6">Asset</el-col>
-                  <el-col style="text-align: right;" :span="5">Balance</el-col>
-                  <el-col style="text-align: right;" :span="5">Price </el-col>
-                  <el-col style="text-align: right;" :span="5">Value</el-col>
-                  <el-col style="text-align: right;" :span="3"></el-col>
+                  <el-col style="text-align: right;" :span="6">Balance</el-col>
+                  <el-col style="text-align: right;" :span="6">Price </el-col>
+                  <el-col style="text-align: right;" :span="6">Value</el-col>
+                  <!-- <el-col style="text-align: right;" :span="3"></el-col> -->
                 </el-row>
               </el-col>
             </el-row>
