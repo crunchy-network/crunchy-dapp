@@ -44,35 +44,42 @@
       </el-col>
     </el-row>
 
-    <div class="tab-wrapper">
-      <button class="tab-text" :style="isActiveTab('portfolio')" @click="setActiveTab('portfolio')">
-        Portfolio
-      </button>
-      <button class="tab-text" disabled :style="isActiveTab('nfts')" @click="setActiveTab('nfts')">
-        NFTs
-      </button>
-      <button class="tab-text" disabled :style="isActiveTab('farming')" @click="setActiveTab('farming')">
-        Farming
-      </button>
-      <button class="tab-text" disabled :style="isActiveTab('history')" @click="setActiveTab('history')">
-        History
-      </button>
-    </div>
-    <div v-if="activeTab === 'portfolio'">
-      <el-row style="margin-bottom: 10px" :gutter="20" type="flex" align="bottom">
-        <el-col :span="8">
-          <div class="grid-content">
-            <!-- <h2 style="margin-top: 0; margin-bottom: 5px;">Farms &amp; Gardens</h2> -->
-          </div>
-        </el-col>
-        <el-col :span="16">
-          <div class="grid-content" style="text-align: right;">
-            <el-switch :disabled="homeWallet.loading" style="margin-right: 24px;" v-model="showUsd" active-color="#1EC37F" inactive-color="#555CFF" active-text="USD" inactive-text="XTZ">
-            </el-switch>
-          </div>
-        </el-col>
-      </el-row>
+    <el-row
+      style="margin: 46px 0 32px 0;   border-bottom: 1.5px solid rgba(117, 118, 121, 0.1); align-items: center; padding-right: 90px"
+      :gutter="20"
+      type="flex"
+      justify="space-between"
+      align="bottom"
+    >
+      <div class="tab-wrapper">
+        <button class="tab-text" :style="isActiveTab('portfolio')" @click="setActiveTab('portfolio')">
+          Portfolio
+        </button>
+        <button class="tab-text" disabled :style="isActiveTab('nfts')" @click="setActiveTab('nfts')">
+          NFTs
+        </button>
+        <button class="tab-text" disabled :style="isActiveTab('farming')" @click="setActiveTab('farming')">
+          Farming
+        </button>
+        <button class="tab-text" disabled :style="isActiveTab('history')" @click="setActiveTab('history')">
+          History
+        </button>
+      </div>
+      <div class="grid-content" style="text-align: right; ">
+        <el-switch
+          :disabled="homeWallet.loading"
+          style="margin-right: 24px;"
+          v-model="showUsd"
+          active-color="#1EC37F"
+          inactive-color="#555CFF"
+          active-text="USD"
+          inactive-text="XTZ"
+        >
+        </el-switch>
+      </div>
+    </el-row>
 
+    <div v-if="activeTab === 'portfolio'">
       <el-card v-loading="homeWallet.loading">
         <div style="overflow-x: auto;">
           <div style="min-width: 740px;">
@@ -245,9 +252,7 @@ export default {
 .tab-wrapper {
   display: flex;
   align-items: flex-start;
-  border-bottom: 1.5px solid rgba(117, 118, 121, 0.1);
-  margin: 46px 0 32px 0;
-  padding: 0 90px;
+  padding: 0 0 0 90px;
   overflow: auto;
 }
 
