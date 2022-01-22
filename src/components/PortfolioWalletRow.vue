@@ -22,14 +22,14 @@
           <el-col style="text-align: right;" :span="6">
             {{
               !showUsd
-                ? vueNumberFormat(asset.price, { prefix: "ꜩ", decimal: ".", thousand: ",", precision: 4 })
+                ? vueNumberFormat(asset.price, { prefix: "", suffix: " ꜩ", decimal: ".", thousand: ",", precision: 4 })
                 : vueNumberFormat(asset.priceUsd, { prefix: "$", decimal: ".", thousand: ",", precision: 2 })
             }}
           </el-col>
           <el-col style="text-align: right;" :span="6">
             {{
               !showUsd
-                ? vueNumberFormat(asset.value, { prefix: "ꜩ", decimal: ".", thousand: ",", precision: 4 })
+                ? vueNumberFormat(asset.value, { prefix: "", suffix: " ꜩ", decimal: ".", thousand: ",", precision: 4 })
                 : vueNumberFormat(asset.valueUsd, { prefix: "$", decimal: ".", thousand: ",", precision: 2 })
             }}
           </el-col>

@@ -10,7 +10,7 @@
           <h2 style="font-weight: 600; font-size: 28px; margin-bottom: 0">
             {{
               !showUsd
-                ? vueNumberFormat(homeWallet.netWorth, { prefix: "ꜩ", decimal: ".", thousand: ",", precision: 4 })
+                ? vueNumberFormat(homeWallet.netWorth, { prefix: "", suffix: " ꜩ", decimal: ".", thousand: ",", precision: 4 })
                 : vueNumberFormat(homeWallet.netWorthUsd, { prefix: "$", decimal: ".", thousand: ",", precision: 2 })
             }}
           </h2>
@@ -45,7 +45,7 @@
     </el-row>
 
     <el-row
-      style="margin: 46px 0 32px 0;   border-bottom: 1.5px solid rgba(117, 118, 121, 0.1); align-items: center; padding-right: 90px"
+      style="margin: 46px 0 32px 0;   border-bottom: 1.5px solid rgba(117, 118, 121, 0.1); align-items: center;"
       :gutter="20"
       type="flex"
       justify="space-between"
@@ -81,8 +81,8 @@
 
     <div v-if="activeTab === 'portfolio'">
       <el-card v-loading="homeWallet.loading">
-        <div style="overflow-x: auto;">
-          <div style="min-width: 740px;">
+        <div>
+          <div>
             <el-row
               type="flex"
               align="middle"
