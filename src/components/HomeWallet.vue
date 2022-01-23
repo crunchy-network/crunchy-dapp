@@ -145,6 +145,7 @@ export default {
       pages: 0,
       nextPage: 1,
       prevPage: 0,
+      displayCount: 12,
     };
   },
   computed: {
@@ -182,15 +183,15 @@ export default {
     },
 
     paginationHandler() {
-      this.pages = Math.ceil(this.homeWallet.assets.length / 8);
+      this.pages = Math.ceil(this.homeWallet.assets.length / this.displayCount);
       this.handleVisibleData();
     },
 
     handleVisibleData() {
       const next = this.nextPage > this.pages ? this.pages : this.nextPage;
       this.tabledata = this.homeWallet.assets.slice(
-        (next - 1) * 8,
-        this.nextPage * 8 > this.homeWallet.assets.length ? this.homeWallet.assets.length : next * 8
+        (next - 1) * this.displayCount,
+        this.nextPage * this.displayCount > this.homeWallet.assets.length ? this.homeWallet.assets.length : next * this.displayCount
       );
     },
 
