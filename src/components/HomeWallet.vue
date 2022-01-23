@@ -150,18 +150,18 @@ export default {
   computed: {
     ...mapState(["homeWallet"]),
     ...mapGetters(["getPkh", "getAssets"]),
-    ...mapActions(["loadWalletAsssets"]),
+    ...mapActions(["loadWalletAsssets", "softUpdateWalletAssets"]),
   },
   watch: {
     getPkh() {
-      this.reload();
+      this.loadWalletAsssets();
     },
     getAssets() {
       this.paginationHandler();
     },
   },
   mounted() {
-    this.reload();
+    this.loadWalletAsssets();
   },
   created() {
     setInterval(() => {
@@ -170,7 +170,7 @@ export default {
   },
   methods: {
     reload() {
-      this.loadWalletAsssets;
+      this.softUpdateWalletAssets;
     },
     isActiveTab(tab) {
       return this.activeTab === tab && " border-bottom: 6px solid #555CFF; color: #555CFF";

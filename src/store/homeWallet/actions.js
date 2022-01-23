@@ -19,6 +19,12 @@ export default {
     });
   },
 
+  async softUpdateWalletAssets({ dispatch }) {
+    dispatch("fetchHomeWalletBalances").then(() => {
+      dispatch("loadBalAndNetworth");
+    });
+  },
+
   async loadBalAndNetworth({ state, commit }) {
     commit("updateCrunchBal", homeWallet.handleChrunchBal(state.assets));
     commit("updateCrDAOBal", homeWallet.handleCrDAOBal(state.assets));

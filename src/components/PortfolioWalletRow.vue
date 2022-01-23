@@ -33,15 +33,17 @@
                 : vueNumberFormat(asset.valueUsd, { prefix: "$", decimal: ".", thousand: ",", precision: 2 })
             }}
           </el-col>
-          <el-col style="text-align: right;" :span="3">
+          <el-col style="text-align: right; " :span="3">
             <a
-              :href="
-                `https://quipuswap.com/swap?from=${asset.contract + (asset.tokenid === undefined ? '' : '_' + asset.tokenid)}&to=tez`
-              "
+              v-if="asset.contract !== 'tez'"
+              :href="`https://quipuswap.com/swap?from=${asset.contract + (asset.tokenid === undefined ? '' : '_' + asset.tokenid)}&to=tez`"
               target="_blank"
             >
               <el-button style="color: #555CFF; font-weight: 600" type="text"> TRADE </el-button>
             </a>
+            <router-link v-if="asset.contract === 'tez'" tag="a" :to="{ name: 'wtz' }">
+              <el-button style="color: #555CFF; font-weight: 600" type="text"> TRADE </el-button>
+            </router-link>
           </el-col>
         </el-row>
       </div>
