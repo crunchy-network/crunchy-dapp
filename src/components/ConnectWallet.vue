@@ -1,5 +1,5 @@
 <template>
-  <div style="margin-top: 50px">
+  <div style="margin-top: 50px; max-width: 500px">
     <h2 style="text-align: center; margin-bottom: 0">
       Crunchy DeFi Wallet
     </h2>
