@@ -16,26 +16,33 @@
             </el-row>
           </el-col>
 
-          <el-col style="text-align: right;" :span="6">
+          <el-col style="text-align: right;" :span="5">
             {{ vueNumberFormat(asset.balance, { prefix: "", decimal: ".", thousand: ",", precision: 4 }) }}
           </el-col>
-          <el-col style="text-align: right;" :span="6">
+          <el-col style="text-align: right;" :span="5">
             {{
               !showUsd
                 ? vueNumberFormat(asset.price, { prefix: "", suffix: " ꜩ", decimal: ".", thousand: ",", precision: 4 })
                 : vueNumberFormat(asset.priceUsd, { prefix: "$", decimal: ".", thousand: ",", precision: 2 })
             }}
           </el-col>
-          <el-col style="text-align: right;" :span="6">
+          <el-col style="text-align: right;" :span="5">
             {{
               !showUsd
                 ? vueNumberFormat(asset.value, { prefix: "", suffix: " ꜩ", decimal: ".", thousand: ",", precision: 4 })
                 : vueNumberFormat(asset.valueUsd, { prefix: "$", decimal: ".", thousand: ",", precision: 2 })
             }}
           </el-col>
-          <!-- <el-col style="text-align: right;" :span="3">
-            <el-button style="color: #555CFF; font-weight: 600" type="text"> TRADE </el-button>
-          </el-col> -->
+          <el-col style="text-align: right;" :span="3">
+            <a
+              :href="
+                `https://quipuswap.com/swap?from=${asset.contract + (asset.tokenid === undefined ? '' : '_' + asset.tokenid)}&to=tez`
+              "
+              target="_blank"
+            >
+              <el-button style="color: #555CFF; font-weight: 600" type="text"> TRADE </el-button>
+            </a>
+          </el-col>
         </el-row>
       </div>
     </el-col>

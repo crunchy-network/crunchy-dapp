@@ -62,6 +62,7 @@ export default {
 
       // map through all the balances to sort data
       for (let i = 0; i < balances.length; i++) {
+        console.log(balances[i]);
         // get current price of token
         const currentPrice =
           prices.filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address).length === 1
@@ -74,14 +75,38 @@ export default {
                 .filter((val) => val.symbol === balances[i]?.token?.metadata?.symbol)[0]?.currentPrice
             : false;
 
+        const tokenid =
+          prices.filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address).length === 1
+            ? prices.filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address)[0]?.tokenId
+            : prices
+                .filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address)
+                .filter((val) => val.symbol === balances[i]?.token?.metadata?.symbol).length > 0
+            ? prices
+                .filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address)
+                .filter((val) => val.symbol === balances[i]?.token?.metadata?.symbol)[0]?.tokenId
+            : false;
         // get token uri from prices :: This is because  balance does not return  some tokens thumbnail
         const thumbnailUri =
-          prices.filter((val) => val.tokenAddress === balances[i].token?.contract.address).length > 0 &&
-          prices.filter((val) => val.tokenAddress === balances[i].token?.contract.address)[0]?.thumbnailUri;
+          prices.filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address).length === 1
+            ? prices.filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address)[0]?.thumbnailUri
+            : prices
+                .filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address)
+                .filter((val) => val.symbol === balances[i]?.token?.metadata?.symbol).length > 0
+            ? prices
+                .filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address)
+                .filter((val) => val.symbol === balances[i]?.token?.metadata?.symbol)[0]?.thumbnailUri
+            : false;
 
         const decimals =
-          prices.filter((val) => val.tokenAddress === balances[i].token?.contract.address).length > 0 &&
-          prices.filter((val) => val.tokenAddress === balances[i].token?.contract.address)[0]?.decimals;
+          prices.filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address).length === 1
+            ? prices.filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address)[0]?.decimals
+            : prices
+                .filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address)
+                .filter((val) => val.symbol === balances[i]?.token?.metadata?.symbol).length > 0
+            ? prices
+                .filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address)
+                .filter((val) => val.symbol === balances[i]?.token?.metadata?.symbol)[0]?.decimals
+            : false;
 
         // Data filter and calculations
         const bal = new BigNumber(balances[i]?.balance);
@@ -104,6 +129,7 @@ export default {
           valueUsd: valueUsd.toNumber(),
           value: value.toNumber(),
           contract: balances[i]?.token?.contract?.address,
+          tokenid,
         };
         if (currentPrice) {
           assets.push(valObj);
@@ -131,7 +157,6 @@ export default {
     } catch (e) {
       console.log("/utils/home-wallet", e);
     }
-
     return assets;
   },
 
