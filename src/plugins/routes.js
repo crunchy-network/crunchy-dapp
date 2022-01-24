@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from './../components/Home.vue'
+// import Home from './../components/Home.vue'
 import LpLockerListing from './../components/LpLockerListing.vue'
 import LpLockerItem from './../components/LpLockerItem.vue'
 import FarmListing from './../components/FarmListing.vue'
@@ -14,10 +14,10 @@ import HomeWalletPage from './../components/HomeWalletPage.vue'
 Vue.use(VueRouter);
 
 const routes = [
-  { name: 'home', path: '/', component: Home },
+  { name: 'home', path: '/', component: HomeWalletPage },
   // { path: '/', redirect: '/farms' },
   
-  { name: 'home-wallet', path: '/home-wallet', component: HomeWalletPage },
+  // { name: 'home-wallet', path: '/home-wallet', component: HomeWalletPage },
   { name: 'wtz', path: '/wtz', component: WtzMain },
 
   { name: 'deep-freezer-listing', path: '/freezers', component: LpLockerListing },
