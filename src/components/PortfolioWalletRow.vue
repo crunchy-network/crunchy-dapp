@@ -12,7 +12,12 @@
                 :size="40"
                 style="position: relative; border: 4px solid #fff; vertical-align: middle; margin-right: 10px"
               ></el-avatar>
-              {{ asset.asset }}
+              <a style="color: #555CFF;text-decoration: none;" v-if="asset.contract !== 'tez'" target="_blank" :href="`https://tzkt.io/${asset.contract}/operations/`">
+                {{ asset.asset }}
+              </a>
+              <span v-if="asset.contract === 'tez'">
+                {{ asset.asset }}
+              </span>
             </el-row>
           </el-col>
 
