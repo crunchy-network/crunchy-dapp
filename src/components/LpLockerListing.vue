@@ -143,16 +143,16 @@
                 <el-row type="flex" align="middle" style="color: #757679; font-size: 14px; font-weight: 600; border-bottom: 2px solid #f4f4f4; padding-bottom: 14px; margin-bottom: 14px;">
                   <el-col :span="24">
                     <el-row :gutter="20" type="flex" align="middle" style="padding: 0 20px;">
-                      <el-col :span="1">DEX</el-col>
-                      <el-col :span="6">LP Pair</el-col>
-                      <el-col style="text-align: right;" :span="4">Total Liquidity</el-col>
-                      <el-col style="text-align: right;" :span="4">TVL
+                      <el-col :sm="2" :lg="1">DEX</el-col>
+                      <el-col :sm="8" :lg="6">Pair</el-col>
+                      <el-col style="text-align: right;" :sm="7" :lg="4">TVL
                         <el-tooltip content="Total Value Locked" placement="top" effect="light">
                           <i class="fas fa-question-circle"></i>
                         </el-tooltip>
                       </el-col>
-                      <el-col style="text-align: right;" :span="4">Tokens Locked</el-col>
-                      <el-col style="text-align: right;" :span="5">Next Unlock</el-col>
+                      <el-col class="hidden-md-and-down" style="text-align: right;" :span="4">Total Liquidity</el-col>
+                      <el-col class="hidden-md-and-down" style="text-align: right;" :span="4">Tokens Locked</el-col>
+                      <el-col style="text-align: right;" :sm="7" :lg="5">Next Unlock</el-col>
                     </el-row>
                   </el-col>
                 </el-row>
