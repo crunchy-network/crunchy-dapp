@@ -7,6 +7,7 @@ import burnRecord from "./burnRecord";
 import wtz from "./wtz";
 import rckt from "./rckt";
 import ifo from "./ifo";
+import ifoPixelPriv from "./ifoPixelPriv";
 import homeWallet from "./homeWallet";
 
 
@@ -21,6 +22,7 @@ export default new Vuex.Store({
     wtz: wtz,
     rckt: rckt,
     ifo: ifo,
+    ifoPixelPriv: ifoPixelPriv,
     homeWallet: homeWallet,
   },
 });

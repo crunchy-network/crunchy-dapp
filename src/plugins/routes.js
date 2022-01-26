@@ -8,6 +8,7 @@ import FarmCreate from './../components/FarmCreate.vue'
 import FirePit from './../components/FirePit.vue'
 import WtzMain from './../components/WtzMain.vue'
 import IFO from './../components/IFO.vue'
+import IfoPixelPriv from './../components/IfoPixelPriv.vue'
 import HomeWalletPage from './../components/HomeWalletPage.vue'
 // import Bakery from './../components/Bakery.vue'
 
@@ -28,6 +29,8 @@ const routes = [
 
   // { name: 'bakery', path: '/bakery', component: Bakery },
   { name: 'fire-pit', path: '/fire-pit', component: FirePit },
+
+  { name: 'ifo-pixel-priv', path: '/ifo/p1x3l-l33t', component: IfoPixelPriv },
 ];
 
 export default new VueRouter({
