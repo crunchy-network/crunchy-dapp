@@ -82,7 +82,7 @@
               </p>
             </div> -->
             <div class="column-center">
-              <h1 class="title">Initial Farm Offering</h1>
+              <h1 class="title">Private IFO</h1>
 
               <div class="data-section">
                 <div class="line-row">
