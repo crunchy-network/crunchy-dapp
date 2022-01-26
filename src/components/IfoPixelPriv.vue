@@ -207,15 +207,6 @@
                   </div>
                 </div>
 
-                <div class="detail-row">
-                  <div class="data-col">
-                    <p>$CRUNCH to burn:</p>
-                  </div>
-
-                  <div class="data-col">
-                    <p>TBA</p>
-                  </div>
-                </div>
               </div>
 
               <div v-if="wallet.connected && ifo.data.harvesting" style="border-radius: 22px; background: #FFEECC; padding: 12px 0px; width: 100%; margin-top: 18px;">
