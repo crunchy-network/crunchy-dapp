@@ -82,7 +82,7 @@
               </p>
             </div> -->
             <div class="column-center">
-              <h1 class="title">Initial Farm Offering</h1>
+              <h1 class="title">Private IFO</h1>
 
               <div class="data-section">
                 <div class="line-row">
@@ -207,15 +207,6 @@
                   </div>
                 </div>
 
-                <div class="detail-row">
-                  <div class="data-col">
-                    <p>$CRUNCH to burn:</p>
-                  </div>
-
-                  <div class="data-col">
-                    <p>TBA</p>
-                  </div>
-                </div>
               </div>
 
               <div v-if="wallet.connected && ifo.data.harvesting" style="border-radius: 22px; background: #FFEECC; padding: 12px 0px; width: 100%; margin-top: 18px;">
@@ -228,7 +219,7 @@
               <div style="width: 100%; margin-top: 18px;">
                 <el-button v-if="wallet.connected === false" type="success" @click="connectWallet" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px;">Connect Wallet</el-button>
                 <!-- <el-button v-else :disabled="!live" type="primary" @click="showStakeDialog" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px;">FARM</el-button> -->
-                <el-button v-else :disabled="!live" type="primary" @click="harvestIfo" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px;">HARVEST</el-button>
+                <el-button v-else :disabled="!live" type="primary" @click="harvestPixelPrivIfo" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px;">HARVEST</el-button>
               </div>
 
             </div>
@@ -382,7 +373,7 @@
         </el-input>
       </el-form-item>
       <el-button type="success" size="small" round style="margin-bottom: 22px;" @click="form.input = ((wallet.balance.toNumber() / 1000000) - 0.5)">USE MAX</el-button>
-      <el-button type="primary" @click="form.visible = false; stakeIfo(form.input)" style="border-radius: 12px; font-weight: bold; width: 100%; padding: 20px; margin-left: 0;">COMMIT</el-button>
+      <el-button type="primary" @click="form.visible = false; stakePixelPrivIfo(form.input)" style="border-radius: 12px; font-weight: bold; width: 100%; padding: 20px; margin-left: 0;">COMMIT</el-button>
     </el-form>
   </el-dialog>
   </div>
@@ -406,11 +397,11 @@ export default {
     live: false,
     ended: false
   }),
-  name: "IFO",
+  name: "IfoPixelPriv",
   computed: {
     ...mapState([
       'wallet',
-      'ifo'
+      'ifoPixelPriv'
     ]),
     _seconds() {
       return 1000;
@@ -424,6 +415,9 @@ export default {
     _days() {
       return this._hours * 24;
     },
+    ifo() {
+      return this.ifoPixelPriv;
+    }
   },
   created() {
     this.refresh();
@@ -431,13 +425,13 @@ export default {
   methods: {
     ...mapActions([
       'connectWallet',
-      'loadIfoData',
-      'stakeIfo',
-      'harvestIfo'
+      'loadPixelPrivIfoData',
+      'stakePixelPrivIfo',
+      'harvestPixelPrivIfo'
     ]),
 
     refresh() {
-      this.loadIfoData();
+      this.loadPixelPrivIfoData();
     },
 
     formatCount(value) {
@@ -446,11 +440,11 @@ export default {
     showTimer() {
       const vm = this;
       // vm.live = true;
-      vm.live = (new Date().getTime() > new Date("01 November 2021 18:00 UTC").getTime());
+      vm.live = (new Date().getTime() > new Date("2022-01-25T19:00:00Z").getTime());
       const timer = setInterval(() => {
-        let startDate = new Date("01 November 2021 18:00 UTC").getTime();
+        let startDate = new Date("2022-01-25T19:00:00Z").getTime();
         if (vm.live) {
-          startDate = new Date("01 November 2021 18:00 UTC").getTime() + (1296000 * 1000);
+          startDate = new Date("2022-01-25T19:00:00Z").getTime() + (86400 * 5 * 29 * 1000);
         }
 
         const currentDate = new Date().getTime();

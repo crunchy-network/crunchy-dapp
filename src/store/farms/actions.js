@@ -12,6 +12,24 @@ let updateXtzUsdVwapPromise = undefined;
 let updateCurrentPricesPromise = undefined;
 let updateFarmStoragePromise = undefined;
 
+const tokenMetadataCache = {};
+const getFarmTokenMetadata = async (address, tokenId) => {
+  const cacheKey = `${address}:${tokenId}`;
+  if (!Object.prototype.hasOwnProperty.call(tokenMetadataCache, cacheKey)) {
+    let meta = await getTokenMetadata(address, tokenId)
+      .catch(() => { return {
+        thumbnailUri: "https://static.thenounproject.com/png/796573-200.png"
+      }});
+    meta = merge(meta, { tokenAddress: address, tokenId: tokenId });
+    meta = farmUtils.overrideMetadata(meta);
+    if (Object.prototype.hasOwnProperty.call(meta, 'thumbnailUri')) {
+      meta.thumbnailUri = ipfs.transformUri(meta.thumbnailUri);
+    }
+    tokenMetadataCache[cacheKey] = meta;
+  }
+  return tokenMetadataCache[cacheKey];
+};
+
 export default {
 
   async _updateXtzUsdVwap({ commit, dispatch }) {
@@ -195,19 +213,16 @@ export default {
 
         let rewardTokenMeta = teztools.findTokenInPriceFeed(farm.rewardToken, state.priceFeed);
         if (!rewardTokenMeta) {
-          rewardTokenMeta = await getTokenMetadata(farm.rewardToken.address, farm.rewardToken.tokenId);
-          rewardTokenMeta.tokenAddress = farm.rewardToken.address;
-          rewardTokenMeta.tokenId = farm.rewardToken.tokenId;
+          rewardTokenMeta = await getFarmTokenMetadata(farm.rewardToken.address, farm.rewardToken.tokenId);
         }
 
         // allow overrides
         poolTokenMeta = farmUtils.overrideMetadata(poolTokenMeta);
-        rewardTokenMeta = farmUtils.overrideMetadata(rewardTokenMeta);
-
         if (Object.prototype.hasOwnProperty.call(poolTokenMeta, 'thumbnailUri')) {
           poolTokenMeta.thumbnailUri = ipfs.transformUri(poolTokenMeta.thumbnailUri);
         }
 
+        rewardTokenMeta = farmUtils.overrideMetadata(rewardTokenMeta);
         if (Object.prototype.hasOwnProperty.call(rewardTokenMeta, 'thumbnailUri')) {
           rewardTokenMeta.thumbnailUri = ipfs.transformUri(rewardTokenMeta.thumbnailUri);
         }
@@ -254,25 +269,12 @@ export default {
 
           Promise.all([
             tzkt.getContractStorage(state.lbDexAddress),
-            getTokenMetadata(state.lbLpAddress, 0)
-              .catch(() => { return { tokenAddress: state.lbLpAddress, tokenId: 0 } }),
-            getTokenMetadata(farm.rewardToken.address, farm.rewardToken.tokenId)
+            getFarmTokenMetadata(state.lbLpAddress, 0),
+            getFarmTokenMetadata(farm.rewardToken.address, farm.rewardToken.tokenId)
           ]).then(values => {
             let resp = values[0];
             let poolTokenMeta = values[1];
             let rewardTokenMeta = values[2];
-
-            // allow overrides
-            poolTokenMeta = farmUtils.overrideMetadata(poolTokenMeta);
-            rewardTokenMeta = farmUtils.overrideMetadata(rewardTokenMeta);
-
-            if (Object.prototype.hasOwnProperty.call(poolTokenMeta, 'thumbnailUri')) {
-              poolTokenMeta.thumbnailUri = ipfs.transformUri(poolTokenMeta.thumbnailUri);
-            }
-
-            if (Object.prototype.hasOwnProperty.call(rewardTokenMeta, 'thumbnailUri')) {
-              rewardTokenMeta.thumbnailUri = ipfs.transformUri(rewardTokenMeta.thumbnailUri);
-            }
 
             commit('updateFarm', merge(farm, {
               poolToken: {
@@ -308,12 +310,9 @@ export default {
 
               if (isQuipuLp) {
                 Promise.all([
-                  getTokenMetadata(resp.data.storage.token_address, resp.data.storage.token_id || 0)
-                    .catch(() => { return { thumbnailUri: "https://static.thenounproject.com/png/796573-200.png" } }),
-                  getTokenMetadata(farm.rewardToken.address, farm.rewardToken.tokenId)
+                  getFarmTokenMetadata(resp.data.storage.token_address, resp.data.storage.token_id || 0),
+                  getFarmTokenMetadata(farm.rewardToken.address, farm.rewardToken.tokenId)
                 ]).then(values => {
-                    values[0].thumbnailUri = ipfs.transformUri(values[0].thumbnailUri);
-                    values[1].thumbnailUri = ipfs.transformUri(values[1].thumbnailUri);
                     commit('updateFarm', merge(farm, {
                       poolToken: {
                         ...values[0],
@@ -339,27 +338,13 @@ export default {
                   tzkt.getContractStorage(resp.data.exchangeAddress)
                     .then(exchangeResp => {
                       Promise.all([
-                        getTokenMetadata(exchangeResp.data.token1Address, exchangeResp.data.token1Id)
-                          .catch(() => { return {
-                            tokenAddress: exchangeResp.data.token1Address,
-                            tokenId: exchangeResp.data.token1Id,
-                            thumbnailUri: "https://static.thenounproject.com/png/796573-200.png"
-                          }}),
-                        getTokenMetadata(exchangeResp.data.token2Address, exchangeResp.data.token2Id)
-                          .catch(() => { return {
-                            tokenAddress: exchangeResp.data.token2Address,
-                            tokenId: exchangeResp.data.token2Id,
-                            thumbnailUri: "https://static.thenounproject.com/png/796573-200.png"
-                          }}),
-                        getTokenMetadata(farm.rewardToken.address, farm.rewardToken.tokenId)
+                        getFarmTokenMetadata(exchangeResp.data.token1Address, exchangeResp.data.token1Id),
+                        getFarmTokenMetadata(exchangeResp.data.token2Address, exchangeResp.data.token2Id),
+                        getFarmTokenMetadata(farm.rewardToken.address, farm.rewardToken.tokenId),
                       ]).then(values => {
-                        const token1Meta = farmUtils.overrideMetadata(values[0]);
-                        const token2Meta = farmUtils.overrideMetadata(values[1]);
-                        const rewardMeta = farmUtils.overrideMetadata(values[2]);
-
-                        token1Meta.thumbnailUri = ipfs.transformUri(token1Meta.thumbnailUri);
-                        token2Meta.thumbnailUri = ipfs.transformUri(token2Meta.thumbnailUri);
-                        rewardMeta.thumbnailUri = ipfs.transformUri(rewardMeta.thumbnailUri);
+                        const token1Meta = values[0];
+                        const token2Meta = values[1];
+                        const rewardMeta = values[2];
 
                         commit('updateFarm', merge(farm, {
                           poolToken: {
@@ -389,11 +374,9 @@ export default {
               // single token staking
               } else {
                 Promise.all([
-                  getTokenMetadata(farm.poolToken.address, farm.poolToken.tokenId),
-                  getTokenMetadata(farm.rewardToken.address, farm.rewardToken.tokenId)
+                  getFarmTokenMetadata(farm.poolToken.address, farm.poolToken.tokenId),
+                  getFarmTokenMetadata(farm.rewardToken.address, farm.rewardToken.tokenId)
                 ]).then(values => {
-                    values[0].thumbnailUri = ipfs.transformUri(values[0].thumbnailUri);
-                    values[1].thumbnailUri = ipfs.transformUri(values[1].thumbnailUri);
                     commit('updateFarm', merge(farm, {
                       poolToken: { isQuipuLp: false, isLbLp: false, isPlentyLp: false, ...values[0] },
                       rewardToken: values[1],

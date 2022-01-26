@@ -5,6 +5,7 @@
     <el-aside
       width="230px"
       style="
+        background: #fff;
         position: fixed;
         border-right: 2px solid #ebebeb;
         top: 0;
@@ -17,18 +18,17 @@
       <div style="margin-top: 14px; text-align: center">
         <img src="./assets/logo_transparent_background.png" width="200" />
       </div>
-      <div style="padding: 0 20px; margin-top: -12px">
-        <el-divider></el-divider>
+      <div style="padding: 0 20px; margin-top: 25px">
         <NavMenu />
       </div>
       <JoinDiscord />
     </el-aside>
-    <el-container style="position: relative; margin-left: 230px">
+    <el-container style="position: relative; margin-left: 230px;">
       <router-view></router-view>
       <el-footer
         >Copyright &copy; 2021 Crunchy.Network. Made with
-        <i class="fas fa-heart" style="color: #f64947"></i>
-        <i class="fas fa-grin-beam-sweat" style="color: #555cff"></i> &amp;
+        <i class="fas fa-heart" style="color: #f64947; margin-left: 6px;"></i>
+        <i class="fas fa-grin-beam-sweat" style="color: #555cff; margin-left: 6px;"></i> &amp;
         <i class="fas fa-grin-tears" style="color: #fece00"></i
       ></el-footer>
     </el-container>
@@ -73,6 +73,10 @@ body,
 .el-container {
   margin: 0;
   height: 100%;
+}
+
+body {
+  background: #FFFAFA;
 }
 
 /* FONT WEIGHTS */

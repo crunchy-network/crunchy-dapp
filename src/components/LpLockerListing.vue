@@ -1,7 +1,7 @@
 <template>
   <div id="lp-locker-listing">
 
-      <el-header style="position: fixed; height: 90px; top: 0; left: 230px; right: 0; background: #fff; z-index: 999;">
+      <el-header style="position: fixed; height: 90px; top: 0; left: 230px; right: 0; background: #fff; z-index: 999; border-bottom: 1px solid #e8e8e9;">
         <el-row type="flex" class="row-bg" justify="space-between">
           <el-col :span="6">
             <!-- <div class="grid-content">
@@ -21,7 +21,6 @@
             </div>
           </el-col>
         </el-row>
-        <el-divider></el-divider>
       </el-header>
 
       <el-main style="margin-top: 90px;">
@@ -32,7 +31,7 @@
             <el-row :gutter="20" type="flex">
               <el-col :span="8">
                 <div class="grid-content" style="height: 100%;">
-                  <el-card v-loading="lpLockers.loading" class="box-card" shadow="never" style="height: 100%; background: #f4f4f4;">
+                  <el-card v-loading="lpLockers.loading" class="box-card" shadow="never" style="height: 100%;">
                     <el-avatar shape="circle" icon="fas fa-coins" :size="48" style="background: #1EC37F; font-size: 24px;"></el-avatar>
                     <div style="font-size: 24px; font-weight: 600; margin-top: 14px; margin-bottom: 8px;">
                       {{ vueNumberFormat(totalTokens) }}
@@ -144,15 +143,16 @@
                 <el-row type="flex" align="middle" style="color: #757679; font-size: 14px; font-weight: 600; border-bottom: 2px solid #f4f4f4; padding-bottom: 14px; margin-bottom: 14px;">
                   <el-col :span="24">
                     <el-row :gutter="20" type="flex" align="middle" style="padding: 0 20px;">
-                      <el-col :span="7">LP Pair</el-col>
-                      <el-col style="text-align: right;" :span="4">Total Liquidity</el-col>
-                      <el-col style="text-align: right;" :span="4">TVL
+                      <el-col :sm="2" :lg="1">DEX</el-col>
+                      <el-col :sm="8" :lg="6">Pair</el-col>
+                      <el-col style="text-align: right;" :sm="7" :lg="4">TVL
                         <el-tooltip content="Total Value Locked" placement="top" effect="light">
                           <i class="fas fa-question-circle"></i>
                         </el-tooltip>
                       </el-col>
-                      <el-col style="text-align: right;" :span="4">Tokens Locked</el-col>
-                      <el-col style="text-align: right;" :span="5">Next Unlock</el-col>
+                      <el-col class="hidden-md-and-down" style="text-align: right;" :span="4">Total Liquidity</el-col>
+                      <el-col class="hidden-md-and-down" style="text-align: right;" :span="4">Tokens Locked</el-col>
+                      <el-col style="text-align: right;" :sm="7" :lg="5">Next Unlock</el-col>
                     </el-row>
                   </el-col>
                 </el-row>
@@ -261,6 +261,8 @@ export default {
 #lp-locker-listing {
     position: relative;
     width: 100%;
+    max-width: 1450px;
+    margin: 0 auto;
 }
 
 </style>

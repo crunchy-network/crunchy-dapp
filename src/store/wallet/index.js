@@ -13,4 +13,9 @@ export default {
   },
   actions,
   mutations,
+  getters: {
+    getPkh(state) {
+      return state.pkh;
+    },
+  },
 };

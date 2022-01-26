@@ -1,7 +1,7 @@
 <template>
   <div id="wtz">
 
-      <el-header style="position: fixed; height: 90px; top: 0; left: 230px; right: 0; background: #fff; z-index: 999;">
+      <el-header style="position: fixed; height: 90px; top: 0; left: 230px; right: 0; background: #fff; z-index: 999; border-bottom: 1px solid #e8e8e9;">
         <el-row type="flex" class="row-bg" justify="space-between">
           <el-col :span="6">
             <div class="grid-content">
@@ -13,18 +13,17 @@
             </div>
           </el-col>
         </el-row>
-        <el-divider></el-divider>
       </el-header>
 
       <el-main style="margin-top: 90px;">
         <el-row :gutter="20" type="flex" align="bottom">
-          <el-col :span="8">
+          <el-col :span="16">
             <div class="grid-content">
               <h2 style="margin-top: 0; margin-bottom: 5px;">Mint WTZ/Redeem XTZ</h2>
               <span style="font-size: 14px;">Just submit XTZ to start minting. Burn WTZ to redeem for XTZ.</span>
             </div>
           </el-col>
-          <el-col :span="16">
+          <el-col :span="8">
             <div class="grid-content" style="text-align: right;">
               <el-switch
                 style="margin-right: 24px;"
@@ -246,6 +245,8 @@ export default {
 #wtz {
     position: relative;
     width: 100%;
+    max-width: 1450px;
+    margin: 0 auto;
 
     .el-form-item__label {
         color: #a3a4a5;
