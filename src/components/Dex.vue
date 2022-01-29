@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="position: relative; width: 100%; max-width: 1450px; margin: 0 auto;">
     <el-header style="position: fixed; height: 90px; top: 0; left: 230px; right: 0; background: #fff; z-index: 999;">
       <el-row type="flex" class="row-bg" justify="space-between">
         <el-col :span="6">
@@ -14,7 +14,7 @@
       <el-divider></el-divider>
     </el-header>
 
-    <el-main style="margin-top: 118px;">
+    <el-main style="margin-top: 95px;">
       <el-row type="flex" justify="center">
         <el-col :xs="24" :md="14" :lg="8">
           <el-card style="box-shadow: 0 !important;">
@@ -27,7 +27,7 @@
               </el-button>
             </el-row>
 
-            <div style="margin-top: 16px">
+            <div style="margin-top: 11px">
               <el-row type="flex" justify="space-between" style="align-items: center; padding: 2px 20px">
                 <h2 style="margin: 0 10px 0 0; font-size: 12px; color: #757679; font-weight: 500 !important;">
                   From
@@ -38,7 +38,7 @@
                 </h2>
               </el-row>
               <div>
-                <div style="background: #F3F3F3; border-radius: 20px; padding: 10px 15px; padding-bottom: 4px">
+                <div style="background: #F3F3F3; border-radius: 20px; padding: 8px 15px; padding-bottom: 4px">
                   <el-row type="flex">
                     <dex-dropdown :items="dropdownItems" :value="input" :onChange="handleInputDropChange" />
                     <div style="flex: 1;">
@@ -49,7 +49,7 @@
                 </div>
               </div>
 
-              <el-row style="margin: 10px 0; width: 100%" type="flex" justify="center">
+              <el-row style="margin: 6px 0; width: 100%" type="flex" justify="center">
                 <el-button @click="handleSwitch" style="cursor: pointer" type="text">
                   <svg width="15" height="15" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -65,7 +65,7 @@
               </el-row>
 
               <div>
-                <el-card body-style="padding: 10px 20px; " class="_output">
+                <el-card body-style="padding: 6px 20px; " class="_output">
                   <el-row type="flex" justify="space-between" style="align-items: center; padding: 2px 0">
                     <h2 style="margin: 0 20px 0 0; font-size: 12px; color: #757679; font-weight: 500 !important;">
                       To(estimated)
@@ -76,7 +76,7 @@
                     </h2>
                   </el-row>
 
-                  <div style="margin: 0px 0 20px 0">
+                  <div style="margin: 0px 0 15px 0">
                     <dex-dropdown :items="dropdownItems" :value="output" :onChange="handleOutputDropChange" />
                   </div>
 
@@ -87,7 +87,7 @@
                 </el-card>
               </div>
 
-              <div style="padding: 10px 33px 0 33px">
+              <div style="padding: 6px 33px 0 33px">
                 <el-button style="width: 100%" round type="primary">
                   SWAP
                 </el-button>
@@ -95,7 +95,7 @@
             </div>
           </el-card>
 
-          <diV style="padding: 16px 56px 0 56px">
+          <diV style="padding: 10px 56px 0 56px">
             <el-row type="flex" justify="space-between" align="center">
               <h2 style="margin: 0; font-size: 12px; color: #757679; font-weight: 500 !important; ">Minimum received</h2>
               <h2 style="margin: 0; font-size: 12px; color: #757679; text-align: right; font-weight: 500 !important; ">~$3.25 10.0 CRUNCH</h2>
