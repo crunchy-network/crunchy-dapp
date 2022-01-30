@@ -45,7 +45,7 @@
                       <input v-model="input.value" placeholder="VALUE" class="input-elem" type="number" />
                     </div>
                   </el-row>
-                  <h2 style="margin: 7px 0 0 0; font-size: 12px; color: #757679; font-weight: 500 !important; text-align: right ">~ $3.25</h2>
+                  <h2 style="margin: 7px 0 0 0; font-size: 12px; color: #757679; font-weight: 500 !important; text-align: right ">~ $0</h2>
                 </div>
               </div>
 
@@ -81,8 +81,8 @@
                   </div>
 
                   <div>
-                    <dex-result-card name="Quipuswap" :txCost="0.1" :txCostUSD="0.51" :value="10" :valueUSD="3.71" best></dex-result-card>
-                    <dex-result-card name="Spicyswap" :txCost="0.1" :txCostUSD="0.51" :value="9.98" :valueUSD="3.73"></dex-result-card>
+                    <dex-result-card name="Quipuswap" :txCost="0.1" :txCostUSD="0.51" :value="0" :valueUSD="0" best></dex-result-card>
+                    <dex-result-card name="Spicyswap" :txCost="0.1" :txCostUSD="0.51" :value="0" :valueUSD="0"></dex-result-card>
                   </div>
                 </el-card>
               </div>
@@ -98,7 +98,7 @@
           <diV style="padding: 10px 56px 0 56px">
             <el-row type="flex" justify="space-between" align="center">
               <h2 style="margin: 0; font-size: 12px; color: #757679; font-weight: 500 !important; ">Minimum received</h2>
-              <h2 style="margin: 0; font-size: 12px; color: #757679; text-align: right; font-weight: 500 !important; ">~$3.25 10.0 CRUNCH</h2>
+              <h2 style="margin: 0; font-size: 12px; color: #757679; text-align: right; font-weight: 500 !important; ">~$0 0 CRUNCH</h2>
             </el-row>
 
             <el-row type="flex" justify="space-between" align="center">
