@@ -1,7 +1,11 @@
 <template>
-  <div style="margin-bottom: 10px; position: relative">
-    <div v-if="best" class="best">BEST</div>
-    <el-card style="border: 1px solid rgba(25, 27, 31, 0.1)" v-bind:style="best && 'border-color: #555CFF;'" body-style="padding: 12px 10px">
+  <div @click="handleClick" style="position: relative" v-bind:style="!best && 'margin-top: 10px'">
+    <div v-if="best && active" class="best">BEST</div>
+    <el-card
+      style="border: 1px solid rgba(25, 27, 31, 0.1);"
+      v-bind:style="active && 'border-color: #F64947;'"
+      body-style="padding: 12px 10px; border-radius: 18px"
+    >
       <el-row type="flex" justify="space-between" align="center">
         <div>
           <h2 style="margin: 0; font-size: 16px; color: #191B1F; font-weight: 500 !important; ">
@@ -31,29 +35,34 @@ export default {
     txCostUSD: Number,
     valueUSD: Number,
     best: Boolean,
+    active: Boolean,
+    handleClick: Function,
   },
 };
 </script>
 
 <style scoped>
+* {
+  transition: 0.45s ease all;
+}
 .best {
-  background: #555cff;
+  background: #f64947;
   border-radius: 20px;
   width: max-content;
   font-style: normal;
   font-weight: 500;
-  font-size: 12px;
-  line-height: 18px;
+  font-size: 10px;
+  /* line-height: 18px; */
   display: flex;
   align-items: center;
   letter-spacing: -0.02em;
   color: #ffffff;
-  padding: 1px 14px;
+  padding: 0px 12px;
   justify-content: center;
   position: absolute;
-  height: 20px;
-  width: 30px;
-  top: -10px;
+  height: 16px;
+  width: 25px;
+  top: -8px;
   left: 15px;
 }
 </style>

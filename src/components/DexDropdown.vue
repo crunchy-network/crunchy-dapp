@@ -1,12 +1,12 @@
 <template>
   <div style=" position: relative; width: max-content; overflow: visible">
     <el-row type="flex" style="align-items: center">
-      <el-avatar shape="circle" :size="28" :src="value.icon"></el-avatar>
-      <h2 style=" margin: 0 0 0 8.5px;">
+      <el-avatar style="margin-right:9.4px" shape="circle" :size="28" :src="value.icon"></el-avatar>
+      <h2 style=" margin: 0">
         {{ value.name }}
       </h2>
 
-      <el-button @click="toggleDrop" style="border: 0; background: transparent" circle> <i class="fas fa-caret-down" style="font-size: 20px"></i> </el-button>
+      <el-button @click="toggleDrop" style="border: 0; color: #555CFF; background: transparent; font-size: 18px;" icon="fas fa-caret-down" circle></el-button>
     </el-row>
 
     <div v-if="dropdown" style="position: absolute; top: 70%; left: 60%; z-index: 60000000;">
@@ -23,7 +23,7 @@
         </div>
       </div>
     </div>
-    <div v-if="dropdown" >
+    <div v-if="dropdown">
       <div class="drop-backdrop" @click="toggleDrop"></div>
     </div>
   </div>
@@ -69,5 +69,9 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
+}
+
+.el-button.is-circle{
+  padding: 8px;
 }
 </style>
