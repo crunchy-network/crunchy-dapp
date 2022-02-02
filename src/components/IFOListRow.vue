@@ -34,7 +34,7 @@
               </div>
               <span style="margin-left: 15px"> {{ project.tokenName }} </span>
             </el-col>
-            <el-col :span="7" style="font-weight: bold">
+            <el-col :span="7" style="font-weight: bold; text-align: right">
               <div>
                 {{
                   project.isIFO
@@ -47,7 +47,10 @@
               {{ vueNumberFormat(project.offeringSupply) }}
               {{ project.tokenSymbol }}
             </el-col>
-            <el-col :span="5" style="font-weight: bold; text-align: right">
+            <el-col
+              :span="5"
+              style="font-weight: bold; text-align: right; padding-right: 0px"
+            >
               <IFOTimeBubble
                 :date="new Date(project.startTime)"
                 :endDate="new Date(project.endTime)"
