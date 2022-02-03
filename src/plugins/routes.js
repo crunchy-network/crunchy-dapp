@@ -10,6 +10,7 @@ import WtzMain from './../components/WtzMain.vue'
 import IFO from './../components/IFO.vue'
 import IfoPixelPriv from './../components/IfoPixelPriv.vue'
 import HomeWalletPage from './../components/HomeWalletPage.vue'
+import IFOList from './../components/IFOList.vue'
 // import Bakery from './../components/Bakery.vue'
 
 Vue.use(VueRouter);
@@ -23,7 +24,8 @@ const routes = [
 
   { name: 'deep-freezer-listing', path: '/freezers', component: LpLockerListing },
   { name: 'deep-freezer-item', path: '/freezers/item', component: LpLockerItem },
-  { name: 'ifo', path: '/ifo', component: IFO },
+  { name: 'ifo-list', path: '/ifo', component: IFOList },
+  { name: 'ifo', path: '/ifo/:tokenName', component: IFO },
   { name: 'farm-listing', path: '/farms', component: FarmListing },
   { name: 'farm-create', path: '/farms/create', component: FarmCreate },
 

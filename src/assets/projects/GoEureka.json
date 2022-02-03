@@ -1,0 +1,37 @@
+
+{
+    "name": "GoEureka",
+    "description": "Booking platforms charge hotels up to 30% in commission and prioritize property searches based on this commissions. GOeureka will operate on a unbiased and transparent business model where all hotels are treated equal. Our goal is to drive cost efficiencies for travellers by creating a platform that runs on a fixed commission structure of 5% and to deliver additional member benefits through the use of the GOT token.",
+    "projectLogo": "goeurekalogo.png",
+    "tokenLogo": "Got.png",
+    "contractId": "KT1X4L8FBVEqCf7o8LXpzUSmWnpuFB2r2AHx",
+    "isIFO": false,
+    "tokenName": "GoEureka",
+    "tokenSymbol": "GOT",
+    "raisingGoal": 5000000,
+    "totalRaised": 5000000,
+    "offeringSupply": 100000,
+    "swapRate": 0.02,
+    "startTime": "2021-07-12T10:00:00.000Z",
+    "endTime": "2021-07-12T10:00:00.000Z",
+    "harvestTime": "2021-07-12T10:00:00.000Z",
+    "started": true,
+    "ended": true,
+    "harvesting": false,
+    "harvestDuration": 0,
+    "userRecord": {
+      "committed": 0,
+      "committedPercent": 0,
+      "projectedHarvest": 0,
+      "projectedFee": 0,
+      "amountHarvested": 0,
+      "pendingHarvest": 0,
+      "lastHarvest": ""
+    },
+    "links": [
+        {"name": "Medium", "link": "https://social-23833.medium.com/"},
+        {"name": "Twitter", "link": "https://twitter.com/goeurekatravel"},
+        {"name": "Discord", "link": "https://discord.com/invite/mPGnCsVud3"},
+        {"name": "Telegram", "link": "https://t.me/goeureka"}
+    ]
+}

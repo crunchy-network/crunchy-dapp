@@ -1,0 +1,23 @@
+{
+    "name": "Pixel",
+    "description": "Pixel is bringing gamification to NFTs and Defi. Their first project, PixelPotus.com, is an early collectable on Tezos and has been in the top 5 on DappRadar for months. The Pixel Debates TCG release is quickly approaching and will be the first major utility for the PXL token. This is just the beginning from a proven team with an exciting roadmap.",
+    "swapRate": 0.0042,
+    "startTime": "2021-11-18T17:40:00.000Z",
+    "endTime": "2021-11-16T19:00:00.000Z",
+    "projectLogo": "PixelLogoLarge.png",
+    "tokenLogo": "POTUS.png",
+    "contractId": "KT1PY1CauoknQQJV7tgD6z6CUKXyWWKNmN4Z",
+    "tokenName": "PIXEL",
+    "tokenSymbol": "PXL",
+    "isIFO": true,
+    "links": [
+        {"name": "Medium", "link": "https://pixelpotus.medium.com/"},
+        {"name": "Twitter", "link": "https://twitter.com/PixelPotus"},
+        {"name": "Discord", "link": "https://discord.com/invite/CbdbvwtwkM"},
+        {"name": "Telegram", "link": "https://t.me/pixelpotus"}
+    ],
+    "offeringSupply": 20000000,
+    "accessTypes": [
+        "Initial Farm Offering"
+    ]
+}
