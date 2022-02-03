@@ -55,7 +55,7 @@
         <button class="tab-text" :style="isActiveTab('portfolio')" @click="setActiveTab('portfolio')">
           Portfolio
         </button>
-        <button class="tab-text" disabled :style="isActiveTab('nfts')" @click="setActiveTab('nfts')">
+        <button class="tab-text" :style="isActiveTab('nfts')" @click="setActiveTab('nfts')">
           NFTs
         </button>
         <button class="tab-text" disabled :style="isActiveTab('farming')" @click="setActiveTab('farming')">
@@ -126,19 +126,24 @@
         </div>
       </el-card>
     </div>
+
+    <div v-if="activeTab === 'nfts'">
+      <nft-wallet-view></nft-wallet-view>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapState, mapActions, mapGetters } from "vuex";
+import NftWalletView from "./NftWalletView.vue";
 // import HomeWalletTable from "./HomeWalletTable.vue";
 import PortfolioWalletRow from "./PortfolioWalletRow.vue";
 export default {
-  components: { PortfolioWalletRow },
+  components: { PortfolioWalletRow, NftWalletView },
   name: "HomeWallet",
   data() {
     return {
-      activeTab: "portfolio",
+      activeTab: "nfts",
       tabledata: [],
       showUsd: false,
       currentPage: 0,
@@ -155,14 +160,14 @@ export default {
   },
   watch: {
     getPkh() {
-      this.loadWalletAsssets();
+      this.loadWalletAsssets;
     },
     getAssets() {
       this.paginationHandler();
     },
   },
   mounted() {
-    this.loadWalletAsssets();
+    this.loadWalletAsssets;
   },
   created() {
     setInterval(() => {
@@ -295,5 +300,9 @@ export default {
     box-sizing: border-box;
     border-radius: 8px;
   }
+}
+
+.el-input__inner{
+  border-radius: 28px;
 }
 </style>

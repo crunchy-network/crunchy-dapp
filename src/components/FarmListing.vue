@@ -124,7 +124,6 @@
           </el-col>
           <el-col :span="16">
             <div class="grid-content" style="text-align: right;">
-
               <el-select multiple collapse-tags :value="farms.filters" @input="updateFilters" placeholder="All Farms & Gardens">
                 <el-option-group
                   v-for="group in filterOptions"

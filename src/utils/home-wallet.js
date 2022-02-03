@@ -3,9 +3,6 @@ import BigNumber from "bignumber.js";
 import coingecko from "./coingecko";
 import ipfs from "./ipfs";
 
-// const makeReqest = async ({ contract, id }) => {
-//   return axios.get(`${process.env.VUE_APP_TEZTOOLS_API_URL}/token/${contract}${id ? "_" + id : ""}/price`);
-// };
 
 export default {
   async fetchAssetsBal(pkh) {
@@ -62,7 +59,6 @@ export default {
 
       // map through all the balances to sort data
       for (let i = 0; i < balances.length; i++) {
-        console.log(balances[i]);
         // get current price of token
         const currentPrice =
           prices.filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address).length === 1
