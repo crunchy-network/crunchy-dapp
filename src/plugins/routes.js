@@ -24,6 +24,9 @@ const routes = [
 
   { name: 'deep-freezer-listing', path: '/freezers', component: LpLockerListing },
   { name: 'deep-freezer-item', path: '/freezers/item', component: LpLockerItem },
+
+  { name: 'ifo-pixel-priv', path: '/ifo/p1x3l-l33t', component: IfoPixelPriv },
+
   { name: 'ifo-list', path: '/ifo', component: IFOList },
   { name: 'ifo', path: '/ifo/:tokenName', component: IFO },
   { name: 'farm-listing', path: '/farms', component: FarmListing },
@@ -31,8 +34,6 @@ const routes = [
 
   // { name: 'bakery', path: '/bakery', component: Bakery },
   { name: 'fire-pit', path: '/fire-pit', component: FirePit },
-
-  { name: 'ifo-pixel-priv', path: '/ifo/p1x3l-l33t', component: IfoPixelPriv },
 ];
 
 export default new VueRouter({
