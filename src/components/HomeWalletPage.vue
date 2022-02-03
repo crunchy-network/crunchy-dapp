@@ -13,13 +13,13 @@
     </el-header>
 
     <el-main style="margin-top: 100px">
-      <div v-if="wallet.connected === false">
+      <div v-if="wallet.connected || $route.params.walletAddress">
+        <home-wallet />
+      </div>
+      <div v-else>
         <el-row type="flex" justify="center">
           <connect-wallet />
         </el-row>
-      </div>
-      <div v-if="wallet.connected">
-        <home-wallet />
       </div>
     </el-main>
   </div>
