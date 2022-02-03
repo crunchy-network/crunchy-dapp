@@ -151,31 +151,37 @@ export default {
   computed: {
     ...mapState(["homeWallet"]),
     ...mapGetters(["getPkh", "getAssets"]),
-    ...mapActions(["loadWalletAsssets", "softUpdateWalletAssets"]),
   },
   watch: {
     getPkh() {
-      this.loadWalletAsssets();
+      this.refresh();
     },
     getAssets() {
       this.paginationHandler();
     },
-  },
-  mounted() {
-    this.loadWalletAsssets();
+    '$route.params.walletAddress': {
+      immediate: true,
+      handler() {
+        this.refresh();
+      }
+    },
   },
   created() {
-    setInterval(() => {
-      this.reload();
-    }, 1000 * 60 * 5);
+    this.refresh();
   },
   methods: {
-    reload() {
-      this.softUpdateWalletAssets;
+    ...mapActions([
+      "loadWalletAsssets",
+    ]),
+
+    refresh() {
+      this.loadWalletAsssets(this.$route.params.walletAddress);
     },
+
     isActiveTab(tab) {
       return this.activeTab === tab && " border-bottom: 6px solid #555CFF; color: #555CFF";
     },
+
     setActiveTab(tab = "") {
       if (["portfolio", "nfts", "farming", "history"].includes(tab)) {
         this.activeTab = tab;

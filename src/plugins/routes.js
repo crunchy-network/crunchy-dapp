@@ -17,7 +17,7 @@ Vue.use(VueRouter);
 
 const routes = [
   { name: 'home', path: '/', component: HomeWalletPage },
-  // { path: '/', redirect: '/farms' },
+  { name: 'home-view-wallet', path: '/wallet/:walletAddress', component: HomeWalletPage },
   
   // { name: 'home-wallet', path: '/home-wallet', component: HomeWalletPage },
   { name: 'wtz', path: '/wtz', component: WtzMain },

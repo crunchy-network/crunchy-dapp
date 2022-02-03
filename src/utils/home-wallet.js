@@ -62,7 +62,6 @@ export default {
 
       // map through all the balances to sort data
       for (let i = 0; i < balances.length; i++) {
-        console.log(balances[i]);
         // get current price of token
         const currentPrice =
           prices.filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address).length === 1
