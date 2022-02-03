@@ -27,6 +27,11 @@ export default {
       return 'tokens';
     }
 
+    // Youves wUSDC/uUSD LP
+    if (address === "KT1Exm6UTCNEbBHANZ7S53t7QN8NJFwAytxg") {
+      return 'tokens';
+    }
+
     return 'ledger';
   },
 

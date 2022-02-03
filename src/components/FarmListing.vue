@@ -4,17 +4,7 @@
       <!-- class="hidden-sm-and-down" -->
       <el-header style="position: fixed; height: 90px; top: 0; left: 230px; right: 0; background: #fff; z-index: 999; border-bottom: 1px solid #e8e8e9;">
         <el-row type="flex" class="row-bg" justify="space-between">
-          <el-col :span="6">
-            <div class="grid-content">
-              <el-input
-                :value="farms.searchInput"
-                @input="updateSearchInput"
-                placeholder="Search farms and pools"
-                prefix-icon="fad fa-search">
-              </el-input>
-            </div>
-          </el-col>
-          <el-col :span="12">
+          <el-col :span="24">
             <div class="grid-content" style="text-align: right;">
               <el-button @click="$router.push({name: 'farm-create'})" type="primary" round style="font-weight: bold;"><i class="fak fa-crunchy-farm-add" style="margin-right: 6px;"></i> Create a Farm</el-button>
               <el-divider direction="vertical"></el-divider>
@@ -111,8 +101,8 @@
           </el-col>
         </el-row>
 
-        <el-row :gutter="20" type="flex" align="bottom">
-          <el-col :span="8">
+        <el-row :gutter="20">
+          <el-col :span="24">
             <div class="grid-content">
               <h2 style="margin-top: 0; margin-bottom: 5px;">Farms &amp; Gardens</h2>
               <span style="font-size: 14px;">Stake tokens to earn rewards. Help Gardens grow into Farms
@@ -120,6 +110,18 @@
                 <i class="fas fa-question-circle"></i>
               </el-tooltip>
               </span>
+            </div>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20" type="flex" align="bottom" style="margin-top: 20px;">
+          <el-col :span="8">
+            <div class="grid-content search-input">
+              <el-input
+                :value="farms.searchInput"
+                @input="updateSearchInput"
+                placeholder="Search farms and pools"
+                prefix-icon="fad fa-search">
+              </el-input>
             </div>
           </el-col>
           <el-col :span="16">

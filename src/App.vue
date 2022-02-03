@@ -186,6 +186,26 @@ i.fa-icon-right {
 .el-header .el-input input:focus {
   border-color: #555cff !important;
 }
+
+#farm-listing .el-input__inner {
+  border-radius: 24px !important;
+  color: #191b1f !important;
+  background: #fafafa !important;
+}
+
+.search-input .el-input__prefix {
+  color: #191b1f;
+}
+.search-input .el-input__inner,
+#farm-listing .search-input .el-input__inner {
+  border-radius: 24px !important;
+  color: #191b1f !important;
+  background: #fff !important;
+}
+.search-input .el-input input:focus {
+  border-color: #555cff !important;
+}
+
 .el-card {
   border-radius: 18px !important;
 }
@@ -347,11 +367,6 @@ i.fa-icon-right {
 }
 .el-tag--medium {
   border-radius: 16px !important;
-}
-#farm-listing .el-input__inner {
-  border-radius: 24px !important;
-  color: #191b1f !important;
-  background: #fafafa !important;
 }
 .el-select__tags {
   left: 8px;
