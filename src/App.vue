@@ -24,15 +24,41 @@
     </el-aside>
     <el-container style="position: relative; margin-left: 230px">
       <router-view></router-view>
-      <el-footer
-        >Copyright &copy; 2021 Crunchy.Network. Made with
+      <el-footer>
+        Copyright &copy; 2021 - 2022 Crunchy. Made with
         <i class="fas fa-heart" style="color: #f64947; margin-left: 6px"></i>
         <i
           class="fas fa-grin-beam-sweat"
           style="color: #555cff; margin-left: 6px"
         ></i>
-        &amp; <i class="fas fa-grin-tears" style="color: #fece00"></i
-      ></el-footer>
+        &amp; <i class="fas fa-grin-tears" style="color: #fece00"></i>
+        <div style="margin-top: 24px; font-size: 24px">
+          <a
+            href="https://github.com/crunchy-network"
+            target="_blank"
+            style="margin: 0 12px"
+            ><i class="fab fa-github"></i
+          ></a>
+          <a
+            href="https://twitter.com/CrunchyTez"
+            target="_blank"
+            style="margin: 0 12px"
+            ><i class="fab fa-twitter"></i
+          ></a>
+          <a
+            href="http://discord.crunchy.network"
+            target="_blank"
+            style="margin: 0 12px"
+            ><i class="fab fa-discord"></i
+          ></a>
+          <a
+            href="http://t.me/crunchy_network"
+            target="_blank"
+            style="margin: 0 12px"
+            ><i class="fab fa-telegram"></i
+          ></a>
+        </div>
+      </el-footer>
     </el-container>
     <!-- </div> -->
 
@@ -102,6 +128,12 @@ h3 {
 }
 .el-footer i.fad {
   margin-right: 0 !important;
+}
+.el-footer a {
+  color: #999;
+}
+.el-footer a:hover {
+  color: #555cff;
 }
 
 /* Chrome, Safari, Edge, Opera */
