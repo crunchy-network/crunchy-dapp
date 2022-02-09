@@ -1,6 +1,6 @@
-import { BigNumber } from 'bignumber.js';
-import actions from './actions'
-import mutations from './mutations'
+import { BigNumber } from "bignumber.js";
+import actions from "./actions";
+import mutations from "./mutations";
 
 export default {
   state: {
@@ -12,8 +12,8 @@ export default {
     balanceRckt: 0,
     balanceRkdao: 0,
     swapRatioRkdao: new BigNumber(198.21589897),
-    swapRatioRckt: new BigNumber(0.24791340)
+    swapRatioRckt: new BigNumber(0.2479134),
   },
   actions,
-  mutations
-}
+  mutations,
+};

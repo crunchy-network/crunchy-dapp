@@ -10,7 +10,6 @@ import ifo from "./ifo";
 import ifoPixelPriv from "./ifoPixelPriv";
 import homeWallet from "./homeWallet";
 
-
 Vue.use(Vuex);
 
 export default new Vuex.Store({

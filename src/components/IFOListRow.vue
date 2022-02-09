@@ -53,7 +53,7 @@
             >
               <IFOTimeBubble
                 :date="new Date(project.startTime)"
-                :endDate="new Date(project.endTime)"
+                :end-date="new Date(project.endTime)"
               />
             </el-col>
           </el-row>
@@ -69,13 +69,13 @@ import { importAll } from "../lib/JsonHelper";
 
 export default {
   name: "IFOListRow",
+  components: { IFOTimeBubble },
+  props: ["project"],
   data: () => ({
     images: importAll(
       require.context("../assets/project_images", false, /\.(png|jpe?g|svg)$/)
     ),
   }),
-  components: { IFOTimeBubble },
-  props: ["project"],
 };
 </script>
 <style scoped>

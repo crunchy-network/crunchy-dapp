@@ -56,12 +56,17 @@
 
             <div class="swap-box space-top">
               <p>Token Swap Rate</p>
-              <p class="mid"><b>{{ ifo.data.swapRate }} $XTZ</b></p>
+              <p class="mid">
+                <b>{{ ifo.data.swapRate }} $XTZ</b>
+              </p>
             </div>
           </el-card>
         </el-col>
         <el-col :xs="24" :md="12"
-          ><el-card class="grid-content box top-box swap-box box-card" v-loading="ifo.loading">
+          ><el-card
+            v-loading="ifo.loading"
+            class="grid-content box top-box swap-box box-card"
+          >
             <!-- <div class="column-center">
               <h1 class="swap-title">Token Swap Details</h1>
               <div>
@@ -143,7 +148,9 @@
                   </div>
 
                   <div class="data-col">
-                    <p>{{ vueNumberFormat(ifo.data.userRecord.committed) }} XTZ</p>
+                    <p>
+                      {{ vueNumberFormat(ifo.data.userRecord.committed) }} XTZ
+                    </p>
                   </div>
                 </div>
 
@@ -153,7 +160,16 @@
                   </div>
 
                   <div class="data-col">
-                    <p>{{ vueNumberFormat(ifo.data.userRecord.committedPercent, {prefix: '', decimal: '.', thousand: ',', precision: 2}) }}%</p>
+                    <p>
+                      {{
+                        vueNumberFormat(ifo.data.userRecord.committedPercent, {
+                          prefix: "",
+                          decimal: ".",
+                          thousand: ",",
+                          precision: 2,
+                        })
+                      }}%
+                    </p>
                   </div>
                 </div>
 
@@ -163,7 +179,12 @@
                   </div>
 
                   <div class="data-col">
-                    <p>{{ vueNumberFormat(ifo.data.userRecord.projectedHarvest) }} PXL</p>
+                    <p>
+                      {{
+                        vueNumberFormat(ifo.data.userRecord.projectedHarvest)
+                      }}
+                      PXL
+                    </p>
                   </div>
                 </div>
 
@@ -173,7 +194,10 @@
                   </div>
 
                   <div class="data-col">
-                    <p>{{ vueNumberFormat(ifo.data.userRecord.projectedFee) }} XTZ</p>
+                    <p>
+                      {{ vueNumberFormat(ifo.data.userRecord.projectedFee) }}
+                      XTZ
+                    </p>
                   </div>
                 </div>
               </div>
@@ -206,22 +230,73 @@
                     <p>{{ vueNumberFormat(ifo.data.raisingGoal) }} XTZ</p>
                   </div>
                 </div>
-
               </div>
 
-              <div v-if="wallet.connected && ifo.data.harvesting" style="border-radius: 22px; background: #FFEECC; padding: 12px 0px; width: 100%; margin-top: 18px;">
-                <el-row type="flex" align="middle" justify="space-between" style="margin: 0 20px;">
-                  <el-col :span="8" style="color: #8C8477; font-size: 12px; text-align: left;">PENDING HARVEST</el-col>
-                  <el-col :span="16" style="font-size: 12px; color: #303133; font-weight: 600; text-align: right;">{{ vueNumberFormat(ifo.data.userRecord.pendingHarvest) }} PXL</el-col>
+              <div
+                v-if="wallet.connected && ifo.data.harvesting"
+                style="
+                  border-radius: 22px;
+                  background: #ffeecc;
+                  padding: 12px 0px;
+                  width: 100%;
+                  margin-top: 18px;
+                "
+              >
+                <el-row
+                  type="flex"
+                  align="middle"
+                  justify="space-between"
+                  style="margin: 0 20px"
+                >
+                  <el-col
+                    :span="8"
+                    style="color: #8c8477; font-size: 12px; text-align: left"
+                    >PENDING HARVEST</el-col
+                  >
+                  <el-col
+                    :span="16"
+                    style="
+                      font-size: 12px;
+                      color: #303133;
+                      font-weight: 600;
+                      text-align: right;
+                    "
+                    >{{
+                      vueNumberFormat(ifo.data.userRecord.pendingHarvest)
+                    }}
+                    PXL</el-col
+                  >
                 </el-row>
               </div>
 
-              <div style="width: 100%; margin-top: 18px;">
-                <el-button v-if="wallet.connected === false" type="success" @click="connectWallet" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px;">Connect Wallet</el-button>
+              <div style="width: 100%; margin-top: 18px">
+                <el-button
+                  v-if="wallet.connected === false"
+                  type="success"
+                  style="
+                    border-radius: 10px;
+                    font-weight: bold;
+                    width: 100%;
+                    padding: 12px 20px;
+                  "
+                  @click="connectWallet"
+                  >Connect Wallet</el-button
+                >
                 <!-- <el-button v-else :disabled="!live" type="primary" @click="showStakeDialog" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px;">FARM</el-button> -->
-                <el-button v-else :disabled="!live" type="primary" @click="harvestPixelPrivIfo" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px;">HARVEST</el-button>
+                <el-button
+                  v-else
+                  :disabled="!live"
+                  type="primary"
+                  style="
+                    border-radius: 10px;
+                    font-weight: bold;
+                    width: 100%;
+                    padding: 12px 20px;
+                  "
+                  @click="harvestPixelPrivIfo"
+                  >HARVEST</el-button
+                >
               </div>
-
             </div>
           </el-card></el-col
         >
@@ -285,7 +360,17 @@
               </div>
 
               <div class="data-col">
-                <p>{{ vueNumberFormat(ifo.data.offeringSupply, {prefix: '', decimal: '.', thousand: ',', precision: 0}) }} $PXL</p>
+                <p>
+                  {{
+                    vueNumberFormat(ifo.data.offeringSupply, {
+                      prefix: "",
+                      decimal: ".",
+                      thousand: ",",
+                      precision: 0,
+                    })
+                  }}
+                  $PXL
+                </p>
               </div>
             </div>
           </div>
@@ -350,41 +435,96 @@
       </el-row>
     </div>
 
-  <el-dialog title="Commit XTZ" :visible.sync="form.visible" width="380px" class="stake-dialog">
-    <p>Commit XTZ to harvest PXL.</p>
-    <el-form :model="form" ref="form" label-position="top" hide-required-asterisk>
-      <div class="current-balance" style="border-radius: 22px; background: #FFEECC; padding: 12px 20px; margin-bottom: 18px;">
-        <el-row type="flex" align="middle" justify="space-between">
-          <el-col :span="8" style="font-size: 12px;">BALANCE</el-col>
-          <el-col :span="16" style="color: #303133; font-weight: bold; text-align: right;">{{ vueNumberFormat(wallet.balance.toNumber() / 1000000) }}</el-col>
-        </el-row>
-      </div>
-      <el-form-item
-        label="Commit"
-        prop="input"
-        :rules="[
-          { type: 'number', required: true, message: 'Enter an amount', transform: (v) => Number(v) },
-          { type: 'number', min: 0.000001, message: 'Enter a valid amount (at least 0.000001)', transform: (v) => Number(v) }
-        ]"
-        style="margin-bottom: 14px;"
+    <el-dialog
+      title="Commit XTZ"
+      :visible.sync="form.visible"
+      width="380px"
+      class="stake-dialog"
+    >
+      <p>Commit XTZ to harvest PXL.</p>
+      <el-form
+        ref="form"
+        :model="form"
+        label-position="top"
+        hide-required-asterisk
       >
-        <el-input v-model="form.input" label="Commit">
-          <span slot="suffix">XTZ</span>
-        </el-input>
-      </el-form-item>
-      <el-button type="success" size="small" round style="margin-bottom: 22px;" @click="form.input = ((wallet.balance.toNumber() / 1000000) - 0.5)">USE MAX</el-button>
-      <el-button type="primary" @click="form.visible = false; stakePixelPrivIfo(form.input)" style="border-radius: 12px; font-weight: bold; width: 100%; padding: 20px; margin-left: 0;">COMMIT</el-button>
-    </el-form>
-  </el-dialog>
+        <div
+          class="current-balance"
+          style="
+            border-radius: 22px;
+            background: #ffeecc;
+            padding: 12px 20px;
+            margin-bottom: 18px;
+          "
+        >
+          <el-row type="flex" align="middle" justify="space-between">
+            <el-col :span="8" style="font-size: 12px">BALANCE</el-col>
+            <el-col
+              :span="16"
+              style="color: #303133; font-weight: bold; text-align: right"
+              >{{
+                vueNumberFormat(wallet.balance.toNumber() / 1000000)
+              }}</el-col
+            >
+          </el-row>
+        </div>
+        <el-form-item
+          label="Commit"
+          prop="input"
+          :rules="[
+            {
+              type: 'number',
+              required: true,
+              message: 'Enter an amount',
+              transform: (v) => Number(v),
+            },
+            {
+              type: 'number',
+              min: 0.000001,
+              message: 'Enter a valid amount (at least 0.000001)',
+              transform: (v) => Number(v),
+            },
+          ]"
+          style="margin-bottom: 14px"
+        >
+          <el-input v-model="form.input" label="Commit">
+            <span slot="suffix">XTZ</span>
+          </el-input>
+        </el-form-item>
+        <el-button
+          type="success"
+          size="small"
+          round
+          style="margin-bottom: 22px"
+          @click="form.input = wallet.balance.toNumber() / 1000000 - 0.5"
+          >USE MAX</el-button
+        >
+        <el-button
+          type="primary"
+          style="
+            border-radius: 12px;
+            font-weight: bold;
+            width: 100%;
+            padding: 20px;
+            margin-left: 0;
+          "
+          @click="
+            form.visible = false;
+            stakePixelPrivIfo(form.input);
+          "
+          >COMMIT</el-button
+        >
+      </el-form>
+    </el-dialog>
   </div>
-
 </template>
 
 <script>
 import AppBar from "./AppBar.vue";
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions } from "vuex";
 
 export default {
+  name: "IfoPixelPriv",
   components: { AppBar },
   data: () => ({
     displayDays: "",
@@ -392,17 +532,13 @@ export default {
     displayMinutes: "",
     form: {
       input: "",
-      visible: false
+      visible: false,
     },
     live: false,
-    ended: false
+    ended: false,
   }),
-  name: "IfoPixelPriv",
   computed: {
-    ...mapState([
-      'wallet',
-      'ifoPixelPriv'
-    ]),
+    ...mapState(["wallet", "ifoPixelPriv"]),
     _seconds() {
       return 1000;
     },
@@ -417,17 +553,20 @@ export default {
     },
     ifo() {
       return this.ifoPixelPriv;
-    }
+    },
   },
   created() {
     this.refresh();
   },
+  mounted() {
+    this.showTimer();
+  },
   methods: {
     ...mapActions([
-      'connectWallet',
-      'loadPixelPrivIfoData',
-      'stakePixelPrivIfo',
-      'harvestPixelPrivIfo'
+      "connectWallet",
+      "loadPixelPrivIfoData",
+      "stakePixelPrivIfo",
+      "harvestPixelPrivIfo",
     ]),
 
     refresh() {
@@ -440,11 +579,13 @@ export default {
     showTimer() {
       const vm = this;
       // vm.live = true;
-      vm.live = (new Date().getTime() > new Date("2022-01-25T19:00:00Z").getTime());
+      vm.live =
+        new Date().getTime() > new Date("2022-01-25T19:00:00Z").getTime();
       const timer = setInterval(() => {
         let startDate = new Date("2022-01-25T19:00:00Z").getTime();
         if (vm.live) {
-          startDate = new Date("2022-01-25T19:00:00Z").getTime() + (86400 * 5 * 29 * 1000);
+          startDate =
+            new Date("2022-01-25T19:00:00Z").getTime() + 86400 * 5 * 29 * 1000;
         }
 
         const currentDate = new Date().getTime();
@@ -469,15 +610,11 @@ export default {
 
     showStakeDialog() {
       this.form.input = "";
-      if (Object.prototype.hasOwnProperty.call(this.$refs, 'form')) {
+      if (Object.prototype.hasOwnProperty.call(this.$refs, "form")) {
         this.$refs.form.resetFields();
       }
       this.form.visible = true;
-    }
-
-  },
-  mounted() {
-    this.showTimer();
+    },
   },
 };
 </script>
@@ -586,7 +723,7 @@ p.mid {
   text-align: center;
 }
 
-.space-top{
+.space-top {
   margin-top: 30px;
 }
 

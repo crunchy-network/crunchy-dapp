@@ -1,5 +1,5 @@
-import actions from './actions'
-import mutations from './mutations'
+import actions from "./actions";
+import mutations from "./mutations";
 
 export default {
   state: {
@@ -13,7 +13,7 @@ export default {
     currentPrices: {},
     storage: {
       lockers: [],
-      locks: []
+      locks: [],
     },
     usdVwap: 0,
     crunchTez: 0,
@@ -21,8 +21,8 @@ export default {
     totalTvlTez: 0,
     searchInput: "",
     filters: [],
-    data: {}
+    data: {},
   },
   actions,
-  mutations
-}
+  mutations,
+};

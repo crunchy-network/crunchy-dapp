@@ -1,28 +1,30 @@
 <template>
   <el-card class="box-card" shadow="never" style="height: 277px; width: 100%">
-      <div style="margin: 40px;">
-        <h1>Initial Farm Offering (IFO)</h1>
-        <p>Launchpad offering participation in initial token distributions from the best upcoming Tezos based projects.</p>  
-      </div>
+    <div style="margin: 40px">
+      <h1>Initial Farm Offering (IFO)</h1>
+      <p>
+        Launchpad offering participation in initial token distributions from the
+        best upcoming Tezos based projects.
+      </p>
+    </div>
   </el-card>
 </template>
 
 <script>
 export default {
-  name: 'DaasCard'
-}
+  name: "DaasCard",
+};
 </script>
 
 <style lang="scss" scoped>
 p {
-    font-size: 16px;
-    color: rgb(117, 118, 121);
+  font-size: 16px;
+  color: rgb(117, 118, 121);
 }
 .el-button {
-    font-weight: bold;
+  font-weight: bold;
 }
 .el-card {
-  color: #303133
+  color: #303133;
 }
-
 </style>

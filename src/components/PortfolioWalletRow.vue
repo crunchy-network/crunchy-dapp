@@ -1,18 +1,38 @@
 <template>
-  <el-row style="padding-bottom: 14px; font-size: 14px; font-weight: 600;" type="flex" align="top">
+  <el-row
+    style="padding-bottom: 14px; font-size: 14px; font-weight: 600"
+    type="flex"
+    align="top"
+  >
     <el-col :span="24">
       <div class="item-row">
-        <el-row :gutter="20" class="farm-row" style="margin-left: 0; margin-right: 0;" type="flex" align="middle">
-          <el-col style="text-align: left;" :span="6">
-            <el-row type="flex" style="align-items: center;">
+        <el-row
+          :gutter="20"
+          class="farm-row"
+          style="margin-left: 0; margin-right: 0"
+          type="flex"
+          align="middle"
+        >
+          <el-col style="text-align: left" :span="6">
+            <el-row type="flex" style="align-items: center">
               <el-avatar
                 :src="asset.icon"
                 fit="cover"
                 shape="circle"
                 :size="40"
-                style="position: relative; border: 4px solid #fff; vertical-align: middle; margin-right: 10px"
+                style="
+                  position: relative;
+                  border: 4px solid #fff;
+                  vertical-align: middle;
+                  margin-right: 10px;
+                "
               ></el-avatar>
-              <a style="color: #555CFF;text-decoration: none;" v-if="asset.contract !== 'tez'" target="_blank" :href="`https://tzkt.io/${asset.contract}/operations/`">
+              <a
+                v-if="asset.contract !== 'tez'"
+                style="color: #555cff; text-decoration: none"
+                target="_blank"
+                :href="`https://tzkt.io/${asset.contract}/operations/`"
+              >
                 {{ asset.asset }}
               </a>
               <span v-if="asset.contract === 'tez'">
@@ -21,33 +41,73 @@
             </el-row>
           </el-col>
 
-          <el-col style="text-align: right;" :span="5">
-            {{ vueNumberFormat(asset.balance, { prefix: "", decimal: ".", thousand: ",", precision: 4 }) }}
-          </el-col>
-          <el-col style="text-align: right;" :span="5">
+          <el-col style="text-align: right" :span="5">
             {{
-              !showUsd
-                ? vueNumberFormat(asset.price, { prefix: "", suffix: " ꜩ", decimal: ".", thousand: ",", precision: 4 })
-                : vueNumberFormat(asset.priceUsd, { prefix: "$", decimal: ".", thousand: ",", precision: 2 })
+              vueNumberFormat(asset.balance, {
+                prefix: "",
+                decimal: ".",
+                thousand: ",",
+                precision: 4,
+              })
             }}
           </el-col>
-          <el-col style="text-align: right;" :span="5">
+          <el-col style="text-align: right" :span="5">
             {{
               !showUsd
-                ? vueNumberFormat(asset.value, { prefix: "", suffix: " ꜩ", decimal: ".", thousand: ",", precision: 4 })
-                : vueNumberFormat(asset.valueUsd, { prefix: "$", decimal: ".", thousand: ",", precision: 2 })
+                ? vueNumberFormat(asset.price, {
+                    prefix: "",
+                    suffix: " ꜩ",
+                    decimal: ".",
+                    thousand: ",",
+                    precision: 4,
+                  })
+                : vueNumberFormat(asset.priceUsd, {
+                    prefix: "$",
+                    decimal: ".",
+                    thousand: ",",
+                    precision: 2,
+                  })
             }}
           </el-col>
-          <el-col style="text-align: right; " :span="3">
+          <el-col style="text-align: right" :span="5">
+            {{
+              !showUsd
+                ? vueNumberFormat(asset.value, {
+                    prefix: "",
+                    suffix: " ꜩ",
+                    decimal: ".",
+                    thousand: ",",
+                    precision: 4,
+                  })
+                : vueNumberFormat(asset.valueUsd, {
+                    prefix: "$",
+                    decimal: ".",
+                    thousand: ",",
+                    precision: 2,
+                  })
+            }}
+          </el-col>
+          <el-col style="text-align: right" :span="3">
             <a
               v-if="asset.contract !== 'tez'"
-              :href="`https://quipuswap.com/swap?from=${asset.contract + (asset.tokenid === undefined ? '' : '_' + asset.tokenid)}&to=tez`"
+              :href="`https://quipuswap.com/swap?from=${
+                asset.contract +
+                (asset.tokenid === undefined ? '' : '_' + asset.tokenid)
+              }&to=tez`"
               target="_blank"
             >
-              <el-button style="color: #555CFF; font-weight: 600" type="text"> TRADE </el-button>
+              <el-button style="color: #555cff; font-weight: 600" type="text">
+                TRADE
+              </el-button>
             </a>
-            <router-link v-if="asset.contract === 'tez'" tag="a" :to="{ name: 'wtz' }">
-              <el-button style="color: #555CFF; font-weight: 600" type="text"> TRADE </el-button>
+            <router-link
+              v-if="asset.contract === 'tez'"
+              tag="a"
+              :to="{ name: 'wtz' }"
+            >
+              <el-button style="color: #555cff; font-weight: 600" type="text">
+                TRADE
+              </el-button>
             </router-link>
           </el-col>
         </el-row>

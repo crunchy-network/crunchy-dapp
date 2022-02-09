@@ -3,11 +3,13 @@ import homeWallet from "../../utils/home-wallet";
 export default {
   async fetchHomeWalletBalances({ rootState, commit }, pkh) {
     if (!pkh && !rootState.wallet.pkh) {
-      return;
+      // @todo
     } else {
-      return homeWallet.fetchAssetsBal(pkh || rootState.wallet.pkh).then((res) => {
-        commit("updateAssets", res);
-      });
+      return homeWallet
+        .fetchAssetsBal(pkh || rootState.wallet.pkh)
+        .then((res) => {
+          commit("updateAssets", res);
+        });
     }
   },
 

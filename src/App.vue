@@ -12,7 +12,6 @@
         bottom: 0;
         overflow-x: hidden;
       "
-
       class="side-bar"
     >
       <div style="margin-top: 14px; text-align: center">
@@ -23,13 +22,16 @@
       </div>
       <JoinDiscord />
     </el-aside>
-    <el-container style="position: relative; margin-left: 230px;">
+    <el-container style="position: relative; margin-left: 230px">
       <router-view></router-view>
       <el-footer
         >Copyright &copy; 2021 Crunchy.Network. Made with
-        <i class="fas fa-heart" style="color: #f64947; margin-left: 6px;"></i>
-        <i class="fas fa-grin-beam-sweat" style="color: #555cff; margin-left: 6px;"></i> &amp;
-        <i class="fas fa-grin-tears" style="color: #fece00"></i
+        <i class="fas fa-heart" style="color: #f64947; margin-left: 6px"></i>
+        <i
+          class="fas fa-grin-beam-sweat"
+          style="color: #555cff; margin-left: 6px"
+        ></i>
+        &amp; <i class="fas fa-grin-tears" style="color: #fece00"></i
       ></el-footer>
     </el-container>
     <!-- </div> -->
@@ -56,7 +58,7 @@ import NavMenu from "./components/NavMenu.vue";
 import JoinDiscord from "./components/JoinDiscord.vue";
 
 export default {
-  name: "app",
+  name: "App",
   components: {
     NavMenu,
     JoinDiscord,
@@ -76,22 +78,21 @@ body,
 }
 
 body {
-  background: #FFFAFA;
+  background: #fffafa;
 }
 
 /* FONT WEIGHTS */
-h1, h2, h3 {
-    font-weight: 600 !important;
+h1,
+h2,
+h3 {
+  font-weight: 600 !important;
 }
 .grid-content h2 + span {
-    font-weight: 300 !important;
+  font-weight: 300 !important;
 }
 .el-form--label-top .el-form-item__label {
-    font-weight: 500 !important;
+  font-weight: 500 !important;
 }
-
-
-
 
 .el-footer {
   text-align: center;

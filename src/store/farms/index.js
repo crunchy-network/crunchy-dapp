@@ -1,5 +1,5 @@
-import actions from './actions'
-import mutations from './mutations'
+import actions from "./actions";
+import mutations from "./mutations";
 
 export default {
   state: {
@@ -18,17 +18,17 @@ export default {
       farms: [],
       userRecords: [],
       vaults: {
-        activeKeys: 0
-      }
+        activeKeys: 0,
+      },
     },
     usdVwap: 0,
     crunchTez: 0,
     crdaoTez: 0,
     totalTvlTez: 0,
     searchInput: "",
-    filters: [ 'farm' ],
-    data: {}
+    filters: ["farm"],
+    data: {},
   },
   actions,
-  mutations
-}
+  mutations,
+};

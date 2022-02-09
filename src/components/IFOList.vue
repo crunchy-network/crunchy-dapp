@@ -48,8 +48,8 @@
               </el-row>
               <IFOListRow
                 v-for="project in projects"
-                :project="project"
                 :key="project.name"
+                :project="project"
               />
             </el-card>
           </div>

@@ -30,8 +30,8 @@
 <script>
 import NavWallet from "./NavWallet.vue";
 export default {
-  components: { NavWallet },
   name: "AppBar",
+  components: { NavWallet },
 };
 </script>
 

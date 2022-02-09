@@ -1,11 +1,9 @@
 export default {
-
-  updatePixelPrivIfoLoading (state, isLoading) {
+  updatePixelPrivIfoLoading(state, isLoading) {
     state.loading = isLoading;
   },
 
-  updatePixelPrivIfoData (state, data) {
+  updatePixelPrivIfoData(state, data) {
     state.data = data;
-  }
-
-}
+  },
+};
