@@ -30,7 +30,8 @@ export default {
     } else {
       return feed.find((el) => {
         return (
-          (el.tokenAddress === token.address && el.tokenId === token.tokenId) ||
+          (el.tokenAddress === token.address &&
+            el.tokenId === parseInt(token.tokenId)) ||
           el.address === token.address
         );
       });
