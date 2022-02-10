@@ -1,16 +1,16 @@
 <template>
   <div style="display: inline-block">
     <el-button
+      v-if="wallet.connected === false"
       type="success"
       round
       plain
-      v-if="wallet.connected === false"
       @click="connectWallet"
       ><i class="fad fa-wallet"></i> Connect Wallet</el-button
     >
     <el-avatar
-      src="https://www.tinygraphs.com/labs/isogrids/hexa/crunchy.network?theme=base&numcolors=4&size=220&fmt=svg"
       v-if="wallet.connected === false"
+      src="https://www.tinygraphs.com/labs/isogrids/hexa/crunchy.network?theme=base&numcolors=4&size=220&fmt=svg"
       style="vertical-align: middle; margin-left: 12px; background: #fff"
     ></el-avatar>
     <el-popover
@@ -52,8 +52,8 @@
       </el-button>
     </el-popover>
     <el-avatar
-      :src="`https://www.tinygraphs.com/labs/isogrids/hexa/${wallet.pkh}?theme=heatwave&numcolors=4&size=220&fmt=svg`"
       v-if="wallet.connected === true"
+      :src="`https://www.tinygraphs.com/labs/isogrids/hexa/${wallet.pkh}?theme=heatwave&numcolors=4&size=220&fmt=svg`"
       style="vertical-align: middle; margin-left: 12px; background: #fff"
     ></el-avatar>
   </div>
@@ -73,5 +73,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

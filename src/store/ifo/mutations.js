@@ -1,11 +1,9 @@
 export default {
-
-  updateIfoLoading (state, isLoading) {
+  updateIfoLoading(state, isLoading) {
     state.loading = isLoading;
   },
 
-  updateIfoData (state, data) {
+  updateIfoData(state, data) {
     state.data = data;
-  }
-
-}
+  },
+};

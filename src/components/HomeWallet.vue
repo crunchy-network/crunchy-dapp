@@ -3,73 +3,128 @@
     <el-row type="flex" justify="space-between" :gutter="40">
       <el-col :xs="24" :md="7">
         <el-card v-loading="homeWallet.loading" class="top">
-          <h2 style="font-weight: 600; font-size:16px; color: #757679ff">
+          <h2 style="font-weight: 600; font-size: 16px; color: #757679ff">
             Net Worth
           </h2>
 
           <h2 style="font-weight: 600; font-size: 28px; margin-bottom: 0">
             {{
               !showUsd
-                ? vueNumberFormat(homeWallet.netWorth, { prefix: "", suffix: " ꜩ", decimal: ".", thousand: ",", precision: 4 })
-                : vueNumberFormat(homeWallet.netWorthUsd, { prefix: "$", decimal: ".", thousand: ",", precision: 2 })
+                ? vueNumberFormat(homeWallet.netWorth, {
+                    prefix: "",
+                    suffix: " ꜩ",
+                    decimal: ".",
+                    thousand: ",",
+                    precision: 4
+                  })
+                : vueNumberFormat(homeWallet.netWorthUsd, {
+                    prefix: "$",
+                    decimal: ".",
+                    thousand: ",",
+                    precision: 2
+                  })
             }}
           </h2>
         </el-card>
       </el-col>
 
-      <el-col style="flex: 1;display: flex; justify-content: center; align-items: center">
+      <el-col
+        style="
+          flex: 1;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        "
+      >
         <el-divider direction="vertical"> </el-divider>
       </el-col>
       <el-col :xs="24" :md="7">
         <el-card v-loading="homeWallet.loading" class="top">
-          <h2 style="font-weight: 600; font-size:16px; color: #757679ff">
+          <h2 style="font-weight: 600; font-size: 16px; color: #757679ff">
             CRUNCH Balance
           </h2>
 
           <h2 style="font-weight: 600; font-size: 28px; margin-bottom: 0">
-            {{ vueNumberFormat(homeWallet.crunchBal, { prefix: "", decimal: ".", thousand: ",", precision: 4 }) }}
+            {{
+              vueNumberFormat(homeWallet.crunchBal, {
+                prefix: "",
+                decimal: ".",
+                thousand: ",",
+                precision: 4
+              })
+            }}
           </h2>
         </el-card>
       </el-col>
       <el-col :xs="24" :md="7">
         <el-card v-loading="homeWallet.loading" class="top">
-          <h2 style="font-weight: 600; font-size:16px; color: #757679ff">
+          <h2 style="font-weight: 600; font-size: 16px; color: #757679ff">
             crDAO Balance
           </h2>
 
           <h2 style="font-weight: 600; font-size: 28px; margin-bottom: 0">
-            {{ vueNumberFormat(homeWallet.crDaoBal, { prefix: "", decimal: ".", thousand: ",", precision: 4 }) }}
+            {{
+              vueNumberFormat(homeWallet.crDaoBal, {
+                prefix: "",
+                decimal: ".",
+                thousand: ",",
+                precision: 4
+              })
+            }}
           </h2>
         </el-card>
       </el-col>
     </el-row>
 
     <el-row
-      style="margin: 46px 0 32px 0;   border-bottom: 1.5px solid rgba(117, 118, 121, 0.1); align-items: center;"
+      style="
+        margin: 46px 0 32px 0;
+        border-bottom: 1.5px solid rgba(117, 118, 121, 0.1);
+        align-items: center;
+      "
       :gutter="20"
       type="flex"
       justify="space-between"
       align="bottom"
     >
       <div class="tab-wrapper">
-        <button class="tab-text" :style="isActiveTab('portfolio')" @click="setActiveTab('portfolio')">
+        <button
+          class="tab-text"
+          :style="isActiveTab('portfolio')"
+          @click="setActiveTab('portfolio')"
+        >
           Portfolio
         </button>
-        <button class="tab-text" :style="isActiveTab('nfts')" @click="setActiveTab('nfts')">
+        <button
+          class="tab-text"
+          disabled
+          :style="isActiveTab('nfts')"
+          @click="setActiveTab('nfts')"
+        >
           NFTs
         </button>
-        <button class="tab-text" disabled :style="isActiveTab('farming')" @click="setActiveTab('farming')">
+        <button
+          class="tab-text"
+          disabled
+          :style="isActiveTab('farming')"
+          @click="setActiveTab('farming')"
+        >
           Farming
         </button>
-        <button class="tab-text" disabled :style="isActiveTab('history')" @click="setActiveTab('history')">
+        <button
+          class="tab-text"
+          disabled
+          :style="isActiveTab('history')"
+          @click="setActiveTab('history')"
+        >
           History
         </button>
       </div>
-      <div class="grid-content" style="text-align: right; ">
+      <div class="grid-content" style="text-align: right">
         <el-switch
-          :disabled="homeWallet.loading"
-          style="margin-right: 24px;"
           v-model="showUsd"
+          :disabled="homeWallet.loading"
+          style="margin-right: 24px"
           active-color="#1EC37F"
           inactive-color="#555CFF"
           active-text="USD"
@@ -86,38 +141,89 @@
             <el-row
               type="flex"
               align="middle"
-              style="color: #757679; font-size: 14px; font-weight: 600; border-bottom: 2px solid #f4f4f4; padding-bottom: 14px; margin-bottom: 14px;"
+              style="
+                color: #757679;
+                font-size: 14px;
+                font-weight: 600;
+                border-bottom: 2px solid #f4f4f4;
+                padding-bottom: 14px;
+                margin-bottom: 14px;
+              "
             >
               <el-col :span="24">
-                <el-row :gutter="20" type="flex" align="middle" style="padding: 0 20px;">
+                <el-row
+                  :gutter="20"
+                  type="flex"
+                  align="middle"
+                  style="padding: 0 20px"
+                >
                   <el-col :span="6">Asset</el-col>
-                  <el-col style="text-align: right;" :span="5">Balance</el-col>
-                  <el-col style="text-align: right;" :span="5">Price </el-col>
-                  <el-col style="text-align: right;" :span="5">Value</el-col>
-                  <el-col style="text-align: right;" :span="3"></el-col>
+                  <el-col style="text-align: right" :span="5">Balance</el-col>
+                  <el-col style="text-align: right" :span="5">Price </el-col>
+                  <el-col style="text-align: right" :span="5">Value</el-col>
+                  <el-col style="text-align: right" :span="3"></el-col>
                 </el-row>
               </el-col>
             </el-row>
 
-            <PortfolioWalletRow v-for="(asset, index) in tabledata" :key="index" :asset="asset" :showUsd="showUsd" />
+            <PortfolioWalletRow
+              v-for="(asset, index) in tabledata"
+              :key="index"
+              :asset="asset"
+              :show-usd="showUsd"
+            />
             <div id="pagination">
-              <el-button @click="handleStart" :disabled="currentPage === 0" style="margin-right: 12px">
+              <el-button
+                :disabled="currentPage === 0"
+                style="margin-right: 12px"
+                @click="handleStart"
+              >
                 <i class="fal fa-angle-left"></i>
                 <i class="fal fa-angle-left"></i>
               </el-button>
-              <el-button @click="handlePrevPage" :disabled="currentPage === 0">
+              <el-button :disabled="currentPage === 0" @click="handlePrevPage">
                 <i class="fal fa-angle-left"></i>
               </el-button>
 
-              <h2 style="font-weight: 800; font-size: 14px; color: #191B1F; opacity: 0.5; margin: 0 19px;">
-                {{ vueNumberFormat(nextPage > pages ? pages : nextPage, { prefix: "", decimal: ".", thousand: ",", precision: 0 }) }} out of
-                {{ vueNumberFormat(pages, { prefix: "", decimal: ".", thousand: ",", precision: 0 }) }}
+              <h2
+                style="
+                  font-weight: 800;
+                  font-size: 14px;
+                  color: #191b1f;
+                  opacity: 0.5;
+                  margin: 0 19px;
+                "
+              >
+                {{
+                  vueNumberFormat(nextPage > pages ? pages : nextPage, {
+                    prefix: "",
+                    decimal: ".",
+                    thousand: ",",
+                    precision: 0
+                  })
+                }}
+                out of
+                {{
+                  vueNumberFormat(pages, {
+                    prefix: "",
+                    decimal: ".",
+                    thousand: ",",
+                    precision: 0
+                  })
+                }}
               </h2>
-              <el-button @click="handleNextPage" :disabled="nextPage + 1 > pages">
+              <el-button
+                :disabled="nextPage + 1 > pages"
+                @click="handleNextPage"
+              >
                 <i class="fal fa-angle-right"></i>
               </el-button>
 
-              <el-button @click="handleEnd" :disabled="nextPage + 1 > pages" style="margin-left: 12px">
+              <el-button
+                :disabled="nextPage + 1 > pages"
+                style="margin-left: 12px"
+                @click="handleEnd"
+              >
                 <i class="fal fa-angle-right"></i>
                 <i class="fal fa-angle-right"></i>
               </el-button>
@@ -128,7 +234,7 @@
     </div>
 
     <div v-if="activeTab === 'nfts'">
-      <nft-wallet-view></nft-wallet-view>
+      <NftWalletView />
     </div>
   </div>
 </template>
@@ -139,8 +245,8 @@ import NftWalletView from "./NftWalletView.vue";
 // import HomeWalletTable from "./HomeWalletTable.vue";
 import PortfolioWalletRow from "./PortfolioWalletRow.vue";
 export default {
-  components: { PortfolioWalletRow, NftWalletView },
   name: "HomeWallet",
+  components: { PortfolioWalletRow },
   data() {
     return {
       activeTab: "nfts",
@@ -150,37 +256,44 @@ export default {
       pages: 0,
       nextPage: 1,
       prevPage: 0,
-      displayCount: 12,
+      displayCount: 12
     };
   },
   computed: {
     ...mapState(["homeWallet"]),
-    ...mapGetters(["getPkh", "getAssets"]),
-    ...mapActions(["loadWalletAsssets", "softUpdateWalletAssets"]),
+    ...mapGetters(["getPkh", "getAssets"])
   },
   watch: {
     getPkh() {
-      this.loadWalletAsssets;
+      this.refresh();
     },
     getAssets() {
       this.paginationHandler();
     },
-  },
-  mounted() {
-    this.loadWalletAsssets;
+    "$route.params.walletAddress": {
+      immediate: true,
+      handler() {
+        this.refresh();
+      }
+    }
   },
   created() {
-    setInterval(() => {
-      this.reload();
-    }, 1000 * 60 * 5);
+    this.refresh();
   },
   methods: {
-    reload() {
-      this.softUpdateWalletAssets;
+    ...mapActions(["loadWalletAsssets"]),
+
+    refresh() {
+      this.loadWalletAsssets(this.$route.params.walletAddress);
     },
+
     isActiveTab(tab) {
-      return this.activeTab === tab && " border-bottom: 6px solid #555CFF; color: #555CFF";
+      return (
+        this.activeTab === tab &&
+        " border-bottom: 6px solid #555CFF; color: #555CFF"
+      );
     },
+
     setActiveTab(tab = "") {
       if (["portfolio", "nfts", "farming", "history"].includes(tab)) {
         this.activeTab = tab;
@@ -196,7 +309,9 @@ export default {
       const next = this.nextPage > this.pages ? this.pages : this.nextPage;
       this.tabledata = this.homeWallet.assets.slice(
         (next - 1) * this.displayCount,
-        this.nextPage * this.displayCount > this.homeWallet.assets.length ? this.homeWallet.assets.length : next * this.displayCount
+        this.nextPage * this.displayCount > this.homeWallet.assets.length
+          ? this.homeWallet.assets.length
+          : next * this.displayCount
       );
     },
 
@@ -240,8 +355,8 @@ export default {
       this.pages = 0;
       this.nextPage = 1;
       this.prevPage = 0;
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -302,7 +417,7 @@ export default {
   }
 }
 
-.el-input__inner{
+.el-input__inner {
   border-radius: 28px;
 }
 </style>

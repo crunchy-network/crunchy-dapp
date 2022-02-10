@@ -1,23 +1,21 @@
 export default {
-
-  updateWtzLoading (state, isLoading) {
+  updateWtzLoading(state, isLoading) {
     state.loading = isLoading;
   },
 
-  updateWtzXtzUsdVwap (state, price) {
+  updateWtzXtzUsdVwap(state, price) {
     state.usdVwap = price;
   },
 
-  updateWtzTotalTvlTez (state, total) {
+  updateWtzTotalTvlTez(state, total) {
     state.totalTvlTez = total;
   },
 
-  updateWtzBalance (state, balance) {
+  updateWtzBalance(state, balance) {
     state.balance = balance;
   },
 
-  updateWtzSwapRatio (state, swapRatio) {
+  updateWtzSwapRatio(state, swapRatio) {
     state.swapRatio = swapRatio;
-  }
-
-}
+  },
+};

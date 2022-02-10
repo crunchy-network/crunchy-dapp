@@ -1,29 +1,27 @@
 export default {
-
-  updateLpLocksLoading (state, isLoading) {
+  updateLpLocksLoading(state, isLoading) {
     state.loading = isLoading;
   },
 
-  updateLpLocksData (state, data) {
+  updateLpLocksData(state, data) {
     state.data = data;
   },
 
-  updateLpXtzUsdVwap (state, price) {
+  updateLpXtzUsdVwap(state, price) {
     state.usdVwap = price;
   },
 
-  updateCurrentPrices (state, prices) {
+  updateCurrentPrices(state, prices) {
     state.currentPrices = prices;
     state.crdaoTez = prices[`${state.crdaoAddress}_0`];
     state.crunchTez = prices[`${state.crunchAddress}_0`];
   },
 
-  updatePriceFeed (state, feed) {
+  updatePriceFeed(state, feed) {
     state.priceFeed = feed;
   },
 
-  updateLpLocksTotalTvlTez (state, total) {
+  updateLpLocksTotalTvlTez(state, total) {
     state.totalTvlTez = total;
-  }
-
-}
+  },
+};

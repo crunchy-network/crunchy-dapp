@@ -1,19 +1,21 @@
 import homeWallet from "../../utils/home-wallet";
 
 export default {
-  async fetchHomeWalletBalances({ rootState, commit }) {
-    if (!rootState.wallet.pkh) {
-      return;
+  async fetchHomeWalletBalances({ rootState, commit }, pkh) {
+    if (!pkh && !rootState.wallet.pkh) {
+      // @todo
     } else {
-      return homeWallet.fetchAssetsBal(rootState.wallet.pkh).then((res) => {
-        commit("updateAssets", res);
-      });
+      return homeWallet
+        .fetchAssetsBal(pkh || rootState.wallet.pkh)
+        .then((res) => {
+          commit("updateAssets", res);
+        });
     }
   },
 
-  async loadWalletAsssets({ dispatch, commit }) {
+  async loadWalletAsssets({ dispatch, commit }, pkh) {
     commit("updateHomeWalletLoading", true);
-    dispatch("fetchHomeWalletBalances").then(() => {
+    dispatch("fetchHomeWalletBalances", pkh).then(() => {
       dispatch("loadBalAndNetworth");
       commit("updateHomeWalletLoading", false);
     });

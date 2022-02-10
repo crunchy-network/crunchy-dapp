@@ -22,13 +22,43 @@
       </div>
       <JoinDiscord />
     </el-aside>
-    <el-container style="position: relative; margin-left: 230px;">
+    <el-container style="position: relative; margin-left: 230px">
       <router-view></router-view>
-      <el-footer
-        >Copyright &copy; 2021 Crunchy.Network. Made with
-        <i class="fas fa-heart" style="color: #f64947; margin-left: 6px;"></i>
-        <i class="fas fa-grin-beam-sweat" style="color: #555cff; margin-left: 6px;"></i> &amp; <i class="fas fa-grin-tears" style="color: #fece00"></i
-      ></el-footer>
+      <el-footer>
+        Copyright &copy; 2021 - 2022 Crunchy. Made with
+        <i class="fas fa-heart" style="color: #f64947; margin-left: 6px"></i>
+        <i
+          class="fas fa-grin-beam-sweat"
+          style="color: #555cff; margin-left: 6px"
+        ></i>
+        &amp; <i class="fas fa-grin-tears" style="color: #fece00"></i>
+        <div style="margin-top: 24px; font-size: 24px">
+          <a
+            href="https://github.com/crunchy-network"
+            target="_blank"
+            style="margin: 0 12px"
+            ><i class="fab fa-github"></i
+          ></a>
+          <a
+            href="https://twitter.com/CrunchyTez"
+            target="_blank"
+            style="margin: 0 12px"
+            ><i class="fab fa-twitter"></i
+          ></a>
+          <a
+            href="http://discord.crunchy.network"
+            target="_blank"
+            style="margin: 0 12px"
+            ><i class="fab fa-discord"></i
+          ></a>
+          <a
+            href="http://t.me/crunchy_network"
+            target="_blank"
+            style="margin: 0 12px"
+            ><i class="fab fa-telegram"></i
+          ></a>
+        </div>
+      </el-footer>
     </el-container>
     <!-- </div> -->
 
@@ -54,7 +84,7 @@ import NavMenu from "./components/NavMenu.vue";
 import JoinDiscord from "./components/JoinDiscord.vue";
 
 export default {
-  name: "app",
+  name: "App",
   components: {
     NavMenu,
     JoinDiscord,
@@ -98,6 +128,12 @@ h3 {
 }
 .el-footer i.fad {
   margin-right: 0 !important;
+}
+.el-footer a {
+  color: #999;
+}
+.el-footer a:hover {
+  color: #555cff;
 }
 
 /* Chrome, Safari, Edge, Opera */
@@ -183,6 +219,26 @@ i.fa-icon-right {
 .el-header .el-input input:focus {
   border-color: #555cff !important;
 }
+
+#farm-listing .el-input__inner {
+  border-radius: 24px !important;
+  color: #191b1f !important;
+  background: #fafafa !important;
+}
+
+.search-input .el-input__prefix {
+  color: #191b1f;
+}
+.search-input .el-input__inner,
+#farm-listing .search-input .el-input__inner {
+  border-radius: 24px !important;
+  color: #191b1f !important;
+  background: #fff !important;
+}
+.search-input .el-input input:focus {
+  border-color: #555cff !important;
+}
+
 .el-card {
   border-radius: 18px !important;
 }
@@ -345,6 +401,7 @@ i.fa-icon-right {
 .el-tag--medium {
   border-radius: 16px !important;
 }
+
 #farm-listing .el-input__inner,
 #nft-wallet-view .el-input__inner {
   border-radius: 24px !important;

@@ -1,12 +1,12 @@
-import actions from './actions'
-import mutations from './mutations'
+import actions from "./actions";
+import mutations from "./mutations";
 
 export default {
   state: {
     loading: false,
     contract: process.env.VUE_APP_CONTRACTS_BURNER,
-    records: []
+    records: [],
   },
   actions,
-  mutations
-}
+  mutations,
+};

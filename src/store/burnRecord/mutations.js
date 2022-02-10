@@ -1,11 +1,9 @@
 export default {
-
-  updateBurnRecordsLoading (state, isLoading) {
+  updateBurnRecordsLoading(state, isLoading) {
     state.loading = isLoading;
   },
 
-  updateBurnRecords (state, records) {
+  updateBurnRecords(state, records) {
     state.records = records;
-  }
-
-}
+  },
+};

@@ -1,67 +1,49 @@
 <template>
-  <div id="#ifo">
+  <div id="#ifo" style="max-width: 1450px; margin: auto">
     <AppBar />
     <div id="wrapper">
-      <el-row :gutter="40">
+      <el-row v-if="!loading" :gutter="40">
         <el-col :xs="24" :md="12"
-          ><el-card class="grid-content box top-box box-card" shadow="never">
+          ><el-card
+            class="grid-content box top-box box-card"
+            shadow="never"
+            style="min-height: 489px"
+          >
             <div class="column-center">
               <div class="logo-wrapper">
-                <img src="./../assets/pixel.png" class="logo" />
+                <img :src="images[project.projectLogo]" class="logo" />
               </div>
             </div>
 
             <div class="socials">
               <a
-                href="https://pixelpotus.medium.com/"
-                rel="nonreffere"
-                target="_blank"
+                v-for="link in project.links"
+                :key="link.name"
+                :href="link.link"
+                rel="noreffere"
+                target="blank"
                 class="social-link"
               >
-                Medium
-              </a>
-              <a
-                href="https://twitter.com/PixelPotus"
-                rel="nonreffere"
-                target="_blank"
-                class="social-link"
-              >
-                Twitter
-              </a>
-              <a
-                href="https://discord.gg/CbdbvwtwkM"
-                rel="nonreffere"
-                target="_blank"
-                class="social-link"
-              >
-                Discord
-              </a>
-              <a
-                href="https://t.me/pixelpotus"
-                rel="nonreffere"
-                target="_blank"
-                class="social-link"
-              >
-                Telegram
+                {{ link.name }}
               </a>
             </div>
             <p>
-              Pixel is bringing gamification to NFTs and Defi. Their first
-              project, PixelPotus.com, is an early collectable on Tezos and has
-              been in the top 5 on DappRadar for months. The Pixel Debates TCG
-              release is quickly approaching and will be the first major utility
-              for the PXL token. This is just the beginning from a proven team
-              with an exciting roadmap.
+              {{ project.description }}
             </p>
 
             <div class="swap-box space-top">
               <p>Token Swap Rate</p>
-              <p class="mid"><b>{{ ifo.data.swapRate }} $XTZ</b></p>
+              <p class="mid">
+                <b>{{ ifo.data.swapRate }} $XTZ</b>
+              </p>
             </div>
           </el-card>
         </el-col>
-        <el-col :xs="24" :md="12"
-          ><el-card class="grid-content box top-box swap-box box-card" v-loading="ifo.loading">
+        <el-col v-if="project.isIFO" :xs="24" :md="12"
+          ><el-card
+            v-loading="ifo.loading"
+            class="grid-content box top-box swap-box box-card"
+          >
             <!-- <div class="column-center">
               <h1 class="swap-title">Token Swap Details</h1>
               <div>
@@ -100,9 +82,22 @@
                   </div>
 
                   <div class="data-col">
-                    <p>
+                    <p
+                      v-if="
+                        new Date().getTime() <
+                        new Date(project.endTime).getTime()
+                      "
+                    >
                       {{ displayDays }} days {{ displayHours }} hr
                       {{ displayMinutes }} min
+                    </p>
+                    <p
+                      v-if="
+                        new Date().getTime() >
+                        new Date(project.endTime).getTime()
+                      "
+                    >
+                      Ended
                     </p>
                   </div>
                 </div>
@@ -123,7 +118,7 @@
                   </div>
 
                   <div class="data-col">
-                    <p>$PXL</p>
+                    <p>${{ project.tokenSymbol }}</p>
                   </div>
                 </div>
               </div>
@@ -143,7 +138,9 @@
                   </div>
 
                   <div class="data-col">
-                    <p>{{ vueNumberFormat(ifo.data.userRecord.committed) }} XTZ</p>
+                    <p>
+                      {{ vueNumberFormat(ifo.data.userRecord.committed) }} XTZ
+                    </p>
                   </div>
                 </div>
 
@@ -153,7 +150,16 @@
                   </div>
 
                   <div class="data-col">
-                    <p>{{ vueNumberFormat(ifo.data.userRecord.committedPercent, {prefix: '', decimal: '.', thousand: ',', precision: 2}) }}%</p>
+                    <p>
+                      {{
+                        vueNumberFormat(ifo.data.userRecord.committedPercent, {
+                          prefix: "",
+                          decimal: ".",
+                          thousand: ",",
+                          precision: 2,
+                        })
+                      }}%
+                    </p>
                   </div>
                 </div>
 
@@ -163,7 +169,12 @@
                   </div>
 
                   <div class="data-col">
-                    <p>{{ vueNumberFormat(ifo.data.userRecord.projectedHarvest) }} PXL</p>
+                    <p>
+                      {{
+                        vueNumberFormat(ifo.data.userRecord.projectedHarvest)
+                      }}
+                      PXL
+                    </p>
                   </div>
                 </div>
 
@@ -173,7 +184,10 @@
                   </div>
 
                   <div class="data-col">
-                    <p>{{ vueNumberFormat(ifo.data.userRecord.projectedFee) }} XTZ</p>
+                    <p>
+                      {{ vueNumberFormat(ifo.data.userRecord.projectedFee) }}
+                      XTZ
+                    </p>
                   </div>
                 </div>
               </div>
@@ -218,19 +232,73 @@
                 </div>
               </div>
 
-              <div v-if="wallet.connected && ifo.data.harvesting" style="border-radius: 22px; background: #FFEECC; padding: 12px 0px; width: 100%; margin-top: 18px;">
-                <el-row type="flex" align="middle" justify="space-between" style="margin: 0 20px;">
-                  <el-col :span="8" style="color: #8C8477; font-size: 12px; text-align: left;">PENDING HARVEST</el-col>
-                  <el-col :span="16" style="font-size: 12px; color: #303133; font-weight: 600; text-align: right;">{{ vueNumberFormat(ifo.data.userRecord.pendingHarvest) }} PXL</el-col>
+              <div
+                v-if="wallet.connected && ifo.data.harvesting"
+                style="
+                  border-radius: 22px;
+                  background: #ffeecc;
+                  padding: 12px 0px;
+                  width: 100%;
+                  margin-top: 18px;
+                "
+              >
+                <el-row
+                  type="flex"
+                  align="middle"
+                  justify="space-between"
+                  style="margin: 0 20px"
+                >
+                  <el-col
+                    :span="8"
+                    style="color: #8c8477; font-size: 12px; text-align: left"
+                    >PENDING HARVEST</el-col
+                  >
+                  <el-col
+                    :span="16"
+                    style="
+                      font-size: 12px;
+                      color: #303133;
+                      font-weight: 600;
+                      text-align: right;
+                    "
+                    >{{
+                      vueNumberFormat(ifo.data.userRecord.pendingHarvest)
+                    }}
+                    PXL</el-col
+                  >
                 </el-row>
               </div>
 
-              <div style="width: 100%; margin-top: 18px;">
-                <el-button v-if="wallet.connected === false" type="success" @click="connectWallet" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px;">Connect Wallet</el-button>
+              <div style="width: 100%; margin-top: 18px">
+                <el-button
+                  v-if="wallet.connected === false"
+                  type="success"
+                  style="
+                    border-radius: 10px;
+                    font-weight: bold;
+                    width: 100%;
+                    padding: 12px 20px;
+                    color: #ffffff;
+                  "
+                  @click="connectWallet"
+                  >Connect Wallet</el-button
+                >
                 <!-- <el-button v-else :disabled="!live" type="primary" @click="showStakeDialog" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px;">FARM</el-button> -->
-                <el-button v-else :disabled="!live" type="primary" @click="harvestIfo" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px;">HARVEST</el-button>
+                <el-button
+                  v-else
+                  :disabled="!live"
+                  type="primary"
+                  style="
+                    border-radius: 10px;
+                    font-weight: bold;
+                    width: 100%;
+                    padding: 12px 20px;
+                    color: #ffffff;
+                  "
+                  @click="harvestIfo"
+                  >HARVEST</el-button
+                >
               </div>
-
             </div>
           </el-card></el-col
         >
@@ -240,10 +308,9 @@
           
         </el-col>
       </el-row> -->
-
-      <el-row class="tier-wrapper" :gutter="40">
+      <el-row :gutter="40" style="margin-top: 1em">
         <el-col :xs="24" :md="12">
-          <div class="grid-content box info-box">
+          <el-card class="grid-content box-card info-box">
             <div class="column-center">
               <h1 class="title">Pool Info</h1>
             </div>
@@ -254,7 +321,7 @@
               </div>
 
               <div class="data-col">
-                <p>30 October 2021 14:00:00 UTC</p>
+                <p>{{ project.startTime | moment("calendar") }}</p>
               </div>
             </div>
 
@@ -264,7 +331,7 @@
               </div>
 
               <div class="data-col">
-                <p>1 November 2021 14:00:00 UTC</p>
+                <p>{{ project.endDate | moment("calendar") }}</p>
               </div>
             </div>
 
@@ -294,13 +361,23 @@
               </div>
 
               <div class="data-col">
-                <p>{{ vueNumberFormat(ifo.data.offeringSupply, {prefix: '', decimal: '.', thousand: ',', precision: 0}) }} $PXL</p>
+                <p>
+                  {{
+                    vueNumberFormat(ifo.data.offeringSupply, {
+                      prefix: "",
+                      decimal: ".",
+                      thousand: ",",
+                      precision: 0,
+                    })
+                  }}
+                  ${{ project.tokenSymbol }}
+                </p>
               </div>
             </div>
-          </div>
+          </el-card>
         </el-col>
         <el-col :xs="24" :md="12">
-          <div class="grid-content box info-box">
+          <el-card class="grid-content box-card info-box">
             <div class="column-center">
               <h1 class="title">Token Information</h1>
             </div>
@@ -311,7 +388,7 @@
               </div>
 
               <div class="data-col">
-                <p>Pixel</p>
+                <p>{{ project.tokenName }}</p>
               </div>
             </div>
 
@@ -321,7 +398,7 @@
               </div>
 
               <div class="data-col">
-                <p>PXL</p>
+                <p>{{ project.tokenSymbol }}</p>
               </div>
             </div>
 
@@ -354,64 +431,120 @@
                 <p>6</p>
               </div>
             </div>
-          </div>
+          </el-card>
         </el-col>
       </el-row>
     </div>
 
-  <el-dialog title="Commit XTZ" :visible.sync="form.visible" width="380px" class="stake-dialog">
-    <p>Commit XTZ to harvest PXL.</p>
-    <el-form :model="form" ref="form" label-position="top" hide-required-asterisk>
-      <div class="current-balance" style="border-radius: 22px; background: #FFEECC; padding: 12px 20px; margin-bottom: 18px;">
-        <el-row type="flex" align="middle" justify="space-between">
-          <el-col :span="8" style="font-size: 12px;">BALANCE</el-col>
-          <el-col :span="16" style="color: #303133; font-weight: bold; text-align: right;">{{ vueNumberFormat(wallet.balance.toNumber() / 1000000) }}</el-col>
-        </el-row>
-      </div>
-      <el-form-item
-        label="Commit"
-        prop="input"
-        :rules="[
-          { type: 'number', required: true, message: 'Enter an amount', transform: (v) => Number(v) },
-          { type: 'number', min: 0.000001, message: 'Enter a valid amount (at least 0.000001)', transform: (v) => Number(v) }
-        ]"
-        style="margin-bottom: 14px;"
+    <el-dialog
+      title="Commit XTZ"
+      :visible.sync="form.visible"
+      width="380px"
+      class="stake-dialog"
+    >
+      <p>Commit XTZ to harvest PXL.</p>
+      <el-form
+        ref="form"
+        :model="form"
+        label-position="top"
+        hide-required-asterisk
       >
-        <el-input v-model="form.input" label="Commit">
-          <span slot="suffix">XTZ</span>
-        </el-input>
-      </el-form-item>
-      <el-button type="success" size="small" round style="margin-bottom: 22px;" @click="form.input = ((wallet.balance.toNumber() / 1000000) - 0.5)">USE MAX</el-button>
-      <el-button type="primary" @click="form.visible = false; stakeIfo(form.input)" style="border-radius: 12px; font-weight: bold; width: 100%; padding: 20px; margin-left: 0;">COMMIT</el-button>
-    </el-form>
-  </el-dialog>
+        <div
+          class="current-balance"
+          style="
+            border-radius: 22px;
+            background: #ffeecc;
+            padding: 12px 20px;
+            margin-bottom: 18px;
+          "
+        >
+          <el-row type="flex" align="middle" justify="space-between">
+            <el-col :span="8" style="font-size: 12px">BALANCE</el-col>
+            <el-col
+              :span="16"
+              style="color: #303133; font-weight: bold; text-align: right"
+              >{{
+                vueNumberFormat(wallet.balance.toNumber() / 1000000)
+              }}</el-col
+            >
+          </el-row>
+        </div>
+        <el-form-item
+          label="Commit"
+          prop="input"
+          :rules="[
+            {
+              type: 'number',
+              required: true,
+              message: 'Enter an amount',
+              transform: (v) => Number(v),
+            },
+            {
+              type: 'number',
+              min: 0.000001,
+              message: 'Enter a valid amount (at least 0.000001)',
+              transform: (v) => Number(v),
+            },
+          ]"
+          style="margin-bottom: 14px"
+        >
+          <el-input v-model="form.input" label="Commit">
+            <span slot="suffix">XTZ</span>
+          </el-input>
+        </el-form-item>
+        <el-button
+          type="success"
+          size="small"
+          round
+          style="margin-bottom: 22px"
+          @click="form.input = wallet.balance.toNumber() / 1000000 - 0.5"
+          >USE MAX</el-button
+        >
+        <el-button
+          type="primary"
+          style="
+            border-radius: 12px;
+            font-weight: bold;
+            width: 100%;
+            padding: 20px;
+            margin-left: 0;
+          "
+          @click="
+            form.visible = false;
+            stakeIfo(form.input);
+          "
+          >COMMIT</el-button
+        >
+      </el-form>
+    </el-dialog>
   </div>
-
 </template>
 
 <script>
 import AppBar from "./AppBar.vue";
-import { mapState, mapActions } from 'vuex'
-
+import { mapState, mapActions } from "vuex";
+import { gatherAllProjectJsonFiles, importAll } from "../lib/JsonHelper";
 export default {
+  name: "IFO",
   components: { AppBar },
   data: () => ({
+    project: null,
+    images: importAll(
+      require.context("../assets/project_images", false, /\.(png|jpe?g|svg)$/)
+    ),
+    loading: true,
     displayDays: "",
     displayHours: "",
     displayMinutes: "",
     form: {
       input: "",
-      visible: false
+      visible: false,
     },
     live: false,
-    ended: false
+    ended: false,
   }),
-  name: "IFO",
   computed: {
-    ...mapState([
-      'wallet',
-      'ifo'
-    ]),
+    ...mapState(["wallet", "ifo"]),
     _seconds() {
       return 1000;
     },
@@ -425,17 +558,25 @@ export default {
       return this._hours * 24;
     },
   },
+  watch: {
+    // call again the method if the route changes
+    $route: "fetchProject",
+  },
   created() {
+    this.fetchProject();
     this.refresh();
   },
   methods: {
-    ...mapActions([
-      'connectWallet',
-      'loadIfoData',
-      'stakeIfo',
-      'harvestIfo'
-    ]),
+    ...mapActions(["connectWallet", "loadIfoData", "stakeIfo", "harvestIfo"]),
 
+    fetchProject() {
+      const project = gatherAllProjectJsonFiles().find((p) => {
+        return p.tokenName === this.$route.params.tokenName;
+      });
+      console.log(this.$route.params.tokenName);
+      this.project = project;
+      this.loading = false;
+    },
     refresh() {
       this.loadIfoData();
     },
@@ -446,15 +587,17 @@ export default {
     showTimer() {
       const vm = this;
       // vm.live = true;
-      vm.live = (new Date().getTime() > new Date("01 November 2021 18:00 UTC").getTime());
+      vm.live =
+        new Date().getTime() > new Date(this.project.startTime).getTime();
       const timer = setInterval(() => {
-        let startDate = new Date("01 November 2021 18:00 UTC").getTime();
+        let startTime = new Date(this.project.startTime).getTime();
         if (vm.live) {
-          startDate = new Date("01 November 2021 18:00 UTC").getTime() + (1296000 * 1000);
+          startTime =
+            new Date(this.project.startTime).getTime() + 1296000 * 1000;
         }
 
         const currentDate = new Date().getTime();
-        let dateDifference = startDate - currentDate;
+        let dateDifference = startTime - currentDate;
 
         if (vm.live && dateDifference <= 0) {
           vm.ended = true;
@@ -475,12 +618,11 @@ export default {
 
     showStakeDialog() {
       this.form.input = "";
-      if (Object.prototype.hasOwnProperty.call(this.$refs, 'form')) {
+      if (Object.prototype.hasOwnProperty.call(this.$refs, "form")) {
         this.$refs.form.resetFields();
       }
       this.form.visible = true;
-    }
-
+    },
   },
   mounted() {
     this.showTimer();
@@ -500,8 +642,6 @@ export default {
 #ifo {
   position: relative;
   width: 100%;
-  max-width: 1450px;
-  margin: 0 auto;
   margin-top: 100px;
 }
 
@@ -592,7 +732,7 @@ p.mid {
   text-align: center;
 }
 
-.space-top{
+.space-top {
   margin-top: 30px;
 }
 
@@ -664,7 +804,7 @@ p.mid {
 }
 
 .detail-row .data-col p {
-  color: rgba(117, 118, 121, 0.6);
+  color: #757679;
   font-weight: 800;
   font-size: 12px;
   text-align: left;
@@ -672,7 +812,7 @@ p.mid {
 
 .detail-row .data-col:nth-child(2) p {
   text-align: right;
-  color: #757679;
+  color: #303133;
   font-weight: 700;
   font-size: 14px;
 }
@@ -682,7 +822,7 @@ p.mid {
   font-size: 20px;
   line-height: 30px;
   text-align: center;
-  color: #757679;
+  color: #303133;
   margin-bottom: 15px;
 }
 
@@ -695,6 +835,13 @@ p.mid {
     padding-bottom: 0px;
     margin-bottom: 0px;
   }
+}
+
+.el-col {
+  color: #303133;
+}
+.el-card * {
+  color: #303133;
 }
 
 @media all and (max-width: 1200px) {

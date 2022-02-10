@@ -1,37 +1,44 @@
-import _ from 'lodash'
-import { BigNumber } from 'bignumber.js';
+import _ from "lodash";
+import { BigNumber } from "bignumber.js";
 
 export default {
-
-  isFa1 (token) {
-    return Object.prototype.hasOwnProperty.call(token.tokenType, 'fa1');
+  isFa1(token) {
+    return Object.prototype.hasOwnProperty.call(token.tokenType, "fa1");
   },
 
-  isFa2 (token) {
-    return Object.prototype.hasOwnProperty.call(token.tokenType, 'fa2');
+  isFa2(token) {
+    return Object.prototype.hasOwnProperty.call(token.tokenType, "fa2");
   },
 
-  getTokenLedgerKey (address) {
+  getTokenLedgerKey(address) {
     // HEH
     if (address === "KT1G1cCRNBgQ48mVDjopHjEmTN5Sbtar8nn9") {
-      return 'balances';
+      return "balances";
     }
 
     // Plenty kUSD/USDtz
     if (address === "KT1HEdGi7rq1zgZ68dhAtKMZYKeD3EM5vYdf") {
-      return 'balances';
+      return "balances";
     }
 
     // LB
     if (address === "KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo") {
-      return 'tokens';
+      return "tokens";
     }
 
-    return 'ledger';
+    // Youves wUSDC/uUSD LP
+    if (address === "KT1Exm6UTCNEbBHANZ7S53t7QN8NJFwAytxg") {
+      return "tokens";
+    }
+
+    return "ledger";
   },
 
-  overrideMetadata (meta) {
-    if (!Object.prototype.hasOwnProperty.call(meta, 'thumbnailUri') && Object.prototype.hasOwnProperty.call(meta, 'icon')) {
+  overrideMetadata(meta) {
+    if (
+      !Object.prototype.hasOwnProperty.call(meta, "thumbnailUri") &&
+      Object.prototype.hasOwnProperty.call(meta, "icon")
+    ) {
       meta.thumbnailUri = meta.icon;
     }
 
@@ -42,7 +49,7 @@ export default {
     if (meta.tokenAddress === "KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV") {
       meta.thumbnailUri = "https://kolibri-data.s3.amazonaws.com/logo.png";
       meta.decimals = 18;
-      meta.symbol = 'kUSD';
+      meta.symbol = "kUSD";
       meta.name = "Kolibri USD";
     }
 
@@ -52,32 +59,38 @@ export default {
     }
 
     if (meta.tokenAddress === "KT1UHNDNjrCAAiRbzZrtQF9qHSHVMYeJyX1y") {
-      meta.thumbnailUri = "ipfs://bafybeib56p33fpcg6oeero7ewwtuel2kzarcqvjr4p6llrj4o4jtgj7ljy";
+      meta.thumbnailUri =
+        "ipfs://bafybeib56p33fpcg6oeero7ewwtuel2kzarcqvjr4p6llrj4o4jtgj7ljy";
     }
 
     if (meta.tokenAddress === "KT1GUNKmkrgtMQjJp3XxcmCj6HZBhkUmMbge") {
-      meta.thumbnailUri = "ipfs://bafybeihbpuxewl5y5ks52tdfsyi4ocfdjwg6oxbok27cxv5gf5t5r3shne";
+      meta.thumbnailUri =
+        "ipfs://bafybeihbpuxewl5y5ks52tdfsyi4ocfdjwg6oxbok27cxv5gf5t5r3shne";
     }
 
     if (meta.tokenAddress === "KT1Ph8ptSU4rf7PPg2YBMR6LTpr6rc4MMyrq") {
-      meta.thumbnailUri = "ipfs://Qme7epqauUCDt6J1oqwqEiDVUBSUbCQg6e9j3QoJGkv3vP";
+      meta.thumbnailUri =
+        "ipfs://Qme7epqauUCDt6J1oqwqEiDVUBSUbCQg6e9j3QoJGkv3vP";
     }
 
     // HEH
     if (meta.tokenAddress === "KT1G1cCRNBgQ48mVDjopHjEmTN5Sbtar8nn9") {
-      meta.thumbnailUri = "ipfs://QmXL3FZ5kcwXC8mdwkS1iCHS2qVoyg69ugBhU2ap8z1zcs";
+      meta.thumbnailUri =
+        "ipfs://QmXL3FZ5kcwXC8mdwkS1iCHS2qVoyg69ugBhU2ap8z1zcs";
     }
 
     // Plenty
     if (meta.tokenAddress === "KT1GRSvLoikDsXujKgZPsGLX8k8VvR2Tq95b") {
-      meta.thumbnailUri = "https://raw.githubusercontent.com/Plenty-DeFi/Plenty-Logo/main/PlentyTokenIcon.png";
+      meta.thumbnailUri =
+        "https://raw.githubusercontent.com/Plenty-DeFi/Plenty-Logo/main/PlentyTokenIcon.png";
     }
 
     // LB
     if (meta.tokenAddress === "KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo") {
       meta.symbol = "tzBTC";
       meta.name = "tzBTC";
-      meta.thumbnailUri = "https://tzbtc.io/wp-content/uploads/2020/03/tzbtc_logo_single.svg";
+      meta.thumbnailUri =
+        "https://tzbtc.io/wp-content/uploads/2020/03/tzbtc_logo_single.svg";
     }
 
     // USDtz
@@ -91,12 +104,12 @@ export default {
     return meta;
   },
 
-  getBadges (farm) {
-    let badges = {
+  getBadges(farm) {
+    const badges = {
       verified: false,
       core: false,
       partner: false,
-      lpLocked: false
+      lpLocked: false,
     };
 
     // crunchy1
@@ -228,7 +241,7 @@ export default {
     return badges;
   },
 
-  calcMultiplier (farm) {
+  calcMultiplier(farm) {
     let m = 0;
     if (farm.id < 16) {
       m = 1;
@@ -241,25 +254,27 @@ export default {
     return m || 1;
   },
 
-  getUserRecord (farm, userRecordsStorage) {
-    const res = userRecordsStorage.find(x => x.key.nat == farm.id);
+  getUserRecord(farm, userRecordsStorage) {
+    const res = userRecordsStorage.find((x) => x.key.nat === farm.id);
 
     if (!res) {
       return {
         amount: 0,
         rewardDebt: 0,
         lockEndTime: null,
-        vault: ""
+        vault: "",
       };
     }
 
     const ret = _.clone(res.value);
     ret.amountRaw = ret.amount;
-    ret.amount = BigNumber(ret.amount).div(BigNumber(10).pow(farm.poolToken.decimals)).toNumber();
+    ret.amount = BigNumber(ret.amount)
+      .div(BigNumber(10).pow(farm.poolToken.decimals))
+      .toNumber();
     return ret;
   },
 
-  estimatePendingRewards (userRecord, farmStorage, currentRewardMultiplier) {
+  estimatePendingRewards(userRecord, farmStorage, currentRewardMultiplier) {
     const pendingRewards = new BigNumber(0);
     const rpsMultiplier = new BigNumber(1000000000000000);
     const bonusAccuracy = new BigNumber(1000);
@@ -273,12 +288,18 @@ export default {
     if (!currentRewardMultiplier.isZero()) {
       const rewardPerSec = new BigNumber(farmStorage.rewardPerSec);
       const poolBalance = new BigNumber(farmStorage.poolBalance);
-      tokenRewards = currentRewardMultiplier.times(rewardPerSec).times(rpsMultiplier).idiv(bonusAccuracy).idiv(poolBalance);
+      tokenRewards = currentRewardMultiplier
+        .times(rewardPerSec)
+        .times(rpsMultiplier)
+        .idiv(bonusAccuracy)
+        .idiv(poolBalance);
     }
 
     accRewardPerShare = accRewardPerShare.plus(tokenRewards);
 
-    const accRewards = userRecordAmount.times(accRewardPerShare).idiv(rpsMultiplier);
+    const accRewards = userRecordAmount
+      .times(accRewardPerShare)
+      .idiv(rpsMultiplier);
 
     if (rewardPaid.lt(rewardSupply) && accRewards.gt(userRecordDebt)) {
       const maxRewards = rewardSupply.minus(rewardPaid).abs();
@@ -293,27 +314,30 @@ export default {
     return pendingRewards;
   },
 
-  getActiveBonuses (bonuses, startTime) {
-    return bonuses.filter(bonus => (new Date(bonus.endTime)) >= startTime);
+  getActiveBonuses(bonuses, startTime) {
+    return bonuses.filter((bonus) => new Date(bonus.endTime) >= startTime);
   },
 
-  countOutlierSeconds (b, endTime) {
+  countOutlierSeconds(b, endTime) {
     let s = 0;
-    if ((new Date(b.endTime)) < endTime) {
-      s = s + Math.floor(Math.abs(endTime - (new Date(b.endTime))) / 1000);
+    if (new Date(b.endTime) < endTime) {
+      s = s + Math.floor(Math.abs(endTime - new Date(b.endTime)) / 1000);
     }
     return s;
   },
 
-  getCurrentRewardMultiplier (farmStorage) {
+  getCurrentRewardMultiplier(farmStorage) {
     const bonusAccuracy = 1000;
     const minDate = (...dates) => new Date(Math.min(...dates));
 
     let m = 0;
-    if ((new Date(farmStorage.startTime) < new Date())) {
+    if (new Date(farmStorage.startTime) < new Date()) {
       const startTime = new Date(farmStorage.lastRewardTime);
       const endTime = minDate(new Date(farmStorage.endTime), new Date());
-      const activeBonuses = this.getActiveBonuses(farmStorage.bonuses, startTime);
+      const activeBonuses = this.getActiveBonuses(
+        farmStorage.bonuses,
+        startTime
+      );
       const totalNumSec = Math.floor(Math.abs(endTime - startTime) / 1000);
 
       let secNoBonus = totalNumSec;
@@ -321,15 +345,14 @@ export default {
       for (const b of activeBonuses) {
         const e = minDate(endTime, new Date(b.endTime));
         const s = Math.floor(Math.abs(e - startTime) / 1000);
-        bonusSec = bonusSec + (Number(b.multiplier) * s * bonusAccuracy);
+        bonusSec = bonusSec + Number(b.multiplier) * s * bonusAccuracy;
         secNoBonus = Math.min(secNoBonus, this.countOutlierSeconds(b, endTime));
       }
 
-      m = bonusSec + (secNoBonus * bonusAccuracy);
+      m = bonusSec + secNoBonus * bonusAccuracy;
     }
     return new BigNumber(m);
-  }
-
-}
+  },
+};
 
 // https://api.florencenet.tzkt.io/v1/operations/transactions?target=KT1KB6q8jvyrRQku48ysVJo4xaULPbUfcdps&entrypoint.in=deposit,withdraw,harvest&sort.desc=id

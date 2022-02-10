@@ -5,11 +5,12 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "lint:check": "vue-cli-service lint --no-fix"
   },
   "dependencies": {
-    "@ivanv/vue-collapse-transition": "^1.0.2",
     "@airgap/beacon-sdk": "^2.3.9",
+    "@ivanv/vue-collapse-transition": "^1.0.2",
     "@taquito/beacon-wallet": "^11.1.0",
     "@taquito/taquito": "^11.1.0",
     "@taquito/tzip12": "^11.1.0",
@@ -33,15 +34,24 @@
     "vuex": "^3.6.2"
   },
   "devDependencies": {
+    "@rushstack/eslint-patch": "^1.1.0",
     "@tygr/vue-async-filter": "^1.1.3",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
+    "@vue/eslint-config-prettier": "^7.0.0",
+    "@vue/eslint-config-standard": "^5.1.2",
     "babel-eslint": "^10.1.0",
     "babel-plugin-component": "^1.1.1",
-    "eslint": "^6.7.2",
+    "eslint": "^7.0.0",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-vue": "^6.2.2",
     "node-sass": "^4.9.2",
+    "prettier": "^2.5.1",
     "sass-loader": "^10.1.1",
     "vue-cli-plugin-element": "~1.0.1",
     "vue-template-compiler": "^2.6.14"
@@ -53,7 +63,12 @@
     },
     "extends": [
       "plugin:vue/essential",
-      "eslint:recommended"
+      "plugin:vue/strongly-recommended",
+      "plugin:vue/recommended",
+      "eslint:recommended",
+      "@vue/standard",
+      "plugin:prettier/recommended",
+      "@vue/eslint-config-prettier"
     ],
     "parser": "vue-eslint-parser",
     "parserOptions": {

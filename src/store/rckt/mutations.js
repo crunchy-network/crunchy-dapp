@@ -1,15 +1,13 @@
 export default {
-
-  updateRcktLoading (state, isLoading) {
+  updateRcktLoading(state, isLoading) {
     state.loading = isLoading;
   },
 
-  updateRcktBalance (state, balance) {
+  updateRcktBalance(state, balance) {
     state.balanceRckt = balance;
   },
 
-  updateRkdaoBalance (state, balance) {
+  updateRkdaoBalance(state, balance) {
     state.balanceRkdao = balance;
-  }
-
-}
+  },
+};

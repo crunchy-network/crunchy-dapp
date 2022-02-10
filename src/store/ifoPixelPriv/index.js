@@ -1,11 +1,11 @@
-import actions from './actions'
-import mutations from './mutations'
+import actions from "./actions";
+import mutations from "./mutations";
 
 export default {
   state: {
     loading: false,
     contracts: {
-      pixel: process.env.VUE_APP_CONTRACTS_IFO_PIXEL_PRIVATE
+      pixel: process.env.VUE_APP_CONTRACTS_IFO_PIXEL_PRIVATE,
     },
     data: {
       raisingGoal: 0,
@@ -26,10 +26,10 @@ export default {
         projectedFee: 0,
         amountHarvested: 0,
         pendingHarvest: 0,
-        lastHarvest: ""
-      }
-    }
+        lastHarvest: "",
+      },
+    },
   },
   actions,
-  mutations
-}
+  mutations,
+};
