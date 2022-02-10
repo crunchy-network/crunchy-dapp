@@ -15,13 +15,13 @@
                     suffix: " ꜩ",
                     decimal: ".",
                     thousand: ",",
-                    precision: 4
+                    precision: 4,
                   })
                 : vueNumberFormat(homeWallet.netWorthUsd, {
                     prefix: "$",
                     decimal: ".",
                     thousand: ",",
-                    precision: 2
+                    precision: 2,
                   })
             }}
           </h2>
@@ -50,7 +50,7 @@
                 prefix: "",
                 decimal: ".",
                 thousand: ",",
-                precision: 4
+                precision: 4,
               })
             }}
           </h2>
@@ -68,7 +68,7 @@
                 prefix: "",
                 decimal: ".",
                 thousand: ",",
-                precision: 4
+                precision: 4,
               })
             }}
           </h2>
@@ -199,7 +199,7 @@
                     prefix: "",
                     decimal: ".",
                     thousand: ",",
-                    precision: 0
+                    precision: 0,
                   })
                 }}
                 out of
@@ -208,7 +208,7 @@
                     prefix: "",
                     decimal: ".",
                     thousand: ",",
-                    precision: 0
+                    precision: 0,
                   })
                 }}
               </h2>
@@ -234,7 +234,7 @@
     </div>
 
     <div v-if="activeTab === 'nfts'">
-      <NftWalletView />
+      <nft-wallet-view></nft-wallet-view>
     </div>
   </div>
 </template>
@@ -246,7 +246,7 @@ import NftWalletView from "./NftWalletView.vue";
 import PortfolioWalletRow from "./PortfolioWalletRow.vue";
 export default {
   name: "HomeWallet",
-  components: { PortfolioWalletRow },
+  components: { PortfolioWalletRow, NftWalletView },
   data() {
     return {
       activeTab: "nfts",
@@ -256,12 +256,12 @@ export default {
       pages: 0,
       nextPage: 1,
       prevPage: 0,
-      displayCount: 12
+      displayCount: 12,
     };
   },
   computed: {
     ...mapState(["homeWallet"]),
-    ...mapGetters(["getPkh", "getAssets"])
+    ...mapGetters(["getPkh", "getAssets"]),
   },
   watch: {
     getPkh() {
@@ -274,8 +274,8 @@ export default {
       immediate: true,
       handler() {
         this.refresh();
-      }
-    }
+      },
+    },
   },
   created() {
     this.refresh();
@@ -355,8 +355,8 @@ export default {
       this.pages = 0;
       this.nextPage = 1;
       this.prevPage = 0;
-    }
-  }
+    },
+  },
 };
 </script>
 
