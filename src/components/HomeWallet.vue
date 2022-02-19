@@ -97,7 +97,6 @@
         </button>
         <button
           class="tab-text"
-          disabled
           :style="isActiveTab('nfts')"
           @click="setActiveTab('nfts')"
         >
@@ -105,11 +104,10 @@
         </button>
         <button
           class="tab-text"
-          disabled
-          :style="isActiveTab('farming')"
-          @click="setActiveTab('farming')"
+          :style="isActiveTab('staked')"
+          @click="setActiveTab('staked')"
         >
-          Farming
+          Staked
         </button>
         <button
           class="tab-text"
@@ -236,6 +234,10 @@
     <div v-if="activeTab === 'nfts'">
       <nft-wallet-view></nft-wallet-view>
     </div>
+
+    <div v-if="activeTab === 'staked'">
+      <staked-wallet :show-usd="showUsd"></staked-wallet>
+    </div>
   </div>
 </template>
 
@@ -244,12 +246,13 @@ import { mapState, mapActions, mapGetters } from "vuex";
 import NftWalletView from "./NftWalletView.vue";
 // import HomeWalletTable from "./HomeWalletTable.vue";
 import PortfolioWalletRow from "./PortfolioWalletRow.vue";
+import StakedWallet from "./StakedWallet.vue";
 export default {
   name: "HomeWallet",
-  components: { PortfolioWalletRow, NftWalletView },
+  components: { PortfolioWalletRow, NftWalletView, StakedWallet },
   data() {
     return {
-      activeTab: "nfts",
+      activeTab: "staked",
       tabledata: [],
       showUsd: false,
       currentPage: 0,
@@ -295,7 +298,7 @@ export default {
     },
 
     setActiveTab(tab = "") {
-      if (["portfolio", "nfts", "farming", "history"].includes(tab)) {
+      if (["portfolio", "nfts", "staked", "history"].includes(tab)) {
         this.activeTab = tab;
       }
     },
