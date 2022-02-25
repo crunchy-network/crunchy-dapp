@@ -358,6 +358,14 @@ div.el-card__body {
 .el-tag--medium {
   border-radius: 16px !important;
 }
+
+#farm-listing .el-input__inner,
+#nft-wallet-view .el-input__inner {
+  border-radius: 24px !important;
+  color: #191b1f !important;
+  background: #fafafa !important;
+}
+
 .el-select__tags {
   left: 8px;
 }

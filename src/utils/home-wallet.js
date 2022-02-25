@@ -3,9 +3,6 @@ import BigNumber from "bignumber.js";
 import coingecko from "./coingecko";
 import ipfs from "./ipfs";
 
-// const makeReqest = async ({ contract, id }) => {
-//   return axios.get(`${process.env.VUE_APP_TEZTOOLS_API_URL}/token/${contract}${id ? "_" + id : ""}/price`);
-// };
 
 export default {
   async fetchAssetsBal(pkh) {
