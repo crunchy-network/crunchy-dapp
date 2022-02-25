@@ -1,107 +1,99 @@
 <template>
-  <el-menu :router="true">
-    <router-link
-      tag="li"
-      class="el-menu-item"
-      :to="{ name: 'home' }"
-      exact
-      active-class="is-active"
-    >
-      <i class="fak fa-crunchy-home"></i>
-      <span>Home</span>
-    </router-link>
+  <div style="background: #1f2128; margin-bottom: 35px">
+    <el-menu mode="horizontal" :router="true">
+      <el-menu-item>
+        <div style="text-align: center">
+          <img src="../assets/logo_transparent_background.png" width="150" />
+        </div>
+      </el-menu-item>
+      <el-menu-item style="padding: 40px 0px !important">
+        <el-divider direction="vertical"></el-divider>
+      </el-menu-item>
+      <router-link
+        tag="li"
+        class="el-menu-item"
+        :to="{ name: 'home' }"
+        exact
+        active-class="is-active"
+      >
+        <span>Home</span>
+      </router-link>
 
-    <router-link
-      tag="li"
-      class="el-menu-item"
-      :to="{ name: 'wtz' }"
-      active-class="is-active"
-    >
-      <i class="fak fa-crunchy-tez-alt"></i>
-      <span>WTZ</span>
-    </router-link>
+      <router-link
+        tag="li"
+        class="el-menu-item"
+        :to="{ name: 'ifo-list' }"
+        active-class="is-active"
+      >
+        <span>IFO</span>
+      </router-link>
 
-    <router-link
-      tag="li"
-      class="el-menu-item"
-      :to="{ name: 'deep-freezer-listing' }"
-      active-class="is-active"
-    >
-      <i class="fak fa-crunchy-locker"></i>
-      <span>Deep Freezers</span>
-    </router-link>
+      <router-link
+        tag="li"
+        class="el-menu-item"
+        :to="{ name: 'farm-listing' }"
+        active-class="is-active"
+      >
+        <span>Farms</span>
+      </router-link>
 
-    <router-link
-      tag="li"
-      class="el-menu-item"
-      :to="{ name: 'ifo-list' }"
-      active-class="is-active"
-    >
-      <!-- <i class="fak fa-crunchy-farm"></i> -->
-      <i class="fak fa-regular fa-farm"></i>
-      <span>IFO</span>
-    </router-link>
+      <!-- <router-link
+        tag="li"
+        class="el-menu-item"
+        :to="{ name: 'wtz' }"
+        active-class="is-active"
+      >
+        <span>WTZ</span>
+      </router-link> -->
 
-    <router-link
-      tag="li"
-      class="el-menu-item"
-      :to="{ name: 'farm-listing' }"
-      active-class="is-active"
-    >
-      <i class="fak fa-crunchy-farm"></i>
-      <span>Farms</span>
-    </router-link>
+      <router-link
+        tag="li"
+        class="el-menu-item"
+        :to="{ name: 'deep-freezer-listing' }"
+        active-class="is-active"
+      >
+        <span>Deep Freezers</span>
+      </router-link>
 
-    <!-- <router-link tag="li" class="el-menu-item" :to="{ name: 'bakery' }" active-class="is-active">
-      <i class="fad fa-hat-chef"></i>
-      <span>Bakery</span>
-    </router-link> -->
-
-    <router-link
-      tag="li"
-      class="el-menu-item"
-      :to="{ name: 'fire-pit' }"
-      active-class="is-active"
-    >
-      <i class="fas fa-fire-alt"></i>
-      <span>Fire Pit</span>
-    </router-link>
-
-    <!-- <el-menu-item index="3">
-      <i class="fad fa-steak"></i>
-      <span>Meat Lockers</span>
-    </el-menu-item>
-    <el-menu-item index="4">
-      <i class="fad fa-chart-pie-alt"></i>
-      <span>Pie Slicer</span>
-    </el-menu-item>
-    <el-menu-item index="5">
-      <i class="fad fa-blender"></i>
-      <span>Token Blender</span>
-    </el-menu-item> -->
-  </el-menu>
+      <div style="display: flex; justify-content: flex-end;">
+        <el-menu-item  style="padding-right: 0px !important">
+          <div class="grid-content" style="text-align: right">
+            <NavWallet />
+          </div>
+        </el-menu-item>
+      </div>
+    </el-menu>
+  </div>
 </template>
 
 <script>
+import NavWallet from "./NavWallet.vue";
 export default {
+  components: { NavWallet },
   name: "NavMenu",
 };
 </script>
 
 <style lang="scss" scoped>
+@import "~element-ui/packages/theme-chalk/src/common/var";
 .el-menu {
   border-right: none !important;
-  margin: 0 -20px;
+  background: #1f2128;
+  margin: 0 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.el-menu-item {
-  color: #191b1f;
-  font-weight: 500;
-  font-size: 14px;
-  height: 50px !important;
-  line-height: 50px !important;
-  margin-bottom: 5px;
-
+.el-menu-item,
+li.el-submenu {
+  color: #ffffff !important;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 24px;
+  display: flex;
+  align-items: center;
+  border: 0 !important;
+  padding: 40px;
+  background: transparent !important;
   i.fas,
   i.fak {
     margin-right: 14px;
@@ -111,14 +103,24 @@ export default {
     vertical-align: middle;
   }
 
-  &:hover,
-  &.is-active {
-    background: #f4f4f4 !important;
+  .el-submenu__title {
+    height: unset !important;
+    line-height: 0 !important;
+    color: #ffffff !important;
   }
 
+  &:hover,
   &.is-active {
+    color: #f15d59 !important;
+  }
+  .el-divider--vertical {
+    height: 55px !important;
+    background: rgba(255, 255, 255, 0.3) !important;
+  }
+
+  /* &.is-active {
     color: #f64947;
     border-right: 6px solid #ff7a7a;
-  }
+  } */
 }
 </style>

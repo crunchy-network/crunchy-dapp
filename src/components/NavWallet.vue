@@ -1,10 +1,9 @@
 <template>
   <div style="display: inline-block">
     <el-button
+      class="wallet-btn"
       v-if="wallet.connected === false"
-      type="success"
       round
-      plain
       @click="connectWallet"
       ><i class="fad fa-wallet"></i> Connect Wallet</el-button
     >
@@ -33,17 +32,21 @@
           </el-col>
           <el-col :span="12" style="text-align: right">
             <el-button
+              style="background: transparent"
               type="danger"
-              size="mini"
               round
-              plain
               @click="disconnectWallet"
               >Disconnect</el-button
             >
           </el-col>
         </el-row>
       </div>
-      <el-button slot="reference" type="primary" round plain>
+      <el-button
+        style="background: transparent"
+        slot="reference"
+        type="primary"
+        round
+      >
         {{
           $async(wallet.pkhDomain, `tez-domain-${wallet.pkh}`) ||
           `${wallet.pkh.substr(0, 6)}...${wallet.pkh.substr(-6)}`

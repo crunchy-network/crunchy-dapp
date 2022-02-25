@@ -3,7 +3,7 @@
     <el-row type="flex" justify="space-between" :gutter="40">
       <el-col :xs="24" :md="7">
         <el-card v-loading="homeWallet.loading" class="top">
-          <h2 style="font-weight: 600; font-size: 16px; color: #757679ff">
+          <h2 style="font-weight: 600; font-size: 16px; color: #fff">
             Net Worth
           </h2>
 
@@ -40,7 +40,7 @@
       </el-col>
       <el-col :xs="24" :md="7">
         <el-card v-loading="homeWallet.loading" class="top">
-          <h2 style="font-weight: 600; font-size: 16px; color: #757679ff">
+          <h2 style="font-weight: 600; font-size: 16px; color: #fff">
             CRUNCH Balance
           </h2>
 
@@ -58,7 +58,7 @@
       </el-col>
       <el-col :xs="24" :md="7">
         <el-card v-loading="homeWallet.loading" class="top">
-          <h2 style="font-weight: 600; font-size: 16px; color: #757679ff">
+          <h2 style="font-weight: 600; font-size: 16px; color: #fff">
             crDAO Balance
           </h2>
 
@@ -126,7 +126,7 @@
           :disabled="homeWallet.loading"
           style="margin-right: 24px"
           active-color="#1EC37F"
-          inactive-color="#555CFF"
+          inactive-color="#F15D59"
           active-text="USD"
           inactive-text="XTZ"
         >
@@ -142,10 +142,10 @@
               type="flex"
               align="middle"
               style="
-                color: #757679;
+                color: #fff !important;
                 font-size: 14px;
                 font-weight: 600;
-                border-bottom: 2px solid #f4f4f4;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.3);
                 padding-bottom: 14px;
                 margin-bottom: 14px;
               "
@@ -155,7 +155,7 @@
                   :gutter="20"
                   type="flex"
                   align="middle"
-                  style="padding: 0 20px"
+                  style="padding: 0 20px; color: #fff !important"
                 >
                   <el-col :span="6">Asset</el-col>
                   <el-col style="text-align: right" :span="5">Balance</el-col>
@@ -285,7 +285,7 @@ export default {
     isActiveTab(tab) {
       return (
         this.activeTab === tab &&
-        " border-bottom: 6px solid #555CFF; color: #555CFF"
+        " border-bottom: 6px solid #F15D59; color: #F15D59"
       );
     },
 
@@ -381,14 +381,14 @@ export default {
   line-height: 24px;
   text-align: center;
   text-transform: capitalize;
-  color: #191b1f;
+  color: rgb(255, 255, 255);
   cursor: pointer;
   transition: 0.3s ease all;
   margin: 0;
   border: 0;
   background: transparent;
   &:disabled {
-    color: #191b1f66;
+    color: rgba(156, 156, 156, 0.712);
     cursor: not-allowed;
   }
 }

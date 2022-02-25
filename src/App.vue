@@ -2,92 +2,26 @@
   <div id="app">
     <!-- Desktop -->
     <!-- <div class="hidden-sm-and-down"> -->
-    <el-aside
-      width="230px"
-      style="
-        background: #fff;
-        position: fixed;
-        border-right: 2px solid #ebebeb;
-        top: 0;
-        bottom: 0;
-        overflow-x: hidden;
-      "
-      class="side-bar"
-    >
-      <div style="margin-top: 14px; text-align: center">
-        <img src="./assets/logo_transparent_background.png" width="200" />
-      </div>
-      <div style="padding: 0 20px; margin-top: 25px">
-        <NavMenu />
-      </div>
-      <JoinDiscord />
-    </el-aside>
-    <el-container style="position: relative; margin-left: 230px">
+    <div>
+      <NavMenu />
+    </div>
+
+    <el-container style="position: relative">
       <router-view></router-view>
-      <el-footer>
-        Copyright &copy; 2021 - 2022 Crunchy. Made with
-        <i class="fas fa-heart" style="color: #f64947; margin-left: 6px"></i>
-        <i
-          class="fas fa-grin-beam-sweat"
-          style="color: #555cff; margin-left: 6px"
-        ></i>
-        &amp; <i class="fas fa-grin-tears" style="color: #fece00"></i>
-        <div style="margin-top: 24px; font-size: 24px">
-          <a
-            href="https://github.com/crunchy-network"
-            target="_blank"
-            style="margin: 0 12px"
-            ><i class="fab fa-github"></i
-          ></a>
-          <a
-            href="https://twitter.com/CrunchyTez"
-            target="_blank"
-            style="margin: 0 12px"
-            ><i class="fab fa-twitter"></i
-          ></a>
-          <a
-            href="http://discord.crunchy.network"
-            target="_blank"
-            style="margin: 0 12px"
-            ><i class="fab fa-discord"></i
-          ></a>
-          <a
-            href="http://t.me/crunchy_network"
-            target="_blank"
-            style="margin: 0 12px"
-            ><i class="fab fa-telegram"></i
-          ></a>
-        </div>
-      </el-footer>
     </el-container>
     <!-- </div> -->
-
-    <!-- Mobile -->
-    <!-- <div class="hidden-md-and-up">
-      <el-header style="position: fixed; height: 72px; top: 0; left: 0; right: 0; background: #fff; padding: 10px 20px !important; z-index: 999; border-bottom: 2px solid #f4f4f4; box-shadow: 0px 0px 24px rgba(21, 21, 52, 0.04);">
-        <el-row type="flex" align="middle" justify="space-between">
-          <el-col :span="12">
-            <img src="./assets/logo_transparent_background.png" height="48">
-          </el-col>
-          <el-col :span="6" style="text-align: right; color: #000;">
-            <i class="fal fa-bars"></i>
-          </el-col>
-        </el-row>
-      </el-header>
-      <router-view></router-view>
-    </div> -->
   </div>
 </template>
 
 <script>
 import NavMenu from "./components/NavMenu.vue";
-import JoinDiscord from "./components/JoinDiscord.vue";
+// import JoinDiscord from "./components/JoinDiscord.vue";
 
 export default {
   name: "App",
   components: {
     NavMenu,
-    JoinDiscord,
+    // JoinDiscord,
   },
   created() {
     this.$store.dispatch("checkWalletConnected");
@@ -104,7 +38,11 @@ body,
 }
 
 body {
-  background: #fffafa;
+  background-color: #1f2128;
+  background-image: url("./assets/cover-bg.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: top right;
 }
 
 /* FONT WEIGHTS */
@@ -154,11 +92,18 @@ input[type="number"] {
   stroke: #fff;
 }
 
+.wallet-btn {
+  background: rgba(85, 92, 255, 0.04) !important;
+  border: 1.5px solid #ffffff !important;
+  border-radius: 24px !important;
+  color: #fff !important;
+}
+
 body {
   font-family: "Poppins", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #191b1f;
+  color: #fff;
   height: 100%;
 }
 
@@ -239,8 +184,17 @@ i.fa-icon-right {
   border-color: #555cff !important;
 }
 
+div.el-card__body {
+  box-sizing: border-box;
+  border-radius: 18px;
+  background: #1f2128;
+}
+
 .el-card {
   border-radius: 18px !important;
+  background: #1f2128 !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  background-color: rgba(21, 21, 52, 0.04) !important;
 }
 .el-card .el-alert {
   border-radius: 14px !important;
@@ -254,7 +208,7 @@ i.fa-icon-right {
   font-size: 16px !important;
 }
 .el-card h2 {
-  color: #191b1f;
+  color: #fff;
   font-size: 20px;
   margin-top: 0;
 }
@@ -269,12 +223,15 @@ i.fa-icon-right {
 
 .farm-row {
   padding: 10px 20px;
-  background: #fff;
+  background: transparent;
   border-radius: 14px;
+}
+.farm-row * {
+  color: #fff ;
 }
 .farm-row:hover,
 .farm-row.expanded {
-  background: #f6f6f6;
+  background: rgba(241, 93, 89, 0.1);
 }
 .farm-row .el-avatar img {
   position: absolute;
