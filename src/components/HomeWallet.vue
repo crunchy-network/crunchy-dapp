@@ -170,62 +170,15 @@
               :asset="asset"
               :show-usd="showUsd"
             />
-            <div id="pagination">
-              <el-button
-                :disabled="currentPage === 0"
-                style="margin-right: 12px"
-                @click="handleStart"
-              >
-                <i class="fal fa-angle-left"></i>
-                <i class="fal fa-angle-left"></i>
-              </el-button>
-              <el-button :disabled="currentPage === 0" @click="handlePrevPage">
-                <i class="fal fa-angle-left"></i>
-              </el-button>
-
-              <h2
-                style="
-                  font-weight: 800;
-                  font-size: 14px;
-                  color: #191b1f;
-                  opacity: 0.5;
-                  margin: 0 19px;
-                "
-              >
-                {{
-                  vueNumberFormat(nextPage > pages ? pages : nextPage, {
-                    prefix: "",
-                    decimal: ".",
-                    thousand: ",",
-                    precision: 0,
-                  })
-                }}
-                out of
-                {{
-                  vueNumberFormat(pages, {
-                    prefix: "",
-                    decimal: ".",
-                    thousand: ",",
-                    precision: 0,
-                  })
-                }}
-              </h2>
-              <el-button
-                :disabled="nextPage + 1 > pages"
-                @click="handleNextPage"
-              >
-                <i class="fal fa-angle-right"></i>
-              </el-button>
-
-              <el-button
-                :disabled="nextPage + 1 > pages"
-                style="margin-left: 12px"
-                @click="handleEnd"
-              >
-                <i class="fal fa-angle-right"></i>
-                <i class="fal fa-angle-right"></i>
-              </el-button>
-            </div>
+            <row-pagination
+              :currentPage="currentPage"
+              :handleEnd="handleEnd"
+              :handleNextPage="handleNextPage"
+              :handlePrevPage="handlePrevPage"
+              :handleStart="handleStart"
+              :nextPage="nextPage"
+              :pages="pages"
+            ></row-pagination>
           </div>
         </div>
       </el-card>
@@ -246,10 +199,16 @@ import { mapState, mapActions, mapGetters } from "vuex";
 import NftWalletView from "./NftWalletView.vue";
 // import HomeWalletTable from "./HomeWalletTable.vue";
 import PortfolioWalletRow from "./PortfolioWalletRow.vue";
+import RowPagination from "./RowPagination.vue";
 import StakedWallet from "./StakedWallet.vue";
 export default {
   name: "HomeWallet",
-  components: { PortfolioWalletRow, NftWalletView, StakedWallet },
+  components: {
+    PortfolioWalletRow,
+    NftWalletView,
+    StakedWallet,
+    RowPagination,
+  },
   data() {
     return {
       activeTab: "staked",

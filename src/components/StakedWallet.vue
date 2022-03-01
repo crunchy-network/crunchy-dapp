@@ -10,10 +10,10 @@
             type="flex"
             align="middle"
             style="
-              color: #757679;
+              color: #fff;
               font-size: 14px;
               font-weight: 600;
-              border-bottom: 2px solid #f4f4f4;
+              border-bottom: 1px solid rgba(255, 255, 255, 0.3);
               padding-bottom: 14px;
               margin-bottom: 14px;
             "
@@ -23,7 +23,7 @@
                 :gutter="20"
                 type="flex"
                 align="middle"
-                style="padding: 0 20px"
+                style="padding: 0 20px; color: #fff"
               >
                 <el-col :span="6">Protocol</el-col>
                 <el-col style="text-align: right" :span="4"
@@ -43,59 +43,15 @@
             :farm="farm"
           />
 
-          <div id="pagination">
-            <el-button
-              :disabled="currentPage === 0"
-              style="margin-right: 12px"
-              @click="handleStart"
-            >
-              <i class="fal fa-angle-left"></i>
-              <i class="fal fa-angle-left"></i>
-            </el-button>
-            <el-button :disabled="currentPage === 0" @click="handlePrevPage">
-              <i class="fal fa-angle-left"></i>
-            </el-button>
-
-            <h2
-              style="
-                font-weight: 800;
-                font-size: 14px;
-                color: #191b1f;
-                opacity: 0.5;
-                margin: 0 19px;
-              "
-            >
-              {{
-                vueNumberFormat(nextPage > pages ? pages : nextPage, {
-                  prefix: "",
-                  decimal: ".",
-                  thousand: ",",
-                  precision: 0,
-                })
-              }}
-              out of
-              {{
-                vueNumberFormat(pages, {
-                  prefix: "",
-                  decimal: ".",
-                  thousand: ",",
-                  precision: 0,
-                })
-              }}
-            </h2>
-            <el-button :disabled="nextPage + 1 > pages" @click="handleNextPage">
-              <i class="fal fa-angle-right"></i>
-            </el-button>
-
-            <el-button
-              :disabled="nextPage + 1 > pages"
-              style="margin-left: 12px"
-              @click="handleEnd"
-            >
-              <i class="fal fa-angle-right"></i>
-              <i class="fal fa-angle-right"></i>
-            </el-button>
-          </div>
+          <row-pagination
+            :currentPage="currentPage"
+            :handleEnd="handleEnd"
+            :handleNextPage="handleNextPage"
+            :handlePrevPage="handlePrevPage"
+            :handleStart="handleStart"
+            :nextPage="nextPage"
+            :pages="pages"
+          ></row-pagination>
         </div>
       </div>
     </el-card>
@@ -103,9 +59,10 @@
 </template>
 
 <script>
+import RowPagination from "./RowPagination.vue";
 import StakedWalletRow from "./StakedWalletRow.vue";
 export default {
-  components: { StakedWalletRow },
+  components: { StakedWalletRow, RowPagination },
   name: "StakedWalletView",
   props: ["showUsd"],
   data() {
@@ -159,7 +116,7 @@ export default {
           ],
         },
 
-         {
+        {
           id: 0,
           icon: "https://res.cloudinary.com/melvin-manni/image/upload/v1645292809/c1rutxlzllilmtuibcdo.png",
           protocol: "Quipuswap",
@@ -180,7 +137,7 @@ export default {
               totalValue: 462.496623,
             },
             {
-             stakedToken: "CRUNCH",
+              stakedToken: "CRUNCH",
               stakedValue: 137.316273,
               stakedValueUsd: 500,
               claimable: 5.51353,
@@ -200,7 +157,7 @@ export default {
           ],
         },
 
-         {
+        {
           id: 0,
           icon: "https://res.cloudinary.com/melvin-manni/image/upload/v1645292809/nstgjnest4jrhcsgwymf.png",
           protocol: "Plenty",
@@ -221,7 +178,7 @@ export default {
               totalValue: 462.496623,
             },
             {
-             stakedToken: "CRUNCH",
+              stakedToken: "CRUNCH",
               stakedValue: 137.316273,
               stakedValueUsd: 500,
               claimable: 5.51353,

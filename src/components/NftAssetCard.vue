@@ -11,10 +11,10 @@
             style="position: relative; border: 4px solid #fff; vertical-align: middle; margin-right: 7px"
           ></el-avatar>
           <div>
-            <h2 style="font-weight: 600 !important; font-size: 12px; color: #757679; margin: 0;">
+            <h2 style="font-weight: 600 !important; font-size: 12px; color: #f15d59; margin: 0;">
               {{ type }}
             </h2>
-            <h2 style="font-weight: 600 !important; font-size: 12px; color: #191B1F; margin: 0;">
+            <h2 style="font-weight: 600 !important; font-size: 12px; color: #fff; margin: 0;">
               {{ name }}
             </h2>
           </div>

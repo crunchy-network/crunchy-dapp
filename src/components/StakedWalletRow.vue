@@ -1,11 +1,11 @@
 <template>
   <el-row
     :data-farm-id="farm.id"
-    style="padding-bottom: 14px; font-size: 14px; font-weight: 600; "
+    style="padding-bottom: 14px; font-size: 14px; font-weight: 600"
     :style="
       rowExpanded
-        ? 'border: 1px solid #f3f3f3; border-radius: 14px; margin-bottom: 24px;'
-        : 'border: 1px solid #fff; border-radius: 14px; margin-bottom: 0px;'
+        ? 'border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 14px; margin-bottom: 24px;'
+        : 'border: 0px solid rgba(255, 255, 255, 0.3); border-radius: 14px; margin-bottom: 0px;'
     "
     type="flex"
     align="top"
@@ -45,7 +45,7 @@
                         font-size: 14px;
                         line-height: 19px;
                         letter-spacing: 0.02em;
-                        color: #555cff;
+                        color: #f15d59;
                       "
                     >
                       {{ farm.protocol }}
@@ -115,10 +115,12 @@
                   style="text-align: right"
                   ><el-button
                     type="text"
-                    style="font-weight: bold"
+                    style="font-weight: bold; "
                     @click="expandRow"
-                    >View Details
-                    <i class="fas fa-chevron-down fa-icon-right"></i></el-button
+                    >
+                    <span style="color: #f15d59"> View Details </span>
+
+                    <i style="color: #f15d59" class="fas fa-chevron-down fa-icon-right"></i></el-button
                 ></el-col>
                 <el-col
                   v-show="rowExpanded === true"
@@ -126,10 +128,12 @@
                   style="text-align: right"
                   ><el-button
                     type="text"
-                    style="font-weight: bold"
+                    style="font-weight: bold; "
                     @click="collapseRow"
-                    >Hide Details
-                    <i class="fas fa-chevron-up fa-icon-right"></i></el-button
+                    >
+                    <span style="color: #f15d59"> Hide Details </span>
+
+                    <i style="color: #f15d59" class="fas fa-chevron-up fa-icon-right"></i></el-button
                 ></el-col>
               </el-row>
             </div>
@@ -159,13 +163,13 @@
                 align="top"
                 style="
                   padding: 10px 20px;
-                  color: #191B1F;
+                  color: #fff;
                   font-size: 14px;
                   font-weight: 600;
                 "
               >
                 <el-col :span="6">
-                  <span style="color: #555cff">
+                  <span style="color: #f15d59">
                     {{ stake.stakedToken }}
                   </span>
                 </el-col>

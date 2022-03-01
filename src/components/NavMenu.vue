@@ -1,68 +1,121 @@
 <template>
-  <div style="background: #1f2128; margin-bottom: 35px">
-    <el-menu mode="horizontal" :router="true">
-      <el-menu-item>
-        <div style="text-align: center">
-          <img src="../assets/logo_transparent_background.png" width="150" />
-        </div>
-      </el-menu-item>
-      <el-menu-item style="padding: 40px 0px !important">
-        <el-divider direction="vertical"></el-divider>
-      </el-menu-item>
-      <router-link
-        tag="li"
-        class="el-menu-item"
-        :to="{ name: 'home' }"
-        exact
-        active-class="is-active"
+  <div id="nav-menu" style="background: #1f2128; margin-bottom: 35px">
+    <el-row
+      class="el-menu-row"
+      type="flex"
+      style="align-items: center; min-height: 100px"
+      justify="space-between"
+    >
+      <button
+        @click="toggleMenu"
+        v-if="mobile"
+        class="show-mobile clear-btn"
+        style="color: #f15d59; font-size: 30px"
       >
-        <span>Home</span>
-      </router-link>
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <div :class="[mobile && 'mobile-menu', showMenu && 'active']">
+        <el-menu
+          @click="toggleMenu"
+          class="nav-menu-wrapper"
+          style="background: transparent; border: none"
+          :mode="mobile ? 'vertical' : 'horizontal'"
+          :router="true"
+        >
+          <button
+            @click="toggleMenu"
+            v-if="mobile"
+            class="show-mobile close-btn clear-btn"
+            style="color: #df4759"
+          >
+            <i
+              style="font-size: 24px !important; width: unset !important"
+              class="fa-solid fa-circle-xmark"
+            ></i>
+          </button>
 
-      <router-link
-        tag="li"
-        class="el-menu-item"
-        :to="{ name: 'ifo-list' }"
-        active-class="is-active"
-      >
-        <span>IFO</span>
-      </router-link>
+          <el-menu-item :style="mobile && 'margin-top: 30px'">
+            <div style="text-align: center">
+              <img
+                src="../assets/logo_transparent_background.png"
+                width="150"
+              />
+            </div>
+          </el-menu-item>
+          <el-menu-item>
+            <el-divider v-if="!mobile" direction="vertical"></el-divider>
+            <el-divider v-if="mobile" direction="horizontal"></el-divider>
+          </el-menu-item>
+          <router-link
+            tag="li"
+            class="el-menu-item"
+            :to="{ name: 'home' }"
+            exact
+            active-class="is-active"
+          >
+            <span>Home</span>
+          </router-link>
 
-      <router-link
-        tag="li"
-        class="el-menu-item"
-        :to="{ name: 'farm-listing' }"
-        active-class="is-active"
-      >
-        <span>Farms</span>
-      </router-link>
+          <router-link
+            tag="li"
+            class="el-menu-item"
+            :to="{ name: 'ifo-list' }"
+            active-class="is-active"
+          >
+            <span>IFO</span>
+          </router-link>
 
-      <!-- <router-link
-        tag="li"
-        class="el-menu-item"
-        :to="{ name: 'wtz' }"
-        active-class="is-active"
-      >
-        <span>WTZ</span>
-      </router-link> -->
+          <router-link
+            tag="li"
+            class="el-menu-item"
+            :to="{ name: 'farm-listing' }"
+            active-class="is-active"
+          >
+            <span>Farms</span>
+          </router-link>
 
-      <router-link
-        tag="li"
-        class="el-menu-item"
-        :to="{ name: 'deep-freezer-listing' }"
-        active-class="is-active"
-      >
-        <span>Deep Freezers</span>
-      </router-link>
+          <router-link
+            tag="li"
+            class="el-menu-item"
+            :to="{ name: 'deep-freezer-listing' }"
+            active-class="is-active"
+          >
+            <span>Deep Freezers</span>
+          </router-link>
 
-      <div style="display: flex; justify-content: flex-end;">
-        <el-menu-item  style="padding-right: 0px !important">
-          <div class="grid-content" style="text-align: right">
-            <NavWallet />
-          </div>
-        </el-menu-item>
+          <router-link
+            tag="li"
+            class="el-menu-item"
+            :to="{ name: 'deep-freezer-listing' }"
+            active-class="is-active"
+          >
+            <span>Pie Slicer</span>
+          </router-link>
+
+          <router-link
+            tag="li"
+            class="el-menu-item"
+            :to="{ name: 'deep-freezer-listing' }"
+            active-class="is-active"
+          >
+            <span>Exchange</span>
+          </router-link>
+
+          <el-submenu index="2">
+            <template slot="title">More</template>
+            <el-menu-item index="2-1">item one</el-menu-item>
+            <el-menu-item index="2-2">item two</el-menu-item>
+            <el-menu-item index="2-3">item three</el-menu-item>
+          </el-submenu>
+        </el-menu>
       </div>
-    </el-menu>
+      <div style="padding: 0 40px">
+        <slot />
+      </div>
+      <div class="grid-content" style="text-align: right; padding: 0 40px">
+        <NavWallet />
+      </div>
+    </el-row>
   </div>
 </template>
 
@@ -71,20 +124,51 @@ import NavWallet from "./NavWallet.vue";
 export default {
   components: { NavWallet },
   name: "NavMenu",
+  data() {
+    return {
+      mobile: false,
+      showMenu: false,
+      windowWidth: window.innerWidth,
+    };
+  },
+  watch: {
+    windowWidth() {
+      console.log(this.windowWidth);
+      if (this.windowWidth <= 1400) {
+        this.mobile = true;
+      }
+    },
+  },
+
+  created() {
+    if (window.innerWidth <= 1400) {
+      this.mobile = true;
+    }
+    window.addEventListener("resize", (e) => {
+      this.windowWidth = window.innerWidth;
+    });
+  },
+
+  methods: {
+    toggleMenu() {
+      if (window.innerWidth < 1400) {
+        this.showMenu = !this.showMenu;
+      }
+    },
+    menuOrientation() {},
+  },
 };
 </script>
 
 <style lang="scss" scoped>
 @import "~element-ui/packages/theme-chalk/src/common/var";
-.el-menu {
+.el-menu-row {
   border-right: none !important;
-  background: #1f2128;
   margin: 0 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.el-menu-item,
-li.el-submenu {
+.el-menu-item {
   color: #ffffff !important;
   font-weight: bold;
   font-size: 16px;
@@ -92,8 +176,9 @@ li.el-submenu {
   display: flex;
   align-items: center;
   border: 0 !important;
-  padding: 40px;
+  padding: 40px 20px;
   background: transparent !important;
+  max-height: 80px;
   i.fas,
   i.fak {
     margin-right: 14px;
@@ -103,24 +188,62 @@ li.el-submenu {
     vertical-align: middle;
   }
 
-  .el-submenu__title {
-    height: unset !important;
-    line-height: 0 !important;
-    color: #ffffff !important;
+  .el-button i {
+    font-size: 24px !important;
+    width: 24px !important;
   }
 
   &:hover,
   &.is-active {
     color: #f15d59 !important;
   }
-  .el-divider--vertical {
-    height: 55px !important;
-    background: rgba(255, 255, 255, 0.3) !important;
-  }
 
   /* &.is-active {
     color: #f64947;
     border-right: 6px solid #ff7a7a;
   } */
+}
+.el-divider--vertical {
+  height: 55px !important;
+  background: rgba(255, 255, 255, 0.3) !important;
+}
+
+@media (max-width: 1400px) {
+  .mobile-menu {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    z-index: 20000;
+    background: #1f2128;
+    left: -100%;
+    padding-right: 30px;
+    overflow-y: auto;
+    transition: 0.45s ease all;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+    .close-btn {
+      position: absolute;
+      margin-left: auto;
+      right: -18px;
+      top: 10px;
+    }
+
+    .el-menu-item {
+      padding-top: 20px;
+      padding-bottom: 20px;
+    }
+    &.active {
+      left: 0;
+    }
+  }
+
+  .clear-btn {
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+  }
 }
 </style>
