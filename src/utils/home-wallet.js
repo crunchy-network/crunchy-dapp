@@ -94,7 +94,7 @@ export default {
 
         // get current price of token
         const currentPrice = priceObj?.currentPrice || false;
-        const tokenid = priceObj?.tokenId || false;
+        const tokenid = priceObj?.tokenId;
 
         // get token uri from prices :: This is because  balance does not return  some tokens thumbnail
         const thumbnailUri = priceObj?.thumbnailUri || false;
