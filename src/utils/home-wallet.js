@@ -80,110 +80,26 @@ export default {
 
       // map through all the balances to sort data
       for (let i = 0; i < balances.length; i++) {
+        let priceFilter = prices.filter(
+          (val) => val.tokenAddress === balances[i]?.token?.contract?.address
+        );
+
+        if (priceFilter.length > 1) {
+          priceFilter = priceFilter.filter(
+            (val) => val.symbol === balances[i]?.token?.metadata?.symbol
+          );
+        }
+
+        const priceObj = priceFilter.length ? priceFilter[0] : undefined;
+
         // get current price of token
-        const currentPrice =
-          prices.filter(
-            (val) => val.tokenAddress === balances[i]?.token?.contract?.address
-          ).length === 1
-            ? prices.filter(
-                (val) =>
-                  val.tokenAddress === balances[i]?.token?.contract?.address
-              )[0]?.currentPrice
-            : prices
-                .filter(
-                  (val) =>
-                    val.tokenAddress === balances[i]?.token?.contract?.address
-                )
-                .filter(
-                  (val) => val.symbol === balances[i]?.token?.metadata?.symbol
-                ).length > 0
-            ? prices
-                .filter(
-                  (val) =>
-                    val.tokenAddress === balances[i]?.token?.contract?.address
-                )
-                .filter(
-                  (val) => val.symbol === balances[i]?.token?.metadata?.symbol
-                )[0]?.currentPrice
-            : false;
+        const currentPrice = priceObj?.currentPrice || false;
+        const tokenid = priceObj?.tokenId || false;
 
-        const tokenid =
-          prices.filter(
-            (val) => val.tokenAddress === balances[i]?.token?.contract?.address
-          ).length === 1
-            ? prices.filter(
-                (val) =>
-                  val.tokenAddress === balances[i]?.token?.contract?.address
-              )[0]?.tokenId
-            : prices
-                .filter(
-                  (val) =>
-                    val.tokenAddress === balances[i]?.token?.contract?.address
-                )
-                .filter(
-                  (val) => val.symbol === balances[i]?.token?.metadata?.symbol
-                ).length > 0
-            ? prices
-                .filter(
-                  (val) =>
-                    val.tokenAddress === balances[i]?.token?.contract?.address
-                )
-                .filter(
-                  (val) => val.symbol === balances[i]?.token?.metadata?.symbol
-                )[0]?.tokenId
-            : false;
         // get token uri from prices :: This is because  balance does not return  some tokens thumbnail
-        const thumbnailUri =
-          prices.filter(
-            (val) => val.tokenAddress === balances[i]?.token?.contract?.address
-          ).length === 1
-            ? prices.filter(
-                (val) =>
-                  val.tokenAddress === balances[i]?.token?.contract?.address
-              )[0]?.thumbnailUri
-            : prices
-                .filter(
-                  (val) =>
-                    val.tokenAddress === balances[i]?.token?.contract?.address
-                )
-                .filter(
-                  (val) => val.symbol === balances[i]?.token?.metadata?.symbol
-                ).length > 0
-            ? prices
-                .filter(
-                  (val) =>
-                    val.tokenAddress === balances[i]?.token?.contract?.address
-                )
-                .filter(
-                  (val) => val.symbol === balances[i]?.token?.metadata?.symbol
-                )[0]?.thumbnailUri
-            : false;
+        const thumbnailUri = priceObj?.thumbnailUri || false;
 
-        const decimals =
-          prices.filter(
-            (val) => val.tokenAddress === balances[i]?.token?.contract?.address
-          ).length === 1
-            ? prices.filter(
-                (val) =>
-                  val.tokenAddress === balances[i]?.token?.contract?.address
-              )[0]?.decimals
-            : prices
-                .filter(
-                  (val) =>
-                    val.tokenAddress === balances[i]?.token?.contract?.address
-                )
-                .filter(
-                  (val) => val.symbol === balances[i]?.token?.metadata?.symbol
-                ).length > 0
-            ? prices
-                .filter(
-                  (val) =>
-                    val.tokenAddress === balances[i]?.token?.contract?.address
-                )
-                .filter(
-                  (val) => val.symbol === balances[i]?.token?.metadata?.symbol
-                )[0]?.decimals
-            : false;
+        const decimals = priceObj?.decimals || false;
 
         // Data filter and calculations
         const bal = new BigNumber(balances[i]?.balance);
@@ -205,6 +121,10 @@ export default {
           balances[i]?.token?.metadata?.thumbnailUri || thumbnailUri || ""
         );
 
+        const pricePair = priceObj?.pairs.find(
+          (el) => el.dex === "Quipuswap" && el.sides[1].symbol === "XTZ"
+        );
+
         const valObj = {
           asset:
             balances[i]?.token?.metadata?.symbol ||
@@ -212,6 +132,21 @@ export default {
           icon,
           balance: balance.toNumber(),
           price: price.toNumber(),
+          priceChange1Day: price
+            .minus(pricePair?.sides[0]?.dayClose)
+            .div(pricePair?.sides[0]?.dayClose)
+            .times(100)
+            .toNumber(),
+          priceChange7Day: price
+            .minus(pricePair?.sides[0]?.weekClose)
+            .div(pricePair?.sides[0]?.weekClose)
+            .times(100)
+            .toNumber(),
+          priceChange30Day: price
+            .minus(pricePair?.sides[0]?.monthClose)
+            .div(pricePair?.sides[0]?.monthClose)
+            .times(100)
+            .toNumber(),
           priceUsd: priceUsd.toNumber(),
           valueUsd: valueUsd.toNumber(),
           value: value.toNumber(),
