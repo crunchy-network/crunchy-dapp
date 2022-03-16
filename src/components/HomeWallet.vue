@@ -161,9 +161,36 @@
                   <el-col style="text-align: right" :span="4">Balance</el-col>
                   <el-col style="text-align: right" :span="4">Price</el-col>
                   <el-col style="text-align: right" :span="4">Value</el-col>
-                  <el-col style="text-align: right" :span="2">1d</el-col>
-                  <el-col style="text-align: right" :span="2">7d</el-col>
-                  <el-col style="text-align: right" :span="2">30d</el-col>
+                  <el-col style="text-align: right" :span="2"
+                    >1d
+                    <el-tooltip
+                      content="% Change in XTZ"
+                      placement="top"
+                      effect="light"
+                    >
+                      <i class="fa-regular fa-info-circle"></i>
+                    </el-tooltip>
+                  </el-col>
+                  <el-col style="text-align: right" :span="2"
+                    >7d
+                    <el-tooltip
+                      content="% Change in XTZ"
+                      placement="top"
+                      effect="light"
+                    >
+                      <i class="fa-regular fa-info-circle"></i>
+                    </el-tooltip>
+                  </el-col>
+                  <el-col style="text-align: right" :span="2"
+                    >30d
+                    <el-tooltip
+                      content="% Change in XTZ"
+                      placement="top"
+                      effect="light"
+                    >
+                      <i class="fa-regular fa-info-circle"></i>
+                    </el-tooltip>
+                  </el-col>
                   <el-col style="text-align: right" :span="2"></el-col>
                 </el-row>
               </el-col>
