@@ -157,9 +157,9 @@
                   align="middle"
                   style="padding: 0 20px"
                 >
-                  <el-col :span="5">Asset</el-col>
+                  <el-col :span="4">Asset</el-col>
                   <el-col style="text-align: right" :span="4">Balance</el-col>
-                  <el-col style="text-align: right" :span="3">Price</el-col>
+                  <el-col style="text-align: right" :span="4">Price</el-col>
                   <el-col style="text-align: right" :span="4">Value</el-col>
                   <el-col style="text-align: right" :span="2">1d</el-col>
                   <el-col style="text-align: right" :span="2">7d</el-col>

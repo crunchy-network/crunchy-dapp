@@ -13,7 +13,7 @@
           type="flex"
           align="middle"
         >
-          <el-col style="text-align: left" :span="5">
+          <el-col style="text-align: left" :span="4">
             <el-row type="flex" style="align-items: center">
               <el-avatar
                 :src="asset.icon"
@@ -51,7 +51,7 @@
               })
             }}
           </el-col>
-          <el-col style="text-align: right" :span="3">
+          <el-col style="text-align: right" :span="4">
             {{
               !showUsd
                 ? vueNumberFormat(asset.price, {
