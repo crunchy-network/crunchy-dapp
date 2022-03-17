@@ -10,11 +10,25 @@
     "tokenName": "PIXEL",
     "tokenSymbol": "PXL",
     "isIFO": true,
+    "totalSupply": 100000000,
+    "circulatingSupply": 10500000,
     "links": [
-        {"name": "Medium", "link": "https://pixelpotus.medium.com/"},
-        {"name": "Twitter", "link": "https://twitter.com/PixelPotus"},
-        {"name": "Discord", "link": "https://discord.com/invite/CbdbvwtwkM"},
-        {"name": "Telegram", "link": "https://t.me/pixelpotus"}
+        {
+            "name": "Medium",
+            "link": "https://pixelpotus.medium.com/"
+        },
+        {
+            "name": "Twitter",
+            "link": "https://twitter.com/PixelPotus"
+        },
+        {
+            "name": "Discord",
+            "link": "https://discord.com/invite/CbdbvwtwkM"
+        },
+        {
+            "name": "Telegram",
+            "link": "https://t.me/pixelpotus"
+        }
     ],
     "offeringSupply": 20000000,
     "accessTypes": [

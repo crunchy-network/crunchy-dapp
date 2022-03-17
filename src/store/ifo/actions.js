@@ -59,6 +59,8 @@ export default {
     data.endTime = projectJson.endTime;
     data.swapRate = projectJson.swapRate;
     data.offeringSupply = projectJson.offeringSupply;
+    data.totalSupply = projectJson.totalSupply;
+    data.circulatingSupply = projectJson.circulatingSupply;
     data.ended = true;
     commit("updateIfoData", data);
   },

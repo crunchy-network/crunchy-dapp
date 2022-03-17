@@ -404,11 +404,21 @@
 
             <div class="detail-row">
               <div class="data-col">
-                <p>Circultating Supply After Farm</p>
+                <p v-if="project.isIFO">Circultating Supply After Farm</p>
+                <p v-if="!project.isIFO">Circultating Supply</p>
               </div>
 
               <div class="data-col">
-                <p>10,500,000</p>
+                <p>
+                  {{
+                    vueNumberFormat(project.circulatingSupply, {
+                      prefix: "",
+                      decimal: ".",
+                      thousand: ",",
+                      precision: 0,
+                    })
+                  }}
+                </p>
               </div>
             </div>
 
@@ -418,7 +428,16 @@
               </div>
 
               <div class="data-col">
-                <p>100,000,000</p>
+                <p>
+                  {{
+                    vueNumberFormat(project.totalSupply, {
+                      prefix: "",
+                      decimal: ".",
+                      thousand: ",",
+                      precision: 0,
+                    })
+                  }}
+                </p>
               </div>
             </div>
 
