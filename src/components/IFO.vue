@@ -447,7 +447,7 @@
               </div>
 
               <div class="data-col">
-                <p>6</p>
+                <p>{{ project.decimals }}</p>
               </div>
             </div>
           </el-card>

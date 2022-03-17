@@ -27,8 +27,9 @@
     "pendingHarvest": 0,
     "lastHarvest": ""
   },
-  "totalSupply": 10000000,
-  "circulatingSupply": 10000000,
+  "totalSupply": 88000000,
+  "circulatingSupply": 88000000,
+  "decimals": 8,
   "links": [
     {
       "name": "Medium",

@@ -14,6 +14,7 @@
     "isIFO": false,
     "totalSupply": 10000000,
     "circulatingSupply": 10000000,
+    "decimals": 8,
     "links": [
         {
             "name": "Medium",
