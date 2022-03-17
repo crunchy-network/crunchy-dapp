@@ -19,6 +19,8 @@ export default {
       ended: false,
       harvesting: false,
       harvestDuration: 0,
+      totalSupply: 0,
+      circulatingSupply: 0,
       userRecord: {
         committed: 0,
         committedPercent: 0,

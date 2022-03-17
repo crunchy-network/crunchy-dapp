@@ -1,36 +1,46 @@
 {
-    "name": "GIF Games",
-    "description": "The Governance token for all things gif.games related, giving $GIF holders rights to create proposals, vote, obtain different perks related to our games, and get early access to any new game releases. \n Gif.games is building blockchain games on Tezos, Tezotopia (https://tezotop.io/) is only the beginning. Become part of this Decentralized Autonomous Organization (DAO), hold $GIF and help shape the future of gif.games.",
-    "projectLogo": "GIFLogoLarge.png",
-    "tokenLogo": "GIF.png",
-    "contractId": "KT1Q7JhPwsYmzZQxhRPy23gN8KtpKgik4SfH",
-    "isIFO": false,
-
-    "tokenName": "GIF",
-    "tokenSymbol": "GIF",
-    "raisingGoal": 100000,
-    "totalRaised": 100000,
-    "offeringSupply": 33000000,
-    "swapRate": 0.005,
-    "startTime": "2021-08-28T10:00:00.000Z",
-    "endTime": "2021-08-28T11:00:00.000Z",
-    "harvestTime": "2021-08-28T11:00:00.000Z",
-    "started": true,
-    "ended": true,
-    "harvesting": false,
-    "harvestDuration": 0,
-    "userRecord": {
-      "committed": 0,
-      "committedPercent": 0,
-      "projectedHarvest": 0,
-      "projectedFee": 0,
-      "amountHarvested": 0,
-      "pendingHarvest": 0,
-      "lastHarvest": ""
+  "name": "GIF Games",
+  "description": "The Governance token for all things gif.games related, giving $GIF holders rights to create proposals, vote, obtain different perks related to our games, and get early access to any new game releases. \n Gif.games is building blockchain games on Tezos, Tezotopia (https://tezotop.io/) is only the beginning. Become part of this Decentralized Autonomous Organization (DAO), hold $GIF and help shape the future of gif.games.",
+  "projectLogo": "GIFLogoLarge.png",
+  "tokenLogo": "GIF.png",
+  "contractId": "KT1Q7JhPwsYmzZQxhRPy23gN8KtpKgik4SfH",
+  "isIFO": false,
+  "tokenName": "GIF",
+  "tokenSymbol": "GIF",
+  "raisingGoal": 100000,
+  "totalRaised": 100000,
+  "totalSupply": 10000000,
+  "offeringSupply": 33000000,
+  "circulatingSupply": 10000000,
+  "swapRate": 0.005,
+  "startTime": "2021-08-28T10:00:00.000Z",
+  "endTime": "2021-08-28T11:00:00.000Z",
+  "harvestTime": "2021-08-28T11:00:00.000Z",
+  "started": true,
+  "ended": true,
+  "harvesting": false,
+  "harvestDuration": 0,
+  "userRecord": {
+    "committed": 0,
+    "committedPercent": 0,
+    "projectedHarvest": 0,
+    "projectedFee": 0,
+    "amountHarvested": 0,
+    "pendingHarvest": 0,
+    "lastHarvest": ""
+  },
+  "links": [
+    {
+      "name": "Medium",
+      "link": "https://substack.com/profile/20108650-gifgames"
     },
-    "links": [
-        {"name": "Medium", "link": "https://substack.com/profile/20108650-gifgames"},
-        {"name": "Twitter", "link": "https://twitter.com/gifdotgames"},
-        {"name": "Telegram", "link": "https://t.me/gifgames"}
-    ]
+    {
+      "name": "Twitter",
+      "link": "https://twitter.com/gifdotgames"
+    },
+    {
+      "name": "Telegram",
+      "link": "https://t.me/gifgames"
+    }
+  ]
 }

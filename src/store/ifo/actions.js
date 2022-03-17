@@ -1,22 +1,23 @@
 import tzkt from './../../utils/tzkt'
 import { getWalletContract } from './../../utils/tezos'
 import { BigNumber } from 'bignumber.js'
-import {getCurrContractId, projects} from './tmp'
+import { getCurrContractId, projects } from './tmp'
 export default {
 
-  async updateIfoStorage({state}) {
+  async updateIfoStorage({ state }) {
     let id = getCurrContractId()
     return tzkt.getContractStorage(id ? id : state.contracts.pixel)
       .then(resp => {
+        console.log(resp)
         return resp.data;
       });
   },
 
   async updateIfoUserRecord({ rootState, state }) {
     if (!rootState.wallet.pkh) return;
-      let contractId = getCurrContractId();
+    let contractId = getCurrContractId();
 
-      return tzkt.getContractBigMapKeys( contractId ? contractId : state.contracts.pixel, "ledger", { 'key': rootState.wallet.pkh, 'active': 'true' })
+    return tzkt.getContractBigMapKeys(contractId ? contractId : state.contracts.pixel, "ledger", { 'key': rootState.wallet.pkh, 'active': 'true' })
       .then(resp => {
         return resp.data.length ? resp.data[0] : null;
       });
@@ -31,7 +32,7 @@ export default {
     }
   },
 
-  async handleLegacyIDO({commit}){
+  async handleLegacyIDO({ commit }) {
     let data = {
       harvestTime: new Date(),
       started: false,
@@ -55,6 +56,8 @@ export default {
     data.endTime = projectJson.endTime
     data.swapRate = projectJson.swapRate
     data.offeringSupply = projectJson.offeringSupply
+    data.totalSupply = projectJson.totalSupply
+    data.circulatingSupply = projectJson.circulatingSupply
     data.ended = true
     commit("updateIfoData", data)
   },
@@ -62,7 +65,7 @@ export default {
   async softUpdateIfo({ commit, dispatch, state }) {
     const storage = await dispatch('updateIfoStorage');
     const userRecordStorage = await dispatch('updateIfoUserRecord');
-    if(!storage.ifo){
+    if (!storage.ifo) {
       dispatch('handleLegacyIDO')
       return;
     }
@@ -153,7 +156,7 @@ export default {
     }
   },
 
-  async stakeIfo({ commit, dispatch, state}, amount) {
+  async stakeIfo({ commit, dispatch, state }, amount) {
     let id = getCurrContractId();
     const ifoContract = await getWalletContract(id ? id : state.contracts.pixel);
     const amountB = BigNumber(amount).times(10 ** 6).idiv(1).toNumber();
@@ -170,21 +173,21 @@ export default {
       });
   },
 
-  async harvestIfo({ commit, dispatch, state}) {
+  async harvestIfo({ commit, dispatch, state }) {
     let id = getCurrContractId();
     console.log("getting wallet for ", getCurrContractId())
-      const ifoContract = await getWalletContract( id ? id : state.contracts.pixel);
-    console.log( `got contract for`,  ifoContract)
-      ifoContract.methods
-        .harvest()
-        .send().then(tx => {
-          commit('updateIfoLoading', true);
-          tx.confirmation(2).then(() => {
-            dispatch('softUpdateIfo').then(() => {
-              commit('updateIfoLoading', false);
-            });
+    const ifoContract = await getWalletContract(id ? id : state.contracts.pixel);
+    console.log(`got contract for`, ifoContract)
+    ifoContract.methods
+      .harvest()
+      .send().then(tx => {
+        commit('updateIfoLoading', true);
+        tx.confirmation(2).then(() => {
+          dispatch('softUpdateIfo').then(() => {
+            commit('updateIfoLoading', false);
           });
         });
+      });
   },
 
   async walletConnected({ commit, dispatch }) {

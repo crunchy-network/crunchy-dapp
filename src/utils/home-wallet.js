@@ -68,45 +68,45 @@ export default {
           prices.filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address).length === 1
             ? prices.filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address)[0]?.currentPrice
             : prices
-                .filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address)
-                .filter((val) => val.symbol === balances[i]?.token?.metadata?.symbol).length > 0
-            ? prices
+              .filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address)
+              .filter((val) => val.symbol === balances[i]?.token?.metadata?.symbol).length > 0
+              ? prices
                 .filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address)
                 .filter((val) => val.symbol === balances[i]?.token?.metadata?.symbol)[0]?.currentPrice
-            : false;
+              : false;
 
         const tokenid =
           prices.filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address).length === 1
             ? prices.filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address)[0]?.tokenId
             : prices
-                .filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address)
-                .filter((val) => val.symbol === balances[i]?.token?.metadata?.symbol).length > 0
-            ? prices
+              .filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address)
+              .filter((val) => val.symbol === balances[i]?.token?.metadata?.symbol).length > 0
+              ? prices
                 .filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address)
                 .filter((val) => val.symbol === balances[i]?.token?.metadata?.symbol)[0]?.tokenId
-            : false;
+              : false;
         // get token uri from prices :: This is because  balance does not return  some tokens thumbnail
         const thumbnailUri =
           prices.filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address).length === 1
             ? prices.filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address)[0]?.thumbnailUri
             : prices
-                .filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address)
-                .filter((val) => val.symbol === balances[i]?.token?.metadata?.symbol).length > 0
-            ? prices
+              .filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address)
+              .filter((val) => val.symbol === balances[i]?.token?.metadata?.symbol).length > 0
+              ? prices
                 .filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address)
                 .filter((val) => val.symbol === balances[i]?.token?.metadata?.symbol)[0]?.thumbnailUri
-            : false;
+              : false;
 
         const decimals =
           prices.filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address).length === 1
             ? prices.filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address)[0]?.decimals
             : prices
-                .filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address)
-                .filter((val) => val.symbol === balances[i]?.token?.metadata?.symbol).length > 0
-            ? prices
+              .filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address)
+              .filter((val) => val.symbol === balances[i]?.token?.metadata?.symbol).length > 0
+              ? prices
                 .filter((val) => val.tokenAddress === balances[i]?.token?.contract?.address)
                 .filter((val) => val.symbol === balances[i]?.token?.metadata?.symbol)[0]?.decimals
-            : false;
+              : false;
 
         // Data filter and calculations
         const bal = new BigNumber(balances[i]?.balance);

@@ -9,12 +9,23 @@
     "tokenSymbol": "IDZ",
     "raisingGoal": 45000,
     "totalRaised": 35000,
+    "totalSupply": 10000000,
     "offeringSupply": 1000000,
+    "circulatingSupply": 10000000,
     "swapRate": 0.045,
     "isIFO": false,
     "links": [
-        {"name": "Medium", "link": "https://blog.tezid.net/"},
-        {"name": "Twitter", "link": "https://twitter.com/tezid_net"},
-        {"name": "Telegram", "link": "https://t.me/tezid"}
+        {
+            "name": "Medium",
+            "link": "https://blog.tezid.net/"
+        },
+        {
+            "name": "Twitter",
+            "link": "https://twitter.com/tezid_net"
+        },
+        {
+            "name": "Telegram",
+            "link": "https://t.me/tezid"
+        }
     ]
 }
