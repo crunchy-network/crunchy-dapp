@@ -12,9 +12,21 @@
     "offeringSupply": 1000000,
     "swapRate": 0.045,
     "isIFO": false,
+    "totalSupply": 10000000,
+    "circulatingSupply": 10000000,
+    "decimals": 8,
     "links": [
-        {"name": "Medium", "link": "https://blog.tezid.net/"},
-        {"name": "Twitter", "link": "https://twitter.com/tezid_net"},
-        {"name": "Telegram", "link": "https://t.me/tezid"}
+        {
+            "name": "Medium",
+            "link": "https://blog.tezid.net/"
+        },
+        {
+            "name": "Twitter",
+            "link": "https://twitter.com/tezid_net"
+        },
+        {
+            "name": "Telegram",
+            "link": "https://t.me/tezid"
+        }
     ]
 }
