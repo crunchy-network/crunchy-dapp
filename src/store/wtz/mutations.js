@@ -18,4 +18,9 @@ export default {
   updateWtzSwapRatio(state, swapRatio) {
     state.swapRatio = swapRatio;
   },
+
+  updateWtzTransactions(state, txs) {
+    console.log("txs", txs);
+    state.txs = txs;
+  },
 };

@@ -1,36 +1,51 @@
 {
-    "name": "CryptoEasy",
-    "description": "CryptoEasy’s mission is to facilitate for everyone access to digital assets, irrespective of their specific applications, platforms, and ecosystems. To achieve it, CryptoEasy is building the leading DeFi platform on the Tezos Blockchain, focused on personalized multi-asset portfolios leveraging its native utility token — $EASY — to simplify the investing process.",
-    "projectLogo": "CryptoEasyLogoLarge.png",
-    "tokenLogo": "EASY.png",
-    "contractId": "KT1G1DVF3YKzABf533EJkBdcsE2qmDb6WhN2",
-    "isIFO": false,
-    "tokenName": "CryptoEasy",
-    "tokenSymbol": "EASY",
-    "raisingGoal": 195000,
-    "totalRaised": 120000,
-    "offeringSupply": 6000000,
-    "swapRate": 0.0326,
-    "startTime": "2021-09-25T14:00:00.000Z",
-    "endTime": "2021-09-25T15:00:00.000Z",
-    "harvestTime": "2021-09-25T15:00:00.000Z",
-    "started": true,
-    "ended": true,
-    "harvesting": false,
-    "harvestDuration": 0,
-    "userRecord": {
-      "committed": 0,
-      "committedPercent": 0,
-      "projectedHarvest": 0,
-      "projectedFee": 0,
-      "amountHarvested": 0,
-      "pendingHarvest": 0,
-      "lastHarvest": ""
+  "name": "CryptoEasy",
+  "description": "CryptoEasy’s mission is to facilitate for everyone access to digital assets, irrespective of their specific applications, platforms, and ecosystems. To achieve it, CryptoEasy is building the leading DeFi platform on the Tezos Blockchain, focused on personalized multi-asset portfolios leveraging its native utility token — $EASY — to simplify the investing process.",
+  "projectLogo": "CryptoEasyLogoLarge.png",
+  "tokenLogo": "EASY.png",
+  "contractId": "KT1G1DVF3YKzABf533EJkBdcsE2qmDb6WhN2",
+  "isIFO": false,
+  "tokenName": "CryptoEasy",
+  "tokenSymbol": "EASY",
+  "raisingGoal": 195000,
+  "totalRaised": 120000,
+  "offeringSupply": 6000000,
+  "swapRate": 0.0326,
+  "startTime": "2021-09-25T14:00:00.000Z",
+  "endTime": "2021-09-25T15:00:00.000Z",
+  "harvestTime": "2021-09-25T15:00:00.000Z",
+  "started": true,
+  "ended": true,
+  "harvesting": false,
+  "harvestDuration": 0,
+  "userRecord": {
+    "committed": 0,
+    "committedPercent": 0,
+    "projectedHarvest": 0,
+    "projectedFee": 0,
+    "amountHarvested": 0,
+    "pendingHarvest": 0,
+    "lastHarvest": ""
+  },
+  "totalSupply": 6000000,
+  "circulatingSupply": 6000000,
+  "decimals": 6,
+  "links": [
+    {
+      "name": "Medium",
+      "link": "https://medium.com/@cryptoeasy"
     },
-    "links": [
-        {"name": "Medium", "link": "https://medium.com/@cryptoeasy"},
-        {"name": "Twitter", "link": "https://twitter.com/realcryptoeasy"},
-        {"name": "Discord", "link": "https://discord.com/invite/mPGnCsVud3"},
-        {"name": "Telegram", "link": "https://t.me/CryptoEasyio"}
-    ]
+    {
+      "name": "Twitter",
+      "link": "https://twitter.com/realcryptoeasy"
+    },
+    {
+      "name": "Discord",
+      "link": "https://discord.com/invite/mPGnCsVud3"
+    },
+    {
+      "name": "Telegram",
+      "link": "https://t.me/CryptoEasyio"
+    }
+  ]
 }

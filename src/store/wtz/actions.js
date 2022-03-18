@@ -1,4 +1,5 @@
 import tzkt from "./../../utils/tzkt";
+import tzdomains from "./../../utils/tezos-domains";
 import coingecko from "./../../utils/coingecko";
 import { getWalletContract } from "./../../utils/tezos";
 import { BigNumber } from "bignumber.js";
@@ -32,6 +33,9 @@ export default {
       const wtzBalance = await dispatch("getWtzBalance");
       commit("updateWtzBalance", wtzBalance);
 
+      const wtzTransactions = await dispatch("getWtzTransactions");
+      commit("updateWtzTransactions", wtzTransactions);
+
       commit("updateWtzLoading", false);
     }
   },
@@ -50,6 +54,27 @@ export default {
           );
         }
         return tokenBal.toNumber();
+      });
+  },
+
+  async getWtzTransactions({ state }) {
+    return tzkt
+      .getTransactions({
+        "target.eq": state.contractSwap,
+        "entrypoint.in": "wrap,unwrap",
+        limit: 100,
+      })
+      .then((res) => {
+        for (const [i, transfer] of res.data.entries()) {
+          res.data[i].sender.domain = tzdomains.resolveAddressToName(
+            transfer.sender.address,
+            `${transfer.sender.address.substr(
+              0,
+              6
+            )}...${transfer.sender.address.substr(-6)}`
+          );
+        }
+        return res.data;
       });
   },
 

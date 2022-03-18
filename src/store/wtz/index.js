@@ -12,6 +12,7 @@ export default {
     totalTvlTez: 0,
     swapRatio: new BigNumber(1),
     swapRatioPrecision: new BigNumber(10).pow(18),
+    txs: [],
   },
   actions,
   mutations,
