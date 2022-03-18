@@ -10,7 +10,7 @@
         @click="toggleMenu"
         v-if="mobile"
         class="show-mobile clear-btn"
-        style="color: #f15d59; font-size: 30px"
+        style="color: #f15d59; font-size: 30px; margin: 0 20px"
       >
         <i class="fa-solid fa-bars"></i>
       </button>
@@ -34,7 +34,7 @@
             ></i>
           </button>
 
-          <el-menu-item :style="mobile && 'margin-top: 30px'">
+          <el-menu-item>
             <div style="text-align: center">
               <img
                 src="../assets/logo_transparent_background.png"
@@ -56,49 +56,60 @@
             <span>Home</span>
           </router-link>
 
-          <router-link
-            tag="li"
-            class="el-menu-item"
-            :to="{ name: 'ifo-list' }"
-            active-class="is-active"
-          >
-            <span>IFO</span>
-          </router-link>
+          <el-submenu index="1">
+            <template slot="title">DeFi</template>
+            <router-link
+              tag="li"
+              class="el-menu-item"
+              :to="{ name: 'ifo-list' }"
+              active-class="is-active"
+            >
+              <span>IFO</span>
+            </router-link>
 
-          <router-link
-            tag="li"
-            class="el-menu-item"
-            :to="{ name: 'farm-listing' }"
-            active-class="is-active"
-          >
-            <span>Farms</span>
-          </router-link>
+            <router-link
+              tag="li"
+              class="el-menu-item"
+              :to="{ name: 'farm-listing' }"
+              active-class="is-active"
+            >
+              <span>Farms</span>
+            </router-link>
 
-          <router-link
-            tag="li"
-            class="el-menu-item"
-            :to="{ name: 'deep-freezer-listing' }"
-            active-class="is-active"
-          >
-            <span>Deep Freezers</span>
-          </router-link>
+            <router-link
+              tag="li"
+              class="el-menu-item"
+              :to="{ name: 'deep-freezer-listing' }"
+              active-class="is-active"
+            >
+              <span>Deep Freezers</span>
+            </router-link>
 
-          <router-link
-            tag="li"
-            class="el-menu-item"
-            :to="{ name: 'deep-freezer-listing' }"
-            active-class="is-active"
-          >
-            <span>Pie Slicer</span>
-          </router-link>
+            <router-link
+              tag="li"
+              class="el-menu-item"
+              :to="{ name: 'deep-freezer-listing' }"
+              active-class="is-active"
+            >
+              <span>Pie Slicer</span>
+            </router-link>
 
+            <router-link
+              tag="li"
+              class="el-menu-item"
+              :to="{ name: 'deep-freezer-listing' }"
+              active-class="is-active"
+            >
+              <span>Exchange</span>
+            </router-link>
+          </el-submenu>
           <router-link
             tag="li"
             class="el-menu-item"
-            :to="{ name: 'deep-freezer-listing' }"
+            :to="'https://wtz.netlify.app/'"
             active-class="is-active"
           >
-            <span>Exchange</span>
+            <span>WTZ</span>
           </router-link>
 
           <el-submenu index="2">
@@ -112,7 +123,7 @@
       <div style="padding: 0 40px">
         <slot />
       </div>
-      <div class="grid-content" style="text-align: right; padding: 0 40px">
+      <div class="grid-content" style="text-align: right; padding: 0 20px">
         <NavWallet />
       </div>
     </el-row>
@@ -133,25 +144,34 @@ export default {
   },
   watch: {
     windowWidth() {
-      console.log(this.windowWidth);
-      if (this.windowWidth <= 1400) {
+      if (window.innerWidth <= 992) {
         this.mobile = true;
+      } else {
+        this.mobile = false;
       }
     },
   },
 
   created() {
-    if (window.innerWidth <= 1400) {
+    if (window.innerWidth <= 992) {
       this.mobile = true;
+    } else {
+      this.mobile = false;
     }
     window.addEventListener("resize", (e) => {
       this.windowWidth = window.innerWidth;
+
+      if (window.innerWidth <= 992) {
+        this.mobile = true;
+      } else {
+        this.mobile = false;
+      }
     });
   },
 
   methods: {
     toggleMenu() {
-      if (window.innerWidth < 1400) {
+      if (window.innerWidth < 992) {
         this.showMenu = !this.showMenu;
       }
     },
@@ -176,7 +196,7 @@ export default {
   display: flex;
   align-items: center;
   border: 0 !important;
-  padding: 40px 20px;
+  padding: 40px 15px;
   background: transparent !important;
   max-height: 80px;
   i.fas,
@@ -208,7 +228,7 @@ export default {
   background: rgba(255, 255, 255, 0.3) !important;
 }
 
-@media (max-width: 1400px) {
+@media (max-width: 992px) {
   .mobile-menu {
     position: fixed;
     top: 0;
@@ -217,6 +237,7 @@ export default {
     background: #1f2128;
     left: -100%;
     padding-right: 30px;
+    padding-top: 40px;
     overflow-y: auto;
     transition: 0.45s ease all;
     &::-webkit-scrollbar {
@@ -228,7 +249,7 @@ export default {
       position: absolute;
       margin-left: auto;
       right: -18px;
-      top: 10px;
+      top: -20px;
     }
 
     .el-menu-item {

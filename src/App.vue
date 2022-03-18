@@ -172,7 +172,7 @@ i.fa-icon-right {
   display: flex;
   align-items: center;
   border: 0 !important;
-  padding: 40px 20px;
+  padding: 40px 15px;
   background: transparent !important;
   max-height: 80px;
 }
@@ -186,9 +186,8 @@ i.fa-icon-right {
   display: none;
 }
 
-
 /* Mobile Menu Setting */
-@media (max-width: 1400px) {
+@media (max-width: 992px) {
   .el-menu > .el-submenu .el-submenu__title {
     padding-top: 20px !important;
     padding-bottom: 20px !important;
@@ -210,6 +209,17 @@ i.fa-icon-right {
   text-align: center;
   vertical-align: middle;
   color: #fff;
+}
+
+.el-popover.nav-wallet {
+  color: rgb(255, 255, 255);
+  background: rgba(31, 33, 40, 1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 6px !important;
+}
+
+.el-popover.nav-wallet .el-popover__title {
+  color: rgb(196, 196, 196);
 }
 
 .el-menu--popup,
