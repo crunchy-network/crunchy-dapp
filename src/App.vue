@@ -2,27 +2,11 @@
   <div id="app">
     <!-- Desktop -->
     <!-- <div class="hidden-sm-and-down"> -->
-    <el-aside
-      width="230px"
-      style="
-        background: #fff;
-        position: fixed;
-        border-right: 2px solid #ebebeb;
-        top: 0;
-        bottom: 0;
-        overflow-x: hidden;
-      "
-      class="side-bar"
-    >
-      <div style="margin-top: 14px; text-align: center">
-        <img src="./assets/logo_transparent_background.png" width="200" />
-      </div>
-      <div style="padding: 0 20px; margin-top: 25px">
-        <NavMenu />
-      </div>
-      <JoinDiscord />
-    </el-aside>
-    <el-container style="position: relative; margin-left: 230px">
+
+    <div style="padding: 0 20px; margin-top: 25px">
+      <NavMenu />
+    </div>
+    <el-container style="position: relative;">
       <router-view></router-view>
       <el-footer>
         Copyright &copy; 2021 - 2022 Crunchy. Made with
@@ -81,13 +65,11 @@
 
 <script>
 import NavMenu from "./components/NavMenu.vue";
-import JoinDiscord from "./components/JoinDiscord.vue";
 
 export default {
   name: "App",
   components: {
     NavMenu,
-    JoinDiscord,
   },
   created() {
     this.$store.dispatch("checkWalletConnected");
@@ -218,6 +200,72 @@ i.fa-icon-right {
 }
 .el-header .el-input input:focus {
   border-color: #555cff !important;
+}
+
+.el-menu > .el-submenu .el-submenu__title {
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 24px;
+  display: flex;
+  align-items: center;
+  border: 0 !important;
+  padding: 40px 15px;
+  background: transparent !important;
+  max-height: 80px;
+}
+.el-menu--horizontal > .el-submenu .el-submenu__icon-arrow {
+  margin-right: 0 !important;
+}
+.nav-menu-wrapper > .el-menu-item,
+.nav-menu-wrapper > .el-submenu {
+  float: left !important;
+}
+.show-mobile {
+  display: none;
+}
+/* Mobile Menu Setting */
+@media (max-width: 992px) {
+  .el-menu > .el-submenu .el-submenu__title {
+    padding-top: 20px !important;
+    padding-bottom: 20px !important;
+  }
+  .nav-menu-wrapper > .el-menu-item,
+  .nav-menu-wrapper > .el-submenu {
+    float: unset !important;
+  }
+  .show-mobile {
+    display: block;
+  }
+}
+/* Mobile Menu Setting */
+.el-menu > .el-submenu .el-submenu__title i {
+  margin-right: 14px;
+  text-align: center;
+  vertical-align: middle;
+}
+.el-popover.nav-wallet {
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 6px !important;
+}
+.el-popover.nav-wallet .el-popover__title {
+  color: rgb(29, 29, 29);
+}
+.el-menu--popup,
+.el-menu--inline {
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 6px !important;
+}
+.el-menu--inline {
+  border: none;
+}
+.el-menu--popup .el-menu-item,
+.el-menu--inline .el-menu-item {
+  font-size: 14px;
+  line-height: 20px;
+}
+.el-menu > .el-submenu .el-submenu__title:hover,
+.el-menu > .el-submenu .el-submenu__title.is-active {
+  color: #f15d59 !important;
 }
 
 #farm-listing .el-input__inner {
