@@ -121,14 +121,14 @@
               <span>Pie Slicer</span>
             </router-link> -->
 
-              <router-link
+              <!-- <router-link
                 tag="li"
                 class="el-menu-item"
                 :to="{ name: 'deep-freezer-listing' }"
                 active-class="is-active"
               >
                 <span>Exchange</span>
-              </router-link>
+              </router-link> -->
             </el-submenu>
             <router-link
               tag="li"
@@ -141,9 +141,24 @@
 
             <el-submenu index="2">
               <template slot="title">More</template>
-              <el-menu-item index="2-1">Docs</el-menu-item>
-              <el-menu-item index="2-2">Discord</el-menu-item>
-              <el-menu-item index="2-3">Telegram</el-menu-item>
+              <el-menu-item>
+                <el-link href="https://docs.crunchy.network/" target="_blank">
+                  Docs
+                </el-link>
+              </el-menu-item>
+              <el-menu-item>
+                <el-link
+                  href="https://discord.com/invite/99UnxxgB46"
+                  target="_blank"
+                >
+                  Discord
+                </el-link>
+              </el-menu-item>
+              <el-menu-item>
+                <el-link href=" https://t.me/crunchy_network" target="_blank">
+                  Telegram
+                </el-link>
+              </el-menu-item>
             </el-submenu>
           </el-menu>
         </div>
@@ -209,6 +224,17 @@ export default {
   border-right: none !important;
   margin: 0 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.el-link {
+  all: inherit;
+  text-decoration: none;
+  &:hover {
+    text-decoration: none;
+    color: inherit;
+    border: 0px;
+  }
+  padding: 0px;
 }
 .el-menu-item {
   color: #909399 !important;
