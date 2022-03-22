@@ -1,6 +1,6 @@
 <template>
   <div id="#ifo" style="max-width: 1450px; margin: auto">
-    <AppBar />
+    <NavMenu />
     <div id="wrapper">
       <el-row v-if="!loading" :gutter="40">
         <el-col :xs="24" :md="12"
@@ -540,12 +540,12 @@
 </template>
 
 <script>
-import AppBar from "./AppBar.vue";
 import { mapState, mapActions } from "vuex";
 import { gatherAllProjectJsonFiles, importAll } from "../lib/JsonHelper";
+import NavMenu from "./NavMenu.vue";
 export default {
   name: "IFO",
-  components: { AppBar },
+  components: { NavMenu },
   data: () => ({
     project: null,
     images: importAll(

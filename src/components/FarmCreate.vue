@@ -1,27 +1,7 @@
 <template>
   <div id="farm-create" class="farm-create">
     <!-- class="hidden-sm-and-down" -->
-    <el-header
-      style="
-        position: fixed;
-        height: 90px;
-        top: 0;
-        left: 230px;
-        right: 0;
-        background: #fff;
-        z-index: 999;
-        border-bottom: 1px solid #e8e8e9;
-      "
-    >
-      <el-row type="flex" class="row-bg" justify="space-between">
-        <el-col :span="6"> </el-col>
-        <el-col :span="12">
-          <div class="grid-content" style="text-align: right">
-            <NavWallet />
-          </div>
-        </el-col>
-      </el-row>
-    </el-header>
+    <nav-menu></nav-menu>
 
     <!-- class="hidden-sm-and-down" -->
     <el-main style="margin-top: 90px">
@@ -536,18 +516,18 @@
 
 <script>
 import _ from "lodash";
-import NavWallet from "./NavWallet.vue";
 import { mapState, mapActions } from "vuex";
 import ipfs from "./../utils/ipfs";
 import farmUtils from "./../utils/farm";
 import { getTokenMetadata } from "./../utils/tezos";
 import { BigNumber } from "bignumber.js";
 import { ValidationResult, validateContractAddress } from "@taquito/utils";
+import NavMenu from "./NavMenu.vue";
 
 export default {
   name: "FarmCreate",
   components: {
-    NavWallet,
+    NavMenu,
   },
   data() {
     var validateTokenAddress = (rule, value, callback) => {

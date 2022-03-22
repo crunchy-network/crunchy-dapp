@@ -1,28 +1,6 @@
 <template>
   <div id="fire-pit">
-    <el-header
-      style="
-        position: fixed;
-        height: 90px;
-        top: 0;
-        left: 230px;
-        right: 0;
-        background: #fff;
-        z-index: 999;
-        border-bottom: 1px solid #e8e8e9;
-      "
-    >
-      <el-row type="flex" class="row-bg" justify="space-between">
-        <el-col :span="6">
-          <div class="grid-content"></div>
-        </el-col>
-        <el-col :span="12">
-          <div class="grid-content" style="text-align: right">
-            <NavWallet />
-          </div>
-        </el-col>
-      </el-row>
-    </el-header>
+    <nav-menu></nav-menu>
     <el-main style="margin-top: 90px">
       <el-row :gutter="20" type="flex">
         <el-col :span="16">
@@ -199,15 +177,15 @@
 </template>
 
 <script>
-import NavWallet from "./NavWallet.vue";
 import DaasCard from "./DaasCard.vue";
 import { mapState, mapActions } from "vuex";
+import NavMenu from "./NavMenu.vue";
 
 export default {
   name: "FirePit",
   components: {
-    NavWallet,
     DaasCard,
+    NavMenu,
   },
   computed: {
     ...mapState(["burnRecord", "wallet"]),
