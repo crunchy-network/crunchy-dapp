@@ -1,6 +1,6 @@
 <template>
   <div id="#ifo" style="max-width: 1450px; margin: auto">
-    <AppBar />
+    <NavMenu />
     <el-main>
       <el-row :gutter="40" type="flex" style="margin-bottom: 50px">
         <el-col :span="12">
@@ -60,13 +60,13 @@
 </template>
 
 <script>
-import AppBar from "./AppBar.vue";
 import IFOListRow from "./IFOListRow.vue";
 import IFOFirst from "./IFOFirst.vue";
 import { gatherAllProjectJsonFiles } from "../lib/JsonHelper";
 import IFOCard from "./IFOCard.vue";
+import NavMenu from "./NavMenu.vue";
 export default {
-  components: { AppBar, IFOListRow, IFOCard, IFOFirst },
+  components: { IFOListRow, IFOCard, IFOFirst, NavMenu },
   data: () => ({
     projects: gatherAllProjectJsonFiles().sort(
       (a, b) => new Date(b.startTime) - new Date(a.startTime)
