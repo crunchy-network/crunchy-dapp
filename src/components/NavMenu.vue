@@ -1,101 +1,118 @@
 <template>
-  <div id="nav-menu" style="background: #fff; margin-bottom: 35px">
-    <el-row
-      class="el-menu-row"
-      type="flex"
-      style="align-items: center; min-height: 100px"
-      justify="space-between"
+  <div style="margin-bottom: 120px">
+    <el-header
+      id="nav-menu"
+      style="
+        min-height: 100px;
+        background: #fff;
+        position: fixed;
+        top: 0;
+        right: 0;
+        left: 0;
+        z-index: 999;
+        display: flex;
+        align-items: center;
+      "
     >
-      <button
-        @click="toggleMenu"
-        v-if="mobile"
-        class="show-mobile clear-btn"
-        style="color: #f15d59; font-size: 30px; margin: 0 20px"
+      <el-row
+        class="el-menu-row"
+        type="flex"
+        style="align-items: center; width: 100%"
+        justify="space-between"
       >
-        <i class="fa-solid fa-bars"></i>
-      </button>
-      <div :class="[mobile && 'mobile-menu', showMenu && 'active']">
-        <el-menu
+        <button
           @click="toggleMenu"
-          class="nav-menu-wrapper"
-          style="background: transparent; border: none"
-          :mode="mobile ? 'vertical' : 'horizontal'"
-          :router="true"
+          v-if="mobile"
+          class="show-mobile clear-btn"
+          style="color: #f15d59; font-size: 30px; margin: 0 20px"
         >
-          <button
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div
+          style="display: flex; align-items: center"
+          :class="[mobile && 'mobile-menu', showMenu && 'active']"
+        >
+          <el-menu
             @click="toggleMenu"
-            v-if="mobile"
-            class="show-mobile close-btn clear-btn"
-            style="color: #df4759"
+            class="nav-menu-wrapper"
+            style="background: transparent; border: none"
+            :mode="mobile ? 'vertical' : 'horizontal'"
+            :router="true"
           >
-            <i
-              style="font-size: 24px !important; width: unset !important"
-              class="fa-solid fa-circle-xmark"
-            ></i>
-          </button>
+            <button
+              @click="toggleMenu"
+              v-if="mobile"
+              class="show-mobile close-btn clear-btn"
+              style="color: #df4759"
+            >
+              <i
+                style="font-size: 24px !important; width: unset !important"
+                class="fa-solid fa-circle-xmark"
+              ></i>
+            </button>
 
-          <el-menu-item>
-            <div style="text-align: center">
-              <img
-                src="../assets/logo_transparent_background.png"
-                width="150"
-              />
-            </div>
-          </el-menu-item>
-          <el-menu-item>
-            <el-divider v-if="!mobile" direction="vertical"></el-divider>
-            <el-divider v-if="mobile" direction="horizontal"></el-divider>
-          </el-menu-item>
-          <router-link
-            tag="li"
-            class="el-menu-item"
-            :to="{ name: 'home' }"
-            exact
-            active-class="is-active"
-          >
-            <span>Home</span>
-          </router-link>
-
-          <el-submenu index="1">
-            <template slot="title">DeFi</template>
-
+            <el-menu-item>
+              <div style="text-align: center">
+                <img
+                  src="../assets/logo_transparent_background.png"
+                  width="150"
+                />
+              </div>
+            </el-menu-item>
+            <el-menu-item>
+              <el-divider v-if="!mobile" direction="vertical"></el-divider>
+              <el-divider v-if="mobile" direction="horizontal"></el-divider>
+            </el-menu-item>
             <router-link
               tag="li"
               class="el-menu-item"
-              :to="{ name: 'deep-freezer-listing' }"
+              :to="{ name: 'home' }"
+              exact
               active-class="is-active"
             >
-              <span>Deep Freezers</span>
+              <span>Home</span>
             </router-link>
 
-            <router-link
-              tag="li"
-              class="el-menu-item"
-              :to="{ name: 'ifo-list' }"
-              active-class="is-active"
-            >
-              <span>IFO</span>
-            </router-link>
+            <el-submenu index="1">
+              <template slot="title">DeFi</template>
 
-            <router-link
-              tag="li"
-              class="el-menu-item"
-              :to="{ name: 'farm-listing' }"
-              active-class="is-active"
-            >
-              <span>Farms</span>
-            </router-link>
+              <router-link
+                tag="li"
+                class="el-menu-item"
+                :to="{ name: 'deep-freezer-listing' }"
+                active-class="is-active"
+              >
+                <span>Deep Freezers</span>
+              </router-link>
 
-            <router-link
-              tag="li"
-              class="el-menu-item"
-              :to="{ name: 'fire-pit' }"
-              active-class="is-active"
-            >
-              <span>Fire Pit</span>
-            </router-link>
+              <router-link
+                tag="li"
+                class="el-menu-item"
+                :to="{ name: 'ifo-list' }"
+                active-class="is-active"
+              >
+                <span>IFO</span>
+              </router-link>
 
-            <!-- <router-link
+              <router-link
+                tag="li"
+                class="el-menu-item"
+                :to="{ name: 'farm-listing' }"
+                active-class="is-active"
+              >
+                <span>Farms</span>
+              </router-link>
+
+              <router-link
+                tag="li"
+                class="el-menu-item"
+                :to="{ name: 'fire-pit' }"
+                active-class="is-active"
+              >
+                <span>Fire Pit</span>
+              </router-link>
+
+              <!-- <router-link
               tag="li"
               class="el-menu-item"
               :to="{ name: 'deep-freezer-listing' }"
@@ -104,39 +121,38 @@
               <span>Pie Slicer</span>
             </router-link> -->
 
+              <router-link
+                tag="li"
+                class="el-menu-item"
+                :to="{ name: 'deep-freezer-listing' }"
+                active-class="is-active"
+              >
+                <span>Exchange</span>
+              </router-link>
+            </el-submenu>
             <router-link
               tag="li"
               class="el-menu-item"
-              :to="{ name: 'deep-freezer-listing' }"
+              to="/wtz"
               active-class="is-active"
             >
-              <span>Exchange</span>
+              <span>WTZ</span>
             </router-link>
-          </el-submenu>
-          <router-link
-            tag="li"
-            class="el-menu-item"
-            to="/wtz"
-            active-class="is-active"
-          >
-            <span>WTZ</span>
-          </router-link>
 
-          <el-submenu index="2">
-            <template slot="title">More</template>
-            <el-menu-item index="2-1">Docs</el-menu-item>
-            <el-menu-item index="2-2">Discord</el-menu-item>
-            <el-menu-item index="2-3">Telegram</el-menu-item>
-          </el-submenu>
-        </el-menu>
-      </div>
-      <div style="padding: 0 40px">
-        <slot />
-      </div>
-      <div class="grid-content" style="text-align: right; padding: 0 20px">
-        <nav-wallet />
-      </div>
-    </el-row>
+            <el-submenu index="2">
+              <template slot="title">More</template>
+              <el-menu-item index="2-1">Docs</el-menu-item>
+              <el-menu-item index="2-2">Discord</el-menu-item>
+              <el-menu-item index="2-3">Telegram</el-menu-item>
+            </el-submenu>
+          </el-menu>
+        </div>
+        <div class="grid-content" style="text-align: right; padding: 0 20px">
+          <slot />
+          <nav-wallet />
+        </div>
+      </el-row>
+    </el-header>
   </div>
 </template>
 
@@ -264,6 +280,13 @@ export default {
     background: transparent;
     border: 0;
     cursor: pointer;
+  }
+}
+
+@media (max-width: 568px) {
+  .slot-divider {
+    transform: rotate(90deg);
+    display: none;
   }
 }
 </style>

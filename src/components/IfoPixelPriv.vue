@@ -1,6 +1,6 @@
 <template>
   <div id="#ifo">
-    <AppBar />
+    <NavMenu />
     <div id="wrapper">
       <el-row :gutter="40">
         <el-col :xs="24" :md="12"
@@ -520,12 +520,12 @@
 </template>
 
 <script>
-import AppBar from "./AppBar.vue";
 import { mapState, mapActions } from "vuex";
+import NavMenu from './NavMenu.vue';
 
 export default {
   name: "IfoPixelPriv",
-  components: { AppBar },
+  components: {NavMenu },
   data: () => ({
     displayDays: "",
     displayHours: "",

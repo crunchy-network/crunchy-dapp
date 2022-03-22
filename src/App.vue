@@ -3,10 +3,7 @@
     <!-- Desktop -->
     <!-- <div class="hidden-sm-and-down"> -->
 
-    <div style="padding: 0 20px; margin-top: 25px">
-      <NavMenu />
-    </div>
-    <el-container style="position: relative;">
+    <el-container style="position: relative">
       <router-view></router-view>
       <el-footer>
         Copyright &copy; 2021 - 2022 Crunchy. Made with
@@ -64,13 +61,8 @@
 </template>
 
 <script>
-import NavMenu from "./components/NavMenu.vue";
-
 export default {
   name: "App",
-  components: {
-    NavMenu,
-  },
   created() {
     this.$store.dispatch("checkWalletConnected");
   },
@@ -236,6 +228,10 @@ i.fa-icon-right {
   .show-mobile {
     display: block;
   }
+}
+
+header .grid-content button.el-button {
+  margin: 2px !important;
 }
 /* Mobile Menu Setting */
 .el-menu > .el-submenu .el-submenu__title i {
