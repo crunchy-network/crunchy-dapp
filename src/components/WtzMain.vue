@@ -1,6 +1,6 @@
 <template>
   <div id="wtz">
-    <el-header
+    <!-- <el-header
       style="
         position: fixed;
         height: 90px;
@@ -22,7 +22,8 @@
           </div>
         </el-col>
       </el-row>
-    </el-header>
+    </el-header> -->
+    <nav-menu></nav-menu>
 
     <el-main style="margin-top: 90px">
       <el-row :gutter="20" type="flex" align="bottom">
@@ -530,14 +531,16 @@
 </template>
 
 <script>
-import NavWallet from "./NavWallet.vue";
+// import NavWallet from "./NavWallet.vue";
 import { mapState, mapActions } from "vuex";
 import { BigNumber } from "bignumber.js";
+import NavMenu from "./NavMenu.vue";
 
 export default {
   name: "WtzMain",
   components: {
-    NavWallet,
+    // NavWallet,
+    NavMenu,
   },
   data() {
     return {

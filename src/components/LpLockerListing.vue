@@ -1,54 +1,24 @@
 <template>
   <div id="lp-locker-listing">
-    <el-header
-      style="
-        position: fixed;
-        height: 90px;
-        top: 0;
-        left: 230px;
-        right: 0;
-        background: #fff;
-        z-index: 999;
-        border-bottom: 1px solid #e8e8e9;
-      "
+    <nav-menu>
+      <el-button
+        type="primary"
+        round
+        style="font-weight: bold"
+        @click="showCreateDialog"
+        ><img
+          src="./../assets/svg-icons/lock.svg"
+          style="
+            width: 24px;
+            height: 24px;
+            vertical-align: middle;
+            margin-right: 6px;
+            margin-top: -6px;
+            margin-bottom: -6px;
+          "
+        />Lock LP Tokens</el-button
+      ></nav-menu
     >
-      <el-row type="flex" class="row-bg" justify="space-between">
-        <el-col :span="6">
-          <!-- <div class="grid-content">
-              <el-input
-                :value="farms.searchInput"
-                @input="updateSearchInput"
-                placeholder="Search farms and pools"
-                prefix-icon="fad fa-search">
-              </el-input>
-            </div> -->
-        </el-col>
-        <el-col :span="12">
-          <div class="grid-content" style="text-align: right">
-            <el-button
-              type="primary"
-              round
-              style="font-weight: bold"
-              @click="showCreateDialog"
-              ><img
-                src="./../assets/svg-icons/lock.svg"
-                style="
-                  width: 24px;
-                  height: 24px;
-                  vertical-align: middle;
-                  margin-right: 6px;
-                  margin-top: -6px;
-                  margin-bottom: -6px;
-                "
-              />Lock LP Tokens</el-button
-            >
-            <el-divider direction="vertical"></el-divider>
-            <NavWallet />
-          </div>
-        </el-col>
-      </el-row>
-    </el-header>
-
     <el-main style="margin-top: 90px">
       <el-row :gutter="20" type="flex" style="margin-bottom: 50px">
         <el-col :span="16">
@@ -427,19 +397,19 @@
 <script>
 import _ from "lodash";
 import { mapState, mapActions } from "vuex";
-import NavWallet from "./NavWallet.vue";
 import DaasCard from "./DaasCard.vue";
 import LpLockerListingRow from "./LpLockerListingRow.vue";
 import LpLockerCreateDialog from "./LpLockerCreateDialog.vue";
 import { BigNumber } from "bignumber.js";
+import NavMenu from "./NavMenu.vue";
 
 export default {
   name: "LpLockerListing",
   components: {
-    NavWallet,
     DaasCard,
     LpLockerListingRow,
     LpLockerCreateDialog,
+    NavMenu,
   },
   data() {
     return {

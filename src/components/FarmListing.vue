@@ -1,7 +1,7 @@
 <template>
   <div id="farm-listing">
     <!-- class="hidden-sm-and-down" -->
-    <el-header
+    <!-- <el-header
       style="
         position: fixed;
         height: 90px;
@@ -29,8 +29,18 @@
           </div>
         </el-col>
       </el-row>
-    </el-header>
+    </el-header> -->
 
+    <nav-menu>
+      <el-button
+        type="primary"
+        round
+        style="font-weight: bold"
+        @click="$router.push({ name: 'farm-create' })"
+        ><i class="fak fa-crunchy-farm-add" style="margin-right: 6px"></i>
+        Create a Farm</el-button
+      >
+      </nav-menu>
     <!-- class="hidden-sm-and-down" -->
     <el-main style="margin-top: 90px">
       <el-row
@@ -605,20 +615,22 @@
 <script>
 import _ from "lodash";
 import { mapState, mapActions } from "vuex";
-import NavWallet from "./NavWallet.vue";
+// import NavWallet from "./NavWallet.vue";
 import DaasCard from "./DaasCard.vue";
 import FarmListingRow from "./FarmListingRow.vue";
 import FarmStakeDialog from "./FarmStakeDialog.vue";
 import FarmUnstakeDialog from "./FarmUnstakeDialog.vue";
+import NavMenu from "./NavMenu.vue";
 
 export default {
   name: "FarmListing",
   components: {
-    NavWallet,
+    // NavWallet,
     DaasCard,
     FarmListingRow,
     FarmStakeDialog,
     FarmUnstakeDialog,
+    NavMenu,
   },
   data() {
     return {
