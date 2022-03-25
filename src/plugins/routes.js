@@ -11,6 +11,7 @@ import IFO from "./../components/IFO.vue";
 import IfoPixelPriv from "./../components/IfoPixelPriv.vue";
 import HomeWalletPage from "./../components/HomeWalletPage.vue";
 import IFOList from "./../components/IFOList.vue";
+import CrDAO from "./../components/CrDAO.vue";
 // import Bakery from './../components/Bakery.vue'
 
 Vue.use(VueRouter);
@@ -28,7 +29,7 @@ const routes = [
     name: "wtz",
     path: "/wtz",
     beforeEnter() {
-      window.open("https://wtz.netlify.app/",);
+      window.open("https://wtz.netlify.app/");
     },
     component: WtzMain,
   },
@@ -53,6 +54,7 @@ const routes = [
 
   // { name: 'bakery', path: '/bakery', component: Bakery },
   { name: "fire-pit", path: "/fire-pit", component: FirePit },
+  { name: "cr-dao", path: "/cr-dao", component: CrDAO },
 ];
 
 export default new VueRouter({

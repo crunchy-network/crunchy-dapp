@@ -28,10 +28,7 @@
         >
           <i class="fa-solid fa-bars"></i>
         </button>
-        <div
-          style="display: flex; align-items: center"
-          :class="[mobile && 'mobile-menu', showMenu && 'active']"
-        >
+        <div :class="[mobile && 'mobile-menu', showMenu && 'active']">
           <el-menu
             @click="toggleMenu"
             class="nav-menu-wrapper"
@@ -70,6 +67,7 @@
               exact
               active-class="is-active"
             >
+              <i v-if="mobile" class="fak fa-crunchy-home"></i>
               <span>Home</span>
             </router-link>
 
@@ -78,38 +76,51 @@
 
               <router-link
                 tag="li"
-                class="el-menu-item"
+                class="el-menu-item submenu-item"
                 :to="{ name: 'deep-freezer-listing' }"
                 active-class="is-active"
               >
+                <i v-if="mobile" class="fak fa-crunchy-locker"></i>
                 <span>Deep Freezers</span>
               </router-link>
 
               <router-link
                 tag="li"
-                class="el-menu-item"
-                :to="{ name: 'ifo-list' }"
-                active-class="is-active"
-              >
-                <span>IFO</span>
-              </router-link>
-
-              <router-link
-                tag="li"
-                class="el-menu-item"
+                class="el-menu-item submenu-item"
                 :to="{ name: 'farm-listing' }"
                 active-class="is-active"
               >
+                <i v-if="mobile" class="fak fa-crunchy-farm"></i>
                 <span>Farms</span>
               </router-link>
 
               <router-link
                 tag="li"
-                class="el-menu-item"
+                class="el-menu-item submenu-item"
                 :to="{ name: 'fire-pit' }"
                 active-class="is-active"
               >
+                <i v-if="mobile" class="fas fa-fire-alt"></i>
                 <span>Fire Pit</span>
+              </router-link>
+              <router-link
+                tag="li"
+                class="el-menu-item submenu-item"
+                :to="{ name: 'ifo-list' }"
+                active-class="is-active"
+              >
+                <i v-if="mobile" class="fak fa-regular fa-farm"></i>
+                <span>IFO</span>
+              </router-link>
+              <router-link
+                tag="li"
+                class="el-menu-item submenu-item"
+                to="/wtz"
+                active-class="is-active"
+              >
+                <i v-if="mobile" class="fak fa-crunchy-tez-alt"></i>
+
+                <span>WTZ</span>
               </router-link>
 
               <!-- <router-link
@@ -130,34 +141,26 @@
                 <span>Exchange</span>
               </router-link> -->
             </el-submenu>
-            <router-link
-              tag="li"
-              class="el-menu-item"
-              to="/wtz"
-              active-class="is-active"
-            >
-              <span>WTZ</span>
-            </router-link>
 
             <el-submenu index="2">
               <template slot="title">More</template>
-              <el-menu-item>
-                <el-link href="https://docs.crunchy.network/" target="_blank">
+              <el-menu-item class="submenu-item">
+                <i v-if="mobile" class="fa-light fa-book"></i>
+                <a href="https://docs.crunchy.network/" target="_blank">
                   Docs
-                </el-link>
+                </a>
               </el-menu-item>
-              <el-menu-item>
-                <el-link
-                  href="https://discord.com/invite/99UnxxgB46"
-                  target="_blank"
-                >
+              <el-menu-item class="submenu-item">
+                <i v-if="mobile" class="fab fa-discord"></i>
+                <a href="https://discord.com/invite/99UnxxgB46" target="_blank">
                   Discord
-                </el-link>
+                </a>
               </el-menu-item>
-              <el-menu-item>
-                <el-link href=" https://t.me/crunchy_network" target="_blank">
+              <el-menu-item class="submenu-item">
+                <i v-if="mobile" class="fab fa-telegram"></i>
+                <a href=" https://t.me/crunchy_network" target="_blank">
                   Telegram
-                </el-link>
+                </a>
               </el-menu-item>
             </el-submenu>
           </el-menu>
@@ -226,19 +229,35 @@ export default {
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.el-link {
-  all: inherit;
+.el-menu-item.submenu-item {
+  &:hover {
+    background: #90939925 !important;
+  }
+  i.fas,
+  i.fak {
+    margin-right: 8px;
+    width: 18px;
+    text-align: center;
+    font-size: 18px;
+    vertical-align: middle;
+    height: unset;
+  }
+}
+
+a {
+  color: inherit;
   text-decoration: none;
   &:hover {
     text-decoration: none;
     color: inherit;
     border: 0px;
+    background: none;
   }
   padding: 0px;
 }
-.el-menu-item {
+.nav-menu-wrapper > .el-menu-item {
   color: #909399 !important;
-  font-weight: bold;
+  font-weight: 500;
   font-size: 16px;
   line-height: 24px;
   display: flex;
@@ -259,14 +278,12 @@ export default {
     font-size: 24px !important;
     width: 24px !important;
   }
-  &:hover,
+  &:hover {
+    background: #9093991e !important;
+  }
   &.is-active {
     color: #f15d59 !important;
   }
-  /* &.is-active {
-    color: #f64947;
-    border-right: 6px solid #ff7a7a;
-  } */
 }
 .el-divider--vertical {
   height: 55px !important;
