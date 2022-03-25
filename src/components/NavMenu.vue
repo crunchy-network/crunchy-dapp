@@ -3,30 +3,28 @@
     <el-header
       id="nav-menu"
       style="
-        min-height: 100px;
-        background: #fff;
+        height: unset;
         position: fixed;
         top: 0;
+        padding: 0 !important;
         right: 0;
         left: 0;
         z-index: 999;
         display: flex;
         align-items: center;
+        border-bottom: 1.5px solid rgba(25,27,31,.10);
+
       "
     >
-      <el-row
-        class="el-menu-row"
-        type="flex"
-        style="align-items: center; width: 100%"
-        justify="space-between"
-      >
+      <el-row class="el-menu-row" type="flex" justify="space-between">
         <button
           @click="toggleMenu"
           v-if="mobile"
           class="show-mobile clear-btn"
           style="color: #f15d59; font-size: 30px; margin: 0 20px"
         >
-          <i class="fa-solid fa-bars"></i>
+          <i v-if="!showMenu" class="fa-solid fa-bars"></i>
+          <i v-else class="fa-solid fa-xmark"></i>
         </button>
         <div :class="[mobile && 'mobile-menu', showMenu && 'active']">
           <el-menu
@@ -36,7 +34,7 @@
             :mode="mobile ? 'vertical' : 'horizontal'"
             :router="true"
           >
-            <button
+            <!-- <button
               @click="toggleMenu"
               v-if="mobile"
               class="show-mobile close-btn clear-btn"
@@ -46,7 +44,7 @@
                 style="font-size: 24px !important; width: unset !important"
                 class="fa-solid fa-circle-xmark"
               ></i>
-            </button>
+            </button> -->
 
             <el-menu-item>
               <div style="text-align: center">
@@ -165,7 +163,16 @@
             </el-submenu>
           </el-menu>
         </div>
-        <div class="grid-content" style="text-align: right; padding: 0 20px">
+        <div
+          class="grid-content"
+          style="
+            text-align: right;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            height: 100%;
+          "
+        >
           <slot />
           <nav-wallet />
         </div>
@@ -225,8 +232,12 @@ export default {
 @import "~element-ui/packages/theme-chalk/src/common/var";
 .el-menu-row {
   border-right: none !important;
-  margin: 0 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  margin: 0;
+  align-items: center;
+  min-width: 100%;
+  min-height: 100px;
+  background: #fff;
 }
 
 .el-menu-item.submenu-item {
@@ -291,15 +302,22 @@ a {
 @media (max-width: 992px) {
   .mobile-menu {
     position: fixed;
-    top: 0;
+    top: 100px;
     bottom: 0;
     z-index: 20000;
-    background: #fff;
     left: -100%;
     padding-right: 30px;
     padding-top: 40px;
     overflow-y: auto;
     transition: 0.45s ease all;
+    display: flex;
+    align-items: center;
+    .nav-menu-wrapper {
+      background: #fff !important;
+      padding-top: 100px;
+      padding-bottom: 100px;
+    }
+
     &::-webkit-scrollbar {
       display: none;
     }
