@@ -12,8 +12,7 @@
         z-index: 999;
         display: flex;
         align-items: center;
-        border-bottom: 1.5px solid rgba(25,27,31,.10);
-
+        border-bottom: 1.5px solid rgba(25, 27, 31, 0.1);
       "
     >
       <el-row class="el-menu-row" type="flex" justify="space-between">
@@ -316,6 +315,7 @@ a {
       background: #fff !important;
       padding-top: 100px;
       padding-bottom: 100px;
+      border: 1.5px solid rgba(25, 27, 31, 0.1) !important;
     }
 
     &::-webkit-scrollbar {
