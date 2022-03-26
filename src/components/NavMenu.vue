@@ -22,8 +22,7 @@
           class="show-mobile clear-btn"
           style="color: #f15d59; font-size: 30px; margin: 0 20px"
         >
-          <i v-if="!showMenu" class="fa-solid fa-bars"></i>
-          <i v-else class="fa-solid fa-xmark"></i>
+          <i class="fa-solid fa-bars"></i>
         </button>
         <div :class="[mobile && 'mobile-menu', showMenu && 'active']">
           <el-menu
@@ -33,7 +32,7 @@
             :mode="mobile ? 'vertical' : 'horizontal'"
             :router="true"
           >
-            <!-- <button
+            <button
               @click="toggleMenu"
               v-if="mobile"
               class="show-mobile close-btn clear-btn"
@@ -43,7 +42,7 @@
                 style="font-size: 24px !important; width: unset !important"
                 class="fa-solid fa-circle-xmark"
               ></i>
-            </button> -->
+            </button>
 
             <el-menu-item>
               <div style="text-align: center">
@@ -235,16 +234,18 @@ export default {
   margin: 0;
   align-items: center;
   min-width: 100%;
-  min-height: 100px;
+  min-height: 70px;
   background: #fff;
 }
 
 .el-menu-item.submenu-item {
+  font-weight: 500;
+    color: #f15d59;
   &:hover {
     background: #90939925 !important;
   }
-  i.fas,
-  i.fak {
+  i{
+    color: #f15d59;
     margin-right: 8px;
     width: 18px;
     text-align: center;
@@ -255,7 +256,8 @@ export default {
 }
 
 a {
-  color: inherit;
+  color: #f15d59;
+  font-weight: 500;
   text-decoration: none;
   &:hover {
     text-decoration: none;
@@ -265,6 +267,7 @@ a {
   }
   padding: 0px;
 }
+
 .nav-menu-wrapper > .el-menu-item {
   color: #909399 !important;
   font-weight: 500;
@@ -301,7 +304,7 @@ a {
 @media (max-width: 992px) {
   .mobile-menu {
     position: fixed;
-    top: 100px;
+    top: 0px;
     bottom: 0;
     z-index: 20000;
     left: -100%;
@@ -310,13 +313,8 @@ a {
     overflow-y: auto;
     transition: 0.45s ease all;
     display: flex;
-    align-items: center;
-    .nav-menu-wrapper {
-      background: #fff !important;
-      padding-top: 100px;
-      padding-bottom: 100px;
-      border: 1.5px solid rgba(25, 27, 31, 0.1) !important;
-    }
+    background: #fff;
+    border-right: 1.5px solid rgba(25, 27, 31, 0.1) !important;
 
     &::-webkit-scrollbar {
       display: none;
