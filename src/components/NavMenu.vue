@@ -239,24 +239,27 @@ export default {
 }
 
 .el-menu-item.submenu-item {
+  color: #909399 !important;
   font-weight: 500;
-    color: #f15d59;
-  &:hover {
-    background: #90939925 !important;
-  }
-  i{
-    color: #f15d59;
-    margin-right: 8px;
-    width: 18px;
+  font-size: 16px;
+  i {
+    margin-right: 14px;
+    width: 24px;
     text-align: center;
-    font-size: 18px;
+    font-size: 24px;
     vertical-align: middle;
-    height: unset;
+  }
+
+  &:hover {
+    background: #9093991e !important;
+  }
+  &.is-active {
+    color: #f15d59 !important;
   }
 }
 
 a {
-  color: #f15d59;
+  color: #909399;
   font-weight: 500;
   text-decoration: none;
   &:hover {

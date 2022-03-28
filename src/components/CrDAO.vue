@@ -2,7 +2,7 @@
   <div class="page_width">
     <nav-menu></nav-menu>
 
-    <main>
+    <el-main>
       <el-row type="flex" justify="space-between" align="center">
         <div>
           <h2
@@ -23,7 +23,19 @@
           </h2>
         </div>
         <div>
-          <el-button round type="primary" plain>
+          <el-button
+            style="
+              background: transparent !important;
+              border: 2px solid #555cff;
+              color: #555cff;
+              display: flex;
+              align-items: center;
+              border-radius: 24px;
+            "
+            round
+            type="primary"
+            plain
+          >
             <svg
               width="24"
               height="20"
@@ -65,7 +77,7 @@
           </el-button>
         </div>
       </el-row>
-    </main>
+    </el-main>
   </div>
 </template>
 
