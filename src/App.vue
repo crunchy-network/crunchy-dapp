@@ -216,7 +216,9 @@ i.fa-icon-right {
 
 .el-submenu .el-menu-item{
   height: unset !important;
-  padding: 0px 45px !important;
+  padding: 10px 45px !important;
+  display: flex;
+  align-items: center;
 }
 
 .el-menu--horizontal > .el-submenu .el-submenu__icon-arrow {
