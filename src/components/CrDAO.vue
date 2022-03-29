@@ -2,10 +2,10 @@
   <div class="page_width">
     <nav-menu></nav-menu>
 
-    <el-row >
+    <el-row>
       <el-col :xs="24" :md="17">
         <el-main>
-          <el-row type="flex"  justify="space-between" align="center">
+          <el-row type="flex" justify="space-between" align="center">
             <div>
               <h2
                 style="
@@ -87,22 +87,130 @@
           </el-row>
 
           <div>
-            <el-row :gutter="20" type="flex" style="margin-top: 20px">
+            <el-row
+              type="flex"
+              gutter="20"
+              class="grid-row"
+              style="margin-top: 20px; flex-wrap: wrap"
+            >
               <el-col :span="24" :md="12" :lg="6">
-                <div
-                  class="grid-content lp-locker-progress"
-                  style="height: 100%"
-                >
+                <el-card class="box-card" shadow="never" style="height: 100%">
+                  <h2
+                    style="
+                      color: #191b1f;
+                      opacity: 0.4;
+                      font-size: 16px;
+                      margin-bottom: 5px;
+                    "
+                  >
+                    Total crDAO
+                  </h2>
+                  <el-row
+                    type="flex"
+                    justify="space-between"
+                    style="align-items: center"
+                  >
+                    <div
+                      style="
+                        font-size: 24px;
+                        font-weight: 600;
+                        margin-right: 8px;
+                      "
+                    >
+                      {{
+                        vueNumberFormat(12000, {
+                          precision: 0,
+                          prefix: "",
+                          decimal: ".",
+                          thousand: ",",
+                        })
+                      }}
+                    </div>
+                    <el-avatar
+                      shape="circle"
+                      :size="48"
+                      src="https://ipfs.fleek.co/ipfs/bafybeigulbzm5x72qtmckxqvd3ksk6q3vlklxjgpnvvnbcofgdp6qwu43u"
+                    >
+                    </el-avatar>
+                  </el-row>
+                  <h2
+                    style="
+                      color: #191b1f;
+                      opacity: 0.4;
+                      font-size: 16px;
+                      margin-bottom: 0px;
+                    "
+                  >
+                    $12.2m
+                  </h2>
+                </el-card>
+              </el-col>
+              <el-col :span="24" :md="12" :lg="6">
+                <el-card class="box-card" shadow="never" style="height: 100%">
+                  <h2
+                    style="
+                      color: #191b1f;
+                      opacity: 0.4;
+                      font-size: 16px;
+                      margin-bottom: 5px;
+                    "
+                  >
+                    Total crDAO Staked
+                  </h2>
+                  <el-row
+                    type="flex"
+                    justify="space-between"
+                    style="align-items: center"
+                  >
+                    <div
+                      style="
+                        font-size: 24px;
+                        font-weight: 600;
+                        margin-right: 8px;
+                      "
+                    >
+                      {{
+                        vueNumberFormat(8142.12, {
+                          precision: 2,
+                          prefix: "",
+                          decimal: ".",
+                          thousand: ",",
+                        })
+                      }}
+                    </div>
+                    <el-progress
+                      :percentage="17.01"
+                      type="circle"
+                      :width="48"
+                      :stroke-width="8"
+                      color="#1EC37F"
+                    ></el-progress>
+                  </el-row>
+
+                  <h2
+                    style="
+                      color: #191b1f;
+                      opacity: 0.4;
+                      font-size: 16px;
+                      margin-bottom: 0px;
+                    "
+                  >
+                    $8.2m
+                  </h2>
+                </el-card>
+              </el-col>
+              <el-col :span="24" :md="12" :lg="6">
+                <div class="grid-content" style="height: 100%">
                   <el-card class="box-card" shadow="never" style="height: 100%">
                     <h2
                       style="
                         color: #191b1f;
                         opacity: 0.4;
-                        font-size: 14px;
-                        margin-bottom: 0px;
+                        font-size: 16px;
+                        margin-bottom: 5px;
                       "
                     >
-                      Total crDAO Staked
+                      Total crVOTE
                     </h2>
                     <el-row
                       type="flex"
@@ -116,15 +224,21 @@
                           margin-right: 8px;
                         "
                       >
-                        {{ vueNumberFormat(8142.12) }}
+                        {{
+                          vueNumberFormat(12123.12, {
+                            precision: 2,
+                            prefix: "",
+                            decimal: ".",
+                            thousand: ",",
+                          })
+                        }}
                       </div>
-                      <el-progress
-                        :percentage="17.01"
-                        type="circle"
-                        :width="48"
-                        :stroke-width="8"
-                        color="#1EC37F"
-                      ></el-progress>
+                      <el-avatar
+                        shape="circle"
+                        :size="48"
+                        src="https://res.cloudinary.com/melvin-manni/image/upload/v1648552189/lhpbwmibiwyq2tmxjdqv.png"
+                      >
+                      </el-avatar>
                     </el-row>
                   </el-card>
                 </div>
@@ -137,8 +251,8 @@
                       style="
                         color: #191b1f;
                         opacity: 0.4;
-                        font-size: 14px;
-                        margin-bottom: 0px;
+                        font-size: 16px;
+                        margin-bottom: 5px;
                       "
                     >
                       Average Lock Time
@@ -172,6 +286,89 @@
                 </div>
               </el-col>
             </el-row>
+          </div>
+
+          <div style="margin-top: 24px">
+            <div>
+              <h2
+                style="
+                  font-weight: 600;
+                  font-size: 24px;
+                  color: #191b1f;
+                  margin: 0;
+                "
+              >
+                My crDAO Staking
+              </h2>
+              <h2
+                style="
+                  font-weight: 300;
+                  font-size: 16px;
+                  color: #191b1f;
+                  opacity: 0.5;
+                  margin: 0;
+                "
+              >
+                Track your staked tokens and rewards.
+              </h2>
+            </div>
+
+            <el-card
+              class="box-card"
+              shadow="never"
+              style="height: 100%; margin-top: 16px"
+            >
+              <el-row gutter="20">
+                <el-col :md="11">
+                  <el-row gutter="10" type="flex" justify="space-between">
+                    <el-col :span="12">
+                      <h2
+                        style="
+                          color: #191b1f;
+                          opacity: 0.4;
+                          font-size: 12px;
+                          margin-bottom: 0px;
+                        "
+                      >
+                        Total Staked
+                      </h2>
+                      <h2
+                        style="
+                          color: #191b1f;
+                          font-weight: 600;
+                          font-size: 18px;
+                        "
+                      >
+                        5.2
+                      </h2>
+                    </el-col>
+                    <el-col :span="12">
+                      <h2
+                        style="
+                          color: #191b1f;
+                          opacity: 0.4;
+                          font-size: 12px;
+                          font-weight: 600;
+                          margin-bottom: 0px;
+                        "
+                      >
+                        Staking Power
+                      </h2>
+                      <h2
+                        style="
+                          color: #191b1f;
+                          font-weight: 600;
+                          font-size: 18px;
+                        "
+                      >
+                        100%
+                      </h2>
+                    </el-col>
+                  </el-row>
+                </el-col>
+                <el-col :md="13"></el-col>
+              </el-row>
+            </el-card>
           </div>
         </el-main>
       </el-col>
@@ -215,4 +412,11 @@ export default {
 </script>
 
 <style scoped>
+.el-col {
+  min-height: unset;
+}
+
+.grid-row .el-col {
+  margin-bottom: 10px;
+}
 </style>

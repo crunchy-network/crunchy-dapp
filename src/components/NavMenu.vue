@@ -228,7 +228,7 @@ export default {
     },
     openSubmenu(index) {
       if (
-        this.$route.name !== "home-view-wallet" ||
+        this.$route.name !== "home-view-wallet" &&
         this.$route.name !== "home"
       ) {
         return this.$refs.menu.open(1);
