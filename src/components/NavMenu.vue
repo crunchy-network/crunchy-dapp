@@ -17,26 +17,28 @@
     >
       <el-row class="el-menu-row" type="flex" justify="space-between">
         <button
-          @click="toggleMenu"
           v-if="mobile"
           class="show-mobile clear-btn"
           style="color: #f15d59; font-size: 30px; margin: 0 20px"
+          @click="toggleMenu"
         >
           <i class="fa-solid fa-bars"></i>
         </button>
         <div :class="[mobile && 'mobile-menu', showMenu && 'active']">
           <el-menu
-            @click="toggleMenu"
+            ref="menu"
             class="nav-menu-wrapper"
             style="background: transparent; border: none"
             :mode="mobile ? 'vertical' : 'horizontal'"
             :router="true"
+            menu-trigger="click"
+            @click="toggleMenu"
           >
             <button
-              @click="toggleMenu"
               v-if="mobile"
               class="show-mobile close-btn clear-btn"
               style="color: #df4759"
+              @click="toggleMenu"
             >
               <i
                 style="font-size: 24px !important; width: unset !important"
@@ -67,7 +69,7 @@
               <span>Home</span>
             </router-link>
 
-            <el-submenu index="1">
+            <el-submenu id="defi-menu" index="1">
               <template slot="title">DeFi</template>
 
               <router-link
@@ -182,8 +184,8 @@
 <script>
 import NavWallet from "./NavWallet.vue";
 export default {
-  components: { NavWallet },
   name: "NavMenu",
+  components: { NavWallet },
   data() {
     return {
       mobile: false,
@@ -215,13 +217,25 @@ export default {
       }
     });
   },
+  mounted() {
+    this.openSubmenu();
+  },
   methods: {
     toggleMenu() {
       if (window.innerWidth < 992) {
         this.showMenu = !this.showMenu;
       }
     },
-    menuOrientation() {},
+    openSubmenu(index) {
+      if (
+        this.$route.name !== "home-view-wallet" ||
+        this.$route.name !== "home"
+      ) {
+        return this.$refs.menu.open(1);
+      } else {
+        return null;
+      }
+    },
   },
 };
 </script>
