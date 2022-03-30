@@ -244,10 +244,6 @@ export default {
 <style lang="scss" scoped>
 @import "~element-ui/packages/theme-chalk/src/common/var";
 
-.el-submenu .el-menu--horizontal {
-  top: 50px !important;
-}
-
 .el-menu-row {
   border-right: none !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);

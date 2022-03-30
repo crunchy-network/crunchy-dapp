@@ -214,7 +214,11 @@ i.fa-icon-right {
   max-height: 80px;
 }
 
-.el-submenu .el-menu-item{
+.el-submenu .el-menu--horizontal {
+  top: 65px !important;
+}
+
+.el-submenu .el-menu-item {
   height: unset !important;
   padding: 10px 45px !important;
   display: flex;

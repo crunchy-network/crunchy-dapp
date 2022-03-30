@@ -89,7 +89,7 @@
           <div>
             <el-row
               type="flex"
-              gutter="20"
+              :gutter="20"
               class="grid-row"
               style="margin-top: 20px; flex-wrap: wrap"
             >
@@ -318,9 +318,9 @@
               shadow="never"
               style="height: 100%; margin-top: 16px"
             >
-              <el-row style="flex-wrap: wrap" gutter="20" type="flex">
+              <el-row style="flex-wrap: wrap" :gutter="20" type="flex">
                 <el-col :md="10">
-                  <el-row gutter="10" type="flex" justify="space-between">
+                  <el-row :gutter="10" type="flex" justify="space-between">
                     <el-col :span="12">
                       <h2 class="stake-text_small">Total Staked</h2>
                       <h2 class="stake-text_big">5.2</h2>
@@ -353,7 +353,7 @@
 
                   <el-row
                     style="margin: 32px 0"
-                    gutter="10"
+                    :gutter="10"
                     type="flex"
                     justify="space-between"
                   >
@@ -389,7 +389,7 @@
                 </el-col>
 
                 <el-col :md="13">
-                  <el-row gutter="10" type="flex" justify="space-between">
+                  <el-row :gutter="10" type="flex" justify="space-between">
                     <el-col :span="8">
                       <h2 class="stake-text_small">Reward Token</h2>
                       <h2
@@ -430,7 +430,7 @@
 
                   <el-row
                     style="margin: 22px 0"
-                    gutter="10"
+                    :gutter="10"
                     type="flex"
                     justify="center"
                   >
