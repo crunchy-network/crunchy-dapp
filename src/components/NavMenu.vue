@@ -31,7 +31,6 @@
             style="background: transparent; border: none"
             :mode="mobile ? 'vertical' : 'horizontal'"
             :router="true"
-            menu-trigger="click"
             @click="toggleMenu"
           >
             <button
@@ -69,7 +68,7 @@
               <span>Home</span>
             </router-link>
 
-            <el-submenu id="defi-menu" index="1">
+            <el-submenu :popper-append-to-body="false" id="defi-menu" index="1">
               <template slot="title">DeFi</template>
 
               <router-link
@@ -78,7 +77,7 @@
                 :to="{ name: 'deep-freezer-listing' }"
                 active-class="is-active"
               >
-                <i v-if="mobile" class="fak fa-crunchy-locker"></i>
+                <i class="fak fa-crunchy-locker"></i>
                 <span>Deep Freezers</span>
               </router-link>
 
@@ -88,7 +87,7 @@
                 :to="{ name: 'farm-listing' }"
                 active-class="is-active"
               >
-                <i v-if="mobile" class="fak fa-crunchy-farm"></i>
+                <i class="fak fa-crunchy-farm"></i>
                 <span>Farms</span>
               </router-link>
 
@@ -98,7 +97,7 @@
                 :to="{ name: 'fire-pit' }"
                 active-class="is-active"
               >
-                <i v-if="mobile" class="fas fa-fire-alt"></i>
+                <i class="fas fa-fire-alt"></i>
                 <span>Fire Pit</span>
               </router-link>
               <router-link
@@ -107,7 +106,7 @@
                 :to="{ name: 'ifo-list' }"
                 active-class="is-active"
               >
-                <i v-if="mobile" class="fak fa-regular fa-farm"></i>
+                <i class="fak fa-regular fa-farm"></i>
                 <span>IFO</span>
               </router-link>
               <router-link
@@ -116,7 +115,7 @@
                 to="/wtz"
                 active-class="is-active"
               >
-                <i v-if="mobile" class="fak fa-crunchy-tez-alt"></i>
+                <i class="fak fa-crunchy-tez-alt"></i>
 
                 <span>WTZ</span>
               </router-link>
@@ -140,22 +139,22 @@
               </router-link> -->
             </el-submenu>
 
-            <el-submenu index="2">
+            <el-submenu :popper-append-to-body="false" index="2">
               <template slot="title">More</template>
               <el-menu-item class="submenu-item">
-                <i v-if="mobile" class="fa-light fa-book"></i>
+                <i class="fa-light fa-book"></i>
                 <a href="https://docs.crunchy.network/" target="_blank">
                   Docs
                 </a>
               </el-menu-item>
               <el-menu-item class="submenu-item">
-                <i v-if="mobile" class="fab fa-discord"></i>
+                <i class="fab fa-discord"></i>
                 <a href="https://discord.com/invite/99UnxxgB46" target="_blank">
                   Discord
                 </a>
               </el-menu-item>
               <el-menu-item class="submenu-item">
-                <i v-if="mobile" class="fab fa-telegram"></i>
+                <i class="fab fa-telegram"></i>
                 <a href=" https://t.me/crunchy_network" target="_blank">
                   Telegram
                 </a>
@@ -231,7 +230,9 @@ export default {
         this.$route.name !== "home-view-wallet" &&
         this.$route.name !== "home"
       ) {
-        return this.$refs.menu.open(1);
+        if (window.innerWidth < 992) {
+          return this.$refs.menu.open(1);
+        }
       } else {
         return null;
       }
@@ -242,6 +243,11 @@ export default {
 
 <style lang="scss" scoped>
 @import "~element-ui/packages/theme-chalk/src/common/var";
+
+.el-submenu .el-menu--horizontal {
+  top: 50px !important;
+}
+
 .el-menu-row {
   border-right: none !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
@@ -253,7 +259,7 @@ export default {
 }
 
 .el-menu-item.submenu-item {
-  color: #909399 !important;
+  color: #909399 ;
   font-weight: 500;
   font-size: 16px;
   i {
@@ -263,26 +269,26 @@ export default {
     font-size: 24px;
     vertical-align: middle;
   }
+  a {
+    color: #909399;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 0px;
+  }
 
   &:hover {
     background: #9093991e !important;
+    color: #f15d59;
+    a {
+      color: #f15d59;
+    }
+    i {
+      color: #f15d59;
+    }
   }
   &.is-active {
     color: #f15d59 !important;
   }
-}
-
-a {
-  color: #909399;
-  font-weight: 500;
-  text-decoration: none;
-  &:hover {
-    text-decoration: none;
-    color: inherit;
-    border: 0px;
-    background: none;
-  }
-  padding: 0px;
 }
 
 .nav-menu-wrapper > .el-menu-item {
