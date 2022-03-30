@@ -136,29 +136,6 @@ body {
   height: 100%;
 }
 
-body:after {
-  content: "beta";
-  position: fixed;
-  z-index: 999;
-  width: 80px;
-  height: 25px;
-  background: #f6f6f6;
-  top: 5px;
-  left: -22px;
-  text-align: center;
-  font-size: 12px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  font-weight: bold;
-  color: #999;
-  line-height: 27px;
-  -ms-transform: rotate(-45deg);
-  -webkit-transform: rotate(-45deg);
-  transform: rotate(-45deg);
-  box-shadow: 0 0px 12px 0 rgb(21 21 52 / 10%);
-  border: 1px solid #ebeef5;
-}
-
 .page_width {
   position: relative;
   width: 100%;
@@ -214,10 +191,6 @@ i.fa-icon-right {
   max-height: 80px;
 }
 
-.el-submenu .el-menu--horizontal {
-  top: 65px !important;
-}
-
 .el-submenu .el-menu-item {
   height: unset !important;
   padding: 10px 45px !important;
@@ -235,11 +208,27 @@ i.fa-icon-right {
 .show-mobile {
   display: none;
 }
+
+@media (min-width: 992px) {
+  .el-submenu .el-menu--horizontal {
+    top: 65px !important;
+    position: fixed;
+  }
+
+  .hide-desktop {
+    display: none;
+  }
+}
 /* Mobile Menu Setting */
-@media (max-width: 992px) {
+@media (max-width: 991px) {
   .el-menu > .el-submenu .el-submenu__title {
     padding: 20px 15px !important;
   }
+
+  .el-submenu__icon-arrow {
+    right: -20px !important;
+  }
+
   .nav-menu-wrapper > .el-menu-item,
   .nav-menu-wrapper > .el-submenu {
     float: unset !important;
