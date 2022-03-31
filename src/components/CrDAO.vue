@@ -2,9 +2,9 @@
   <div class="page_width">
     <nav-menu></nav-menu>
 
-    <el-row>
-      <el-col :xs="24" :md="17">
-        <el-main>
+    <el-main>
+      <el-row class="main-row" :gutter="40" type="flex" style="flex-wrap: wrap">
+        <el-col :md="17">
           <el-row type="flex" justify="space-between" align="center">
             <div>
               <h2
@@ -316,7 +316,7 @@
             <el-card
               class="box-card"
               shadow="never"
-              style="height: 100%; margin-top: 16px"
+              style="flex: 1; margin-top: 16px"
             >
               <el-row style="flex-wrap: wrap" :gutter="20" type="flex">
                 <el-col :md="10">
@@ -337,7 +337,7 @@
                       >
                         Staking Power
                         <el-tooltip
-                          content="Total Value Locked"
+                          content="Staking power is based on length of lockup"
                           placement="top"
                           effect="light"
                         >
@@ -414,7 +414,7 @@
                       <h2 class="stake-text_small">
                         Pool Ownership
                         <el-tooltip
-                          content="Total Value Locked"
+                          content="Percentage of the reward pool you currently own"
                           placement="top"
                           effect="light"
                         >
@@ -456,10 +456,8 @@
               </el-row>
             </el-card>
           </div>
-        </el-main>
-      </el-col>
-      <el-col :xs="24" :md="7">
-        <el-main>
+        </el-col>
+        <el-col :md="7">
           <div>
             <h2
               style="
@@ -487,46 +485,53 @@
             <el-card
               class="box-card"
               shadow="never"
-              style="height: 100%; margin-top: 16px"
+              style="flex: 1; margin-top: 16px"
             >
-              <el-button
-                class="text-btn"
-                type="text"
-                @click="switchStakeTab('stake')"
-                :style="
-                  stakeTab === 'stake' &&
-                  'color: #555CFF;  border-bottom: 1.5px solid #555CFF;'
-                "
-              >
-                Stake
-              </el-button>
-              <el-button
-                class="text-btn"
-                type="text"
-                @click="switchStakeTab('restake')"
-                :style="
-                  stakeTab === 'restake' &&
-                  'color: #555CFF;  border-bottom: 1.5px solid #555CFF;'
-                "
-              >
-                Re-Stake
-              </el-button>
+              <div style="margin-bottom: 24px">
+                <el-button
+                  class="text-btn"
+                  type="text"
+                  @click="switchStakeTab('stake')"
+                  :style="
+                    stakeTab === 'stake' &&
+                    'color: #555CFF;  border-bottom: 1.5px solid #555CFF;'
+                  "
+                >
+                  Stake
+                </el-button>
+                <el-button
+                  class="text-btn"
+                  type="text"
+                  @click="switchStakeTab('restake')"
+                  :style="
+                    stakeTab === 'restake' &&
+                    'color: #555CFF;  border-bottom: 1.5px solid #555CFF;'
+                  "
+                >
+                  Re-Stake
+                </el-button>
+              </div>
+
+              <cr-dao-stake v-if="stakeTab === 'stake'"></cr-dao-stake>
+              <cr-dao-restake v-if="stakeTab === 'restake'"></cr-dao-restake>
             </el-card>
           </div>
-        </el-main>
-      </el-col>
-    </el-row>
+        </el-col>
+      </el-row>
+    </el-main>
   </div>
 </template>
 
 <script>
+import CrDaoRestake from "./CrDaoRestake.vue";
+import CrDaoStake from "./CrDaoStake.vue";
 import NavMenu from "./NavMenu.vue";
 export default {
-  components: { NavMenu },
+  components: { NavMenu, CrDaoStake, CrDaoRestake },
   name: "CrDAO",
   data() {
     return {
-      stakeTab: "stake",
+      stakeTab: "restake",
     };
   },
 
@@ -543,6 +548,21 @@ export default {
   min-height: unset;
 }
 
+.main-row {
+  > .el-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0;
+  }
+
+  @media (max-width: 991px) {
+    flex-direction: column-reverse;
+    > .el-col:nth-child(2) {
+      margin-bottom: 50px;
+    }
+  }
+}
 .grid-row .el-col {
   margin-bottom: 10px;
 }

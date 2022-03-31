@@ -77,6 +77,10 @@ body,
   height: 100%;
 }
 
+* {
+  font-family: "Poppins";
+}
+
 body {
   background: #fffafa;
 }

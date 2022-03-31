@@ -1,25 +1,16 @@
 <template>
   <div>
     <div class="_balance">
-      <p>Wallet Balance:</p>
+      <p>Staked Balance:</p>
 
       <h2>5.2</h2>
     </div>
 
-    <div class="_input">
-      <div>
-        <input type="number" />
-      </div>
-      <el-button style="padding: 16px; color: #1ec37f" type="text"
-        >Use Max</el-button
-      >
-    </div>
-
     <div style="margin-top: 16px">
-      <h2 style="color: rgba(25, 27, 31, 0.6)">Lock Time</h2>
+      <h2 style="color: rgba(25, 27, 31, 0.6)">Extend Lock Time</h2>
     </div>
 
-    <el-row style="margin-top: 10px" :gutter="8">
+    <el-row style="margin-top: 32px" :gutter="8">
       <el-col :span="8">
         <button
           disabled
@@ -77,8 +68,8 @@
       <small> Unlocks: 12 June 2026 14:23 UTC </small>
     </div>
 
-    <div style="margin-top: 16px">
-      <h2 style="color: rgba(25, 27, 31, 0.6)">You Will Receive</h2>
+    <div style="margin-top: 40px">
+      <h2 style="color: rgba(25, 27, 31, 0.6)">You Will Have</h2>
     </div>
 
     <el-row
@@ -97,15 +88,15 @@
       </div>
     </el-row>
 
-    <el-row style="margin-top: 24px" type="flex" justify="center">
-      <el-button round type="primary" style="min-width: 50%"> Stake </el-button>
+    <el-row style="margin-top: 50px" type="flex" justify="center">
+      <el-button round type="primary" style="min-width: 50%"> Re-Stake </el-button>
     </el-row>
   </div>
 </template>
 
 <script>
 export default {
-  name: "CrDaoStake",
+  name: "CrDaoRestake",
   data() {
     return {
       time: "",
