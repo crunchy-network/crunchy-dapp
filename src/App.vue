@@ -197,7 +197,8 @@ i.fa-icon-right {
 
 .el-submenu .el-menu-item {
   height: unset !important;
-  padding: 10px 45px !important;
+  padding: 10px 25px !important;
+  padding-left: 10px !important;
   display: flex;
   align-items: center;
 }
@@ -214,6 +215,8 @@ i.fa-icon-right {
 }
 
 @media (min-width: 992px) {
+  
+
   .el-submenu .el-menu--horizontal {
     top: 65px !important;
     position: fixed;
@@ -227,6 +230,10 @@ i.fa-icon-right {
 @media (max-width: 991px) {
   .el-menu > .el-submenu .el-submenu__title {
     padding: 20px 15px !important;
+  }
+
+  .el-submenu .el-menu-item {
+    padding-left: 40px !important;
   }
 
   .el-submenu__icon-arrow {
