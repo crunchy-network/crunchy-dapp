@@ -413,8 +413,8 @@ export default {
     border: 1.5px solid rgba(255, 255, 255, 0.2);
     background: #555cff !important;
     color: #fff !important;
-    width: 35px;
-    height: 35px;
+    width: 35px !important;
+    height: 35px !important;
     border-radius: 50%;
     display: flex;
     align-items: center;
