@@ -21,13 +21,22 @@
         </div>
         <button
           :class="['show-mobile clear-btn', showMenu && ' close-btn']"
-          style="color: #555cff; font-size: 30px; margin: 0 20px"
+          style="
+            color: #555cff;
+            margin: 0 20px;
+            width: 33px !important;
+            height: 33px !important;
+          "
           @click="toggleMenu"
         >
-          <i v-if="!showMenu" class="fa-solid fa-bars-staggered"></i>
+          <i
+            style="font-size: 28px"
+            v-if="!showMenu"
+            class="fa-solid fa-bars-staggered"
+          ></i>
           <i
             v-if="showMenu"
-            style="font-size: 24px !important; width: unset !important"
+            style="font-size: 20px !important; width: unset !important"
             class="fa-solid fa-xmark"
           ></i>
         </button>
@@ -413,8 +422,6 @@ export default {
     border: 1.5px solid rgba(255, 255, 255, 0.2);
     background: #555cff !important;
     color: #fff !important;
-    width: 35px !important;
-    height: 35px !important;
     border-radius: 50%;
     display: flex;
     align-items: center;
