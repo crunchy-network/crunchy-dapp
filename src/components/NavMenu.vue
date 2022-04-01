@@ -44,7 +44,7 @@
           <el-menu
             ref="menu"
             class="nav-menu-wrapper"
-            style="background: transparent; border: none; width: max-content"
+            style="background: transparent; border: none; width: 100%"
             :router="true"
             :mode="mobile ? 'vertical' : 'horizontal'"
             @click="toggleMenu"

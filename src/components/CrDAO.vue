@@ -318,7 +318,12 @@
               shadow="never"
               style="flex: 1; margin-top: 16px"
             >
-              <el-row style="flex-wrap: wrap" :gutter="20" type="flex">
+              <el-row
+                class="staking-details-row"
+                style="flex-wrap: wrap"
+                :gutter="20"
+                type="flex"
+              >
                 <el-col :md="10">
                   <el-row :gutter="10" type="flex" justify="space-between">
                     <el-col :span="12">
@@ -373,7 +378,7 @@
                     </el-col>
                   </el-row>
 
-                  <el-row type="flex" justify="center">
+                  <el-row style="margin-top: auto" type="flex" justify="center">
                     <el-button
                       round
                       plain
@@ -444,7 +449,7 @@
                     </div>
                   </el-row>
 
-                  <el-row type="flex" justify="center">
+                  <el-row style="margin-top: auto" type="flex" justify="center">
                     <el-button
                       round
                       type="primary"
@@ -481,41 +486,49 @@
               Stake crDAO to earn farm rewards and crVOTE to participate in DAO
               votes.
             </h2>
+          </div>
+          <el-card
+            class="box-card"
+            shadow="never"
+            style="
+              flex: 1;
+              margin-top: 16px;
+              display: flex;
+              flex-direction: column;
+            "
+            body-style="flex: 1;display: flex;
+              flex-direction: column;"
+          >
+            <div style="margin-bottom: 24px; display: flex; align-items: end">
+              <el-button
+                class="text-btn"
+                type="text"
+                @click="switchStakeTab('stake')"
+                :style="
+                  stakeTab === 'stake' &&
+                  'color: #555CFF;  border-bottom: 1.5px solid #555CFF;'
+                "
+              >
+                Stake
+              </el-button>
+              <el-button
+                class="text-btn"
+                type="text"
+                @click="switchStakeTab('restake')"
+                :style="
+                  stakeTab === 'restake' &&
+                  'color: #555CFF;  border-bottom: 1.5px solid #555CFF;'
+                "
+              >
+                Re-Stake
+              </el-button>
+            </div>
 
-            <el-card
-              class="box-card"
-              shadow="never"
-              style="flex: 1; margin-top: 16px"
-            >
-              <div style="margin-bottom: 24px">
-                <el-button
-                  class="text-btn"
-                  type="text"
-                  @click="switchStakeTab('stake')"
-                  :style="
-                    stakeTab === 'stake' &&
-                    'color: #555CFF;  border-bottom: 1.5px solid #555CFF;'
-                  "
-                >
-                  Stake
-                </el-button>
-                <el-button
-                  class="text-btn"
-                  type="text"
-                  @click="switchStakeTab('restake')"
-                  :style="
-                    stakeTab === 'restake' &&
-                    'color: #555CFF;  border-bottom: 1.5px solid #555CFF;'
-                  "
-                >
-                  Re-Stake
-                </el-button>
-              </div>
-
+            <div style="margin-top: auto">
               <cr-dao-stake v-if="stakeTab === 'stake'"></cr-dao-stake>
               <cr-dao-restake v-if="stakeTab === 'restake'"></cr-dao-restake>
-            </el-card>
-          </div>
+            </div>
+          </el-card>
         </el-col>
       </el-row>
     </el-main>
@@ -565,6 +578,11 @@ export default {
 }
 .grid-row .el-col {
   margin-bottom: 10px;
+}
+
+.staking-details-row .el-col {
+  display: flex;
+  flex-direction: column;
 }
 
 .stake-text_small {

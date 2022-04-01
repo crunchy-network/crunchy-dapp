@@ -237,7 +237,7 @@ i.fa-icon-right {
   }
 
   .el-submenu__icon-arrow {
-    right: -20px !important;
+    right: 0px !important;
   }
 
   .nav-menu-wrapper > .el-menu-item,
