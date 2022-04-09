@@ -383,7 +383,7 @@
                       round
                       plain
                       type="primary"
-                      style="background: #fff; font-weight: 700; min-width: 50%"
+                      style="background: #fff; color: #555cff; font-weight: 700; min-width: 50%"
                       >Unstake
                     </el-button>
                   </el-row>
@@ -505,8 +505,7 @@
                 type="text"
                 @click="switchStakeTab('stake')"
                 :style="
-                  stakeTab === 'stake' &&
-                  'border-bottom: 2px solid #555CFF;'
+                  stakeTab === 'stake' && 'border-bottom-color: #555CFF; '
                 "
               >
                 Stake
@@ -516,8 +515,7 @@
                 type="text"
                 @click="switchStakeTab('restake')"
                 :style="
-                  stakeTab === 'restake' &&
-                  'border-bottom: 2px solid #555CFF;'
+                  stakeTab === 'restake' && 'border-bottom-color: #555CFF; '
                 "
               >
                 Re-Stake
@@ -624,5 +622,9 @@ export default {
   color: #555cff;
   transition: 0.3s ease color;
   border-radius: 0;
+  border: 0;
+  border-bottom-width: 4px;
+  border-bottom-style: solid;
+  border-bottom-color: transparent;
 }
 </style>
