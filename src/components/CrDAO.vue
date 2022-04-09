@@ -506,7 +506,7 @@
                 @click="switchStakeTab('stake')"
                 :style="
                   stakeTab === 'stake' &&
-                  'color: #555CFF;  border-bottom: 1.5px solid #555CFF;'
+                  'border-bottom: 2px solid #555CFF;'
                 "
               >
                 Stake
@@ -517,7 +517,7 @@
                 @click="switchStakeTab('restake')"
                 :style="
                   stakeTab === 'restake' &&
-                  'color: #555CFF;  border-bottom: 1.5px solid #555CFF;'
+                  'border-bottom: 2px solid #555CFF;'
                 "
               >
                 Re-Stake
@@ -621,7 +621,8 @@ export default {
   font-weight: 700;
   width: max-content;
   padding: 0;
-  color: #191b1f;
+  color: #555cff;
   transition: 0.3s ease color;
+  border-radius: 0;
 }
 </style>
