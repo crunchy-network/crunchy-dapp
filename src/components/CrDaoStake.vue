@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="transition: 0.45s ease all">
     <div class="_balance">
       <p>Wallet Balance:</p>
 

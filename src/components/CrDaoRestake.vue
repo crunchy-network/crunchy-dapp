@@ -1,12 +1,12 @@
 <template>
   <div>
-    <div class="_balance">
+    <div style="transition: 0.45s ease all" class="_balance">
       <p>Staked Balance:</p>
 
       <h2>5.2</h2>
     </div>
 
-    <div style="margin-top: 16px">
+    <div style="margin-top: 13px">
       <h2 style="color: rgba(25, 27, 31, 0.6)">Extend Lock Time</h2>
     </div>
 
@@ -89,7 +89,9 @@
     </el-row>
 
     <el-row style="margin-top: 50px" type="flex" justify="center">
-      <el-button round type="primary" style="min-width: 50%"> Re-Stake </el-button>
+      <el-button round type="primary" style="min-width: 50%">
+        Re-Stake
+      </el-button>
     </el-row>
   </div>
 </template>
