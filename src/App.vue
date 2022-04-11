@@ -511,4 +511,32 @@ header .grid-content button.el-button {
 .text-center {
   text-align: center;
 }
+
+/* REPSONSIVE STYLE */
+
+/* divider */
+.divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.divider .el-divider.el-divider--vertical {
+  height: 100% !important;
+  margin: 0 !important;
+}
+
+.divider .el-divider.el-divider--horizontal {
+  width: 100% !important;
+}
+
+@media (min-width: 991px) {
+  .divider .el-divider.el-divider--horizontal {
+    display: none;
+  }
+}
+@media (max-width: 991px) {
+  .divider .el-divider.el-divider--vertical {
+    display: none;
+  }
+}
 </style>
