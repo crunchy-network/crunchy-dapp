@@ -4,40 +4,44 @@
     <!-- <div class="hidden-sm-and-down"> -->
 
     <el-container style="position: relative">
-      <router-view></router-view>
+      <div>
+        <router-view></router-view>
+      </div>
       <el-footer>
-        Copyright &copy; 2021 - 2022 Crunchy. Made with
-        <i class="fas fa-heart" style="color: #f64947; margin-left: 6px"></i>
-        <i
-          class="fas fa-grin-beam-sweat"
-          style="color: #555cff; margin-left: 6px"
-        ></i>
-        &amp; <i class="fas fa-grin-tears" style="color: #fece00"></i>
-        <div style="margin-top: 24px; font-size: 24px">
-          <a
-            href="https://github.com/crunchy-network"
-            target="_blank"
-            style="margin: 0 12px"
-            ><i class="fab fa-github"></i
-          ></a>
-          <a
-            href="https://twitter.com/CrunchyTez"
-            target="_blank"
-            style="margin: 0 12px"
-            ><i class="fab fa-twitter"></i
-          ></a>
-          <a
-            href="http://discord.crunchy.network"
-            target="_blank"
-            style="margin: 0 12px"
-            ><i class="fab fa-discord"></i
-          ></a>
-          <a
-            href="http://t.me/crunchy_network"
-            target="_blank"
-            style="margin: 0 12px"
-            ><i class="fab fa-telegram"></i
-          ></a>
+        <div>
+          Copyright &copy; 2021 - 2022 Crunchy. Made with
+          <i class="fas fa-heart" style="color: #f64947; margin-left: 6px"></i>
+          <i
+            class="fas fa-grin-beam-sweat"
+            style="color: #555cff; margin-left: 6px"
+          ></i>
+          &amp; <i class="fas fa-grin-tears" style="color: #fece00"></i>
+          <div style="margin-top: 24px; font-size: 24px">
+            <a
+              href="https://github.com/crunchy-network"
+              target="_blank"
+              style="margin: 0 12px"
+              ><i class="fab fa-github"></i
+            ></a>
+            <a
+              href="https://twitter.com/CrunchyTez"
+              target="_blank"
+              style="margin: 0 12px"
+              ><i class="fab fa-twitter"></i
+            ></a>
+            <a
+              href="http://discord.crunchy.network"
+              target="_blank"
+              style="margin: 0 12px"
+              ><i class="fab fa-discord"></i
+            ></a>
+            <a
+              href="http://t.me/crunchy_network"
+              target="_blank"
+              style="margin: 0 12px"
+              ><i class="fab fa-telegram"></i
+            ></a>
+          </div>
         </div>
       </el-footer>
     </el-container>
@@ -71,10 +75,15 @@ export default {
 
 <style>
 html,
+body {
+  overflow-x: hidden;
+}
+
+html,
 body,
 .el-container {
   margin: 0;
-  height: 100%;
+  min-height: 100%;
 }
 
 * {
@@ -83,8 +92,15 @@ body,
 
 body {
   background: #fffafa;
+  width: 100%;
 }
 
+.responsive-table {
+  overflow-x: auto;
+}
+.responsive-table > div {
+  min-width: max-content;
+}
 /* FONT WEIGHTS */
 h1,
 h2,
@@ -103,6 +119,11 @@ h3 {
   margin-top: 100px;
   font-size: 16px;
   color: #999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-width: 100%;
 }
 .el-footer i.fad {
   margin-right: 0 !important;
@@ -142,9 +163,9 @@ body {
 
 .page_width {
   position: relative;
-  width: 100%;
   max-width: 1450px;
   margin: 0 auto;
+  overflow-x: hidden;
 }
 
 i.fad {
@@ -215,8 +236,6 @@ i.fa-icon-right {
 }
 
 @media (min-width: 992px) {
-  
-
   .el-submenu .el-menu--horizontal {
     top: 65px !important;
     position: fixed;
