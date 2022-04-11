@@ -595,25 +595,6 @@ export default {
   font-weight: 600;
   margin-bottom: 0px;
 }
-.divider {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.divider .el-divider.el-divider--vertical {
-  height: 100% !important;
-  margin: 0 !important;
-  @media (max-width: 991px) {
-    display: none;
-  }
-}
-
-.divider .el-divider.el-divider--horizontal {
-  width: 100% !important;
-  @media (min-width: 991px) {
-    display: none;
-  }
-}
 
 .text-btn {
   font-weight: 700;
