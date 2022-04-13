@@ -3,7 +3,7 @@
     <!-- Desktop -->
     <!-- <div class="hidden-sm-and-down"> -->
 
-    <el-container style="position: relative">
+    <el-container style="position: relative; justify-content: space-between">
       <div>
         <router-view></router-view>
       </div>
@@ -74,7 +74,7 @@ export default {
 </script>
 
 <style>
-html{
+html {
   overflow-x: hidden;
 }
 
@@ -100,8 +100,8 @@ body {
 
 .responsive-table {
   overflow-x: auto;
-   -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 .responsive-table > div {
   min-width: max-content;
@@ -129,6 +129,7 @@ h3 {
   justify-content: center;
   align-items: center;
   min-width: 100%;
+  height: 80px !important;
 }
 .el-footer i.fad {
   margin-right: 0 !important;

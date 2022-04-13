@@ -1,0 +1,66 @@
+<template>
+  <div>
+    <div id="swap-router-wrapper">
+      <NavMenu />
+      <div class="disclaimer-section">
+        <el-tooltip
+          placement="bottom"
+          effect="light"
+          popper-class="disclaimer-tip"
+        >
+          <div slot="content">
+            Crunchy.network utilizes a list of public and private API endpoints
+            to pull price data. With this price data, users are allowed to
+            interact with decentralized exchanges (DEXs) within the Tezos
+            ecosystem. Crunchy.network does not own or operate these DEXs.
+            <br />
+            <br />
+            Crunchy.network is not responsible for DEX issues, displayed tokens,
+            price, API issues, exchange rates, and user trading decisions.
+            <br />
+            <br />
+            The use of this product is the sole responsibility of the user.
+          </div>
+
+          <span>Disclaimer <i class="el-icon-warning" /></span>
+        </el-tooltip>
+      </div>
+
+      <SwapFormMain />
+      <SwapFormFoot />
+    </div>
+  </div>
+</template>
+
+<script>
+import NavMenu from "./NavMenu.vue";
+import SwapFormMain from "./SwapFormMain.vue";
+import SwapFormFoot from "./SwapFormFoot.vue";
+export default {
+  name: "Swap",
+  components: { NavMenu, SwapFormMain, SwapFormFoot },
+};
+</script>
+<style lang="scss">
+@import "../crunchy-variables.scss";
+@import "~element-ui/packages/theme-chalk/src/common/var";
+
+#swap-router-wrapper {
+  padding: 40px 45px;
+  @media all and (max-width: 996px) {
+    padding: 20px 25px;
+  }
+  max-width: 420px;
+  margin: auto;
+
+  .disclaimer-section {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+}
+.disclaimer-tip {
+  width: 300px;
+  padding: 20px 16px;
+}
+</style>

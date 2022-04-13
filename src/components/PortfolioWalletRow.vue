@@ -141,18 +141,15 @@
           </el-col>
 
           <el-col style="text-align: right" :span="2">
-            <a
+            <router-link
               v-if="asset.contract !== 'tez'"
-              :href="`https://quipuswap.com/swap/${
-                asset.contract +
-                (asset.tokenid === undefined ? '' : '_' + asset.tokenid)
-              }-tez`"
-              target="_blank"
+              tag="a"
+              :to="getToParams(asset)"
             >
               <el-button style="color: #555cff; font-weight: 600" type="text">
                 TRADE
               </el-button>
-            </a>
+            </router-link>
             <router-link
               v-if="asset.contract === 'tez'"
               tag="a"
@@ -173,6 +170,15 @@
 export default {
   name: "PortfolioWalletRow",
   props: ["asset", "showUsd"],
+  methods: {
+    getToParams(asset) {
+      const tokenId = asset.tokenid ? asset.tokenid : 0;
+      return {
+        name: "swap",
+        query: { from: "tez", to: `${asset.contract}_${tokenId}` },
+      };
+    },
+  },
 };
 </script>
 

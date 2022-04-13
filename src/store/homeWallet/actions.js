@@ -33,4 +33,8 @@ export default {
     commit("updateNetworth", homeWallet.calcNetworth(state.assets));
     commit("updateNetworthUsd", homeWallet.calcUsdNetworth(state.assets));
   },
+
+  async walletConnected({ dispatch, rootState }) {
+    dispatch("loadWalletAsssets", rootState.wallet.pkh);
+  },
 };

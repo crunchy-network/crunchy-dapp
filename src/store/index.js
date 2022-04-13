@@ -9,7 +9,7 @@ import rckt from "./rckt";
 import ifo from "./ifo";
 import ifoPixelPriv from "./ifoPixelPriv";
 import homeWallet from "./homeWallet";
-
+import swap from "./swap";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -23,5 +23,6 @@ export default new Vuex.Store({
     ifo: ifo,
     ifoPixelPriv: ifoPixelPriv,
     homeWallet: homeWallet,
+    swap: swap,
   },
 });

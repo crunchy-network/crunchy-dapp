@@ -8,7 +8,10 @@
         style="margin-bottom: 50px; flex-wrap: wrap"
       >
         <el-col style="margin-bottom: 5px" :md="12">
-          <div class="grid-content" style="min-height: 100%; display: flex; align-items: stretch;" >
+          <div
+            class="grid-content"
+            style="min-height: 100%; display: flex; align-items: stretch"
+          >
             <IFOCard />
           </div>
         </el-col>
