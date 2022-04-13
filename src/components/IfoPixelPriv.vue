@@ -521,11 +521,11 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
-import NavMenu from './NavMenu.vue';
+import NavMenu from "./NavMenu.vue";
 
 export default {
   name: "IfoPixelPriv",
-  components: {NavMenu },
+  components: { NavMenu },
   data: () => ({
     displayDays: "",
     displayHours: "",

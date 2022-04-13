@@ -101,6 +101,20 @@ export default {
       meta.decimals = 6;
     }
 
+    // Youves
+    if (meta.tokenAddress === "KT1XRPEPXbZK25r3Htzp2o1x7xdMMmfocKNW") {
+      // uBTC
+      if (meta.tokenId === 2) {
+        meta.thumbnailUri =
+          "https://app.youves.com/assets/img/symbols/ubtc.svg";
+      }
+    }
+
+    // SEXP
+    if (meta.tokenAddress === "KT1Kyc366SrSJ1camxByr363F9WAiHAaReMv") {
+      meta.thumbnailUri = "https://metadata.sexp.exchange/sexp_logo_v1.png";
+    }
+
     return meta;
   },
 
