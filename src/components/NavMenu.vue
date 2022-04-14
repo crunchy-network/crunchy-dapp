@@ -76,6 +76,7 @@
                 :popper-append-to-body="false"
                 id="defi-menu"
                 index="1"
+                :class="defiActive ? 'sub-is-active' : ''"
               >
                 <template slot="title">
                   <svg
@@ -256,6 +257,7 @@ export default {
       mobile: false,
       showMenu: false,
       windowWidth: window.innerWidth,
+      defiActive: false,
     };
   },
   watch: {
@@ -278,6 +280,7 @@ export default {
   mounted() {
     this.openSubmenu();
     this.screenCheck();
+    console.log(this.defiActive);
   },
   methods: {
     screenCheck() {
@@ -298,10 +301,13 @@ export default {
         this.$route.name !== "home-view-wallet" &&
         this.$route.name !== "home"
       ) {
+        this.defiActive = true;
+
         if (window.innerWidth < 992) {
           return this.$refs.menu.open(1);
         }
       } else {
+        this.defiActive = false;
         return null;
       }
     },
@@ -328,7 +334,7 @@ export default {
   }
 }
 .el-menu-item.submenu-item {
-  color: #909399;
+  color: #191b1f;
   font-weight: 500;
   font-size: 16px;
   i {
@@ -339,7 +345,7 @@ export default {
     vertical-align: middle;
   }
   a {
-    color: #909399;
+    color: #191b1f;
     font-weight: 500;
     text-decoration: none;
     padding: 0px;
@@ -353,14 +359,14 @@ export default {
 }
 
 .nav-menu-wrapper > .el-menu-item {
-  color: #909399 !important;
+  color: #191b1f !important;
   font-weight: 500;
   font-size: 16px;
   line-height: 24px;
   display: flex;
   align-items: center;
   border: 0 !important;
-  padding: 40px 15px;
+  padding: 20px 15px;
   background: transparent !important;
   max-height: 80px;
   i.fas,
@@ -413,8 +419,8 @@ export default {
     scrollbar-width: none; /* Firefox */
 
     .el-menu-item {
-      padding-top: 20px;
-      padding-bottom: 20px;
+      padding-top: 10px;
+      padding-bottom: 10px;
     }
     &.active {
       left: 0;

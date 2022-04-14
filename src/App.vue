@@ -74,8 +74,7 @@ export default {
 </script>
 
 <style>
-html,
-body {
+html{
   overflow-x: hidden;
 }
 
@@ -83,7 +82,7 @@ html,
 body,
 .el-container {
   margin: 0;
-  min-height: 100%;
+  min-height: 100vh;
 }
 
 * {
@@ -95,8 +94,14 @@ body {
   width: 100%;
 }
 
+.responsive-table::-webkit-scrollbar {
+  display: none;
+}
+
 .responsive-table {
   overflow-x: auto;
+   -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 .responsive-table > div {
   min-width: max-content;
@@ -204,21 +209,30 @@ i.fa-icon-right {
 }
 
 .el-menu > .el-submenu .el-submenu__title {
-  color: #909399 !important;
+  color: #191b1f !important;
   font-weight: 500;
   font-size: 16px;
   line-height: 24px;
   display: flex;
   align-items: center;
   border: 0 !important;
-  padding: 40px 15px;
+  padding: 20px 15px;
   background: transparent !important;
   max-height: 80px;
 }
 
+.el-menu > .el-submenu i {
+  color: #191b1f !important;
+  fill: #191b1f !important;
+}
+
+.el-menu > .el-submenu.sub-is-active .el-submenu__title {
+  color: #f15d59 !important;
+}
+
 .el-submenu .el-menu-item {
   height: unset !important;
-  padding: 10px 25px !important;
+  padding: 5px 15px !important;
   padding-left: 10px !important;
   display: flex;
   align-items: center;
@@ -248,11 +262,11 @@ i.fa-icon-right {
 /* Mobile Menu Setting */
 @media (max-width: 991px) {
   .el-menu > .el-submenu .el-submenu__title {
-    padding: 20px 15px !important;
+    padding: 10px 15px !important;
   }
 
   .el-submenu .el-menu-item {
-    padding-left: 40px !important;
+    padding-left: 30px !important;
   }
 
   .el-submenu__icon-arrow {
