@@ -290,6 +290,7 @@ header .grid-content button.el-button {
   margin-right: 14px;
   text-align: center;
   vertical-align: middle;
+  margin-top: unset;
 }
 .el-popover.nav-wallet {
   border: 1px solid rgba(255, 255, 255, 0.3) !important;
