@@ -2,11 +2,11 @@
   <div>
     <el-row
       type="flex"
-      style="flex-wrap: wrap"
+      style="flex-wrap: wrap; row-gap: 10px;"
       justify="space-between"
       :gutter="40"
     >
-      <el-col style="margin-bottom: 5px" :xs="24" :md="24" :lg="7">
+      <el-col  :xs="24" :md="24" :lg="7">
         <el-card v-loading="homeWallet.loading" class="top">
           <h2 style="font-weight: 600; font-size: 16px; color: #757679ff">
             Net Worth
@@ -43,7 +43,7 @@
         <el-divider direction="vertical"></el-divider>
         <el-divider direction="horizontal"></el-divider>
       </el-col>
-      <el-col :xs="24" :md="12" :lg="7" style="margin-bottom: 5px">
+      <el-col :xs="24" :md="12" :lg="7" >
         <el-card v-loading="homeWallet.loading" class="top">
           <h2 style="font-weight: 600; font-size: 16px; color: #757679ff">
             CRUNCH Balance
@@ -61,7 +61,7 @@
           </h2>
         </el-card>
       </el-col>
-      <el-col :xs="24" :md="12" :lg="7" style="margin-bottom: 5px">
+      <el-col :xs="24" :md="12" :lg="7" >
         <el-card v-loading="homeWallet.loading" class="top">
           <h2 style="font-weight: 600; font-size: 16px; color: #757679ff">
             crDAO Balance
@@ -431,6 +431,10 @@ export default {
     color: #191b1f66;
     cursor: not-allowed;
   }
+}
+
+.divider .el-divider.el-divider--horizontal {
+  margin: 0 !important;
 }
 
 #pagination {
