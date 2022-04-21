@@ -194,13 +194,13 @@
                   More</template
                 >
                 <el-menu-item class="submenu-item">
-                  <i style="color: #191b1f" class="fa-light fa-book"></i>
+                  <i style="color: #191b1f !important" class="fa-light fa-book"></i>
                   <a href="https://docs.crunchy.network/" target="_blank">
                     Docs
                   </a>
                 </el-menu-item>
                 <el-menu-item class="submenu-item">
-                  <i style="color: #191b1f" class="fab fa-discord"></i>
+                  <i style="color: #191b1f !important" class="fab fa-discord"></i>
                   <a
                     href="https://discord.com/invite/99UnxxgB46"
                     target="_blank"
@@ -209,7 +209,7 @@
                   </a>
                 </el-menu-item>
                 <el-menu-item class="submenu-item">
-                  <i style="color: #191b1f" class="fab fa-telegram"></i>
+                  <i style="color: #191b1f !important" class="fab fa-telegram"></i>
                   <a href=" https://t.me/crunchy_network" target="_blank">
                     Telegram
                   </a>
