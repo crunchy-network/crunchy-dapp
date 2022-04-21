@@ -13,7 +13,7 @@
           type="flex"
           align="middle"
         >
-          <el-col style="text-align: left" :span="6">
+          <el-col style="text-align: left" :span="4">
             <el-row type="flex" style="align-items: center">
               <el-avatar
                 :src="asset.icon"
@@ -41,7 +41,7 @@
             </el-row>
           </el-col>
 
-          <el-col style="text-align: right" :span="5">
+          <el-col style="text-align: right" :span="4">
             {{
               vueNumberFormat(asset.balance, {
                 prefix: "",
@@ -51,7 +51,7 @@
               })
             }}
           </el-col>
-          <el-col style="text-align: right" :span="5">
+          <el-col style="text-align: right" :span="4">
             {{
               !showUsd
                 ? vueNumberFormat(asset.price, {
@@ -69,7 +69,7 @@
                   })
             }}
           </el-col>
-          <el-col style="text-align: right" :span="5">
+          <el-col style="text-align: right" :span="4">
             {{
               !showUsd
                 ? vueNumberFormat(asset.value, {
@@ -87,7 +87,60 @@
                   })
             }}
           </el-col>
-          <el-col style="text-align: right" :span="3">
+
+          <el-col
+            style="text-align: right"
+            :span="2"
+            :class="asset.priceChange1Day < 0 ? 'n-change' : 'p-change'"
+          >
+            {{
+              asset.contract !== "tez"
+                ? vueNumberFormat(asset.priceChange1Day, {
+                    prefix: "",
+                    suffix: "%",
+                    decimal: ".",
+                    thousand: ",",
+                    precision: 2,
+                  })
+                : "-"
+            }}
+          </el-col>
+          <el-col
+            style="text-align: right"
+            :span="2"
+            :class="asset.priceChange7Day < 0 ? 'n-change' : 'p-change'"
+          >
+            {{
+              asset.contract !== "tez"
+                ? vueNumberFormat(asset.priceChange7Day, {
+                    prefix: "",
+                    suffix: "%",
+                    decimal: ".",
+                    thousand: ",",
+                    precision: 2,
+                  })
+                : "-"
+            }}
+          </el-col>
+          <el-col
+            style="text-align: right"
+            :span="2"
+            :class="asset.priceChange30Day < 0 ? 'n-change' : 'p-change'"
+          >
+            {{
+              asset.contract !== "tez"
+                ? vueNumberFormat(asset.priceChange30Day, {
+                    prefix: "",
+                    suffix: "%",
+                    decimal: ".",
+                    thousand: ",",
+                    precision: 2,
+                  })
+                : "-"
+            }}
+          </el-col>
+
+          <el-col style="text-align: right" :span="2">
             <a
               v-if="asset.contract !== 'tez'"
               :href="`https://quipuswap.com/swap?from=${
@@ -130,5 +183,13 @@ export default {
 .item-row {
   /* border: 1px solid #ebeef5; */
   border-radius: 14px;
+}
+
+.n-change {
+  color: $--color-danger;
+}
+
+.p-change {
+  color: $--color-success;
 }
 </style>

@@ -312,6 +312,138 @@
                 </el-row>
               </el-form>
             </el-card>
+
+            <h2 style="margin-top: 50px; margin-bottom: 30px">
+              Recent WTZ Transactions
+            </h2>
+            <el-card class="box-card" shadow="never">
+              <el-table
+                v-loading="wtz.loading"
+                :data="wtz.txs"
+                :row-class-name="txRowClassName"
+                style="width: 100%"
+              >
+                <el-table-column prop="level" label="Level" width="120">
+                </el-table-column>
+                <el-table-column label="Type" width="120" align="left">
+                  <template slot-scope="scope">
+                    <span v-if="scope.row.parameter.entrypoint === 'wrap'"
+                      >Mint</span
+                    >
+                    <span
+                      v-else-if="scope.row.parameter.entrypoint === 'unwrap'"
+                      >Redeem</span
+                    >
+                  </template>
+                </el-table-column>
+                <el-table-column label="Sender">
+                  <template slot-scope="scope">
+                    <el-link
+                      :href="`https://tzkt.io/${scope.row.sender.address}`"
+                      target="_blank"
+                      >{{
+                        $async(
+                          scope.row.sender.domain,
+                          `tez-domain-${scope.row.sender.address}`
+                        ) ||
+                        `${scope.row.sender.address.substr(
+                          0,
+                          6
+                        )}...${scope.row.sender.address.substr(-6)}`
+                      }}
+                      <i class="far fa-external-link fa-icon-right"></i
+                    ></el-link>
+                  </template>
+                </el-table-column>
+                <el-table-column label="Amount" align="right">
+                  <template slot-scope="scope">
+                    <span v-if="scope.row.parameter.entrypoint === 'wrap'">
+                      {{
+                        vueNumberFormat(
+                          Number.parseInt(scope.row.amount) / Math.pow(10, 6)
+                        )
+                      }}
+                      XTZ
+                    </span>
+                    <span
+                      v-else-if="scope.row.parameter.entrypoint === 'unwrap'"
+                    >
+                      {{
+                        vueNumberFormat(
+                          Number.parseInt(scope.row.parameter.value.nat) /
+                            Math.pow(10, 6)
+                        )
+                      }}
+                      WTZ
+                    </span>
+                  </template>
+                </el-table-column>
+
+                <!-- applied, failed, backtracked, skipped -->
+                <el-table-column label="Status" width="125" align="center">
+                  <template slot-scope="scope">
+                    <el-popover
+                      v-if="scope.row.status == 'applied'"
+                      placement="bottom"
+                      width="100"
+                      trigger="hover"
+                      content="Applied"
+                      popper-class="popover"
+                    >
+                      <span slot="reference" class="applied"
+                        ><i class="far fa-check-double"></i
+                      ></span>
+                    </el-popover>
+                    <el-popover
+                      v-if="scope.row.status == 'backtracked'"
+                      placement="bottom"
+                      width="100"
+                      trigger="hover"
+                      content="Backtracked"
+                      popper-class="popover"
+                    >
+                      <span slot="reference" class="backtracked"
+                        ><i class="far fa-undo"></i
+                      ></span>
+                    </el-popover>
+                    <el-popover
+                      v-if="scope.row.status == 'skipped'"
+                      placement="bottom"
+                      width="100"
+                      trigger="hover"
+                      content="Skipped"
+                      popper-class="popover"
+                    >
+                      <span slot="reference" class="skipped"
+                        ><i class="far fa-redo"></i
+                      ></span>
+                    </el-popover>
+                    <el-popover
+                      v-if="scope.row.status == 'failed'"
+                      placement="bottom"
+                      width="100"
+                      trigger="hover"
+                      content="Failed"
+                      popper-class="popover"
+                    >
+                      <span slot="reference" class="failed"
+                        ><i class="far fa-xmark"></i
+                      ></span>
+                    </el-popover>
+                  </template>
+                </el-table-column>
+
+                <el-table-column label="" width="110" align="right">
+                  <template slot-scope="scope">
+                    <el-link
+                      :href="`https://tzkt.io/${scope.row.hash}`"
+                      target="_blank"
+                      >View Op <i class="far fa-external-link fa-icon-right"></i
+                    ></el-link>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-card>
           </div>
         </el-col>
         <el-col :span="8">
@@ -432,6 +564,10 @@ export default {
       this.loadWtzData();
     },
 
+    txRowClassName({ row }) {
+      return `row-${row.status}`;
+    },
+
     calcXtzToWtz(xtzIn) {
       return BigNumber(xtzIn)
         .times(this.wtz.swapRatio)
@@ -494,6 +630,24 @@ export default {
     .el-form-item__label {
       text-transform: none;
     }
+  }
+
+  .applied {
+    color: $--color-success;
+  }
+  .failed {
+    color: $--color-danger;
+  }
+  .skipped,
+  .backtracked {
+    color: $--color-warning;
+  }
+  .row-failed {
+    background: $--color-danger-lighter;
+  }
+  .row-skipped,
+  .row-backtracked {
+    background: $--color-warning-lighter;
   }
 }
 </style>
