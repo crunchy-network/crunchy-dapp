@@ -143,10 +143,10 @@
           <el-col style="text-align: right" :span="2">
             <a
               v-if="asset.contract !== 'tez'"
-              :href="`https://quipuswap.com/swap?from=${
+              :href="`https://quipuswap.com/swap/${
                 asset.contract +
                 (asset.tokenid === undefined ? '' : '_' + asset.tokenid)
-              }&to=tez`"
+              }-tez`"
               target="_blank"
             >
               <el-button style="color: #555cff; font-weight: 600" type="text">
