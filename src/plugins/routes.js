@@ -27,9 +27,6 @@ const routes = [
   {
     name: "wtz",
     path: "/wtz",
-    beforeEnter() {
-      window.open("https://wtz.io/");
-    },
     component: WtzMain,
   },
 
