@@ -17,7 +17,7 @@
     >
       <el-row class="el-menu-row" type="flex" justify="space-between">
         <div class="show-mobile" style="text-align: center; margin: 0 20px">
-          <img src="../assets/logo_transparent_background.png" width="150" />
+          <img src="../assets/logo_transparent_background.png" width="170" />
         </div>
         <button
           :class="['show-mobile clear-btn', showMenu && ' close-btn']"
@@ -54,7 +54,7 @@
                 <div style="text-align: center">
                   <img
                     src="../assets/logo_transparent_background.png"
-                    width="150"
+                    width="170"
                   />
                 </div>
               </el-menu-item>
