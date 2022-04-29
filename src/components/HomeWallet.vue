@@ -1,7 +1,12 @@
 <template>
   <div>
-    <el-row type="flex" justify="space-between" :gutter="40">
-      <el-col :xs="24" :md="7">
+    <el-row
+      type="flex"
+      style="flex-wrap: wrap; row-gap: 10px;"
+      justify="space-between"
+      :gutter="40"
+    >
+      <el-col  :xs="24" :md="24" :lg="7">
         <el-card v-loading="homeWallet.loading" class="top">
           <h2 style="font-weight: 600; font-size: 16px; color: #757679ff">
             Net Worth
@@ -29,16 +34,16 @@
       </el-col>
 
       <el-col
-        style="
-          flex: 1;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        "
+        style="display: flex; justify-content: center; align-items: center"
+        :xs="24"
+        :md="24"
+        :lg="3"
+        class="divider"
       >
-        <el-divider direction="vertical"> </el-divider>
+        <el-divider direction="vertical"></el-divider>
+        <el-divider direction="horizontal"></el-divider>
       </el-col>
-      <el-col :xs="24" :md="7">
+      <el-col :xs="24" :md="12" :lg="7" >
         <el-card v-loading="homeWallet.loading" class="top">
           <h2 style="font-weight: 600; font-size: 16px; color: #757679ff">
             CRUNCH Balance
@@ -56,7 +61,7 @@
           </h2>
         </el-card>
       </el-col>
-      <el-col :xs="24" :md="7">
+      <el-col :xs="24" :md="12" :lg="7" >
         <el-card v-loading="homeWallet.loading" class="top">
           <h2 style="font-weight: 600; font-size: 16px; color: #757679ff">
             crDAO Balance
@@ -81,6 +86,8 @@
         margin: 46px 0 32px 0;
         border-bottom: 1.5px solid rgba(117, 118, 121, 0.1);
         align-items: center;
+        flex-wrap: wrap-reverse;
+        gap: 10px;
       "
       :gutter="20"
       type="flex"
@@ -136,7 +143,7 @@
 
     <div v-if="activeTab === 'portfolio'">
       <el-card v-loading="homeWallet.loading">
-        <div>
+        <div class="responsive-table" >
           <div>
             <el-row
               type="flex"
@@ -148,6 +155,7 @@
                 border-bottom: 2px solid #f4f4f4;
                 padding-bottom: 14px;
                 margin-bottom: 14px;
+                min-width: 900px
               "
             >
               <el-col :span="24">
@@ -399,7 +407,9 @@ export default {
   display: flex;
   align-items: flex-start;
   padding: 0 0 0 90px;
-  overflow: auto;
+  @media (max-width: 768px) {
+    padding: 0 0 0 0px;
+  }
 }
 
 .tab-text {
@@ -421,6 +431,10 @@ export default {
     color: #191b1f66;
     cursor: not-allowed;
   }
+}
+
+.divider .el-divider.el-divider--horizontal {
+  margin: 0 !important;
 }
 
 #pagination {

@@ -1,59 +1,36 @@
 <template>
   <div id="lp-locker-listing">
-    <el-header
-      style="
-        position: fixed;
-        height: 90px;
-        top: 0;
-        left: 230px;
-        right: 0;
-        background: #fff;
-        z-index: 999;
-        border-bottom: 1px solid #e8e8e9;
-      "
+    <nav-menu>
+      <el-button
+        type="primary"
+        round
+        style="font-weight: bold"
+        @click="showCreateDialog"
+        ><img
+          src="./../assets/svg-icons/lock.svg"
+          style="
+            width: 24px;
+            height: 24px;
+            vertical-align: middle;
+            margin-right: 6px;
+            margin-top: -6px;
+            margin-bottom: -6px;
+          "
+        />Lock LP Tokens</el-button
+      ></nav-menu
     >
-      <el-row type="flex" class="row-bg" justify="space-between">
-        <el-col :span="6">
-          <!-- <div class="grid-content">
-              <el-input
-                :value="farms.searchInput"
-                @input="updateSearchInput"
-                placeholder="Search farms and pools"
-                prefix-icon="fad fa-search">
-              </el-input>
-            </div> -->
-        </el-col>
-        <el-col :span="12">
-          <div class="grid-content" style="text-align: right">
-            <el-button
-              type="primary"
-              round
-              style="font-weight: bold"
-              @click="showCreateDialog"
-              ><img
-                src="./../assets/svg-icons/lock.svg"
-                style="
-                  width: 24px;
-                  height: 24px;
-                  vertical-align: middle;
-                  margin-right: 6px;
-                  margin-top: -6px;
-                  margin-bottom: -6px;
-                "
-              />Lock LP Tokens</el-button
-            >
-            <el-divider direction="vertical"></el-divider>
-            <NavWallet />
-          </div>
-        </el-col>
-      </el-row>
-    </el-header>
-
     <el-main style="margin-top: 90px">
-      <el-row :gutter="20" type="flex" style="margin-bottom: 50px">
-        <el-col :span="16">
-          <el-row :gutter="20" type="flex">
-            <el-col :span="8">
+      <el-row
+        type="flex"
+        style="margin-bottom: 50px; flex-wrap: wrap-reverse; row-gap: 20px"
+      >
+        <el-col :lg="16">
+          <el-row
+            :gutter="20"
+            type="flex"
+            style="flex-wrap: wrap; row-gap: 20px"
+          >
+            <el-col :md="12" :lg="8">
               <div class="grid-content" style="height: 100%">
                 <el-card
                   v-loading="lpLockers.loading"
@@ -90,7 +67,7 @@
                 </el-card>
               </div>
             </el-col>
-            <el-col :span="8">
+            <el-col :md="12" :lg="8">
               <div class="grid-content" style="height: 100%">
                 <el-card
                   v-loading="lpLockers.loading"
@@ -126,7 +103,7 @@
                 </el-card>
               </div>
             </el-col>
-            <el-col :span="8">
+            <el-col :md="12" :lg="8">
               <div class="grid-content" style="height: 100%">
                 <el-card
                   v-loading="lpLockers.loading"
@@ -170,9 +147,8 @@
                 </el-card>
               </div>
             </el-col>
-          </el-row>
-          <el-row :gutter="20" type="flex" style="margin-top: 20px">
-            <el-col :span="8">
+
+            <el-col :md="12" :lg="8">
               <div class="grid-content lp-locker-progress" style="height: 100%">
                 <el-card
                   v-loading="lpLockers.loading"
@@ -221,7 +197,7 @@
                 </el-card>
               </div>
             </el-col>
-            <el-col :span="8">
+            <el-col :md="12" :lg="8">
               <div class="grid-content lp-locker-progress" style="height: 100%">
                 <el-card
                   v-loading="lpLockers.loading"
@@ -270,7 +246,7 @@
                 </el-card>
               </div>
             </el-col>
-            <el-col :span="8">
+            <el-col :md="12" :lg="8">
               <div class="grid-content" style="height: 100%">
                 <el-card
                   v-loading="lpLockers.loading"
@@ -323,15 +299,20 @@
             </el-col>
           </el-row>
         </el-col>
-        <el-col :span="8">
+        <el-col :lg="8">
           <div class="grid-content">
             <DaasCard />
           </div>
         </el-col>
       </el-row>
 
-      <el-row :gutter="20" type="flex" align="bottom">
-        <el-col :span="8">
+      <el-row
+        :gutter="20"
+        type="flex"
+        align="bottom"
+        style="flex-wrap: wrap; row-gap: 10px"
+      >
+        <el-col :sm="8">
           <div class="grid-content">
             <h2 style="margin-top: 0; margin-bottom: 5px">Deep Freezers</h2>
             <span style="font-size: 14px"
@@ -339,7 +320,7 @@
             >
           </div>
         </el-col>
-        <el-col :span="16">
+        <el-col :sm="16">
           <div class="grid-content" style="text-align: right">
             <el-switch
               v-model="showUsd"
@@ -358,62 +339,66 @@
         <el-col :span="24">
           <div class="grid-content">
             <el-card v-loading="lpLockers.loading" class="box-card">
-              <el-row
-                type="flex"
-                align="middle"
-                style="
-                  color: #757679;
-                  font-size: 14px;
-                  font-weight: 600;
-                  border-bottom: 2px solid #f4f4f4;
-                  padding-bottom: 14px;
-                  margin-bottom: 14px;
-                "
-              >
-                <el-col :span="24">
+              <div class="responsive-table">
+                <div>
                   <el-row
-                    :gutter="20"
                     type="flex"
                     align="middle"
-                    style="padding: 0 20px"
+                    style="
+                      color: #757679;
+                      font-size: 14px;
+                      font-weight: 600;
+                      border-bottom: 2px solid #f4f4f4;
+                      padding-bottom: 14px;
+                      margin-bottom: 14px;
+                    "
                   >
-                    <el-col :sm="2" :lg="1">DEX</el-col>
-                    <el-col :sm="8" :lg="6">Pair</el-col>
-                    <el-col style="text-align: right" :sm="7" :lg="4"
-                      >TVL
-                      <el-tooltip
-                        content="Total Value Locked"
-                        placement="top"
-                        effect="light"
+                    <el-col :span="24">
+                      <el-row
+                        :gutter="20"
+                        type="flex"
+                        align="middle"
+                        style="padding: 0 20px"
                       >
-                        <i class="fas fa-question-circle"></i>
-                      </el-tooltip>
+                        <el-col :sm="2" :lg="1">DEX</el-col>
+                        <el-col :sm="8" :lg="6">Pair</el-col>
+                        <el-col style="text-align: right" :sm="7" :lg="4"
+                          >TVL
+                          <el-tooltip
+                            content="Total Value Locked"
+                            placement="top"
+                            effect="light"
+                          >
+                            <i class="fas fa-question-circle"></i>
+                          </el-tooltip>
+                        </el-col>
+                        <el-col
+                          class="hidden-md-and-down"
+                          style="text-align: right"
+                          :span="4"
+                          >Total Liquidity</el-col
+                        >
+                        <el-col
+                          class="hidden-md-and-down"
+                          style="text-align: right"
+                          :span="4"
+                          >Tokens Locked</el-col
+                        >
+                        <el-col style="text-align: right" :sm="7" :lg="5"
+                          >Next Unlock</el-col
+                        >
+                      </el-row>
                     </el-col>
-                    <el-col
-                      class="hidden-md-and-down"
-                      style="text-align: right"
-                      :span="4"
-                      >Total Liquidity</el-col
-                    >
-                    <el-col
-                      class="hidden-md-and-down"
-                      style="text-align: right"
-                      :span="4"
-                      >Tokens Locked</el-col
-                    >
-                    <el-col style="text-align: right" :sm="7" :lg="5"
-                      >Next Unlock</el-col
-                    >
                   </el-row>
-                </el-col>
-              </el-row>
 
-              <LpLockerListingRow
-                v-for="locker in orderedLockers"
-                :key="locker.id"
-                :locker="locker"
-                :show-usd="showUsd"
-              ></LpLockerListingRow>
+                  <LpLockerListingRow
+                    v-for="locker in orderedLockers"
+                    :key="locker.id"
+                    :locker="locker"
+                    :show-usd="showUsd"
+                  ></LpLockerListingRow>
+                </div>
+              </div>
             </el-card>
           </div>
         </el-col>
@@ -427,19 +412,19 @@
 <script>
 import _ from "lodash";
 import { mapState, mapActions } from "vuex";
-import NavWallet from "./NavWallet.vue";
 import DaasCard from "./DaasCard.vue";
 import LpLockerListingRow from "./LpLockerListingRow.vue";
 import LpLockerCreateDialog from "./LpLockerCreateDialog.vue";
 import { BigNumber } from "bignumber.js";
+import NavMenu from "./NavMenu.vue";
 
 export default {
   name: "LpLockerListing",
   components: {
-    NavWallet,
     DaasCard,
     LpLockerListingRow,
     LpLockerCreateDialog,
+    NavMenu,
   },
   data() {
     return {
