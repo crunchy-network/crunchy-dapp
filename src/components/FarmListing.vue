@@ -1,47 +1,31 @@
 <template>
   <div id="farm-listing">
     <!-- class="hidden-sm-and-down" -->
-    <el-header
-      style="
-        position: fixed;
-        height: 90px;
-        top: 0;
-        left: 230px;
-        right: 0;
-        background: #fff;
-        z-index: 999;
-        border-bottom: 1px solid #e8e8e9;
-      "
-    >
-      <el-row type="flex" class="row-bg" justify="space-between">
-        <el-col :span="24">
-          <div class="grid-content" style="text-align: right">
-            <el-button
-              type="primary"
-              round
-              style="font-weight: bold"
-              @click="$router.push({ name: 'farm-create' })"
-              ><i class="fak fa-crunchy-farm-add" style="margin-right: 6px"></i>
-              Create a Farm</el-button
-            >
-            <el-divider direction="vertical"></el-divider>
-            <NavWallet />
-          </div>
-        </el-col>
-      </el-row>
-    </el-header>
-
+    <nav-menu>
+      <el-button
+        type="primary"
+        round
+        style="font-weight: bold"
+        @click="$router.push({ name: 'farm-create' })"
+        ><i class="fak fa-crunchy-farm-add" style="margin-right: 6px"></i>
+        Create a Farm</el-button
+      >
+    </nav-menu>
     <!-- class="hidden-sm-and-down" -->
     <el-main style="margin-top: 90px">
       <el-row
         v-show="farms.searchInput.length === 0"
         :gutter="20"
         type="flex"
-        style="margin-bottom: 50px"
+        style="margin-bottom: 50px; flex-wrap: wrap-reverse; row-gap: 20px"
       >
-        <el-col :span="16">
-          <el-row :gutter="20" type="flex">
-            <el-col :span="8">
+        <el-col :lg="16">
+          <el-row
+            :gutter="20"
+            type="flex"
+            style="flex-wrap: wrap; row-gap: 20px"
+          >
+            <el-col :md="12" :lg="8">
               <div class="grid-content" style="height: 100%">
                 <el-card
                   v-loading="farms.loading"
@@ -92,7 +76,7 @@
                 </el-card>
               </div>
             </el-col>
-            <el-col :span="8">
+            <el-col :md="12" :lg="8">
               <div class="grid-content" style="height: 100%">
                 <el-card
                   v-loading="farms.loading"
@@ -133,7 +117,7 @@
                 </el-card>
               </div>
             </el-col>
-            <el-col :span="8">
+            <el-col :md="12" :lg="8">
               <div class="grid-content" style="height: 100%">
                 <el-card
                   v-loading="farms.loading"
@@ -181,10 +165,8 @@
                 </el-card>
               </div>
             </el-col>
-          </el-row>
 
-          <el-row :gutter="20" type="flex" style="margin-top: 20px">
-            <el-col :span="8">
+            <el-col :md="12" :lg="8">
               <div class="grid-content" style="height: 100%">
                 <el-card
                   v-loading="farms.loading"
@@ -212,7 +194,7 @@
                 </el-card>
               </div>
             </el-col>
-            <el-col :span="8">
+            <el-col :md="12" :lg="8">
               <div class="grid-content" style="height: 100%">
                 <el-card
                   v-loading="farms.loading"
@@ -242,7 +224,7 @@
                 </el-card>
               </div>
             </el-col>
-            <el-col :span="8">
+            <el-col :md="12" :lg="8">
               <div class="grid-content" style="height: 100%">
                 <el-card
                   v-loading="farms.loading"
@@ -274,7 +256,7 @@
             </el-col>
           </el-row>
         </el-col>
-        <el-col :span="8">
+        <el-col :lg="8">
           <div class="grid-content">
             <DaasCard />
           </div>
@@ -300,8 +282,13 @@
           </div>
         </el-col>
       </el-row>
-      <el-row :gutter="20" type="flex" align="bottom" style="margin-top: 20px">
-        <el-col :span="8">
+      <el-row
+        :gutter="20"
+        type="flex"
+        align="bottom"
+        style="margin-top: 20px; flex-wrap: wrap; row-gap: 20px"
+      >
+        <el-col :md="8">
           <div class="grid-content search-input">
             <el-input
               :value="farms.searchInput"
@@ -312,8 +299,11 @@
             </el-input>
           </div>
         </el-col>
-        <el-col :span="16">
-          <div class="grid-content" style="text-align: right">
+        <el-col :md="16">
+          <div
+            class="grid-content grid-content-filter"
+            style="text-align: right"
+          >
             <el-select
               multiple
               collapse-tags
@@ -383,80 +373,86 @@
         <el-col :span="24">
           <div class="grid-content">
             <el-card v-loading="farms.loading" class="box-card">
-              <el-row
-                type="flex"
-                align="middle"
-                style="
-                  color: #757679;
-                  font-size: 14px;
-                  font-weight: 600;
-                  border-bottom: 2px solid #f4f4f4;
-                  padding-bottom: 14px;
-                  margin-bottom: 14px;
-                "
-              >
-                <el-col :span="24">
+              <div class="responsive-table">
+                <div>
                   <el-row
-                    :gutter="20"
                     type="flex"
                     align="middle"
-                    style="padding: 0 20px"
+                    style="
+                      color: #757679;
+                      font-size: 14px;
+                      font-weight: 600;
+                      border-bottom: 2px solid #f4f4f4;
+                      padding-bottom: 14px;
+                      margin-bottom: 14px;
+                    "
                   >
-                    <el-col :span="7">Farm</el-col>
-                    <el-col style="text-align: right" :span="4">Earned</el-col>
-                    <el-col style="text-align: right" :span="3">APR</el-col>
-                    <el-col style="text-align: right" :span="4"
-                      >TVL
-                      <el-tooltip
-                        content="Total Value Locked"
-                        placement="top"
-                        effect="light"
+                    <el-col :span="24">
+                      <el-row
+                        :gutter="20"
+                        type="flex"
+                        align="middle"
+                        style="padding: 0 20px"
                       >
-                        <i class="fas fa-question-circle"></i>
-                      </el-tooltip>
+                        <el-col :span="7">Farm</el-col>
+                        <el-col style="text-align: right" :span="4"
+                          >Earned</el-col
+                        >
+                        <el-col style="text-align: right" :span="3">APR</el-col>
+                        <el-col style="text-align: right" :span="4"
+                          >TVL
+                          <el-tooltip
+                            content="Total Value Locked"
+                            placement="top"
+                            effect="light"
+                          >
+                            <i class="fas fa-question-circle"></i>
+                          </el-tooltip>
+                        </el-col>
+                        <el-col style="text-align: right" :span="3"
+                          >Multiplier</el-col
+                        >
+                        <el-col
+                          v-show="farms.expanded === false"
+                          :span="3"
+                          style="text-align: right"
+                          ><el-button
+                            type="text"
+                            style="font-weight: bold"
+                            @click="expandAllFarmRows"
+                            >Expand All
+                            <i
+                              class="fas fa-chevron-down fa-icon-right"
+                            ></i></el-button
+                        ></el-col>
+                        <el-col
+                          v-show="farms.expanded === true"
+                          :span="3"
+                          style="text-align: right"
+                          ><el-button
+                            type="text"
+                            style="font-weight: bold"
+                            @click="collapseAllFarmRows"
+                            >Collapse All
+                            <i
+                              class="fas fa-chevron-up fa-icon-right"
+                            ></i></el-button
+                        ></el-col>
+                      </el-row>
                     </el-col>
-                    <el-col style="text-align: right" :span="3"
-                      >Multiplier</el-col
-                    >
-                    <el-col
-                      v-show="farms.expanded === false"
-                      :span="3"
-                      style="text-align: right"
-                      ><el-button
-                        type="text"
-                        style="font-weight: bold"
-                        @click="expandAllFarmRows"
-                        >Expand All
-                        <i
-                          class="fas fa-chevron-down fa-icon-right"
-                        ></i></el-button
-                    ></el-col>
-                    <el-col
-                      v-show="farms.expanded === true"
-                      :span="3"
-                      style="text-align: right"
-                      ><el-button
-                        type="text"
-                        style="font-weight: bold"
-                        @click="collapseAllFarmRows"
-                        >Collapse All
-                        <i
-                          class="fas fa-chevron-up fa-icon-right"
-                        ></i></el-button
-                    ></el-col>
                   </el-row>
-                </el-col>
-              </el-row>
 
-              <FarmListingRow
-                v-for="farm in orderedFarms"
-                v-show="farm.visible"
-                :key="farm.id"
-                :farm="farm"
-                :show-usd="showUsd"
-                @request-unstake-farm="showUnstakeDialog"
-                @request-stake-farm="showStakeDialog"
-              ></FarmListingRow>
+                  <FarmListingRow
+                    v-for="farm in orderedFarms"
+                    v-show="farm.visible"
+                    :key="farm.id"
+                    :farm="farm"
+                    :show-usd="showUsd"
+                    @request-unstake-farm="showUnstakeDialog"
+                    @request-stake-farm="showStakeDialog"
+                  ></FarmListingRow>
+                </div>
+              </div>
             </el-card>
           </div>
         </el-col>
@@ -605,20 +601,22 @@
 <script>
 import _ from "lodash";
 import { mapState, mapActions } from "vuex";
-import NavWallet from "./NavWallet.vue";
+// import NavWallet from "./NavWallet.vue";
 import DaasCard from "./DaasCard.vue";
 import FarmListingRow from "./FarmListingRow.vue";
 import FarmStakeDialog from "./FarmStakeDialog.vue";
 import FarmUnstakeDialog from "./FarmUnstakeDialog.vue";
+import NavMenu from "./NavMenu.vue";
 
 export default {
   name: "FarmListing",
   components: {
-    NavWallet,
+    // NavWallet,
     DaasCard,
     FarmListingRow,
     FarmStakeDialog,
     FarmUnstakeDialog,
+    NavMenu,
   },
   data() {
     return {
@@ -762,5 +760,20 @@ export default {
   width: 100%;
   max-width: 1450px;
   margin: 0 auto;
+}
+
+@media (max-width: 450px) {
+  .grid-content-filter {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* align-items: center; */
+    row-gap: 10px;
+  }
+  .grid-content-filter .el-divider {
+    margin: 0;
+    width: 100% !important;
+    height: 1px !important;
+  }
 }
 </style>

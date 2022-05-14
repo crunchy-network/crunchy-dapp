@@ -1,6 +1,6 @@
 <template>
   <div id="#ifo" style="max-width: 1450px; margin: auto">
-    <AppBar />
+    <NavMenu />
     <div id="wrapper">
       <el-row v-if="!loading" :gutter="40">
         <el-col :xs="24" :md="12"
@@ -309,7 +309,7 @@
         </el-col>
       </el-row> -->
       <el-row :gutter="40" style="margin-top: 1em">
-        <el-col :xs="24" :md="12">
+        <el-col style="margin-bottom: 5px" :xs="24" :md="12">
           <el-card class="grid-content box-card info-box">
             <div class="column-center">
               <h1 class="title">Pool Info</h1>
@@ -376,7 +376,7 @@
             </div>
           </el-card>
         </el-col>
-        <el-col :xs="24" :md="12">
+        <el-col style="margin-bottom: 5px" :xs="24" :md="12">
           <el-card class="grid-content box-card info-box">
             <div class="column-center">
               <h1 class="title">Token Information</h1>
@@ -540,12 +540,12 @@
 </template>
 
 <script>
-import AppBar from "./AppBar.vue";
 import { mapState, mapActions } from "vuex";
 import { gatherAllProjectJsonFiles, importAll } from "../lib/JsonHelper";
+import NavMenu from "./NavMenu.vue";
 export default {
   name: "IFO",
-  components: { AppBar },
+  components: { NavMenu },
   data: () => ({
     project: null,
     images: importAll(

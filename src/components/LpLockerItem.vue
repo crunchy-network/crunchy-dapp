@@ -1,54 +1,24 @@
 <template>
   <div>
-    <el-header
-      style="
-        position: fixed;
-        height: 90px;
-        top: 0;
-        left: 230px;
-        right: 0;
-        background: #fff;
-        z-index: 999;
-      "
+    <nav-menu>
+      <el-button
+        type="primary"
+        round
+        style="font-weight: bold"
+        @click="showCreateDialog"
+        ><img
+          src="./../assets/svg-icons/lock.svg"
+          style="
+            width: 24px;
+            height: 24px;
+            vertical-align: middle;
+            margin-right: 6px;
+            margin-top: -6px;
+            margin-bottom: -6px;
+          "
+        />Lock LP Tokens</el-button
+      ></nav-menu
     >
-      <el-row type="flex" class="row-bg" justify="space-between">
-        <el-col :span="6">
-          <!-- <div class="grid-content">
-              <el-input
-                :value="farms.searchInput"
-                @input="updateSearchInput"
-                placeholder="Search farms and pools"
-                prefix-icon="fad fa-search">
-              </el-input>
-            </div> -->
-        </el-col>
-        <el-col :span="12">
-          <div class="grid-content" style="text-align: right">
-            <el-button
-              type="primary"
-              round
-              style="font-weight: bold"
-              @click="showCreateDialog"
-              ><img
-                src="./../assets/svg-icons/lock.svg"
-                style="
-                  width: 24px;
-                  height: 24px;
-                  vertical-align: middle;
-                  margin-right: 6px;
-                  margin-top: -6px;
-                  margin-bottom: -6px;
-                "
-              />Lock LP Tokens</el-button
-            >
-            <el-divider direction="vertical"></el-divider>
-            <nav-wallet />
-          </div>
-        </el-col>
-      </el-row>
-      <el-divider></el-divider>
-    </el-header>
-
     <el-main>
       <nav>
         <router-link
@@ -656,10 +626,10 @@
 
 <script>
 import LpLockerCreateDialog from "./LpLockerCreateDialog.vue";
-import NavWallet from "./NavWallet.vue";
+import NavMenu from "./NavMenu.vue";
 export default {
   name: "DeepFreezeItem",
-  components: { LpLockerCreateDialog, NavWallet },
+  components: { LpLockerCreateDialog, NavMenu },
   methods: {
     showCreateDialog() {
       this.$refs.createDialog.showDialog();

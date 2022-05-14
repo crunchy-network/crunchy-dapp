@@ -24,7 +24,11 @@ const routes = [
   },
 
   // { name: 'home-wallet', path: '/home-wallet', component: HomeWalletPage },
-  { name: "wtz", path: "/wtz", component: WtzMain },
+  {
+    name: "wtz",
+    path: "/wtz",
+    component: WtzMain,
+  },
 
   {
     name: "deep-freezer-listing",

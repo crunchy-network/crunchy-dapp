@@ -1,31 +1,9 @@
 <template>
   <div id="fire-pit">
-    <el-header
-      style="
-        position: fixed;
-        height: 90px;
-        top: 0;
-        left: 230px;
-        right: 0;
-        background: #fff;
-        z-index: 999;
-        border-bottom: 1px solid #e8e8e9;
-      "
-    >
-      <el-row type="flex" class="row-bg" justify="space-between">
-        <el-col :span="6">
-          <div class="grid-content"></div>
-        </el-col>
-        <el-col :span="12">
-          <div class="grid-content" style="text-align: right">
-            <NavWallet />
-          </div>
-        </el-col>
-      </el-row>
-    </el-header>
+    <nav-menu></nav-menu>
     <el-main style="margin-top: 90px">
-      <el-row :gutter="20" type="flex">
-        <el-col :span="16">
+      <el-row :gutter="20" type="flex" style="flex-wrap: wrap; row-gap: 20px">
+        <el-col :lg="16">
           <div class="grid-content" style="height: 100%">
             <el-card
               class="box-card fire-pit"
@@ -37,14 +15,21 @@
                 Crunchy offers a free to use public burner contract. Send any
                 tokens here that you want to burn for good!
               </p>
-              <el-row type="flex" align="middle" :gutter="20">
-                <el-col :span="8" style="text-align: right"
+              <el-row
+                class="column"
+                type="flex"
+                align="middle"
+                :gutter="20"
+                style="flex-wrap: wrap"
+              >
+                <el-col :sm="8" class="text-left" style="text-align: right"
                   ><strong>Burner Contract:</strong></el-col
                 >
-                <el-col :span="16">
+                <el-col :sm="16">
                   <el-link
                     :href="`https://better-call.dev/${wallet.network}/${burnRecord.contract}`"
                     target="_blank"
+                    style="word-break: break-all"
                     >{{ burnRecord.contract }}
                     <i class="far fa-external-link fa-icon-right"></i
                   ></el-link>
@@ -52,11 +37,12 @@
               </el-row>
               <el-row
                 type="flex"
+                class="column"
                 align="middle"
                 :gutter="20"
-                style="margin-top: 14px"
+                style="margin-top: 14px; flex-wrap: wrap"
               >
-                <el-col :span="8" style="text-align: right"
+                <el-col :span="8" class="text-left" style="text-align: right"
                   ><strong>Tezos Domain Alias:</strong></el-col
                 >
                 <el-col :span="16">
@@ -71,20 +57,25 @@
             </el-card>
           </div>
         </el-col>
-        <el-col :span="8">
+        <el-col :lg="8">
           <div class="grid-content" style="height: 100%">
             <DaasCard />
           </div>
         </el-col>
       </el-row>
 
-      <el-row :gutter="20" type="flex" align="bottom" style="margin-top: 50px">
-        <el-col :span="12">
+      <el-row
+        :gutter="20"
+        type="flex"
+        align="bottom"
+        style="margin-top: 50px; row-gap: 20px; flex-wrap: wrap"
+      >
+        <el-col :sm="12">
           <div class="grid-content">
             <h2 style="margin-top: 0; margin-bottom: 5px">Burn Record</h2>
           </div>
         </el-col>
-        <el-col :span="12">
+        <el-col :sm="12">
           <div class="grid-content" style="text-align: right">
             <el-button
               type="primary"
@@ -107,89 +98,102 @@
         <el-col :span="24">
           <div class="grid-content">
             <el-card class="box-card">
-              <el-table
-                v-loading="burnRecord.loading"
-                :data="burnRecord.records"
-                style="width: 100%"
-              >
-                <el-table-column prop="level" label="Block Level" width="180">
-                </el-table-column>
-                <el-table-column label="Burned By">
-                  <template slot-scope="scope">
-                    <el-link
-                      :href="`https://tzkt.io/${scope.row.from}`"
-                      target="_blank"
-                      >{{
-                        $async(
-                          scope.row.fromDomain,
-                          `tez-domain-${scope.row.from}`
-                        ) || scope.row.from
-                      }}
-                      <i class="far fa-external-link fa-icon-right"></i
-                    ></el-link>
-                  </template>
-                </el-table-column>
-                <el-table-column label="Burn Amount" width="180" align="right">
-                  <template slot-scope="scope">
-                    {{
-                      vueNumberFormat(
-                        Number.parseInt(scope.row.amount) /
-                          Math.pow(10, scope.row.token.decimals)
-                      )
-                    }}
-                  </template>
-                </el-table-column>
-                <el-table-column label="Token" width="280">
-                  <template slot-scope="scope">
-                    <el-link
-                      :href="`https://better-call.dev/${scope.row.token.network}/${scope.row.token.contract}`"
-                      target="_blank"
-                      >{{ scope.row.token.name || scope.row.token.symbol }}
-                      <i class="far fa-external-link fa-icon-right"></i
-                    ></el-link>
-                  </template>
-                </el-table-column>
-
-                <!-- applied, failed, backtracked, skipped -->
-                <el-table-column label="Status" width="125" align="center">
-                  <template slot-scope="scope">
-                    <el-popover
-                      v-if="scope.row.status == 'applied'"
-                      placement="bottom"
-                      width="100"
-                      trigger="hover"
-                      content="Applied"
-                      popper-class="popover"
+              <div class="responsive-table">
+                <div>
+                  <el-table
+                    v-loading="burnRecord.loading"
+                    :data="burnRecord.records"
+                    style="width: 100%"
+                  >
+                    <el-table-column
+                      prop="level"
+                      label="Block Level"
+                      width="180"
                     >
-                      <span slot="reference" class="applied"
-                        ><i class="far fa-check-double"></i
-                      ></span>
-                    </el-popover>
-                    <el-popover
-                      v-if="scope.row.status == 'backtracked'"
-                      placement="bottom"
-                      width="100"
-                      trigger="hover"
-                      content="Backtracked"
-                      popper-class="popover"
+                    </el-table-column>
+                    <el-table-column label="Burned By">
+                      <template slot-scope="scope">
+                        <el-link
+                          :href="`https://tzkt.io/${scope.row.from}`"
+                          target="_blank"
+                          >{{
+                            $async(
+                              scope.row.fromDomain,
+                              `tez-domain-${scope.row.from}`
+                            ) || scope.row.from
+                          }}
+                          <i class="far fa-external-link fa-icon-right"></i
+                        ></el-link>
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      label="Burn Amount"
+                      width="180"
+                      align="right"
                     >
-                      <span slot="reference" class="backtracked"
-                        ><i class="far fa-undo"></i
-                      ></span>
-                    </el-popover>
-                  </template>
-                </el-table-column>
+                      <template slot-scope="scope">
+                        {{
+                          vueNumberFormat(
+                            Number.parseInt(scope.row.amount) /
+                              Math.pow(10, scope.row.token.decimals)
+                          )
+                        }}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="Token" width="280">
+                      <template slot-scope="scope">
+                        <el-link
+                          :href="`https://better-call.dev/${scope.row.token.network}/${scope.row.token.contract}`"
+                          target="_blank"
+                          >{{ scope.row.token.name || scope.row.token.symbol }}
+                          <i class="far fa-external-link fa-icon-right"></i
+                        ></el-link>
+                      </template>
+                    </el-table-column>
 
-                <el-table-column label="" width="110" align="right">
-                  <template slot-scope="scope">
-                    <el-link
-                      :href="`https://better-call.dev/${scope.row.token.network}/opg/${scope.row.hash}`"
-                      target="_blank"
-                      >View Op <i class="far fa-external-link fa-icon-right"></i
-                    ></el-link>
-                  </template>
-                </el-table-column>
-              </el-table>
+                    <!-- applied, failed, backtracked, skipped -->
+                    <el-table-column label="Status" width="125" align="center">
+                      <template slot-scope="scope">
+                        <el-popover
+                          v-if="scope.row.status == 'applied'"
+                          placement="bottom"
+                          width="100"
+                          trigger="hover"
+                          content="Applied"
+                          popper-class="popover"
+                        >
+                          <span slot="reference" class="applied"
+                            ><i class="far fa-check-double"></i
+                          ></span>
+                        </el-popover>
+                        <el-popover
+                          v-if="scope.row.status == 'backtracked'"
+                          placement="bottom"
+                          width="100"
+                          trigger="hover"
+                          content="Backtracked"
+                          popper-class="popover"
+                        >
+                          <span slot="reference" class="backtracked"
+                            ><i class="far fa-undo"></i
+                          ></span>
+                        </el-popover>
+                      </template>
+                    </el-table-column>
+
+                    <el-table-column label="" width="110" align="right">
+                      <template slot-scope="scope">
+                        <el-link
+                          :href="`https://better-call.dev/${scope.row.token.network}/opg/${scope.row.hash}`"
+                          target="_blank"
+                          >View Op
+                          <i class="far fa-external-link fa-icon-right"></i
+                        ></el-link>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </div>
+              </div>
             </el-card>
           </div>
         </el-col>
@@ -199,15 +203,15 @@
 </template>
 
 <script>
-import NavWallet from "./NavWallet.vue";
 import DaasCard from "./DaasCard.vue";
 import { mapState, mapActions } from "vuex";
+import NavMenu from "./NavMenu.vue";
 
 export default {
   name: "FirePit",
   components: {
-    NavWallet,
     DaasCard,
+    NavMenu,
   },
   computed: {
     ...mapState(["burnRecord", "wallet"]),
@@ -268,5 +272,16 @@ export default {
 
 .backtracked {
   color: $--color-danger;
+}
+
+@media (max-width: 768px) {
+  .column {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  .text-left {
+    text-align: left !important;
+  }
 }
 </style>
