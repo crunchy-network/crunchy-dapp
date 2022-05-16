@@ -1,4 +1,5 @@
 import homeWallet from "../../utils/home-wallet";
+import homeWalletStake from "../../utils/home-wallet-stake";
 
 export default {
   async fetchHomeWalletBalances({ rootState, commit }, pkh) {
@@ -19,6 +20,7 @@ export default {
       dispatch("loadBalAndNetworth");
       commit("updateHomeWalletLoading", false);
     });
+    dispatch("loadCrunchyStake");
   },
 
   async softUpdateWalletAssets({ dispatch }) {
@@ -32,5 +34,23 @@ export default {
     commit("updateCrDAOBal", homeWallet.handleCrDAOBal(state.assets));
     commit("updateNetworth", homeWallet.calcNetworth(state.assets));
     commit("updateNetworthUsd", homeWallet.calcUsdNetworth(state.assets));
+  },
+
+  async loadCrunchyStake({ rootState, state, dispatch, commit }) {
+    try {
+      await dispatch("fetchAllFarms");
+      if (Object.keys(rootState.farms.data).length > 0) {
+        const farmsData = rootState.farms.data;
+        const userstake = await homeWalletStake.getUsersCrunchyStake(
+          farmsData,
+          rootState.wallet.pkh
+        );
+
+        const stake = { ...state.crunchyStake, ...userstake };
+        commit("updateCrunchyStake", stake);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   },
 };

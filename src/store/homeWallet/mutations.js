@@ -22,4 +22,8 @@ export default {
   updateCrunchBal(state, value) {
     state.crunchBal = value;
   },
+
+  updateCrunchyStake(state, value) {
+    state.crunchyStake = value;
+  },
 };

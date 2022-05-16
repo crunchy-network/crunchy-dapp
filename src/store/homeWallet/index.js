@@ -5,6 +5,18 @@ export default {
   state: {
     loading: false,
     assets: [],
+    crunchyStake: {
+      protocol: "Crunchy",
+      icon: "https://res.cloudinary.com/melvin-manni/image/upload/v1645283474/tvmz49wrjosa2vrpw2dw.svg",
+      staked: 0,
+      claimable: 0,
+      totalValue: 0,
+      stakedUsdd: 0,
+      claimableUsdd: 0,
+      totalValueUsdd: 0,
+      data: [],
+    },
+
     netWorth: 0,
     netWorthUsd: 0,
     crunchBal: 0,
@@ -15,6 +27,9 @@ export default {
   getters: {
     getAssets(state) {
       return state.assets;
+    },
+    getCrunchyStake(state) {
+      return state.crunchyStake;
     },
   },
 };

@@ -1,7 +1,7 @@
 <template>
   <el-row
     :data-farm-id="farm.id"
-    style="padding-bottom: 14px; font-size: 14px; font-weight: 600; "
+    style="padding-bottom: 14px; font-size: 14px; font-weight: 600"
     :style="
       rowExpanded
         ? 'border: 1px solid #f3f3f3; border-radius: 14px; margin-bottom: 24px;'
@@ -56,14 +56,14 @@
                 <el-col style="text-align: right" :span="4">
                   {{
                     !showUsd
-                      ? vueNumberFormat(farm.stakedValue, {
+                      ? vueNumberFormat(farm.staked, {
                           prefix: "",
                           suffix: " ꜩ",
                           decimal: ".",
                           thousand: ",",
                           precision: 4,
                         })
-                      : vueNumberFormat(farm.stakedValueUsd, {
+                      : vueNumberFormat(farm.stakedUsd, {
                           prefix: "$",
                           decimal: ".",
                           thousand: ",",
@@ -153,33 +153,50 @@
               <el-col style="text-align: right" :span="4">Total Value</el-col>
             </el-row>
 
-            <div v-for="(stake, index) in farm.stakes" :key="index">
+            <div v-for="(stake, index) in farm.data" :key="index">
               <el-row
                 type="flex"
                 align="top"
                 style="
                   padding: 10px 20px;
-                  color: #191B1F;
+                  color: #191b1f;
                   font-size: 14px;
                   font-weight: 600;
                 "
               >
                 <el-col :span="6">
-                  <span style="color: #555cff">
-                    {{ stake.stakedToken }}
+                  <span v-if="stake.poolToken.isLbLp" style="color: #555cff">
+                    XTZ/{{ stake.poolToken.symbol }}
+                  </span>
+                  <span
+                    v-else-if="stake.poolToken.isQuipuLp"
+                    style="color: #555cff"
+                  >
+                    XTZ/{{ stake.poolToken.symbol }}
+                  </span>
+                  <span
+                    v-else-if="stake.poolToken.isPlentyLp"
+                    style="color: #555cff"
+                  >
+                    {{ stake.poolToken.token1.symbol }}/{{
+                      stake.poolToken.token2.symbol
+                    }}
+                  </span>
+                  <span v-else style="color: #555cff">
+                    {{ stake.poolToken.symbol }}
                   </span>
                 </el-col>
                 <el-col style="text-align: right" :span="4">
                   {{
                     !showUsd
-                      ? vueNumberFormat(stake.stakedValue, {
+                      ? vueNumberFormat(stake.depositValue, {
                           prefix: "",
                           suffix: " ꜩ",
                           decimal: ".",
                           thousand: ",",
                           precision: 4,
                         })
-                      : vueNumberFormat(stake.stakedValueUsd, {
+                      : vueNumberFormat(stake.depositValueUsd, {
                           prefix: "$",
                           decimal: ".",
                           thousand: ",",
@@ -190,14 +207,14 @@
                 <el-col style="text-align: right" :span="4">
                   {{
                     !showUsd
-                      ? vueNumberFormat(stake.claimable, {
+                      ? vueNumberFormat(stake.rewardValue, {
                           prefix: "",
                           suffix: " ꜩ",
                           decimal: ".",
                           thousand: ",",
                           precision: 4,
                         })
-                      : vueNumberFormat(stake.claimableUsd, {
+                      : vueNumberFormat(stake.rewardValueUsd, {
                           prefix: "$",
                           decimal: ".",
                           thousand: ",",
