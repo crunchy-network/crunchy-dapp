@@ -31,7 +31,6 @@ async function sumStake(userStake) {
         stake?.poolToken?.pairs[0].tvl / stake?.poolToken?.pairs[0].lptSupply;
       const xtzUsd = await coingecko.getXtzUsdPrice();
 
-      console.log(xtzUsd);
       userStake[index].depositValue = stakedPool * stake?.depositAmount;
       userStake[index].depositValueUsd = userStake[index].depositValue * xtzUsd;
     } else {

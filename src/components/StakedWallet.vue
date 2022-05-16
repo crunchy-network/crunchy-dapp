@@ -171,8 +171,6 @@ export default {
     },
 
     farms(newVal) {
-      console.log("FARM", newVal);
-
       this.paginationHandler();
     },
   },
