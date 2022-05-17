@@ -3,7 +3,7 @@
     id="nft-wallet-view"
     style="min-height: 50vh; display: flex; flex-direction: column"
   >
-    <el-card>
+    <el-card v-loading="homeWallet.loading" >
       <div>
         <div>
           <el-row
@@ -103,7 +103,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapState } from "vuex";
 import StakedWalletRow from "./StakedWalletRow.vue";
 export default {
   components: { StakedWalletRow },
@@ -118,51 +118,11 @@ export default {
       tabledata: [],
       displayCount: 12,
 
-      farms: [
-        {
-          id: 0,
-          icon: "https://res.cloudinary.com/melvin-manni/image/upload/v1645283474/tvmz49wrjosa2vrpw2dw.svg",
-          protocol: "Crunchy",
-          stakedValue: 569.538837,
-          stakedValueUsd: 2100,
-          claimable: 60.552927,
-          claimableUsd: 220.21,
-          totalValue: 628.12815,
-          totalValueUsd: 2320.21,
-          stakes: [
-            {
-              stakedToken: "ASH/XTZ LP",
-              stakedValueUsd: 1500,
-              stakedValue: 408.724143,
-              claimableUsd: 200,
-              claimable: 55.056822,
-              totalValueUsd: 1700,
-              totalValue: 462.496623,
-            },
-            {
-              stakedToken: "CRUNCH",
-              stakedValue: 137.316273,
-              stakedValueUsd: 500,
-              claimable: 5.51353,
-              claimableUsd: 20,
-              totalValue: 142.786394,
-              totalValueUsd: 520,
-            },
-            {
-              stakedToken: "CRUNCH/XTZ LP",
-              stakedValue: 408.724143,
-              stakedValueUsd: 1500,
-              claimable: 55.056822,
-              claimableUsd: 200,
-              totalValue: 462.496623,
-              totalValueUsd: 1700,
-            },
-          ],
-        },
-      ],
+      farms: [],
     };
   },
   computed: {
+    ...mapState(["homeWallet"]),
     ...mapGetters(["getCrunchyStake"]),
   },
   watch: {

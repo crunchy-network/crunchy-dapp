@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import coingecko from "./coingecko";
 import tzkt from "./tzkt";
 
@@ -59,35 +60,61 @@ async function sumStake(userStake) {
 export default {
   async getUsersCrunchyStake(farmsData, pkh) {
     const userStake = [];
-    const { data: userFarms } = await tzkt.getContractBigMapKeys(
+    let { data: userFarms } = await tzkt.getContractBigMapKeys(
       process.env.VUE_APP_CONTRACTS_FARM_ESTATE,
       "ledger",
       { "key.address": pkh, active: "true" }
     );
 
+    userFarms = userFarms.filter(
+      (val) => val.value.rewardDebt !== "0" || val.value.amount !== "0"
+    );
+
+    console.log(userFarms);
     for (let index = 0; index < userFarms.length; index++) {
       const farms = farmsData[parseInt(userFarms[index].key.nat)];
 
+      console.log("FARMS", farms);
+
       const { value } = userFarms[index];
 
-      userStake.push({
-        ...value,
-        endTime: farms?.endTime,
-        depositAmount: farms.depositAmount,
-        rewardsEarned: farms.rewardsEarned,
-        id: farms?.id,
-        duration: farms?.duration,
-        startTime: farms?.startTime,
-        lockDuration: farms?.lockDuration,
-        poolToken: farms?.poolToken,
-        rewardToken: farms?.rewardToken,
-        depositValue: 0,
-        depositValueUsd: 0,
-        rewardValue: 0,
-        rewardValueUsd: 0,
-        totalValue: 0,
-        totalValueUsd: 0,
-      });
+      if (farms) {
+        const depValAmount = new BigNumber(value.amount).toNumber();
+        const rewValAmount = new BigNumber(value.rewardDebt).toNumber();
+
+        if (farms.depositAmount === 0 && depValAmount !== 0) {
+          const dAmount = new BigNumber(depValAmount).div(
+            new BigNumber(10).pow(farms.poolToken.decimals)
+          );
+          farms.depositAmount = dAmount;
+        }
+
+        if (farms.rewardsEarned === 0 && rewValAmount !== 0) {
+          const rewAmount = new BigNumber(rewValAmount).div(
+            new BigNumber(10).pow(farms.rewardToken.decimals)
+          );
+          farms.rewardsEarned = rewAmount;
+        }
+
+        userStake.push({
+          ...value,
+          endTime: farms?.endTime,
+          depositAmount: farms.depositAmount,
+          rewardsEarned: farms.rewardsEarned,
+          id: farms?.id,
+          duration: farms?.duration,
+          startTime: farms?.startTime,
+          lockDuration: farms?.lockDuration,
+          poolToken: farms?.poolToken,
+          rewardToken: farms?.rewardToken,
+          depositValue: 0,
+          depositValueUsd: 0,
+          rewardValue: 0,
+          rewardValueUsd: 0,
+          totalValue: 0,
+          totalValueUsd: 0,
+        });
+      }
     }
 
     const stakeData = await sumStake(userStake);
