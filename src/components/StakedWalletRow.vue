@@ -136,7 +136,7 @@
           </el-col>
         </el-row>
         <collapse-transition :duration="250" name="slide">
-          <div v-show="rowExpanded">
+          <div v-if="farm.data.length > 0" v-show="rowExpanded">
             <el-row
               type="flex"
               align="top"
@@ -242,6 +242,11 @@
                 </el-col>
               </el-row>
             </div>
+          </div>
+          <div v-else v-show="rowExpanded">
+            <h2 style="text-align: center; color: #909399; font-size: 16px; margin-top: 20px;">
+              You currently have no tokens staked
+            </h2>
           </div>
         </collapse-transition>
       </div>

@@ -104,19 +104,20 @@
         </button>
         <button
           class="tab-text"
+          :style="isActiveTab('staked')"
+          @click="setActiveTab('staked')"
+        >
+          Staked
+        </button>
+        <button
+          class="tab-text"
           disabled
           :style="isActiveTab('nfts')"
           @click="setActiveTab('nfts')"
         >
           NFTs
         </button>
-        <button
-          class="tab-text"
-          :style="isActiveTab('staked')"
-          @click="setActiveTab('staked')"
-        >
-          Staked
-        </button>
+        
         <button
           class="tab-text"
           disabled
