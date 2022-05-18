@@ -7,7 +7,7 @@ export default {
     assets: [],
     crunchyStake: {
       protocol: "Crunchy",
-      icon: "https://res.cloudinary.com/melvin-manni/image/upload/v1645283474/tvmz49wrjosa2vrpw2dw.svg",
+      icon: "https://res.cloudinary.com/melvin-manni/image/upload/v1652890962/ibevqo8rwvs0fcopalqp.svg",
       staked: 0,
       claimable: 0,
       totalValue: 0,
