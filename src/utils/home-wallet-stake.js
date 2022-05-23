@@ -70,11 +70,8 @@ export default {
       (val) => val.value.rewardDebt !== "0" || val.value.amount !== "0"
     );
 
-    console.log(userFarms);
     for (let index = 0; index < userFarms.length; index++) {
       const farms = farmsData[parseInt(userFarms[index].key.nat)];
-
-      console.log("FARMS", farms);
 
       const { value } = userFarms[index];
 
@@ -107,6 +104,7 @@ export default {
           lockDuration: farms?.lockDuration,
           poolToken: farms?.poolToken,
           rewardToken: farms?.rewardToken,
+          started: farms.started,
           depositValue: 0,
           depositValueUsd: 0,
           rewardValue: 0,
@@ -118,6 +116,7 @@ export default {
     }
 
     const stakeData = await sumStake(userStake);
+    console.log(stakeData);
     return stakeData;
   },
 };

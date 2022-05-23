@@ -26,4 +26,7 @@ export default {
   updateCrunchyStake(state, value) {
     state.crunchyStake = value;
   },
+  updateStakeLoading(state, value) {
+    state.loadingStake = value;
+  },
 };

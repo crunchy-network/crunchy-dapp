@@ -4,6 +4,7 @@ import actions from "./actions";
 export default {
   state: {
     loading: false,
+    loadingStake: false,
     assets: [],
     crunchyStake: {
       protocol: "Crunchy",

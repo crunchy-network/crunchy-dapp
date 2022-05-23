@@ -18,14 +18,32 @@ export default {
     commit("updateHomeWalletLoading", true);
     dispatch("fetchHomeWalletBalances", pkh).then(() => {
       dispatch("loadBalAndNetworth");
+      dispatch("loadCrunchyStake");
       commit("updateHomeWalletLoading", false);
     });
-    dispatch("loadCrunchyStake");
   },
 
   async softUpdateWalletAssets({ dispatch }) {
     dispatch("fetchHomeWalletBalances").then(() => {
       dispatch("loadBalAndNetworth");
+      dispatch("loadCrunchyStake");
+    });
+  },
+
+  async loadStakeAsssets({ dispatch, commit }, pkh) {
+    commit("updateStakeLoading", true);
+    dispatch("fetchHomeWalletBalances", pkh)
+      .then(() => {
+        dispatch("loadCrunchyStake");
+      })
+      .then(() => {
+        commit("updateStakeLoading", false);
+      });
+  },
+
+  async softUpdateStakeAssets({ dispatch }) {
+    dispatch("fetchHomeWalletBalances").then(() => {
+      dispatch("loadCrunchyStake");
     });
   },
 

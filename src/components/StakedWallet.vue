@@ -3,7 +3,7 @@
     id="nft-wallet-view"
     style="min-height: 50vh; display: flex; flex-direction: column"
   >
-    <el-card v-loading="homeWallet.loading" >
+    <el-card v-loading="homeWallet.loadingStake">
       <div>
         <div>
           <el-row
@@ -103,7 +103,7 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from "vuex";
+import { mapActions, mapGetters, mapState } from "vuex";
 import StakedWalletRow from "./StakedWalletRow.vue";
 export default {
   components: { StakedWalletRow },
@@ -136,8 +136,10 @@ export default {
   },
   mounted() {
     this.paginationHandler();
+    this.loadStakeAsssets();
   },
   methods: {
+    ...mapActions(["loadStakeAsssets"]),
     paginationHandler() {
       this.pages = Math.ceil(this.farms.length / this.displayCount);
       this.handleVisibleData();
