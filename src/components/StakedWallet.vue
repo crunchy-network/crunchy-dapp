@@ -106,8 +106,8 @@
 import { mapActions, mapGetters, mapState } from "vuex";
 import StakedWalletRow from "./StakedWalletRow.vue";
 export default {
-  components: { StakedWalletRow },
   name: "StakedWalletView",
+  components: { StakedWalletRow },
   props: ["showUsd"],
   data() {
     return {

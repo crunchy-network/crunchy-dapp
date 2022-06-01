@@ -64,6 +64,8 @@ export default {
           rootState.wallet.pkh
         );
 
+        homeWalletStake.getUsersQuipusStake(rootState.wallet.pkh);
+
         const stake = { ...state.crunchyStake, ...userstake };
         commit("updateCrunchyStake", stake);
       }
