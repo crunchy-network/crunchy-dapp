@@ -17,7 +17,7 @@
     >
       <el-row class="el-menu-row" type="flex" justify="space-between">
         <div class="show-mobile" style="text-align: center; margin: 0 20px">
-          <img src="../assets/logo_transparent_background.png" width="150" />
+          <img src="../assets/logo_transparent_background.png" width="170" />
         </div>
         <button
           :class="['show-mobile clear-btn', showMenu && ' close-btn']"
@@ -30,8 +30,8 @@
           @click="toggleMenu"
         >
           <i
-            style="font-size: 28px"
             v-if="!showMenu"
+            style="font-size: 28px"
             class="fa-solid fa-bars-staggered"
           ></i>
           <i
@@ -54,7 +54,7 @@
                 <div style="text-align: center">
                   <img
                     src="../assets/logo_transparent_background.png"
-                    width="150"
+                    width="170"
                   />
                 </div>
               </el-menu-item>
@@ -73,8 +73,8 @@
               </router-link>
 
               <el-submenu
-                :popper-append-to-body="false"
                 id="defi-menu"
+                :popper-append-to-body="false"
                 index="1"
                 :class="defiActive ? 'sub-is-active' : ''"
               >
@@ -194,13 +194,19 @@
                   More</template
                 >
                 <el-menu-item class="submenu-item">
-                  <i style="color: #191b1f !important" class="fa-light fa-book"></i>
+                  <i
+                    style="color: #191b1f !important"
+                    class="fa-light fa-book"
+                  ></i>
                   <a href="https://docs.crunchy.network/" target="_blank">
                     Docs
                   </a>
                 </el-menu-item>
                 <el-menu-item class="submenu-item">
-                  <i style="color: #191b1f !important" class="fab fa-discord"></i>
+                  <i
+                    style="color: #191b1f !important"
+                    class="fab fa-discord"
+                  ></i>
                   <a
                     href="https://discord.com/invite/99UnxxgB46"
                     target="_blank"
@@ -209,7 +215,10 @@
                   </a>
                 </el-menu-item>
                 <el-menu-item class="submenu-item">
-                  <i style="color: #191b1f !important" class="fab fa-telegram"></i>
+                  <i
+                    style="color: #191b1f !important"
+                    class="fab fa-telegram"
+                  ></i>
                   <a href=" https://t.me/crunchy_network" target="_blank">
                     Telegram
                   </a>
