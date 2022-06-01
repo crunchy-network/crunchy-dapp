@@ -74,7 +74,7 @@ export default {
 </script>
 
 <style>
-html{
+html {
   overflow-x: hidden;
 }
 
@@ -100,8 +100,8 @@ body {
 
 .responsive-table {
   overflow-x: auto;
-   -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 .responsive-table > div {
   min-width: max-content;
@@ -229,6 +229,25 @@ i.fa-icon-right {
 .el-menu > .el-submenu.sub-is-active .el-submenu__title {
   color: #f15d59 !important;
 }
+.el-menu > .el-submenu.sub-is-active .el-submenu__title i {
+  color: #f15d59 !important;
+}
+
+.el-menu > .el-submenu.sub-is-active {
+  position: relative;
+}
+.el-menu > .el-submenu.sub-is-active::before {
+  content: "";
+  position: absolute;
+  bottom: 15px;
+  width: calc(100% - 30px - 20%);
+  height: 1.5px;
+  background: #ff4d4b;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+}
 
 .el-submenu .el-menu-item {
   height: unset !important;
@@ -317,6 +336,7 @@ header .grid-content button.el-button {
 }
 .el-menu > .el-submenu .el-submenu__title.is-active {
   color: #f15d59 !important;
+  position: relative;
 }
 
 #farm-listing .el-input__inner {

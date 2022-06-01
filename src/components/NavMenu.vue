@@ -12,7 +12,8 @@
         z-index: 999;
         display: flex;
         align-items: center;
-        border-bottom: 1.5px solid rgba(25, 27, 31, 0.1);
+        border-bottom: 1px solid rgba(25, 27, 31, 0.05);
+        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.05);
       "
     >
       <el-row class="el-menu-row" type="flex" justify="space-between">
@@ -398,10 +399,24 @@ export default {
   }
   &.is-active {
     color: #f15d59 !important;
+    position: relative;
+    &::before {
+      content: "";
+      position: absolute;
+      bottom: 15px;
+      width: calc(100% - 30px - 20%);
+      height: 1.5px;
+      background: #ff4d4b;
+      left: 0;
+      right: 0;
+      margin-left: auto;
+      margin-right: auto;
+    }
   }
 }
 .el-divider--vertical {
-  height: 55px !important;
+  height: 35px !important;
+  opacity: 0.1;
 }
 
 @media (max-width: 991px) {
