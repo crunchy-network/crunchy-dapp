@@ -411,6 +411,9 @@ export default {
       right: 0;
       margin-left: auto;
       margin-right: auto;
+      @media (max-width: 991px) {
+        display: none;
+      }
     }
   }
 }

@@ -249,6 +249,12 @@ i.fa-icon-right {
   margin-right: auto;
 }
 
+@media (max-width: 991px) {
+  .el-menu > .el-submenu.sub-is-active::before {
+    display: none;
+  }
+}
+
 .el-submenu .el-menu-item {
   height: unset !important;
   padding: 5px 15px !important;
