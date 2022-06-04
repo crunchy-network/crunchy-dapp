@@ -123,11 +123,11 @@ export default {
   },
   computed: {
     ...mapState(["homeWallet"]),
-    ...mapGetters(["getCrunchyStake"]),
+    ...mapGetters(["getStakes"]),
   },
   watch: {
-    getCrunchyStake(newVal) {
-      this.farms = [newVal];
+    getStakes(newVal) {
+      this.farms = newVal;
     },
 
     farms(newVal) {

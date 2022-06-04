@@ -59,15 +59,15 @@ export default {
       await dispatch("fetchAllFarms");
       if (Object.keys(rootState.farms.data).length > 0) {
         const farmsData = rootState.farms.data;
-        const userstake = await homeWalletStake.getUsersCrunchyStake(
-          farmsData,
-          rootState.wallet.pkh
-        );
+        const [crunchyStake, quipusStake] = await Promise.all([
+          homeWalletStake.getUsersCrunchyStake(farmsData, rootState.wallet.pkh),
+          homeWalletStake.getUsersQuipusStake(rootState.wallet.pkh),
+        ]);
 
-        homeWalletStake.getUsersQuipusStake(rootState.wallet.pkh);
-
-        const stake = { ...state.crunchyStake, ...userstake };
-        commit("updateCrunchyStake", stake);
+        const crunchy = { ...state.crunchyStake, ...crunchyStake };
+        const quipus = { ...state.quipusStake, ...quipusStake };
+        commit("updateCrunchyStake", crunchy);
+        commit("updateQuipusStake", quipus);
       }
     } catch (error) {
       console.log(error);

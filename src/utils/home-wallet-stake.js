@@ -94,7 +94,6 @@ export default {
 
     for (let index = 0; index < userFarms.length; index++) {
       const farms = farmsData[parseInt(userFarms[index].key.nat)];
-      console.log(farms);
       const { value } = userFarms[index];
 
       if (farms) {
@@ -196,12 +195,14 @@ export default {
 
       const poolToken = {
         is_vl_lp: farmValue.stake_params.is_v1_lp,
+        isQuipuLp: farmValue.stake_params.is_v1_lp,
         tokenType,
         ...token,
       };
 
       const rewardToken = {
         is_vl_lp: farmValue.reward_token.is_v1_lp || false,
+        isQuipuLp: farmValue.reward_token.is_v1_lp || false,
         tokenType: rewardTokenType,
         ...rewToken,
       };
@@ -215,6 +216,12 @@ export default {
         started,
         poolToken,
         rewardToken,
+        depositValue: 0,
+        depositValueUsd: 0,
+        rewardValue: 0,
+        rewardValueUsd: 0,
+        totalValue: 0,
+        totalValueUsd: 0,
       };
 
       const poolTokenMeta = teztools.findTokenInPriceFeed(
@@ -254,10 +261,10 @@ export default {
 
       Object.assign(stakeData, {
         rewardsEarned: stakeData.rewardToken.is_vl_lp
-          ? new BigNumber(stakeData.prev_earned)
+          ? new BigNumber(stakeData.earned)
               .div(new BigNumber(10).pow(6))
               .toNumber()
-          : new BigNumber(stakeData.prev_earned)
+          : new BigNumber(stakeData.earned)
               .div(new BigNumber(10).pow(rewardTokenMeta.decimals))
               .toNumber(),
       });
@@ -274,8 +281,8 @@ export default {
       );
     }
 
-    console.log("================================================");
-    console.log(userStake);
-    console.log("================================================");
+    const stakeData = await sumStake(userStake);
+    console.log(stakeData);
+    return stakeData;
   },
 };

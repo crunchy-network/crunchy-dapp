@@ -26,6 +26,9 @@ export default {
   updateCrunchyStake(state, value) {
     state.crunchyStake = value;
   },
+  updateQuipusStake(state, value) {
+    state.quipusStake = value;
+  },
   updateStakeLoading(state, value) {
     state.loadingStake = value;
   },
