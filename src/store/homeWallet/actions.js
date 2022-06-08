@@ -1,5 +1,6 @@
 import homeWallet from "../../utils/home-wallet";
 import homeWalletStake from "../../utils/home-wallet-stake";
+import { getWalletContract } from "../../utils/tezos";
 
 export default {
   async fetchHomeWalletBalances({ rootState, commit }, pkh) {
@@ -33,15 +34,19 @@ export default {
   async loadStakeAsssets({ dispatch, commit }, pkh) {
     commit("updateStakeLoading", true);
 
-    dispatch("loadCrunchyStake").then(() => {
+    await Promise.all([
+      dispatch("loadCrunchyStake"),
+      dispatch("loadQuipuLpStake"),
+    ]).then(() => {
       commit("updateStakeLoading", false);
     });
   },
 
   async softUpdateStakeAssets({ dispatch }) {
-    dispatch("fetchHomeWalletBalances").then(() => {
-      dispatch("loadCrunchyStake");
-    });
+    await Promise.all([
+      dispatch("loadCrunchyStake"),
+      dispatch("loadQuipuLpStake"),
+    ]);
   },
 
   async loadBalAndNetworth({ state, commit }) {
@@ -56,18 +61,42 @@ export default {
       await dispatch("fetchAllFarms");
       if (Object.keys(rootState.farms.data).length > 0) {
         const farmsData = rootState.farms.data;
-        const [crunchyStake, quipusStake] = await Promise.all([
-          homeWalletStake.getUsersCrunchyStake(farmsData, rootState.wallet.pkh),
-          homeWalletStake.getUsersQuipusStake(rootState.wallet.pkh),
-        ]);
+        const crunchyStake = await homeWalletStake.getUsersCrunchyStake(
+          farmsData,
+          rootState.wallet.pkh
+        );
 
         const crunchy = { ...state.crunchyStake, ...crunchyStake };
-        const quipus = { ...state.quipusStake, ...quipusStake };
         commit("updateCrunchyStake", crunchy);
-        commit("updateQuipusStake", quipus);
       }
     } catch (error) {
       console.log(error);
     }
+  },
+
+  async loadQuipuLpStake({ rootState, state, dispatch, commit }) {
+    try {
+      await dispatch("fetchAllFarms");
+      const quipusStake = await homeWalletStake.getUsersQuipusStake(
+        rootState.wallet.pkh
+      );
+      const quipus = { ...state.quipusStake, ...quipusStake };
+      commit("updateQuipusStake", quipus);
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  async harvestQuipuLpStake({ commit, rootState, dispatch }, contract) {
+    const lpContract = await getWalletContract(contract);
+
+    lpContract.methods
+      .withdrawProfit(rootState.wallet.pkh)
+      .send()
+      .then((tx) => {
+        tx.confirmation().then(() => {
+          dispatch("loadQuipuLpStake");
+        });
+      });
   },
 };

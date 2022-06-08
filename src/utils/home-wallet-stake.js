@@ -7,7 +7,7 @@ import tzkt from "./tzkt";
 async function getUserQuipuLp(pkh) {
   const userQuipuLp = [];
   const { data: quipuLp } = await tzkt.getContractBigMapKeys(
-    "KT1PvEyN1xCFCgorN92QCfYjw3axS6jawCiJ",
+    process.env.VUE_APP_CONTRACTS_QUIPU_FA2_FACTORY,
     "token_to_exchange"
   );
 
@@ -195,19 +195,14 @@ export default {
         .div(new BigNumber(10).pow(6))
         .toNumber();
 
-      const updatedRewardPerShare = new BigNumber(stake.rewardPerShare).plus(
-        new BigNumber(stake.reward).div(new BigNumber(stake.tokenPool))
-      );
-
-      const pendingRewards = new BigNumber(stake.user_rewards.reward).plus(
+      stake.rewardValue = new BigNumber(
         new BigNumber(
-          new BigNumber(stake.user_rewards.reward).times(
-            new BigNumber(updatedRewardPerShare)
-          )
-        ).minus(new BigNumber(stake.user_rewards.reward_paid))
-      );
-
-      stake.rewardValue = new BigNumber(pendingRewards)
+          new BigNumber(stake.ledger.balance)
+            .div(new BigNumber(stake.tokenPool))
+            .times(new BigNumber(100))
+            .times(new BigNumber(stake.reward))
+        )
+      )
         .div(new BigNumber(10).pow(6))
         .toNumber();
 
