@@ -360,6 +360,20 @@
                 </el-col>
                 <el-col style="text-align: right" :span="4">
                   <el-button
+                    v-if="farm.protocol === 'Quipuswap'"
+                    type="text"
+                    :disabled="farm.started === false"
+                    style="
+                      padding: 0px;
+                      font-weight: 600;
+                      font-size: 14px;
+                      margin-right: 20px;
+                    "
+                    @click="harvestQuipuLpStake(stake.address)"
+                    >Harvest</el-button
+                  >
+                  <el-button
+                    v-else
                     type="text"
                     :disabled="farm.started === false"
                     style="
@@ -395,7 +409,7 @@
 
 <script>
 import { CollapseTransition } from "@ivanv/vue-collapse-transition";
-import { mapActions } from 'vuex';
+import { mapActions } from "vuex";
 export default {
   name: "StakeWalletRow",
   components: {
@@ -409,7 +423,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(["harvestFarm"]),
+    ...mapActions(["harvestFarm", "harvestQuipuLpStake"]),
     collapseRow() {
       this.rowExpanded = false;
     },
