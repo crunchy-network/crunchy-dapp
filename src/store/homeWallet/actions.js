@@ -32,13 +32,10 @@ export default {
 
   async loadStakeAsssets({ dispatch, commit }, pkh) {
     commit("updateStakeLoading", true);
-    dispatch("fetchHomeWalletBalances", pkh)
-      .then(() => {
-        dispatch("loadCrunchyStake");
-      })
-      .then(() => {
-        commit("updateStakeLoading", false);
-      });
+
+    dispatch("loadCrunchyStake").then(() => {
+      commit("updateStakeLoading", false);
+    });
   },
 
   async softUpdateStakeAssets({ dispatch }) {

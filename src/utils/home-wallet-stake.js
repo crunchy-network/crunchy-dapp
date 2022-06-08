@@ -2,24 +2,53 @@ import BigNumber from "bignumber.js";
 import coingecko from "./coingecko";
 import teztools from "./teztools";
 import tzkt from "./tzkt";
-import merge from "deepmerge";
+// import merge from "deepmerge";
 
-function calcQuipuPendingReward(farmStorage, userStorage) {
-  let pendingRewards = 0;
-  const timediff = Date.now() - new Date(farmStorage.upd);
-  const userEarned = new BigNumber(userStorage.earned).toNumber();
-  const userPrevEarned = new BigNumber(userStorage.prev_earned).toNumber();
-  const userStaked = new BigNumber(userStorage.staked).toNumber();
-  const rewardPerSec = new BigNumber(farmStorage.reward_per_second).toNumber();
-  const rewardPerShare = new BigNumber(farmStorage.reward_per_share).toNumber();
-  const farmStaked = new BigNumber(farmStorage.staked).toNumber();
-  const reward = timediff * rewardPerSec;
-  const updateRewardPerShare = rewardPerShare + reward / farmStaked;
+async function getUserQuipuLp(pkh) {
+  const userQuipuLp = [];
+  const { data: quipuLp } = await tzkt.getContractBigMapKeys(
+    "KT1PvEyN1xCFCgorN92QCfYjw3axS6jawCiJ",
+    "token_to_exchange"
+  );
 
-  pendingRewards =
-    userEarned + userStaked * updateRewardPerShare - userPrevEarned;
+  const quipuLpAddress = quipuLp.map((val) => val.value);
 
-  return pendingRewards;
+  for (let index = 0; index < quipuLpAddress.length; index++) {
+    const val = quipuLpAddress[index];
+    const { data: resp } = await tzkt.getContractBigMapKeys(val, "ledger", {
+      key: pkh,
+    });
+    if (resp.length > 0) {
+      const [
+        {
+          data: { storage: tokenStorage },
+        },
+        { data: userReward },
+      ] = await Promise.all([
+        await tzkt.getContractStorage(val),
+        await tzkt.getContractBigMapKeys(val, "user_rewards", {
+          key: pkh,
+        }),
+      ]);
+
+      const tokenObjkt = {
+        address: val,
+        ledger: resp[0].value,
+        user_rewards: userReward[0].value,
+        tokenAddress: tokenStorage.token_address,
+        tokenId: tokenStorage.token_id,
+        tokenPool: tokenStorage.token_pool,
+        totalReward: tokenStorage.total_reward,
+        totalSupply: tokenStorage.total_supply,
+        rewardPerShare: tokenStorage.reward_per_share,
+        reward: tokenStorage.reward,
+        rewardPerSec: tokenStorage.reward_per_sec,
+      };
+      userQuipuLp.push(tokenObjkt);
+    }
+  }
+
+  return userQuipuLp;
 }
 
 async function sumStake(userStake) {
@@ -35,11 +64,15 @@ async function sumStake(userStake) {
 
   for (let index = 0; index < userStake.length; index++) {
     const stake = userStake[index];
-    userStake[index].rewardValue =
-      stake?.rewardsEarned * stake?.rewardToken?.currentPrice;
-    userStake[index].rewardValueUsd =
-      stake?.rewardsEarned * stake?.rewardToken?.usdValue;
+    if (userStake[index].rewardValue === 0) {
+      userStake[index].rewardValue =
+        stake?.rewardsEarned * stake?.rewardToken?.currentPrice;
+    }
 
+    if (userStake[index].rewardValueUsd === 0) {
+      userStake[index].rewardValueUsd =
+        stake?.rewardsEarned * stake?.rewardToken?.usdValue;
+    }
     userStakesData.claimable += userStake[index].rewardValue;
     userStakesData.claimableUsd += userStake[index].rewardValueUsd;
 
@@ -140,149 +173,66 @@ export default {
 
     return stakeData;
   },
+
   async getUsersQuipusStake(pkh) {
-    const { contracts: priceFeed } = await teztools.getPricefeed();
-    const userStake = [];
-    let { data: userFarms } = await tzkt.getContractBigMapKeys(
-      process.env.VUE_APP_CONTRACTS_QUIPU_FARM_ESTATE,
-      "users_info",
-      { "key.address": pkh, active: "true" }
-    );
+    const xtzUsd = await coingecko.getXtzUsdPrice();
 
-    userFarms = userFarms.filter(
-      (val) => val.value.staked !== "0" || val.value.earned !== "0"
-    );
-
-    for (let index = 0; index < userFarms.length; index++) {
-      const userFarm = userFarms[index];
-
-      const { data: farmStorage } = await tzkt.getContractBigMapKeys(
-        process.env.VUE_APP_CONTRACTS_QUIPU_FARM_ESTATE,
-        "farms",
-        { key: userFarm.key.nat, active: "true" }
+    const userQuipuStakes = await getUserQuipuLp(pkh);
+    for (let i = 0; i < userQuipuStakes.length; i++) {
+      const stake = userQuipuStakes[i];
+      const tokenMetaData = await teztools.getTokenPrice(
+        stake.tokenAddress,
+        stake.tokenId
       );
 
-      const userFarmValue = userFarm.value;
-      const { value: farmValue } = farmStorage[0];
+      console.log(tokenMetaData);
 
-      // console.log(farmValue);
+      tokenMetaData.pairs = tokenMetaData.pairs.filter(
+        (val) => val.address === stake.address
+      );
 
-      const ended = new Date() >= farmValue?.end_time;
-      const started = new Date() >= farmValue?.start_time;
+      stake.depositAmount = new BigNumber(stake.ledger.balance)
+        .div(new BigNumber(10).pow(6))
+        .toNumber();
 
-      const fa2 = farmValue.stake_params?.staked_token.fA2 !== undefined;
-      const rewardFa2 = farmValue?.reward_token.fA2 !== undefined;
+      const updatedRewardPerShare = new BigNumber(stake.rewardPerShare).plus(
+        new BigNumber(stake.reward).div(new BigNumber(stake.tokenPool))
+      );
 
-      const token = farmValue.stake_params.staked_token[fa2 ? "fA2" : "fA1"];
-      const rewToken = farmValue.reward_token[rewardFa2 ? "fA2" : "fA1"];
+      const pendingRewards = new BigNumber(stake.user_rewards.reward).plus(
+        new BigNumber(
+          new BigNumber(stake.user_rewards.reward).times(
+            new BigNumber(updatedRewardPerShare)
+          )
+        ).minus(new BigNumber(stake.user_rewards.reward_paid))
+      );
 
-      const tokenType = {
-        [fa2 ? "fa2" : "fa1"]: true,
-      };
-      const rewardTokenType = {
-        [rewardFa2 ? "fa2" : "fa1"]: true,
-      };
+      stake.rewardValue = new BigNumber(pendingRewards)
+        .div(new BigNumber(10).pow(6))
+        .toNumber();
 
-      if (token) {
-        delete Object.assign(token, { address: token.token }).token;
-        delete Object.assign(token, { tokenId: token.id }).id;
-      }
+      stake.rewardValueUsd = stake.rewardValue * xtzUsd;
+      tokenMetaData.isQuipuLp = true;
 
-      if (rewToken) {
-        delete Object.assign(rewToken, { address: rewToken.token }).token;
-        delete Object.assign(rewToken, { tokenId: rewToken.id }).id;
-      }
-
-      const poolToken = {
-        is_vl_lp: farmValue.stake_params.is_v1_lp,
-        isQuipuLp: farmValue.stake_params.is_v1_lp,
-        tokenType,
-        ...token,
-      };
-
-      const rewardToken = {
-        is_vl_lp: farmValue.reward_token.is_v1_lp || false,
-        isQuipuLp: farmValue.reward_token.is_v1_lp || false,
-        tokenType: rewardTokenType,
-        ...rewToken,
-      };
-
-      const stakeData = {
-        ...userFarmValue,
-        id: userFarm.key.nat,
-        endTime: farmValue?.end_time,
-        startTime: farmValue?.start_time,
-        ended,
-        started,
-        poolToken,
-        rewardToken,
+      userQuipuStakes[i] = {
+        ...stake,
+        poolToken: tokenMetaData,
         depositValue: 0,
         depositValueUsd: 0,
-        rewardValue: 0,
-        rewardValueUsd: 0,
         totalValue: 0,
         totalValueUsd: 0,
       };
-
-      const poolTokenMeta = teztools.findTokenInPriceFeed(
-        stakeData.poolToken,
-        priceFeed
-      );
-
-      const rewardTokenMeta = teztools.findTokenInPriceFeed(
-        stakeData.rewardToken,
-        priceFeed
-      );
-
-      if (poolTokenMeta.address === stakeData.poolToken.address) {
-        poolTokenMeta.pairs = poolTokenMeta.pairs.filter(
-          (val) => val.address === stakeData.poolToken.address
-        );
-      }
-      // console.log("userFarmValue", userFarmValue);
-
-      const pendingRewards = calcQuipuPendingReward(farmValue, userFarmValue);
-
-      const rewardsEarned = new BigNumber(pendingRewards)
-        .div(new BigNumber(10).pow(rewardTokenMeta.decimals))
-        .toNumber();
-
-      console.log("rewardsEarned", rewardsEarned);
-
-      delete Object.assign(stakeData, {
-        depositAmount: stakeData.poolToken.is_vl_lp
-          ? new BigNumber(stakeData.staked)
-              .div(new BigNumber(10).pow(6))
-              .toNumber()
-          : new BigNumber(stakeData.staked)
-              .div(new BigNumber(10).pow(poolTokenMeta.decimals))
-              .toNumber(),
-      }).staked;
-
-      Object.assign(stakeData, {
-        rewardsEarned: stakeData.rewardToken.is_vl_lp
-          ? new BigNumber(stakeData.earned)
-              .div(new BigNumber(10).pow(6))
-              .toNumber()
-          : new BigNumber(stakeData.earned)
-              .div(new BigNumber(10).pow(rewardTokenMeta.decimals))
-              .toNumber(),
-      });
-
-      userStake.push(
-        merge(stakeData, {
-          poolToken: {
-            ...poolTokenMeta,
-          },
-          rewardToken: {
-            ...rewardTokenMeta,
-          },
-        })
-      );
+      console.log(tokenMetaData);
     }
 
-    const stakeData = await sumStake(userStake);
-    console.log(stakeData);
+    const stakeData = await sumStake(userQuipuStakes);
+    console.log("==================");
+    console.log(userQuipuStakes);
+    console.log("==================");
+    console.log("==================");
+    console.log("Stake DATA", stakeData);
+    console.log("==================");
+
     return stakeData;
   },
 };

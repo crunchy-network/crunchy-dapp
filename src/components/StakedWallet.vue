@@ -4,7 +4,7 @@
     style="min-height: 50vh; display: flex; flex-direction: column"
   >
     <el-card v-loading="homeWallet.loadingStake">
-      <div>
+      <div class="responsive-table">
         <div>
           <el-row
             type="flex"

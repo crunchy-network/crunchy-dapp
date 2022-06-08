@@ -19,6 +19,13 @@ export default {
       return res.data;
     });
   },
+  async getTokenPrice(tokenAddress, tokenId) {
+    return makeReqest(
+      `/v1/${tokenAddress}${tokenId ? "_" + tokenId : ""}/price`
+    ).then((res) => {
+      return res.data;
+    });
+  },
 
   findTokenInPriceFeed(token, feed) {
     if (farmUtils.isFa1(token)) {
