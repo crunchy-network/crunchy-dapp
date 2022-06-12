@@ -71,43 +71,68 @@
                         })
                   }}
                 </el-col>
+                <template aria-describedby="Claimable">
+                  <el-col v-if="!farm.lp" style="text-align: right" :span="4">
+                    {{
+                      !showUsd
+                        ? vueNumberFormat(farm.claimable, {
+                            prefix: "",
+                            suffix: " ꜩ",
+                            decimal: ".",
+                            thousand: ",",
+                            precision: 4,
+                          })
+                        : vueNumberFormat(farm.claimableUsd, {
+                            prefix: "$",
+                            decimal: ".",
+                            thousand: ",",
+                            precision: 2,
+                          })
+                    }}
+                  </el-col>
+                  <el-col v-else style="text-align: right" :span="4">
+                    -
+                  </el-col>
+                </template>
+                <template aria-describedby=" Total Value">
+                  <el-col v-if="farm.lp" style="text-align: right" :span="4">
+                    {{
+                      !showUsd
+                        ? vueNumberFormat(farm.staked, {
+                            prefix: "",
+                            suffix: " ꜩ",
+                            decimal: ".",
+                            thousand: ",",
+                            precision: 4,
+                          })
+                        : vueNumberFormat(farm.stakedUsd, {
+                            prefix: "$",
+                            decimal: ".",
+                            thousand: ",",
+                            precision: 2,
+                          })
+                    }}
+                  </el-col>
 
-                <el-col style="text-align: right" :span="4">
-                  {{
-                    !showUsd
-                      ? vueNumberFormat(farm.claimable, {
-                          prefix: "",
-                          suffix: " ꜩ",
-                          decimal: ".",
-                          thousand: ",",
-                          precision: 4,
-                        })
-                      : vueNumberFormat(farm.claimableUsd, {
-                          prefix: "$",
-                          decimal: ".",
-                          thousand: ",",
-                          precision: 2,
-                        })
-                  }}
-                </el-col>
-                <el-col style="text-align: right" :span="4">
-                  {{
-                    !showUsd
-                      ? vueNumberFormat(farm.totalValue, {
-                          prefix: "",
-                          suffix: " ꜩ",
-                          decimal: ".",
-                          thousand: ",",
-                          precision: 4,
-                        })
-                      : vueNumberFormat(farm.totalValueUsd, {
-                          prefix: "$",
-                          decimal: ".",
-                          thousand: ",",
-                          precision: 2,
-                        })
-                  }}
-                </el-col>
+                  <el-col v-else style="text-align: right" :span="4">
+                    {{
+                      !showUsd
+                        ? vueNumberFormat(farm.totalValue, {
+                            prefix: "",
+                            suffix: " ꜩ",
+                            decimal: ".",
+                            thousand: ",",
+                            precision: 4,
+                          })
+                        : vueNumberFormat(farm.totalValueUsd, {
+                            prefix: "$",
+                            decimal: ".",
+                            thousand: ",",
+                            precision: 2,
+                          })
+                    }}
+                  </el-col>
+                </template>
 
                 <el-col
                   v-show="rowExpanded === false"
@@ -166,9 +191,9 @@
               >
                 <el-col :span="4">
                   <el-row
+                    v-if="stake.poolToken.isLbLp"
                     type="flex"
                     style="flex-wrap: wrap"
-                    v-if="stake.poolToken.isLbLp"
                   >
                     <div style="width: max-content">
                       <el-avatar
@@ -201,9 +226,9 @@
                   </el-row>
 
                   <el-row
+                    v-else-if="stake.poolToken.isQuipuLp"
                     type="flex"
                     style="flex-wrap: wrap"
-                    v-else-if="stake.poolToken.isQuipuLp"
                   >
                     <div>
                       <el-avatar
@@ -322,44 +347,69 @@
                         })
                   }}
                 </el-col>
+                <template aria-describedby=" Reward Value">
+                  <el-col v-if="farm.lp" style="text-align: right" :span="4">
+                    -</el-col
+                  >
+                  <el-col v-else style="text-align: right" :span="4">
+                    {{
+                      !showUsd
+                        ? vueNumberFormat(stake.rewardValue, {
+                            prefix: "",
+                            suffix: " ꜩ",
+                            decimal: ".",
+                            thousand: ",",
+                            precision: 4,
+                          })
+                        : vueNumberFormat(stake.rewardValueUsd, {
+                            prefix: "$",
+                            decimal: ".",
+                            thousand: ",",
+                            precision: 2,
+                          })
+                    }}
+                  </el-col>
+                </template>
+                <template aria-describedby="Total Value">
+                  <el-col v-if="farm.lp" style="text-align: right" :span="4">
+                    {{
+                      !showUsd
+                        ? vueNumberFormat(stake.depositValue, {
+                            prefix: "",
+                            suffix: " ꜩ",
+                            decimal: ".",
+                            thousand: ",",
+                            precision: 4,
+                          })
+                        : vueNumberFormat(stake.depositValueUsd, {
+                            prefix: "$",
+                            decimal: ".",
+                            thousand: ",",
+                            precision: 2,
+                          })
+                    }}
+                  </el-col>
+                  <el-col v-else style="text-align: right" :span="4">
+                    {{
+                      !showUsd
+                        ? vueNumberFormat(stake.totalValue, {
+                            prefix: "",
+                            suffix: " ꜩ",
+                            decimal: ".",
+                            thousand: ",",
+                            precision: 4,
+                          })
+                        : vueNumberFormat(stake.totalValueUsd, {
+                            prefix: "$",
+                            decimal: ".",
+                            thousand: ",",
+                            precision: 2,
+                          })
+                    }}
+                  </el-col>
+                </template>
                 <el-col style="text-align: right" :span="4">
-                  {{
-                    !showUsd
-                      ? vueNumberFormat(stake.rewardValue, {
-                          prefix: "",
-                          suffix: " ꜩ",
-                          decimal: ".",
-                          thousand: ",",
-                          precision: 4,
-                        })
-                      : vueNumberFormat(stake.rewardValueUsd, {
-                          prefix: "$",
-                          decimal: ".",
-                          thousand: ",",
-                          precision: 2,
-                        })
-                  }}
-                </el-col>
-                <el-col style="text-align: right" :span="4">
-                  {{
-                    !showUsd
-                      ? vueNumberFormat(stake.totalValue, {
-                          prefix: "",
-                          suffix: " ꜩ",
-                          decimal: ".",
-                          thousand: ",",
-                          precision: 4,
-                        })
-                      : vueNumberFormat(stake.totalValueUsd, {
-                          prefix: "$",
-                          decimal: ".",
-                          thousand: ",",
-                          precision: 2,
-                        })
-                  }}
-                </el-col>
-                <el-col style="text-align: right" :span="4">
-                  <el-button
+                  <!-- <el-button
                     v-if="farm.protocol === 'Quipuswap'"
                     type="text"
                     :disabled="farm.started === false"
@@ -371,9 +421,9 @@
                     "
                     @click="harvestQuipuLpStake(stake.address)"
                     >Harvest</el-button
-                  >
+                  > -->
                   <el-button
-                    v-else
+                    v-if="!farm.lp"
                     type="text"
                     :disabled="farm.started === false"
                     style="

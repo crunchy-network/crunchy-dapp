@@ -19,7 +19,6 @@ export default {
     commit("updateHomeWalletLoading", true);
     dispatch("fetchHomeWalletBalances", pkh).then(() => {
       dispatch("loadBalAndNetworth");
-      dispatch("loadCrunchyStake");
       commit("updateHomeWalletLoading", false);
     });
   },
@@ -31,7 +30,7 @@ export default {
     });
   },
 
-  async loadStakeAsssets({ dispatch, commit }, pkh) {
+  async loadStakeAssets({ dispatch, commit }, pkh) {
     commit("updateStakeLoading", true);
 
     await Promise.all([

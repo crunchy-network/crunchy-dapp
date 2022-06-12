@@ -136,10 +136,13 @@ export default {
   },
   mounted() {
     this.paginationHandler();
-    this.loadStakeAsssets();
+    
+    setInterval(() => {
+      this.softUpdateWalletAssets();
+    }, 1000 * 60 * 10);
   },
   methods: {
-    ...mapActions(["loadStakeAsssets"]),
+    ...mapActions(["softUpdateWalletAssets"]),
     paginationHandler() {
       this.pages = Math.ceil(this.farms.length / this.displayCount);
       this.handleVisibleData();

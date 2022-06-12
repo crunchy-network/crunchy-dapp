@@ -2,11 +2,11 @@
   <div>
     <el-row
       type="flex"
-      style="flex-wrap: wrap; row-gap: 10px;"
+      style="flex-wrap: wrap; row-gap: 10px"
       justify="space-between"
       :gutter="40"
     >
-      <el-col  :xs="24" :md="24" :lg="7">
+      <el-col :xs="24" :md="24" :lg="7">
         <el-card v-loading="homeWallet.loading" class="top">
           <h2 style="font-weight: 600; font-size: 16px; color: #757679ff">
             Net Worth
@@ -43,7 +43,7 @@
         <el-divider direction="vertical"></el-divider>
         <el-divider direction="horizontal"></el-divider>
       </el-col>
-      <el-col :xs="24" :md="12" :lg="7" >
+      <el-col :xs="24" :md="12" :lg="7">
         <el-card v-loading="homeWallet.loading" class="top">
           <h2 style="font-weight: 600; font-size: 16px; color: #757679ff">
             CRUNCH Balance
@@ -61,7 +61,7 @@
           </h2>
         </el-card>
       </el-col>
-      <el-col :xs="24" :md="12" :lg="7" >
+      <el-col :xs="24" :md="12" :lg="7">
         <el-card v-loading="homeWallet.loading" class="top">
           <h2 style="font-weight: 600; font-size: 16px; color: #757679ff">
             crDAO Balance
@@ -117,7 +117,7 @@
         >
           NFTs
         </button>
-        
+
         <button
           class="tab-text"
           disabled
@@ -143,7 +143,7 @@
 
     <div v-if="activeTab === 'portfolio'">
       <el-card v-loading="homeWallet.loading">
-        <div class="responsive-table" >
+        <div class="responsive-table">
           <div>
             <el-row
               type="flex"
@@ -155,7 +155,7 @@
                 border-bottom: 2px solid #f4f4f4;
                 padding-bottom: 14px;
                 margin-bottom: 14px;
-                min-width: 900px
+                min-width: 900px;
               "
             >
               <el-col :span="24">
@@ -322,9 +322,10 @@ export default {
   },
   created() {
     this.refresh();
+    this.loadStakeAssets();
   },
   methods: {
-    ...mapActions(["loadWalletAsssets"]),
+    ...mapActions(["loadWalletAsssets", "loadStakeAssets"]),
 
     refresh() {
       this.loadWalletAsssets(this.$route.params.walletAddress);
