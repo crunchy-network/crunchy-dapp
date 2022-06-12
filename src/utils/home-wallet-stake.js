@@ -4,6 +4,20 @@ import teztools from "./teztools";
 import tzkt from "./tzkt";
 // import merge from "deepmerge";
 
+function estimateQuipuReward(lpBal, lpStorage) {
+  let pendingReward = new BigNumber(0);
+  const lpBalance = new BigNumber(lpBal);
+  const tezPool = new BigNumber(lpStorage.tezPool);
+  const tokenPool = new BigNumber(lpStorage.tokenPool);
+  const totalSupply = new BigNumber(lpStorage.totalSupply);
+
+  pendingReward = new BigNumber(lpBalance.times(tezPool).dividedBy(totalSupply))
+    .minus(lpBalance.times(tokenPool).dividedBy(totalSupply))
+    .abs();
+
+  return pendingReward;
+}
+
 async function getUserQuipuLp(pkh) {
   const userQuipuLp = [];
   const { data: quipuLp } = await tzkt.getContractBigMapKeys(
@@ -37,10 +51,12 @@ async function getUserQuipuLp(pkh) {
         user_rewards: userReward[0].value,
         tokenAddress: tokenStorage.token_address,
         tokenId: tokenStorage.token_id,
+        tezPool: tokenStorage.tez_pool,
         tokenPool: tokenStorage.token_pool,
         totalReward: tokenStorage.total_reward,
         totalSupply: tokenStorage.total_supply,
         rewardPerShare: tokenStorage.reward_per_share,
+        rewardPaid: tokenStorage.reward_paid,
         reward: tokenStorage.reward,
         rewardPerSec: tokenStorage.reward_per_sec,
       };
@@ -195,14 +211,7 @@ export default {
         .div(new BigNumber(10).pow(6))
         .toNumber();
 
-      stake.rewardValue = new BigNumber(
-        new BigNumber(
-          new BigNumber(stake.ledger.balance)
-            .div(new BigNumber(stake.tokenPool))
-            .times(new BigNumber(100))
-            .times(new BigNumber(stake.reward))
-        )
-      )
+      stake.rewardValue = estimateQuipuReward(stake.ledger.balance, stake)
         .div(new BigNumber(10).pow(6))
         .toNumber();
 
