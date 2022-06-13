@@ -1,5 +1,7 @@
+import axios from "axios";
 import BigNumber from "bignumber.js";
 import coingecko from "./coingecko";
+import ipfs from "./ipfs";
 import teztools from "./teztools";
 import tzkt from "./tzkt";
 
@@ -176,10 +178,7 @@ export default {
     return stakeData;
   },
 
-  async getUsersQuipusStake(pkh) {
-    const { contracts: priceFeed } = await teztools.getPricefeed();
-    console.log(priceFeed);
-
+  async getUsersQuipusStake(pkh, priceFeed) {
     const userQuipuStakes = await getUserQuipuLp(pkh);
     for (let i = 0; i < userQuipuStakes.length; i++) {
       const stake = userQuipuStakes[i];
@@ -228,5 +227,69 @@ export default {
     return stakeData;
   },
 
-  async getDogamiStake(pkh) {},
+  async getDogamiStake(pkh) {
+    const userStakes = [];
+
+    const { data: dogami } = await tzkt.getContractStorage(
+      process.env.VUE_APP_DOGAMI_STAKE
+    );
+
+    const [
+      { data: tokenMetaData },
+      {
+        data: [{ value: addressId }],
+      },
+    ] = await Promise.all([
+      await axios.get(
+        `https://api.teztools.io/v1/${dogami.FA12TokenContract}/price`
+      ),
+      await tzkt.getContractBigMapKeys(
+        process.env.VUE_APP_DOGAMI_STAKE,
+        "addressId",
+        { key: pkh }
+      ),
+    ]);
+
+    console.log(tokenMetaData);
+
+    if (tokenMetaData.thumbnailUri) {
+      tokenMetaData.thumbnailUri = ipfs.transformUri(
+        tokenMetaData.thumbnailUri
+      );
+    }
+
+    if (addressId) {
+      const {
+        data: [{ value: stake }],
+      } = await tzkt.getContractBigMapKeys(
+        process.env.VUE_APP_DOGAMI_STAKE,
+        "userStakeFlexPack",
+        { key: addressId }
+      );
+
+      const userStake = stake[pkh];
+      const depositAmount = new BigNumber(userStake.value)
+        .div(new BigNumber(10).pow(tokenMetaData.decimals))
+        .toNumber();
+      const rewardsEarned = new BigNumber(userStake.reward)
+        .div(new BigNumber(10).pow(tokenMetaData.decimals))
+        .toNumber();
+
+      userStakes.push({
+        ...dogami,
+        poolToken: tokenMetaData,
+        rewardToken: tokenMetaData,
+        depositAmount,
+        rewardsEarned,
+        depositValue: 0,
+        depositValueUsd: 0,
+        rewardValue: 0,
+        rewardValueUsd: 0,
+        totalValue: 0,
+        totalValueUsd: 0,
+      });
+    }
+
+    return sumStake(userStakes);
+  },
 };

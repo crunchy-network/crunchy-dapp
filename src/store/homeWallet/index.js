@@ -32,7 +32,19 @@ export default {
       totalValueUsdd: 0,
       data: [],
     },
-
+    dogamiStake: {
+      protocol: "Dogami",
+      url: "https://marketplace.dogami.com/stake",
+      icon: "https://res.cloudinary.com/melvin-manni/image/upload/v1655109090/bia2jmizlq1upb2gd5to.svg",
+      staked: 0,
+      claimable: 0,
+      totalValue: 0,
+      stakedUsdd: 0,
+      claimableUsdd: 0,
+      totalValueUsdd: 0,
+      data: [],
+    },
+    priceFeed: [],
     netWorth: 0,
     netWorthUsd: 0,
     crunchBal: 0,
@@ -48,7 +60,7 @@ export default {
       return state.crunchyStake;
     },
     getStakes(state) {
-      return [state.crunchyStake, state.quipusStake];
+      return [state.crunchyStake, state.quipusStake, state.dogamiStake];
     },
   },
 };

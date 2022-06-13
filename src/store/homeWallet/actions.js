@@ -2,6 +2,7 @@ import homeWallet from "../../utils/home-wallet";
 import homeWalletStake from "../../utils/home-wallet-stake";
 import { getWalletContract } from "../../utils/tezos";
 import merge from "deepmerge";
+import teztools from "../../utils/teztools";
 
 export default {
   async fetchHomeWalletBalances({ rootState, commit }, pkh) {
@@ -32,11 +33,13 @@ export default {
   },
 
   async loadStakeAssets({ dispatch, commit }, pkh) {
+    const { contracts: priceFeed } = await teztools.getPricefeed();
+    commit("updatePriceFeed", priceFeed);
     commit("updateStakeLoading", true);
-
     await Promise.all([
       dispatch("loadCrunchyStake"),
       dispatch("loadQuipuLpStake"),
+      dispatch("loadDogamiStake"),
     ]).then(() => {
       commit("updateStakeLoading", false);
     });
@@ -46,6 +49,7 @@ export default {
     await Promise.all([
       dispatch("loadCrunchyStake"),
       dispatch("loadQuipuLpStake"),
+      dispatch("loadDogamiStake"),
     ]);
   },
 
@@ -75,12 +79,26 @@ export default {
   },
 
   async loadQuipuLpStake({ rootState, state, dispatch, commit }) {
+    // try {
+    //   const quipusStake = await homeWalletStake.getUsersQuipusStake(
+    //     rootState.wallet.pkh,
+    //     state.priceFeed
+    //   );
+    //   const quipus = merge(state.quipusStake, quipusStake);
+    //   commit("updateQuipusStake", quipus);
+    // } catch (error) {
+    //   console.log(error);
+    // }
+  },
+
+  async loadDogamiStake({ rootState, state, dispatch, commit }) {
     try {
-      // const quipusStake = await homeWalletStake.getUsersQuipusStake(
-      //   rootState.wallet.pkh
-      // );
-      // const quipus = merge(state.quipusStake, quipusStake);
-      // commit("updateQuipusStake", quipus);
+      const dogamiStake = await homeWalletStake.getDogamiStake(
+        rootState.wallet.pkh,
+        state.priceFeed
+      );
+      const dogami = merge(state.dogamiStake, dogamiStake);
+      commit("updateDogamiStake", dogami);
     } catch (error) {
       console.log(error);
     }

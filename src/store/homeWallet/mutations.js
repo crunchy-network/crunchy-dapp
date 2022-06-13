@@ -29,7 +29,13 @@ export default {
   updateQuipusStake(state, value) {
     state.quipusStake = value;
   },
+  updateDogamiStake(state, value) {
+    state.dogamiStake = value;
+  },
   updateStakeLoading(state, value) {
     state.loadingStake = value;
+  },
+  updatePriceFeed(state, value) {
+    state.priceFeed = value;
   },
 };
