@@ -104,7 +104,6 @@
         </button>
         <button
           class="tab-text"
-          disabled
           :style="isActiveTab('nfts')"
           @click="setActiveTab('nfts')"
         >
