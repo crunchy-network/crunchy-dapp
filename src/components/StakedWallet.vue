@@ -126,34 +126,35 @@ export default {
     ...mapGetters(["getStakes"]),
   },
   watch: {
-    getStakes(newVal) {
-      this.farms = newVal;
+    getStakes() {
+      this.paginationHandler()
     },
 
     farms(newVal) {
       this.paginationHandler();
     },
   },
-  mounted() {
-    this.paginationHandler();
-    
+  created() {
     setInterval(() => {
-      this.softUpdateWalletAssets();
+      this.softUpdateStakeAssets();
     }, 1000 * 60 * 10);
   },
+  mounted() {
+    this.paginationHandler();
+  },
   methods: {
-    ...mapActions(["softUpdateWalletAssets"]),
+    ...mapActions(["softUpdateStakeAssets", "loadStakeAssets"]),
     paginationHandler() {
-      this.pages = Math.ceil(this.farms.length / this.displayCount);
+      this.pages = Math.ceil(this.getStakes.length / this.displayCount);
       this.handleVisibleData();
     },
 
     handleVisibleData() {
       const next = this.nextPage > this.pages ? this.pages : this.nextPage;
-      this.tabledata = this.farms.slice(
+      this.tabledata = this.getStakes.slice(
         (next - 1) * this.displayCount,
         this.nextPage * this.displayCount > this.farms.length
-          ? this.farms.length
+          ? this.getStakes.length
           : next * this.displayCount
       );
     },

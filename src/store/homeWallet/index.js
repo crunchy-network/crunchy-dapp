@@ -60,7 +60,7 @@ export default {
       return state.crunchyStake;
     },
     getStakes(state) {
-      return [state.crunchyStake, state.quipusStake, state.dogamiStake];
+      return [state.crunchyStake, state.dogamiStake];
     },
   },
 };
