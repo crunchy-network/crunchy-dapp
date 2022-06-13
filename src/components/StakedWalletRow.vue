@@ -39,17 +39,20 @@
                       "
                     />
 
-                    <span
+                    <a
+                      :href="farm.url"
+                      target="_blank"
                       style="
                         font-weight: 600;
                         font-size: 14px;
                         line-height: 19px;
                         letter-spacing: 0.02em;
                         color: #555cff;
+                        text-decoration: none;
                       "
                     >
                       {{ farm.protocol }}
-                    </span>
+                    </a>
                   </el-row>
                 </el-col>
 
@@ -423,7 +426,7 @@
                     >Harvest</el-button
                   > -->
                   <el-button
-                    v-if="!farm.lp"
+                    v-if="farm.protocol === 'Crunchy'"
                     type="text"
                     :disabled="farm.started === false"
                     style="

@@ -21,7 +21,7 @@ export default {
     },
     quipusStake: {
       protocol: "Quipuswap",
-      url: "https://quipuswap.com/farming",
+      url: "https://quipuswap.com/",
       icon: "https://res.cloudinary.com/melvin-manni/image/upload/v1654109475/aa6hmwgxec401jikysta.svg",
       lp: true,
       staked: 0,
@@ -34,7 +34,7 @@ export default {
     },
     dogamiStake: {
       protocol: "Dogami",
-      url: "https://marketplace.dogami.com/stake",
+      url: "https://marketplace.dogami.com/",
       icon: "https://res.cloudinary.com/melvin-manni/image/upload/v1655109090/bia2jmizlq1upb2gd5to.svg",
       staked: 0,
       claimable: 0,
