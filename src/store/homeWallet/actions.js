@@ -1,6 +1,7 @@
 import homeWallet from "../../utils/home-wallet";
 import homeWalletStake from "../../utils/home-wallet-stake";
 import { getWalletContract } from "../../utils/tezos";
+import merge from "deepmerge";
 
 export default {
   async fetchHomeWalletBalances({ rootState, commit }, pkh) {
@@ -65,7 +66,7 @@ export default {
           rootState.wallet.pkh
         );
 
-        const crunchy = { ...state.crunchyStake, ...crunchyStake };
+        const crunchy = merge(state.crunchyStake, crunchyStake);
         commit("updateCrunchyStake", crunchy);
       }
     } catch (error) {
@@ -75,12 +76,11 @@ export default {
 
   async loadQuipuLpStake({ rootState, state, dispatch, commit }) {
     try {
-      await dispatch("fetchAllFarms");
-      const quipusStake = await homeWalletStake.getUsersQuipusStake(
-        rootState.wallet.pkh
-      );
-      const quipus = { ...state.quipusStake, ...quipusStake };
-      commit("updateQuipusStake", quipus);
+      // const quipusStake = await homeWalletStake.getUsersQuipusStake(
+      //   rootState.wallet.pkh
+      // );
+      // const quipus = merge(state.quipusStake, quipusStake);
+      // commit("updateQuipusStake", quipus);
     } catch (error) {
       console.log(error);
     }

@@ -2,21 +2,6 @@ import BigNumber from "bignumber.js";
 import coingecko from "./coingecko";
 import teztools from "./teztools";
 import tzkt from "./tzkt";
-// import merge from "deepmerge";
-
-function estimateQuipuReward(lpBal, lpStorage) {
-  let pendingReward = new BigNumber(0);
-  const lpBalance = new BigNumber(lpBal);
-  const tezPool = new BigNumber(lpStorage.tezPool);
-  const tokenPool = new BigNumber(lpStorage.tokenPool);
-  const totalSupply = new BigNumber(lpStorage.totalSupply);
-
-  pendingReward = new BigNumber(lpBalance.times(tezPool).dividedBy(totalSupply))
-    .minus(lpBalance.times(tokenPool).dividedBy(totalSupply))
-    .abs();
-
-  return pendingReward;
-}
 
 async function getUserQuipuLp(pkh) {
   const userQuipuLp = [];
@@ -29,6 +14,7 @@ async function getUserQuipuLp(pkh) {
 
   for (let index = 0; index < quipuLpAddress.length; index++) {
     const val = quipuLpAddress[index];
+
     const { data: resp } = await tzkt.getContractBigMapKeys(val, "ledger", {
       key: pkh,
     });
@@ -191,14 +177,25 @@ export default {
   },
 
   async getUsersQuipusStake(pkh) {
-    const xtzUsd = await coingecko.getXtzUsdPrice();
+    const { contracts: priceFeed } = await teztools.getPricefeed();
+    console.log(priceFeed);
 
     const userQuipuStakes = await getUserQuipuLp(pkh);
     for (let i = 0; i < userQuipuStakes.length; i++) {
       const stake = userQuipuStakes[i];
-      const tokenMetaData = await teztools.getTokenPrice(
-        stake.tokenAddress,
-        stake.tokenId
+
+      const token = {
+        tokenAddress: stake.tokenAddress,
+        address: stake.address,
+        tokenId: stake.tokenId,
+        tokenType: {
+          fa2: true,
+        },
+      };
+
+      const tokenMetaData = await teztools.findTokenInPriceFeed(
+        token,
+        priceFeed
       );
 
       console.log(tokenMetaData);
@@ -211,11 +208,9 @@ export default {
         .div(new BigNumber(10).pow(6))
         .toNumber();
 
-      stake.rewardValue = estimateQuipuReward(stake.ledger.balance, stake)
-        .div(new BigNumber(10).pow(6))
-        .toNumber();
+      stake.rewardValue = "-";
 
-      stake.rewardValueUsd = stake.rewardValue * xtzUsd;
+      stake.rewardValueUsd = "-";
       tokenMetaData.isQuipuLp = true;
 
       userQuipuStakes[i] = {
@@ -230,13 +225,8 @@ export default {
     }
 
     const stakeData = await sumStake(userQuipuStakes);
-    console.log("==================");
-    console.log(userQuipuStakes);
-    console.log("==================");
-    console.log("==================");
-    console.log("Stake DATA", stakeData);
-    console.log("==================");
-
     return stakeData;
   },
+
+  async getDogamiStake(pkh) {},
 };
