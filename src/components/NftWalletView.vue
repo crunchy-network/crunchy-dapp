@@ -3,7 +3,38 @@
     id="nft-wallet-view"
     style="min-height: 50vh; display: flex; flex-direction: column"
   >
-    <el-row type="flex" style="justify-content: flex-end; margin-bottom: 36px">
+    <el-row
+      type="flex"
+      style="justify-content: space-between; margin-bottom: 16px"
+    >
+      <el-row type="flex" align="middle">
+        <el-button
+          :disabled="viewPage === 'collections'"
+          type="text"
+          style="font-weight: 600; font-size: 16px; line-height: 24px"
+          @click="setCollectionView()"
+        >
+          Collections
+        </el-button>
+        <template v-if="viewPage === 'collection'">
+          <i
+            style="font-size: 18px; color: #c0c4cc; margin: 0 5px"
+            class="fa-solid fa-angle-right"
+          ></i>
+          <span
+            disabled
+            type="text"
+            style="
+              font-weight: 600;
+              font-size: 16px;
+              color: #c0c4cc;
+              line-height: 24px;
+            "
+          >
+            {{ activeCollection }}
+          </span>
+        </template>
+      </el-row>
       <div>
         <el-select collapse-tags value="collections" placeholder="Collections">
           <el-option class="select" label="Collections" value="collections">
@@ -11,15 +42,27 @@
         </el-select>
       </div>
     </el-row>
-
-    <el-row type="flex" align="stretch" :gutter="20">
-      <el-col v-for="(nft, index) in tabledata" :key="index" :span="4">
+    <el-row
+      type="flex"
+      align="stretch"
+      style="flex-wrap: wrap; row-gap: 20px"
+      :gutter="20"
+    >
+      <el-col v-for="(nft, index) in tabledata" :key="index" :xl="4" :md="6">
         <nft-asset-card
-          :art="nft.assets[0]"
+          :art="nft.art"
+          :thumbnail="nft.thumbnailUri"
           :count="nft.count"
           :icon="nft.icon"
+          :links="nft.links"
           :name="nft.name"
-          type="Collection"
+          :value="nft.value"
+          :on-collection-select="
+            () => {
+              return setCollectionView(nft.name);
+            }
+          "
+          :type="viewPage"
         ></nft-asset-card>
       </el-col>
     </el-row>
@@ -90,6 +133,8 @@ export default {
     return {
       currentPage: 0,
       pages: 0,
+      viewPage: "collections",
+      activeCollection: "",
       nextPage: 1,
       prevPage: 0,
       tabledata: [],
@@ -99,58 +144,420 @@ export default {
           count: 100,
           name: "CyberKidz Club",
           icon: require("../assets/nfts/icon1.png"),
-          assets: [require("../assets/nfts/1.png")],
+          thumbnailUri: require("../assets/nfts/1.png"),
+          collection: true,
         },
         {
           count: 1,
           name: "Froggos",
           icon: require("../assets/nfts/icon2.png"),
-          assets: [require("../assets/nfts/2.png")],
+          thumbnailUri: require("../assets/nfts/2.png"),
+          collection: true,
         },
         {
           count: 1005,
           name: "CyberKidz Club",
           icon: require("../assets/nfts/icon3.png"),
-          assets: [require("../assets/nfts/3.png")],
+          thumbnailUri: require("../assets/nfts/3.png"),
+          collection: true,
         },
         {
           count: 100,
           name: "CyberKidz Club",
           icon: require("../assets/nfts/icon1.png"),
-          assets: [require("../assets/nfts/1.png")],
+          thumbnailUri: require("../assets/nfts/1.png"),
+          collection: true,
         },
         {
           count: 1,
           name: "Froggos",
           icon: require("../assets/nfts/icon2.png"),
-          assets: [require("../assets/nfts/2.png")],
+          thumbnailUri: require("../assets/nfts/2.png"),
+          collection: true,
         },
         {
           count: 1005,
           name: "CyberKidz Club",
           icon: require("../assets/nfts/icon3.png"),
-          assets: [require("../assets/nfts/3.png")],
+          thumbnailUri: require("../assets/nfts/3.png"),
+          collection: true,
         },
       ],
+      items: {
+        "CyberKidz Club": [
+          {
+            name: "CyberKidz Club #1",
+            art: require("../assets/nfts/artifact.svg"),
+            value: "3.4",
+            links: [
+              {
+                name: "OBJKT",
+                icon: "https://tezos.art/objkt.png",
+                url: "",
+              },
+              {
+                name: "ByteBlock",
+                icon: "https://tezos.art/byteblock.png",
+                url: "",
+              },
+              {
+                name: "Versum",
+                icon: "https://tezos.art/versum.png",
+                url: "",
+              },
+            ],
+          },
+          {
+            name: "CyberKidz Club #2",
+            art: require("../assets/nfts/artifact.svg"),
+            value: "NA",
+            links: [
+              {
+                name: "OBJKT",
+                icon: "https://tezos.art/objkt.png",
+                url: "",
+              },
+              {
+                name: "ByteBlock",
+                icon: "https://tezos.art/byteblock.png",
+                url: "",
+              },
+              {
+                name: "Versum",
+                icon: "https://tezos.art/versum.png",
+                url: "",
+              },
+            ],
+          },
+          {
+            name: "CyberKidz Club #3",
+            art: require("../assets/nfts/artifact.svg"),
+            value: "3.3",
+            links: [
+              {
+                name: "OBJKT",
+                icon: "https://tezos.art/objkt.png",
+                url: "",
+              },
+              {
+                name: "ByteBlock",
+                icon: "https://tezos.art/byteblock.png",
+                url: "",
+              },
+              {
+                name: "Versum",
+                icon: "https://tezos.art/versum.png",
+                url: "",
+              },
+            ],
+          },
+          {
+            name: "CyberKidz Club #4",
+            art: require("../assets/nfts/artifact.svg"),
+            value: "3.4",
+            links: [
+              {
+                name: "OBJKT",
+                icon: "https://tezos.art/objkt.png",
+                url: "",
+              },
+              {
+                name: "ByteBlock",
+                icon: "https://tezos.art/byteblock.png",
+                url: "",
+              },
+              {
+                name: "Versum",
+                icon: "https://tezos.art/versum.png",
+                url: "",
+              },
+            ],
+          },
+          {
+            name: "CyberKidz Club #5",
+            art: require("../assets/nfts/artifact.svg"),
+            value: "4.2",
+            links: [
+              {
+                name: "OBJKT",
+                icon: "https://tezos.art/objkt.png",
+                url: "",
+              },
+              {
+                name: "ByteBlock",
+                icon: "https://tezos.art/byteblock.png",
+                url: "",
+              },
+              {
+                name: "Versum",
+                icon: "https://tezos.art/versum.png",
+                url: "",
+              },
+            ],
+          },
+          {
+            name: "CyberKidz Club #16",
+            art: require("../assets/nfts/artifact.svg"),
+            value: "3.4",
+            links: [
+              {
+                name: "OBJKT",
+                icon: "https://tezos.art/objkt.png",
+                url: "",
+              },
+              {
+                name: "ByteBlock",
+                icon: "https://tezos.art/byteblock.png",
+                url: "",
+              },
+              {
+                name: "Versum",
+                icon: "https://tezos.art/versum.png",
+                url: "",
+              },
+            ],
+          },
+          {
+            name: "CyberKidz Club #12",
+            art: require("../assets/nfts/artifact.svg"),
+            value: "3.2",
+            links: [
+              {
+                name: "OBJKT",
+                icon: "https://tezos.art/objkt.png",
+                url: "",
+              },
+              {
+                name: "ByteBlock",
+                icon: "https://tezos.art/byteblock.png",
+                url: "",
+              },
+              {
+                name: "Versum",
+                icon: "https://tezos.art/versum.png",
+                url: "",
+              },
+            ],
+          },
+          {
+            name: "CyberKidz Club #13",
+            art: require("../assets/nfts/artifact.svg"),
+            value: "3.3",
+            links: [
+              {
+                name: "OBJKT",
+                icon: "https://tezos.art/objkt.png",
+                url: "",
+              },
+              {
+                name: "ByteBlock",
+                icon: "https://tezos.art/byteblock.png",
+                url: "",
+              },
+              {
+                name: "Versum",
+                icon: "https://tezos.art/versum.png",
+                url: "",
+              },
+            ],
+          },
+          {
+            name: "CyberKidz Club #14",
+            art: require("../assets/nfts/artifact.svg"),
+            value: "3.4",
+            links: [
+              {
+                name: "OBJKT",
+                icon: "https://tezos.art/objkt.png",
+                url: "",
+              },
+              {
+                name: "ByteBlock",
+                icon: "https://tezos.art/byteblock.png",
+                url: "",
+              },
+              {
+                name: "Versum",
+                icon: "https://tezos.art/versum.png",
+                url: "",
+              },
+            ],
+          },
+          {
+            name: "CyberKidz Club #15",
+            art: require("../assets/nfts/artifact.svg"),
+            value: "4.2",
+            links: [
+              {
+                name: "OBJKT",
+                icon: "https://tezos.art/objkt.png",
+                url: "",
+              },
+              {
+                name: "ByteBlock",
+                icon: "https://tezos.art/byteblock.png",
+                url: "",
+              },
+              {
+                name: "Versum",
+                icon: "https://tezos.art/versum.png",
+                url: "",
+              },
+            ],
+          },
+          {
+            name: "CyberKidz Club #111",
+            art: require("../assets/nfts/artifact.svg"),
+            value: "3.4",
+            links: [
+              {
+                name: "OBJKT",
+                icon: "https://tezos.art/objkt.png",
+                url: "",
+              },
+              {
+                name: "ByteBlock",
+                icon: "https://tezos.art/byteblock.png",
+                url: "",
+              },
+              {
+                name: "Versum",
+                icon: "https://tezos.art/versum.png",
+                url: "",
+              },
+            ],
+          },
+          {
+            name: "CyberKidz Club #21",
+            art: require("../assets/nfts/artifact.svg"),
+            value: "3.2",
+            links: [
+              {
+                name: "OBJKT",
+                icon: "https://tezos.art/objkt.png",
+                url: "",
+              },
+              {
+                name: "ByteBlock",
+                icon: "https://tezos.art/byteblock.png",
+                url: "",
+              },
+              {
+                name: "Versum",
+                icon: "https://tezos.art/versum.png",
+                url: "",
+              },
+            ],
+          },
+          {
+            name: "CyberKidz Club #31",
+            art: require("../assets/nfts/artifact.svg"),
+            value: "3.3",
+            links: [
+              {
+                name: "OBJKT",
+                icon: "https://tezos.art/objkt.png",
+                url: "",
+              },
+              {
+                name: "ByteBlock",
+                icon: "https://tezos.art/byteblock.png",
+                url: "",
+              },
+              {
+                name: "Versum",
+                icon: "https://tezos.art/versum.png",
+                url: "",
+              },
+            ],
+          },
+          {
+            name: "CyberKidz Club #41",
+            art: require("../assets/nfts/artifact.svg"),
+            value: "3.4",
+            links: [
+              {
+                name: "OBJKT",
+                icon: "https://tezos.art/objkt.png",
+                url: "",
+              },
+              {
+                name: "ByteBlock",
+                icon: "https://tezos.art/byteblock.png",
+                url: "",
+              },
+              {
+                name: "Versum",
+                icon: "https://tezos.art/versum.png",
+                url: "",
+              },
+            ],
+          },
+          {
+            name: "CyberKidz Club #115",
+            art: require("../assets/nfts/artifact.svg"),
+            value: "4.2",
+            links: [
+              {
+                name: "OBJKT",
+                icon: "https://tezos.art/objkt.png",
+                url: "",
+              },
+              {
+                name: "ByteBlock",
+                icon: "https://tezos.art/byteblock.png",
+                url: "",
+              },
+              {
+                name: "Versum",
+                icon: "https://tezos.art/versum.png",
+                url: "",
+              },
+            ],
+          },
+        ],
+      },
     };
+  },
+  watch: {
+    activeCollection() {
+      this.paginationHandler();
+    },
   },
   mounted() {
     this.paginationHandler();
   },
   methods: {
-    _() {
-      console.log(this.collection);
+    setCollectionView(collection) {
+      if (collection) {
+        this.viewPage = "collection";
+        this.activeCollection = collection;
+      } else {
+        this.viewPage = "collections";
+        this.activeCollection = "";
+      }
     },
+
     paginationHandler() {
-      this.pages = Math.ceil(this.collection.length / this.displayCount);
+      const data =
+        this.viewPage === "collections"
+          ? this.collection
+          : this.items[this.activeCollection] || [];
+
+      this.pages = Math.ceil(data.length / this.displayCount);
       this.handleVisibleData();
+      console.log(this.tabledata);
     },
     handleVisibleData() {
+      const data =
+        this.viewPage === "collections"
+          ? this.collection
+          : this.items[this.activeCollection] || [];
       const next = this.nextPage > this.pages ? this.pages : this.nextPage;
-      this.tabledata = this.collection.slice(
+      this.tabledata = data.slice(
         (next - 1) * this.displayCount,
-        this.nextPage * this.displayCount > this.collection.length
-          ? this.collection.length
+        this.nextPage * this.displayCount > data.length
+          ? data.length
           : next * this.displayCount
       );
     },
