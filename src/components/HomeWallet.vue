@@ -271,10 +271,6 @@
       </el-card>
     </div>
 
-    <div v-if="activeTab === 'nfts'">
-      <nft-wallet-view></nft-wallet-view>
-    </div>
-
     <div v-if="activeTab === 'staked'">
       <staked-wallet :show-usd="showUsd"></staked-wallet>
     </div>
@@ -283,13 +279,11 @@
 
 <script>
 import { mapState, mapActions, mapGetters } from "vuex";
-import NftWalletView from "./NftWalletView.vue";
-// import HomeWalletTable from "./HomeWalletTable.vue";
 import PortfolioWalletRow from "./PortfolioWalletRow.vue";
 import StakedWallet from "./StakedWallet.vue";
 export default {
   name: "HomeWallet",
-  components: { PortfolioWalletRow, NftWalletView, StakedWallet },
+  components: { PortfolioWalletRow, StakedWallet },
   data() {
     return {
       activeTab: "staked",

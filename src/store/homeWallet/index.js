@@ -34,8 +34,8 @@ export default {
     },
     dogamiStake: {
       protocol: "Dogami",
-      url: "https://marketplace.dogami.com/",
-      icon: "https://res.cloudinary.com/melvin-manni/image/upload/v1655109090/bia2jmizlq1upb2gd5to.svg",
+      url: "https://marketplace.dogami.com/stake",
+      icon: "https://res.cloudinary.com/melvin-manni/image/upload/v1655167707/bia2jmizlq1upb2gd5to.svg",
       staked: 0,
       claimable: 0,
       totalValue: 0,

@@ -68,14 +68,24 @@ async function sumStake(userStake) {
 
   for (let index = 0; index < userStake.length; index++) {
     const stake = userStake[index];
+
+    // Check for NaN Values in Stake
+    if (!userStake[index].rewardsEarned) {
+      userStake[index].rewardsEarned = 0;
+    }
+
+    if (!userStake[index].depositAmount) {
+      userStake[index].depositAmount = 0;
+    }
+
     if (userStake[index].rewardValue === 0) {
       userStake[index].rewardValue =
-        stake?.rewardsEarned * stake?.rewardToken?.currentPrice;
+        stake?.rewardsEarned * (stake?.rewardToken?.currentPrice || 0);
     }
 
     if (userStake[index].rewardValueUsd === 0) {
       userStake[index].rewardValueUsd =
-        stake?.rewardsEarned * stake?.rewardToken?.usdValue;
+        stake?.rewardsEarned * (stake?.rewardToken?.usdValue || 0);
     }
     userStakesData.claimable += userStake[index].rewardValue;
     userStakesData.claimableUsd += userStake[index].rewardValueUsd;
@@ -91,12 +101,15 @@ async function sumStake(userStake) {
       const xtzUsd = await coingecko.getXtzUsdPrice();
 
       userStake[index].depositValue = stakedPool * stake?.depositAmount;
+      if (isNaN(userStake[index].depositValue)) {
+        userStake[index].depositValue = 0;
+      }
       userStake[index].depositValueUsd = userStake[index].depositValue * xtzUsd;
     } else {
       userStake[index].depositValue +=
-        stake?.depositAmount * stake?.poolToken?.currentPrice;
+        stake?.depositAmount * (stake?.poolToken?.currentPrice || 0);
       userStake[index].depositValueUsd +=
-        stake?.depositAmount * stake?.poolToken?.usdValue;
+        stake?.depositAmount * (stake?.poolToken?.usdValue || 0);
     }
 
     userStake[index].totalValue =
