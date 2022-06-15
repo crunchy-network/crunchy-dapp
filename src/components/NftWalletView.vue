@@ -1,11 +1,11 @@
-<template>
+<template >
   <div
     id="nft-wallet-view"
     style="min-height: 50vh; display: flex; flex-direction: column"
   >
     <el-row
       type="flex"
-      style="justify-content: space-between; margin-bottom: 16px"
+      style="justify-content: space-between; margin-bottom: 0px"
     >
       <el-row type="flex" align="middle">
         <el-button
@@ -48,7 +48,7 @@
       style="flex-wrap: wrap; row-gap: 20px"
       :gutter="20"
     >
-      <el-col v-for="(nft, index) in tabledata" :key="index" :xl="4" :md="6">
+      <el-col v-for="(nft, index) in tabledata" :key="index" :lg="4" :md="6">
         <nft-asset-card
           :art="nft.art"
           :thumbnail="nft.thumbnailUri"
@@ -603,23 +603,28 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-#pagination {
-  margin-top: 32px;
-  padding: 20px 0 8px 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-top: 2px solid rgba(25, 27, 31, 0.05);
-  .el-button {
-    width: 42px;
-    height: 42px;
-    color: rgba(25, 27, 31, 0.5);
-    padding: 13px;
-    background: rgba(25, 27, 31, 0.04);
-    border: 1px solid rgba(25, 27, 31, 0.2);
-    box-sizing: border-box;
-    border-radius: 8px;
+<style lang="scss">
+#nft-wallet-view {
+  .el-select .el-input__inner {
+    border-radius: 24px;
+  }
+  #pagination {
+    margin-top: 32px;
+    padding: 20px 0 8px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top: 2px solid rgba(25, 27, 31, 0.05);
+    .el-button {
+      width: 42px;
+      height: 42px;
+      color: rgba(25, 27, 31, 0.5);
+      padding: 13px;
+      background: rgba(25, 27, 31, 0.04);
+      border: 1px solid rgba(25, 27, 31, 0.2);
+      box-sizing: border-box;
+      border-radius: 8px;
+    }
   }
 }
 </style>
