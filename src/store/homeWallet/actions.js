@@ -1,7 +1,6 @@
 import homeWallet from "../../utils/home-wallet";
 import homeWalletStake from "../../utils/home-wallet-stake";
 import { getWalletContract } from "../../utils/tezos";
-import merge from "deepmerge";
 import teztools from "../../utils/teztools";
 
 export default {
@@ -70,7 +69,7 @@ export default {
           rootState.wallet.pkh
         );
 
-        const crunchy = merge(state.crunchyStake, crunchyStake);
+        const crunchy = { ...state.crunchyStake, ...crunchyStake };
         commit("updateCrunchyStake", crunchy);
       }
     } catch (error) {
@@ -84,7 +83,7 @@ export default {
     //     rootState.wallet.pkh,
     //     state.priceFeed
     //   );
-    //   const quipus = merge(state.quipusStake, quipusStake);
+    //   const quipus = {...state.quipusStake, ...quipusStake};
     //   commit("updateQuipusStake", quipus);
     // } catch (error) {
     //   console.log(error);
@@ -97,7 +96,7 @@ export default {
         rootState.wallet.pkh,
         state.priceFeed
       );
-      const dogami = merge(state.dogamiStake, dogamiStake);
+      const dogami = { ...state.dogamiStake, ...dogamiStake };
       commit("updateDogamiStake", dogami);
     } catch (error) {
       console.log(error);
