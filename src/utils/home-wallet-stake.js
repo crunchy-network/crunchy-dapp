@@ -68,16 +68,14 @@ async function sumStake(userStake) {
 
   for (let index = 0; index < userStake.length; index++) {
     const stake = userStake[index];
-
-    // Check for NaN Values in Stake
-    if (!userStake[index].rewardsEarned) {
+    if (isNaN(stake.rewardsEarned)) {
       userStake[index].rewardsEarned = 0;
     }
-
-    if (!userStake[index].depositAmount) {
+    if (isNaN(stake.depositAmount)) {
       userStake[index].depositAmount = 0;
     }
 
+    // Check for NaN Values in Stake
     if (userStake[index].rewardValue === 0) {
       userStake[index].rewardValue =
         stake?.rewardsEarned * (stake?.rewardToken?.currentPrice || 0);
@@ -210,8 +208,6 @@ export default {
         priceFeed
       );
 
-      console.log(tokenMetaData);
-
       tokenMetaData.pairs = tokenMetaData.pairs.filter(
         (val) => val.address === stake.address
       );
@@ -233,7 +229,6 @@ export default {
         totalValue: 0,
         totalValueUsd: 0,
       };
-      console.log(tokenMetaData);
     }
 
     const stakeData = await sumStake(userQuipuStakes);
@@ -262,8 +257,6 @@ export default {
         { key: pkh }
       ),
     ]);
-
-    console.log(tokenMetaData);
 
     if (tokenMetaData.thumbnailUri) {
       tokenMetaData.thumbnailUri = ipfs.transformUri(
