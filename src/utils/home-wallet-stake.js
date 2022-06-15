@@ -356,8 +356,6 @@ export default {
       });
     }
 
-    console.log(userStakes);
-
     return sumStake(userStakes);
   },
 };
