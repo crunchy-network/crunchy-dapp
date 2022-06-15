@@ -44,6 +44,18 @@ export default {
       totalValueUsdd: 0,
       data: [],
     },
+    gifStake: {
+      protocol: "GIF",
+      url: "https://tezotopia.com/app/starbase/staking",
+      icon: "https://res.cloudinary.com/melvin-manni/image/upload/v1655318339/ibrhctmf97vlo8cgdla6.svg",
+      staked: 0,
+      claimable: 0,
+      totalValue: 0,
+      stakedUsdd: 0,
+      claimableUsdd: 0,
+      totalValueUsdd: 0,
+      data: [],
+    },
     priceFeed: [],
     netWorth: 0,
     netWorthUsd: 0,
@@ -60,7 +72,7 @@ export default {
       return state.crunchyStake;
     },
     getStakes(state) {
-      return [state.crunchyStake, state.dogamiStake];
+      return [state.crunchyStake, state.dogamiStake, state.gifStake];
     },
   },
 };

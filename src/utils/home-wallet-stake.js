@@ -298,4 +298,69 @@ export default {
 
     return sumStake(userStakes);
   },
+  async getGIFStake(pkh) {
+    const userStakes = [];
+
+    const { data: gif } = await tzkt.getContractStorage(
+      process.env.VUE_APP_GIF_STAKE
+    );
+
+    console.log(gif);
+
+    //   const [
+    //     { data: tokenMetaData },
+    //     {
+    //       data: [{ value: addressId }],
+    //     },
+    //   ] = await Promise.all([
+    //     await axios.get(
+    //       `https://api.teztools.io/v1/${gif.FA12TokenContract}/price`
+    //     ),
+    //     await tzkt.getContractBigMapKeys(
+    //       process.env.VUE_APP_GIF_STAKE,
+    //       "addressId",
+    //       { key: pkh }
+    //     ),
+    //   ]);
+
+    //   if (tokenMetaData.thumbnailUri) {
+    //     tokenMetaData.thumbnailUri = ipfs.transformUri(
+    //       tokenMetaData.thumbnailUri
+    //     );
+    //   }
+
+    //   if (addressId) {
+    //     const {
+    //       data: [{ value: stake }],
+    //     } = await tzkt.getContractBigMapKeys(
+    //       process.env.VUE_APP_DOGAMI_STAKE,
+    //       "userStakeFlexPack",
+    //       { key: addressId }
+    //     );
+
+    //     const userStake = stake[pkh];
+    //     const depositAmount = new BigNumber(userStake.value)
+    //       .div(new BigNumber(10).pow(tokenMetaData.decimals))
+    //       .toNumber();
+    //     const rewardsEarned = new BigNumber(userStake.reward)
+    //       .div(new BigNumber(10).pow(tokenMetaData.decimals))
+    //       .toNumber();
+
+    //     userStakes.push({
+    //       ...dogami,
+    //       poolToken: tokenMetaData,
+    //       rewardToken: tokenMetaData,
+    //       depositAmount,
+    //       rewardsEarned,
+    //       depositValue: 0,
+    //       depositValueUsd: 0,
+    //       rewardValue: 0,
+    //       rewardValueUsd: 0,
+    //       totalValue: 0,
+    //       totalValueUsd: 0,
+    //     });
+    //   }
+
+    return sumStake(userStakes);
+  },
 };

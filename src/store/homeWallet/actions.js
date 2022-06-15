@@ -39,6 +39,7 @@ export default {
       dispatch("loadCrunchyStake"),
       dispatch("loadQuipuLpStake"),
       dispatch("loadDogamiStake"),
+      dispatch("loadGIFStake"),
     ]).then(() => {
       commit("updateStakeLoading", false);
     });
@@ -49,6 +50,7 @@ export default {
       dispatch("loadCrunchyStake"),
       dispatch("loadQuipuLpStake"),
       dispatch("loadDogamiStake"),
+      dispatch("loadGIFStake"),
     ]);
   },
 
@@ -93,11 +95,20 @@ export default {
   async loadDogamiStake({ rootState, state, dispatch, commit }) {
     try {
       const dogamiStake = await homeWalletStake.getDogamiStake(
-        rootState.wallet.pkh,
-        state.priceFeed
+        rootState.wallet.pkh
       );
       const dogami = { ...state.dogamiStake, ...dogamiStake };
       commit("updateDogamiStake", dogami);
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  async loadGIFStake({ rootState, state, dispatch, commit }) {
+    try {
+      const gifStake = await homeWalletStake.getGIFStake(rootState.wallet.pkh);
+      const gif = { ...state.gifStake, ...gifStake };
+      commit("updateGIFStake", gif);
     } catch (error) {
       console.log(error);
     }
