@@ -1,7 +1,7 @@
 <template>
   <div
     class="grid-content"
-    style="cursor: pointer"
+    style="cursor: pointer; height: 100%"
     @click="
       () => {
         if (type === 'collections') {
@@ -12,8 +12,8 @@
   >
     <el-card
       class="box-card"
-      style="box-shadow: 0px 0px 24px rgba(21, 21, 52, 0.04); height: 100%"
-      body-style="padding: 5px 14px 20px; height: 100%;"
+      style="box-shadow: 0px 0px 24px rgba(21, 21, 52, 0.04); height: 100%;"
+      body-style="padding: 5px 14px 20px;"
     >
       <div class="inner">
         <template>
@@ -61,21 +61,9 @@
             v-else
             style="width: 100%"
             type="flex"
-            justify="space-between"
+            justify="end"
             align="middle"
           >
-            <h2
-              style="
-                font-weight: 600 !important;
-                font-size: 12px;
-                color: #555cff;
-                word-break: break-all;
-                margin-right: 3px;
-                margin: 0;
-              "
-            >
-              {{ name }}
-            </h2>
             <el-dropdown trigger="click">
               <el-button
                 style="transform: rotate(90deg); padding: 10px"
@@ -138,16 +126,15 @@
         <div v-if="type === 'collection'" style="margin-top: auto">
           <h2
             style="
-              font-weight: 500;
+              font-weight: 600 !important;
               font-size: 12px;
-              line-height: 18px;
-              letter-spacing: 0.02em;
-              color: #757679;
+              color: #555cff;
+              word-break: break-all;
+              margin-right: 3px;
               margin: 0;
             "
           >
-            Est Value: <br />
-            <span style="color: #191b1f">{{ value }} ꜩ</span>
+            {{ name }}
           </h2>
         </div>
       </div>
