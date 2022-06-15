@@ -305,61 +305,58 @@ export default {
       process.env.VUE_APP_GIF_STAKE
     );
 
-    console.log(gif);
+    const [
+      { data: poolToken },
+      xtzUsd,
+      {
+        data: [{ value: userStake }],
+      },
+    ] = await Promise.all([
+      await axios.get(
+        `https://api.teztools.io/v1/${gif.staking.gif.address}_0/price`
+      ),
+      await coingecko.getXtzUsdPrice(),
+      await tzkt.getContractBigMapKeys(
+        process.env.VUE_APP_GIF_STAKE,
+        "ledger",
+        { key: pkh }
+      ),
+    ]);
 
-    //   const [
-    //     { data: tokenMetaData },
-    //     {
-    //       data: [{ value: addressId }],
-    //     },
-    //   ] = await Promise.all([
-    //     await axios.get(
-    //       `https://api.teztools.io/v1/${gif.FA12TokenContract}/price`
-    //     ),
-    //     await tzkt.getContractBigMapKeys(
-    //       process.env.VUE_APP_GIF_STAKE,
-    //       "addressId",
-    //       { key: pkh }
-    //     ),
-    //   ]);
+    if (poolToken.thumbnailUri) {
+      poolToken.thumbnailUri = ipfs.transformUri(poolToken.thumbnailUri);
+    }
 
-    //   if (tokenMetaData.thumbnailUri) {
-    //     tokenMetaData.thumbnailUri = ipfs.transformUri(
-    //       tokenMetaData.thumbnailUri
-    //     );
-    //   }
+    const rewardToken = {
+      currentPrice: 1,
+      decimals: 6,
+      usdValue: xtzUsd,
+    };
 
-    //   if (addressId) {
-    //     const {
-    //       data: [{ value: stake }],
-    //     } = await tzkt.getContractBigMapKeys(
-    //       process.env.VUE_APP_DOGAMI_STAKE,
-    //       "userStakeFlexPack",
-    //       { key: addressId }
-    //     );
+    if (userStake) {
+      const depositAmount = new BigNumber(userStake.gif)
+        .div(new BigNumber(10).pow(poolToken.decimals))
+        .toNumber();
+      const rewardsEarned = new BigNumber(userStake.claimable_xtz)
+        .div(new BigNumber(10).pow(6))
+        .toNumber();
 
-    //     const userStake = stake[pkh];
-    //     const depositAmount = new BigNumber(userStake.value)
-    //       .div(new BigNumber(10).pow(tokenMetaData.decimals))
-    //       .toNumber();
-    //     const rewardsEarned = new BigNumber(userStake.reward)
-    //       .div(new BigNumber(10).pow(tokenMetaData.decimals))
-    //       .toNumber();
+      userStakes.push({
+        ...gif,
+        poolToken,
+        rewardToken,
+        depositAmount,
+        rewardsEarned,
+        depositValue: 0,
+        depositValueUsd: 0,
+        rewardValue: 0,
+        rewardValueUsd: 0,
+        totalValue: 0,
+        totalValueUsd: 0,
+      });
+    }
 
-    //     userStakes.push({
-    //       ...dogami,
-    //       poolToken: tokenMetaData,
-    //       rewardToken: tokenMetaData,
-    //       depositAmount,
-    //       rewardsEarned,
-    //       depositValue: 0,
-    //       depositValueUsd: 0,
-    //       rewardValue: 0,
-    //       rewardValueUsd: 0,
-    //       totalValue: 0,
-    //       totalValueUsd: 0,
-    //     });
-    //   }
+    console.log(userStakes);
 
     return sumStake(userStakes);
   },
