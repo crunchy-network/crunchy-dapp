@@ -55,6 +55,54 @@ async function getUserQuipuLp(pkh) {
   return userQuipuLp;
 }
 
+function calculateGIFRewards(
+  claimableXTZ,
+  multiplier,
+  xtzPerGif,
+  lastXtzPerGif,
+  userGif,
+  currentCycle,
+  lastUpdate,
+  totalGif,
+  revenueTier,
+  userTier
+) {
+  let value = new BigNumber(0);
+
+  if (multiplier) {
+    // Initialize variables
+
+    value = value.plus(claimableXTZ);
+    if (userTier.isEqualTo(revenueTier)) {
+      value = value.plus(
+        new BigNumber(
+          new BigNumber(xtzPerGif.minus(lastXtzPerGif)).times(userGif)
+        ).div(multiplier)
+      );
+
+      if (
+        currentCycle &&
+        Date.now() < new Date(currentCycle.end_time).getTime()
+      ) {
+        value = value
+          .plus(
+            new BigNumber(
+              new BigNumber(currentCycle.xtz_per_sec).times(
+                new BigNumber(Date.now()).minus(
+                  new BigNumber(lastUpdate.getTime())
+                )
+              )
+            ).div(new BigNumber(10).pow(3))
+          )
+          .times(userGif)
+          .div(totalGif.times(multiplier));
+      }
+    }
+  }
+
+  return value;
+}
+
 async function sumStake(userStake) {
   const userStakesData = {
     staked: 0,
@@ -332,14 +380,42 @@ export default {
       decimals: 6,
       usdValue: xtzUsd,
     };
+    const revenue = gif.revenue;
+    const revenueTier = new BigNumber(gif.staking.revenue_tier);
 
     if (userStake) {
+      console.log(userStake);
       const depositAmount = new BigNumber(userStake.gif)
         .div(new BigNumber(10).pow(poolToken.decimals))
         .toNumber();
-      const rewardsEarned = new BigNumber(userStake.claimable_xtz)
+
+      let rewardsEarned = 0;
+      // Calculating Rewards earned
+      const claimableXTZ = new BigNumber(userStake.claimable_xtz);
+      const multiplier = new BigNumber(revenue.multiplier);
+      const xtzPerGif = new BigNumber(revenue.xtz_per_gif);
+      const lastXtzPerGif = new BigNumber(userStake.last_xtz_per_gif);
+      const userGif = new BigNumber(userStake.gif);
+      const currentCycle = revenue.current_cycle;
+      const lastUpdate = new Date(revenue.last_update);
+      const totalGif = new BigNumber(revenue.total_gif);
+      const userTier = new BigNumber(Object.keys(userStake.tiers).length);
+
+      rewardsEarned = calculateGIFRewards(
+        claimableXTZ,
+        multiplier,
+        xtzPerGif,
+        lastXtzPerGif,
+        userGif,
+        currentCycle,
+        lastUpdate,
+        totalGif,
+        revenueTier,
+        userTier
+      )
         .div(new BigNumber(10).pow(6))
         .toNumber();
+      // Calculating Rewards earned
 
       userStakes.push({
         ...gif,
