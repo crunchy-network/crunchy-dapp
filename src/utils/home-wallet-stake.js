@@ -67,35 +67,25 @@ function calculateGIFRewards(
   revenueTier,
   userTier
 ) {
-  let value = new BigNumber(0);
+  let value = 0;
 
   if (multiplier) {
     // Initialize variables
 
-    value = value.plus(claimableXTZ);
-    if (userTier.isEqualTo(revenueTier)) {
-      value = value.plus(
-        new BigNumber(
-          new BigNumber(xtzPerGif.minus(lastXtzPerGif)).times(userGif)
-        ).div(multiplier)
-      );
+    value += claimableXTZ;
+
+    if (userTier === Number(revenueTier)) {
+      value += ((xtzPerGif - lastXtzPerGif) * userGif) / multiplier;
 
       if (
         currentCycle &&
-        Date.now() < new Date(currentCycle.end_time).getTime()
+        Date.now() < new Date(currentCycle?.endTime).getTime()
       ) {
-        value = value
-          .plus(
-            new BigNumber(
-              new BigNumber(currentCycle.xtz_per_sec).times(
-                new BigNumber(Date.now()).minus(
-                  new BigNumber(lastUpdate.getTime())
-                )
-              )
-            ).div(new BigNumber(10).pow(3))
-          )
-          .times(userGif)
-          .div(totalGif.times(multiplier));
+        value +=
+          (currentCycle.xtzPerSec *
+            ((Date.now() - new Date(lastUpdate).getTime()) / 1e3) *
+            userGif) /
+          (totalGif * multiplier);
       }
     }
   }
@@ -384,7 +374,6 @@ export default {
     const revenueTier = new BigNumber(gif.staking.revenue_tier);
 
     if (userStake) {
-      console.log(userStake);
       const depositAmount = new BigNumber(userStake.gif)
         .div(new BigNumber(10).pow(poolToken.decimals))
         .toNumber();
@@ -399,23 +388,32 @@ export default {
       const currentCycle = revenue.current_cycle;
       const lastUpdate = new Date(revenue.last_update);
       const totalGif = new BigNumber(revenue.total_gif);
-      const userTier = new BigNumber(Object.keys(userStake.tiers).length);
+      const userTier =
+        Object.keys(userStake.tiers)
+          .map((key) => {
+            const value = userStake.tiers[key];
+            if (new Date(value).getTime() > 0) {
+              return key;
+            }
+          })
+          .sort((a, b) => b - a)[0] || 0;
 
-      rewardsEarned = calculateGIFRewards(
-        claimableXTZ,
-        multiplier,
-        xtzPerGif,
-        lastXtzPerGif,
-        userGif,
-        currentCycle,
-        lastUpdate,
-        totalGif,
-        revenueTier,
-        userTier
-      )
-        .div(new BigNumber(10).pow(6))
-        .toNumber();
+      rewardsEarned =
+        calculateGIFRewards(
+          claimableXTZ.toNumber(),
+          multiplier.toNumber(),
+          xtzPerGif.toNumber(),
+          lastXtzPerGif.toNumber(),
+          userGif.toNumber(),
+          currentCycle,
+          lastUpdate,
+          totalGif.toNumber(),
+          revenueTier.toNumber(),
+          Number(userTier)
+        ) / 1000000;
       // Calculating Rewards earned
+
+      console.log(rewardsEarned);
 
       userStakes.push({
         ...gif,
