@@ -72,7 +72,7 @@ export default {
       return state.crunchyStake;
     },
     getStakes(state) {
-      return [state.crunchyStake, state.dogamiStake, state.gifStake];
+      return [state.crunchyStake, state.gifStake];
     },
   },
 };

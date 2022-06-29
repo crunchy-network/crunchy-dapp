@@ -38,7 +38,7 @@ export default {
     await Promise.all([
       dispatch("loadCrunchyStake"),
       dispatch("loadQuipuLpStake"),
-      dispatch("loadDogamiStake"),
+      // dispatch("loadDogamiStake"),
       dispatch("loadGIFStake"),
     ]).then(() => {
       commit("updateStakeLoading", false);
@@ -49,7 +49,7 @@ export default {
     await Promise.all([
       dispatch("loadCrunchyStake"),
       dispatch("loadQuipuLpStake"),
-      dispatch("loadDogamiStake"),
+      // dispatch("loadDogamiStake"),
       dispatch("loadGIFStake"),
     ]);
   },

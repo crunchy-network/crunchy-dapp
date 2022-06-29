@@ -68,7 +68,7 @@ function calculateGIFRewards(
   userTier
 ) {
   let value = 0;
-
+  console.log(currentCycle);
   if (multiplier) {
     // Initialize variables
 
@@ -79,10 +79,10 @@ function calculateGIFRewards(
 
       if (
         currentCycle &&
-        Date.now() < new Date(currentCycle?.endTime).getTime()
+        Date.now() < new Date(currentCycle?.end_time).getTime()
       ) {
         value +=
-          (currentCycle.xtzPerSec *
+          (new BigNumber(currentCycle.xtz_per_sec).toNumber() *
             ((Date.now() - new Date(lastUpdate).getTime()) / 1e3) *
             userGif) /
           (totalGif * multiplier);
@@ -336,6 +336,7 @@ export default {
 
     return sumStake(userStakes);
   },
+
   async getGIFStake(pkh) {
     const userStakes = [];
 
