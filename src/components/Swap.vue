@@ -3,6 +3,7 @@
     <div id="swap-router-wrapper">
       <NavMenu />
       <div class="disclaimer-section">
+        <div class="beta-tag"><div class="beta-ribbon">BETA</div></div>
         <el-tooltip
           placement="bottom"
           effect="light"
@@ -57,6 +58,24 @@ export default {
     width: 100%;
     text-align: center;
     margin-bottom: 8px;
+  }
+}
+.beta-tag {
+  position: fixed;
+  z-index: -1;
+  border-bottom: 50px solid #f15d59;
+  border-left: 50px solid transparent;
+  border-right: 50px solid transparent;
+  height: 0;
+  left: -52px;
+  top: 108px;
+  transform: rotate(-45deg);
+  width: 125px;
+  .beta-ribbon {
+    margin-top: 5px;
+    font-weight: bold;
+    font-size: 24px;
+    color: #ffffff;
   }
 }
 .disclaimer-tip {
