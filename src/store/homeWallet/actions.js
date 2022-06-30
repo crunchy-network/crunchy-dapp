@@ -32,13 +32,13 @@ export default {
   },
 
   async loadStakeAssets({ dispatch, commit }, pkh) {
+    commit("updateStakeLoading", true);
     const { contracts: priceFeed } = await teztools.getPricefeed();
     commit("updatePriceFeed", priceFeed);
-    commit("updateStakeLoading", true);
     await Promise.all([
       dispatch("loadCrunchyStake"),
       dispatch("loadQuipuLpStake"),
-      // dispatch("loadDogamiStake"),
+      dispatch("loadDogamiStake"),
       dispatch("loadGIFStake"),
     ]).then(() => {
       commit("updateStakeLoading", false);
@@ -49,7 +49,7 @@ export default {
     await Promise.all([
       dispatch("loadCrunchyStake"),
       dispatch("loadQuipuLpStake"),
-      // dispatch("loadDogamiStake"),
+      dispatch("loadDogamiStake"),
       dispatch("loadGIFStake"),
     ]);
   },

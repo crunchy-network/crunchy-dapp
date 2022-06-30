@@ -77,7 +77,9 @@
                 <template aria-describedby="Claimable">
                   <el-col v-if="!farm.lp" style="text-align: right" :span="4">
                     {{
-                      !showUsd
+                      farm.protocol === "Dogami"
+                        ? "N/A"
+                        : !showUsd
                         ? vueNumberFormat(farm.claimable, {
                             prefix: "",
                             suffix: " ꜩ",
@@ -356,7 +358,9 @@
                   >
                   <el-col v-else style="text-align: right" :span="4">
                     {{
-                      !showUsd
+                      farm.protocol === "Dogami"
+                        ? "N/A"
+                        : !showUsd
                         ? vueNumberFormat(stake.rewardValue, {
                             prefix: "",
                             suffix: " ꜩ",
@@ -463,6 +467,7 @@
 <script>
 import { CollapseTransition } from "@ivanv/vue-collapse-transition";
 import { mapActions } from "vuex";
+import { sectionNotAvailable } from "../utils/home-wallet-stake";
 export default {
   name: "StakeWalletRow",
   components: {
@@ -482,6 +487,9 @@ export default {
     },
     expandRow() {
       this.rowExpanded = true;
+    },
+    notAvailable(protocol) {
+      return sectionNotAvailable(protocol);
     },
   },
 };

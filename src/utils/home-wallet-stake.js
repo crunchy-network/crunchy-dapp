@@ -433,4 +433,15 @@ export default {
 
     return sumStake(userStakes);
   },
+
+  // NO Claimable
+  sectionNotAvailable(protocol = "") {
+    const protocols = ["dogami"];
+
+    if (protocols.includes(protocol.toLowerCase())) {
+      return "N/A";
+    } else {
+      return false;
+    }
+  },
 };
