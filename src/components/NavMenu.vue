@@ -130,31 +130,11 @@
                 <router-link
                   tag="li"
                   class="el-menu-item submenu-item"
-                  :to="{ name: 'deep-freezer-listing' }"
-                  active-class="is-active"
-                >
-                  <i class="fak fa-crunchy-locker"></i>
-                  <span>Deep Freezers</span>
-                </router-link>
-
-                <router-link
-                  tag="li"
-                  class="el-menu-item submenu-item"
                   :to="{ name: 'farm-listing' }"
                   active-class="is-active"
                 >
                   <i class="fak fa-crunchy-farm"></i>
                   <span>Farms</span>
-                </router-link>
-
-                <router-link
-                  tag="li"
-                  class="el-menu-item submenu-item"
-                  :to="{ name: 'fire-pit' }"
-                  active-class="is-active"
-                >
-                  <i class="fas fa-fire-alt"></i>
-                  <span>Fire Pit</span>
                 </router-link>
                 <router-link
                   tag="li"
@@ -168,12 +148,30 @@
                 <router-link
                   tag="li"
                   class="el-menu-item submenu-item"
+                  :to="{ name: 'deep-freezer-listing' }"
+                  active-class="is-active"
+                >
+                  <i class="fak fa-crunchy-locker"></i>
+                  <span>Deep Freezers</span>
+                </router-link>
+                <router-link
+                  tag="li"
+                  class="el-menu-item submenu-item"
                   to="/wtz"
                   active-class="is-active"
                 >
                   <i class="fak fa-crunchy-tez-alt"></i>
 
                   <span>WTZ</span>
+                </router-link>
+                <router-link
+                  tag="li"
+                  class="el-menu-item submenu-item"
+                  :to="{ name: 'fire-pit' }"
+                  active-class="is-active"
+                >
+                  <i class="fas fa-fire-alt"></i>
+                  <span>Fire Pit</span>
                 </router-link>
               </el-submenu>
 
