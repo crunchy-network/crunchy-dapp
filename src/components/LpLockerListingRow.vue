@@ -150,7 +150,17 @@ import { mapState } from "vuex";
 export default {
   name: "LpLockerListingRow",
   components: {},
-  props: ["locker", "showUsd"],
+  // props: ["locker", "showUsd"],
+  props: {
+    locker: {
+      type: Object,
+      required: true,
+    },
+    showUsd: {
+      type: Boolean,
+      required: true,
+    },
+  },
   data() {
     return {
       localAbbrevTimeZone: new Date()

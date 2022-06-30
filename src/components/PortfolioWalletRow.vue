@@ -169,7 +169,10 @@
 <script>
 export default {
   name: "PortfolioWalletRow",
-  props: ["asset", "showUsd"],
+  props: {
+    asset: { type: Object, required: true },
+    showUsd: { type: Boolean, required: true },
+  },
   methods: {
     getToParams(asset) {
       const tokenId = asset.tokenid ? asset.tokenid : 0;

@@ -23,7 +23,12 @@ import { importAll } from "../lib/JsonHelper";
 
 export default {
   name: "IFOFirstCard",
-  props: ["project"],
+  props: {
+    project: {
+      type: Object,
+      required: true,
+    },
+  },
   data: () => ({
     images: importAll(
       require.context("../assets/project_images", false, /\.(png|jpe?g|svg)$/)

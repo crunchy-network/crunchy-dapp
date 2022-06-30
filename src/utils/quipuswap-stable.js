@@ -1,5 +1,5 @@
 const axios = require("axios");
-const dex_fee = 0.15;
+// const dex_fee = 0.15;
 const { BigNumber } = require("bignumber.js");
 const getContractStorage = async (dexAddress, poolIndex) => {
   return axios.get(`https://api.tzkt.io/v1/bigmaps/${poolIndex}/keys`);

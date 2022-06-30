@@ -74,7 +74,15 @@
 <script>
 import { mapGetters } from "vuex";
 export default {
-  props: ["list", "onChange", "amount", "id", "inputDisabled", "selectedToken"],
+  // props: ["list", "onChange", "amount", "id", "inputDisabled", "selectedToken"],
+  props: {
+    list: { type: Array, required: true },
+    onChange: { type: Function, required: true },
+    amount: { type: [String, Number], default: 0 },
+    id: { type: String, required: true },
+    inputDisabled: { type: Boolean, default: false },
+    selectedToken: { type: Object, required: true },
+  },
   data: function () {
     return {
       open: false,
