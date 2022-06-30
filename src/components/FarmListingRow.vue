@@ -854,7 +854,16 @@ export default {
     CollapseTransition,
     // ICountUp
   },
-  props: ["farm", "showUsd"],
+  props: {
+    farm: {
+      type: Object,
+      required: true,
+    },
+    showUsd: {
+      type: Boolean,
+      required: true,
+    },
+  },
   data() {
     return {
       localAbbrevTimeZone: new Date()
