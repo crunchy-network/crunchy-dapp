@@ -117,7 +117,16 @@
                   </svg>
                   DeFi</template
                 >
+                <router-link
+                  tag="li"
+                  class="el-menu-item submenu-item"
+                  to="/swap"
+                  active-class="is-active"
+                >
+                  <i class="fa-solid fa-arrow-up-arrow-down"></i>
 
+                  <span>SWAP</span>
+                </router-link>
                 <router-link
                   tag="li"
                   class="el-menu-item submenu-item"
@@ -165,16 +174,6 @@
                   <i class="fak fa-crunchy-tez-alt"></i>
 
                   <span>WTZ</span>
-                </router-link>
-                <router-link
-                  tag="li"
-                  class="el-menu-item submenu-item"
-                  to="/swap"
-                  active-class="is-active"
-                >
-                  <i class="fa-solid fa-arrow-up-arrow-down"></i>
-
-                  <span>SWAP</span>
                 </router-link>
               </el-submenu>
 
