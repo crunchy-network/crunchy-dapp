@@ -126,6 +126,7 @@ const getOutputOfWeightedTrade = (
 ) => {
   const totalWeight = pairs.reduce((a, pair) => a + pair.b.pool, 0);
   let outputAmount = 0;
+  let minOutAmount = 0;
   for (const pair of pairs) {
     const weightedInput = input * (pair.b.pool / totalWeight);
     const output = getDexOutput(weightedInput, pair);
@@ -140,9 +141,10 @@ const getOutputOfWeightedTrade = (
       input: weightedInput,
     });
     outputAmount += output;
+    minOutAmount += minOut;
   }
 
-  return { trades, outputAmount };
+  return { trades, outputAmount, minOutAmount };
 };
 
 const addSlippageToleranceToRoute = (route, slippageTolerance) => {
@@ -165,7 +167,7 @@ const addSlippageToleranceToRoute = (route, slippageTolerance) => {
 
 const addSlippageToleranceToWeightedRoute = (route, slippageTolerance) => {
   validateSlippageToleranceInput(route, slippageTolerance);
-  const { trades, outputAmount } = getOutputOfWeightedTrade(
+  const { trades, minOutAmount } = getOutputOfWeightedTrade(
     route.inputAmount,
     [...route.trades],
     0,
@@ -175,7 +177,7 @@ const addSlippageToleranceToWeightedRoute = (route, slippageTolerance) => {
   return Object.freeze({
     ...route,
     slippageTrades: trades,
-    outputWithSlippage: outputAmount,
+    outputWithSlippage: minOutAmount,
   });
 };
 
