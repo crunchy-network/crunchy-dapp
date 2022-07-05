@@ -701,11 +701,11 @@ export default {
   /* Position the tooltip */
   position: absolute;
   z-index: 1;
-  top: -5px;
+  top: 25px;
   display: flex;
   flex-wrap: wrap;
   justify-content: start;
-  left: 105%;
+  left: -75px;
   span {
     flex-basis: 100%;
   }

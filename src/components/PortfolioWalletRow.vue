@@ -153,7 +153,7 @@
             <router-link
               v-if="asset.contract === 'tez'"
               tag="a"
-              :to="{ name: 'wtz' }"
+              :to="getXTZSwapParams()"
             >
               <el-button style="color: #555cff; font-weight: 600" type="text">
                 TRADE
@@ -179,6 +179,12 @@ export default {
       return {
         name: "swap",
         query: { from: "tez", to: `${asset.contract}_${tokenId}` },
+      };
+    },
+    getXTZSwapParams() {
+      return {
+        name: "swap",
+        query: { from: "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn_0", to: "tez" },
       };
     },
   },
