@@ -112,6 +112,28 @@ h2,
 h3 {
   font-weight: 600 !important;
 }
+
+p {
+  font-weight: 500;
+  font-size: 16px;
+}
+
+p.light-text {
+  color: rgba(25, 27, 31, 0.5);
+}
+p.small-text {
+  font-size: 14px;
+}
+
+p.opaque {
+  color: rgba(25, 27, 31);
+}
+
+h2.lg {
+  font-size: 28px;
+  font-weight: 700;
+}
+
 .grid-content h2 + span {
   font-weight: 300 !important;
 }
@@ -526,6 +548,28 @@ header .grid-content button.el-button {
 
 .text-center {
   text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+._table-header {
+  color: #757679;
+  font-size: 14px;
+  font-weight: 600;
+  border-bottom: 2px solid #f4f4f4;
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+  min-width: 900px;
+}
+
+._clear-btn {
+  border: 0;
+  background: transparent;
+  outline: none;
+  padding: 5px;
+  cursor: pointer;
 }
 
 /* REPSONSIVE STYLE */

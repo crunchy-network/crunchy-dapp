@@ -145,19 +145,7 @@
       <el-card v-loading="homeWallet.loading">
         <div class="responsive-table">
           <div>
-            <el-row
-              type="flex"
-              align="middle"
-              style="
-                color: #757679;
-                font-size: 14px;
-                font-weight: 600;
-                border-bottom: 2px solid #f4f4f4;
-                padding-bottom: 14px;
-                margin-bottom: 14px;
-                min-width: 900px;
-              "
-            >
+            <el-row type="flex" align="middle" class="_table-header">
               <el-col :span="24">
                 <el-row
                   :gutter="20"

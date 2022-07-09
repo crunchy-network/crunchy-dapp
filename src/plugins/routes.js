@@ -12,6 +12,7 @@ import IfoPixelPriv from "./../components/IfoPixelPriv.vue";
 import HomeWalletPage from "./../components/HomeWalletPage.vue";
 import IFOList from "./../components/IFOList.vue";
 import Swap from "./../components/Swap.vue";
+import Multisig from "./../components/Multisig.vue";
 // import Bakery from './../components/Bakery.vue'
 
 Vue.use(VueRouter);
@@ -22,6 +23,11 @@ const routes = [
     name: "home-view-wallet",
     path: "/wallet/:walletAddress",
     component: HomeWalletPage,
+  },
+  {
+    name: "multisig",
+    path: "/multisig",
+    component: Multisig,
   },
 
   // { name: 'home-wallet', path: '/home-wallet', component: HomeWalletPage },
