@@ -1,6 +1,6 @@
 <template>
   <div id="create-multisig">
-    <div v-if="!showModal" class="modal-wrapper">
+    <div v-if="showModal" class="modal-wrapper">
       <div>
         <el-card>
           <el-row
