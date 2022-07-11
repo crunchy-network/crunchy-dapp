@@ -13,6 +13,7 @@ import HomeWalletPage from "./../components/HomeWalletPage.vue";
 import IFOList from "./../components/IFOList.vue";
 import Swap from "./../components/Swap.vue";
 import Multisig from "./../components/Multisig.vue";
+import ManageMultisig from "./../components/ManageMultisig.vue";
 // import Bakery from './../components/Bakery.vue'
 
 Vue.use(VueRouter);
@@ -28,6 +29,11 @@ const routes = [
     name: "multisig",
     path: "/multisig",
     component: Multisig,
+  },
+  {
+    name: "multisig-address",
+    path: "/multisig/:multisigAddress",
+    component: ManageMultisig,
   },
 
   // { name: 'home-wallet', path: '/home-wallet', component: HomeWalletPage },

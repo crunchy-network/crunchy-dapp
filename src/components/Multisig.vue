@@ -20,7 +20,7 @@
         </router-link>
 
         <i
-          style="font-size: 18px; color: #c0c4cc; margin: 0 5px"
+          style="font-size: 12px; color: #c0c4cc; margin: 0 5px"
           class="fa-solid fa-angle-right"
         ></i>
         <span
@@ -101,7 +101,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped >
+<style lang="scss" scoped>
 .page_width * {
   margin: 0px;
 }
