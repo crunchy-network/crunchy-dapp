@@ -1,4 +1,4 @@
- <template>
+<template>
   <el-card style="margin-top: 24px">
     <div class="responsive-table">
       <div>
@@ -8,7 +8,7 @@
           <el-col class="text-right" :span="5"> Transaction ID </el-col>
           <el-col class="text-right" :span="5"> Status </el-col>
         </el-row>
-        <multisig-history-row
+        <MultisigAdminRow
           v-for="(history, index) in histories"
           :key="index"
           :items="history.items"
@@ -18,12 +18,13 @@
     </div>
   </el-card>
 </template>
- 
- <script>
+
+<script>
+import MultisigAdminRow from "./MultisigAdminRow.vue";
 export default {
   name: "MultisigAdminsTab",
+  components: { MultisigAdminRow },
 };
 </script>
- 
- <style>
-</style>
+
+<style></style>

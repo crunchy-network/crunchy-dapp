@@ -575,6 +575,10 @@ p {
   font-weight: 400;
 }
 
+._w-100 {
+  width: 100%;
+}
+
 h2.lg {
   font-size: 28px;
   font-weight: 700;

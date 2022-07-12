@@ -127,6 +127,7 @@
       ></multisig-history-tab>
 
       <MultisigTokensTab v-if="activeTab === 'tokens'" />
+      <MultisigNFTsTab v-if="activeTab === 'nfts'" />
     </el-main>
   </div>
 </template>
@@ -135,13 +136,19 @@
 import MultisigHistoryTab from "./MultisigHistoryTab.vue";
 import NavMenu from "./NavMenu.vue";
 import MultisigTokensTab from "./MultisigTokensTab.vue";
+import MultisigNFTsTab from "./MultisigNftsTab.vue";
 export default {
   name: "ManageMultisig",
-  components: { NavMenu, MultisigHistoryTab, MultisigTokensTab },
+  components: {
+    NavMenu,
+    MultisigHistoryTab,
+    MultisigTokensTab,
+    MultisigNFTsTab,
+  },
   data() {
     return {
       copied: false,
-      activeTab: "history",
+      activeTab: "nfts",
       multisigAddress: "",
       multisig: {
         alias: "CrunchyMultisig.tez",
