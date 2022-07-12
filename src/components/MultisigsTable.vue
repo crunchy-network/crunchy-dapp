@@ -75,12 +75,14 @@ export default {
       multisigs: [
         {
           alias: "crunchymultisig.tez",
+          address: "KT1BHCumksALJQJ8q8to2EPigPW6qpyTr7Ng",
           adminsCount: 6,
           txCompleted: 32,
           created: "21 Jun 2020",
         },
         {
           alias: "KT1BHCumksALJQJ8q8to2EPigPW6qpyTr7Ng",
+          address: "KT1BHCumksALJQJ8q8to2EPigPW6qpyTr7Ng",
           adminsCount: 3,
           txCompleted: 132,
           created: "21 Jun 2020",

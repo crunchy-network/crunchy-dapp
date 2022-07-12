@@ -69,7 +69,7 @@
                   })
             }}
           </el-col>
-          <el-col style="text-align: right" :span="4">
+          <el-col style="text-align: right" :span="3">
             {{
               !showUsd
                 ? vueNumberFormat(asset.value, {
@@ -90,7 +90,7 @@
 
           <el-col
             style="text-align: right"
-            :span="2"
+            :span="3"
             :class="asset.priceChange1Day < 0 ? 'n-change' : 'p-change'"
           >
             {{
@@ -107,7 +107,7 @@
           </el-col>
           <el-col
             style="text-align: right"
-            :span="2"
+            :span="3"
             :class="asset.priceChange7Day < 0 ? 'n-change' : 'p-change'"
           >
             {{
@@ -124,7 +124,7 @@
           </el-col>
           <el-col
             style="text-align: right"
-            :span="2"
+            :span="3"
             :class="asset.priceChange30Day < 0 ? 'n-change' : 'p-change'"
           >
             {{
@@ -138,27 +138,6 @@
                   })
                 : "-"
             }}
-          </el-col>
-
-          <el-col style="text-align: right" :span="2">
-            <router-link
-              v-if="asset.contract !== 'tez'"
-              tag="a"
-              :to="getToParams(asset)"
-            >
-              <el-button style="color: #555cff; font-weight: 600" type="text">
-                TRADE
-              </el-button>
-            </router-link>
-            <router-link
-              v-if="asset.contract === 'tez'"
-              tag="a"
-              :to="{ name: 'wtz' }"
-            >
-              <el-button style="color: #555cff; font-weight: 600" type="text">
-                TRADE
-              </el-button>
-            </router-link>
           </el-col>
         </el-row>
       </div>

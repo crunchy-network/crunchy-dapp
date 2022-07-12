@@ -14,8 +14,8 @@
                 <el-col :span="4">Asset</el-col>
                 <el-col style="text-align: right" :span="4">Balance</el-col>
                 <el-col style="text-align: right" :span="4">Price</el-col>
-                <el-col style="text-align: right" :span="4">Value</el-col>
-                <el-col style="text-align: right" :span="2"
+                <el-col style="text-align: right" :span="3">Value</el-col>
+                <el-col style="text-align: right" :span="3"
                   >1d
                   <el-tooltip
                     content="% Change in XTZ"
@@ -25,7 +25,7 @@
                     <i class="fa-regular fa-info-circle"></i>
                   </el-tooltip>
                 </el-col>
-                <el-col style="text-align: right" :span="2"
+                <el-col style="text-align: right" :span="3"
                   >7d
                   <el-tooltip
                     content="% Change in XTZ"
@@ -35,7 +35,7 @@
                     <i class="fa-regular fa-info-circle"></i>
                   </el-tooltip>
                 </el-col>
-                <el-col style="text-align: right" :span="2"
+                <el-col style="text-align: right" :span="3"
                   >30d
                   <el-tooltip
                     content="% Change in XTZ"
@@ -45,12 +45,11 @@
                     <i class="fa-regular fa-info-circle"></i>
                   </el-tooltip>
                 </el-col>
-                <el-col style="text-align: right" :span="2"></el-col>
               </el-row>
             </el-col>
           </el-row>
 
-          <PortfolioWalletRow
+          <MultisigTokenRow
             v-for="(asset, index) in tabledata"
             :key="index"
             :asset="asset"
@@ -117,11 +116,11 @@
 
 <script>
 import { mapState, mapActions, mapGetters } from "vuex";
-// import HomeWalletTable from "./HomeWalletTable.vue";
-import PortfolioWalletRow from "./PortfolioWalletRow.vue";
+import MultisigTokenRow from "./MultisigTokenRow.vue";
+
 export default {
   name: "HomeWallet",
-  components: { PortfolioWalletRow },
+  components: {  MultisigTokenRow },
   data() {
     return {
       activeTab: "portfolio",
@@ -131,7 +130,7 @@ export default {
       pages: 0,
       nextPage: 1,
       prevPage: 0,
-      displayCount: 12,
+      displayCount: 5,
     };
   },
   computed: {
