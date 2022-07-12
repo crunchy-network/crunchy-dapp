@@ -1,29 +1,44 @@
 <template>
-  <el-card style="margin-top: 24px">
-    <div class="responsive-table">
-      <div>
-        <el-row type="flex" style="gap: 15px" class="_table-header">
-          <el-col style="padding-left: 10px" :span="5"> Action </el-col>
-          <el-col :span="9"> Details </el-col>
-          <el-col class="text-right" :span="5"> Transaction ID </el-col>
-          <el-col class="text-right" :span="5"> Status </el-col>
+  <div
+    style="padding-bottom: 14px; font-size: 14px; font-weight: 600"
+    type="flex"
+    align="top"
+  >
+    <el-col :span="24">
+      <div class="item-row">
+        <el-row
+          style="margin-left: 0; margin-right: 0"
+          :gutter="20"
+          class="farm-row lg"
+          type="flex"
+          align="middle"
+        >
+          <el-col :span="9">
+            <a
+              class="_anchor-primary"
+              type="primary"
+              :href="`https://tzkt.io/${admin.address}`"
+              target="_blank"
+              >{{ admin.address }}</a
+            >
+          </el-col>
+          <el-col class="text-right" :span="6"> {{ admin.txSigned }} </el-col>
+          <el-col class="text-right" :span="9">
+            {{ admin.txSigned < 1 ? "NA" : admin.lastSigned }}
+          </el-col>
         </el-row>
-        <MultisigAdminRow
-          v-for="(history, index) in histories"
-          :key="index"
-          :items="history.items"
-          :date="history.date"
-        />
       </div>
-    </div>
-  </el-card>
+    </el-col>
+  </div>
 </template>
 
 <script>
-import MultisigAdminRow from "./MultisigAdminRow.vue";
 export default {
-  name: "MultisigAdminsTab",
-  components: { MultisigAdminRow },
+  name: "MultisigAdminsRow",
+  props: {
+    admin: Object,
+    required: true,
+  },
 };
 </script>
 

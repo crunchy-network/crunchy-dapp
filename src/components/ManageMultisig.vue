@@ -128,6 +128,7 @@
 
       <MultisigTokensTab v-if="activeTab === 'tokens'" />
       <MultisigNFTsTab v-if="activeTab === 'nfts'" />
+      <MultisigAdminsTab v-if="activeTab === 'admins'" />
     </el-main>
   </div>
 </template>
@@ -137,6 +138,7 @@ import MultisigHistoryTab from "./MultisigHistoryTab.vue";
 import NavMenu from "./NavMenu.vue";
 import MultisigTokensTab from "./MultisigTokensTab.vue";
 import MultisigNFTsTab from "./MultisigNftsTab.vue";
+import MultisigAdminsTab from "./MultisigAdminsTab.vue";
 export default {
   name: "ManageMultisig",
   components: {
@@ -144,6 +146,7 @@ export default {
     MultisigHistoryTab,
     MultisigTokensTab,
     MultisigNFTsTab,
+    MultisigAdminsTab,
   },
   data() {
     return {
@@ -158,10 +161,7 @@ export default {
   mounted() {},
   methods: {
     isActiveTab(tab) {
-      return (
-        this.activeTab === tab &&
-        " border-bottom: 6px solid #555CFF; color: #555CFF"
-      );
+      return this.activeTab === tab && " border-bottom: 6px solid #555CFF;";
     },
 
     setActiveTab(tab = "") {
@@ -200,7 +200,7 @@ export default {
   line-height: 24px;
   text-align: center;
   text-transform: capitalize;
-  color: #191b1f;
+  color: #555cff;
   cursor: pointer;
   transition: 0.3s ease all;
   margin: 0;

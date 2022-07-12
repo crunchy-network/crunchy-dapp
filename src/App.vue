@@ -373,6 +373,10 @@ header .grid-content button.el-button {
   background: #fff;
   border-radius: 14px;
 }
+.farm-row.lg {
+  padding: 20px;
+}
+
 .farm-row:hover,
 .farm-row.expanded {
   background: #f6f6f6;
@@ -584,6 +588,13 @@ h2.lg {
   font-weight: 700;
 }
 
+._anchor-primary {
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  color: #555cff;
+}
 /* REPSONSIVE STYLE */
 
 /* divider */
