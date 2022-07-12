@@ -24,7 +24,7 @@
           </el-col>
           <el-col class="text-right" :span="6"> {{ admin.txSigned }} </el-col>
           <el-col class="text-right" :span="9">
-            {{ admin.txSigned < 1 ? "NA" : admin.lastSigned }}
+            {{ admin.txSigned === 0 ? "NA" : admin.lastSigned }}
           </el-col>
         </el-row>
       </div>
@@ -37,7 +37,6 @@ export default {
   name: "MultisigAdminsRow",
   props: {
     admin: Object,
-    required: true,
   },
 };
 </script>
