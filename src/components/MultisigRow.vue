@@ -8,7 +8,7 @@
       <div class="item-row">
         <el-row
           :gutter="20"
-          class="farm-row"
+          class="farm-row lg"
           style="margin-left: 0; margin-right: 0"
           type="flex"
           align="middle"

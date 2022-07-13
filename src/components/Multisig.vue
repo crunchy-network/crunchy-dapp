@@ -89,7 +89,7 @@
 <script>
 import NavMenu from "./NavMenu.vue";
 import ManageMultisig from "./MultisigsTable.vue";
-import CreateMultisig from "./CreateMultisig.vue";
+import CreateMultisig from "./multisig/CreateMultisig.vue";
 export default {
   name: "MultiSig",
   components: { NavMenu, ManageMultisig, CreateMultisig },

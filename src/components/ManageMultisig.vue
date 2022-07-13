@@ -83,12 +83,12 @@
           border-bottom: 1.5px solid rgba(117, 118, 121, 0.1);
           align-items: center;
           flex-wrap: wrap-reverse;
+          align-items: end;
           gap: 10px;
         "
         :gutter="20"
         type="flex"
         justify="space-between"
-        align="bottom"
       >
         <div class="tab-wrapper">
           <button
@@ -120,6 +120,38 @@
             Admins
           </button>
         </div>
+
+        <el-dropdown trigger="click">
+          <el-button
+            type="primary"
+            round
+            plain
+            style="
+              background: #fff;
+              border: 1.5px solid #555cff;
+              font-weight: 600;
+              margin-bottom: 5px;
+              color: #555cff;
+            "
+          >
+            Action<i
+              style="margin-left: 10px; font-size: 18px"
+              class="fa-solid fa-angle-down"
+            ></i>
+          </el-button>
+          <el-dropdown-menu slot="dropdown" class="dropdown-wrapper">
+            <el-dropdown-item tabindex="0">
+              Create Token Transfer
+            </el-dropdown-item>
+            <el-dropdown-item tabindex="1"
+              >Create NFT Transfer</el-dropdown-item
+            >
+            <el-dropdown-item tabindex="2">Create Delegation</el-dropdown-item>
+            <el-dropdown-item tabindex="3" @click.native="toggleUpdateModal"
+              >Update Contract</el-dropdown-item
+            >
+          </el-dropdown-menu>
+        </el-dropdown>
       </el-row>
 
       <multisig-history-tab
@@ -130,6 +162,16 @@
       <MultisigNFTsTab v-if="activeTab === 'nfts'" />
       <MultisigAdminsTab v-if="activeTab === 'admins'" />
     </el-main>
+
+    <UpdateContract
+      :show-modal="showUpdateModal"
+      :toggle-modal="toggleUpdateModal"
+    >
+    </UpdateContract>
+    <CreateTokenTransfer
+      :show-modal="showTokenModal"
+      :toggle-modal="toggleTokenModal"
+    />
   </div>
 </template>
 
@@ -139,6 +181,8 @@ import NavMenu from "./NavMenu.vue";
 import MultisigTokensTab from "./MultisigTokensTab.vue";
 import MultisigNFTsTab from "./MultisigNftsTab.vue";
 import MultisigAdminsTab from "./MultisigAdminsTab.vue";
+import UpdateContract from "./multisig/UpdateContract.vue";
+import CreateTokenTransfer from "./multisig/CreateTokenTransfer.vue";
 export default {
   name: "ManageMultisig",
   components: {
@@ -147,10 +191,14 @@ export default {
     MultisigTokensTab,
     MultisigNFTsTab,
     MultisigAdminsTab,
+    UpdateContract,
+    CreateTokenTransfer,
   },
   data() {
     return {
       copied: false,
+      showUpdateModal: false,
+      showTokenModal: true,
       activeTab: "nfts",
       multisigAddress: "",
       multisig: {
@@ -176,6 +224,13 @@ export default {
       setTimeout(() => {
         this.copied = false;
       }, 1500);
+    },
+
+    toggleUpdateModal() {
+      this.showUpdateModal = !this.showUpdateModal;
+    },
+    toggleTokenModal() {
+      this.showTokenModal = !this.showTokenModal;
     },
   },
 };
@@ -216,5 +271,21 @@ export default {
 .el-popover {
   min-width: max-content;
   padding: 3px;
+}
+
+.dropdown-wrapper {
+  padding: 0;
+  li {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.02em;
+    color: rgba(25, 27, 31, 0.6);
+    padding: 14px 16px;
+  }
+  li:hover {
+    background: rgba(85, 92, 255, 0.05) !important;
+    color: #191b1f !important;
+  }
 }
 </style>

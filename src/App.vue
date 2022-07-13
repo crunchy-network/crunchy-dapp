@@ -567,6 +567,10 @@ p {
   font-size: 14px;
 }
 
+.bold-text {
+  font-weight: 700;
+}
+
 .xs-text {
   font-size: 12px;
 }

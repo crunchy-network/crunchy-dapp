@@ -54,14 +54,6 @@
                 <el-input v-model="address.value">
                   <template slot="append">
                     <button
-                      v-if="index + 1 === form.addresses.length"
-                      class="_clear-btn"
-                      @click="addAddressField"
-                    >
-                      <i class="fa-solid fa-plus"></i>
-                    </button>
-                    <button
-                      v-else
                       class="_clear-btn"
                       @click="() => removeAddressField(index)"
                     >
@@ -71,6 +63,10 @@
                 </el-input>
               </el-form-item>
 
+              <button class="add-address _clear-btn" @click="addAddressField">
+                <p class="light-text">tz...</p>
+                <i class="fa-solid fa-plus"></i>
+              </button>
               <p class="light-text small-text" style="margin-bottom: 10px">
                 Signature Threshold
               </p>
@@ -92,6 +88,7 @@
                   type="primary"
                   class="continue-btn"
                   form="create-multisig"
+                  @click="handleSubmit"
                 >
                   Continue
                 </el-button>
@@ -168,11 +165,7 @@ export default {
       showModal: false,
       mode: "edit",
       form: {
-        addresses: [
-          {
-            value: "",
-          },
-        ],
+        addresses: [],
         threshold: 1,
       },
     };
@@ -299,6 +292,18 @@ p {
     padding-left: 5px;
     padding-right: 5px;
   }
+}
+
+.add-address._clear-btn {
+  border: 2px solid rgba(25, 27, 31, 0.1);
+  border-radius: 12px;
+  height: 50px;
+  width: 100%;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
 }
 
 @media (max-width: 570px) {

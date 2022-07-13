@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import CreateMultisig from "./CreateMultisig.vue";
+import CreateMultisig from "./multisig/CreateMultisig.vue";
 import MultisigRow from "./MultisigRow.vue";
 export default {
   name: "MultisigsTable",
