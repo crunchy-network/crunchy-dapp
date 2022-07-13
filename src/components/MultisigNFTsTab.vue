@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import MultisigNftCard from "./MultisigNftCard.vue";
+import MultisigNftCard from "./multisig/MultisigNftCard.vue";
 export default {
   name: "MultisigNFTsTab",
   components: { MultisigNftCard },

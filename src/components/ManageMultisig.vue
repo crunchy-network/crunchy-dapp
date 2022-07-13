@@ -140,13 +140,15 @@
             ></i>
           </el-button>
           <el-dropdown-menu slot="dropdown" class="dropdown-wrapper">
-            <el-dropdown-item tabindex="0">
+            <el-dropdown-item tabindex="0" @click.native="toggleTokenModal">
               Create Token Transfer
             </el-dropdown-item>
             <el-dropdown-item tabindex="1"
               >Create NFT Transfer</el-dropdown-item
             >
-            <el-dropdown-item tabindex="2">Create Delegation</el-dropdown-item>
+            <el-dropdown-item tabindex="2" @click.native="toggleDelegateModal"
+              >Create Delegation</el-dropdown-item
+            >
             <el-dropdown-item tabindex="3" @click.native="toggleUpdateModal"
               >Update Contract</el-dropdown-item
             >
@@ -172,6 +174,10 @@
       :show-modal="showTokenModal"
       :toggle-modal="toggleTokenModal"
     />
+    <CreateDelegation
+      :show-modal="showDelegateModal"
+      :toggle-modal="toggleDelegateModal"
+    />
   </div>
 </template>
 
@@ -183,6 +189,7 @@ import MultisigNFTsTab from "./MultisigNftsTab.vue";
 import MultisigAdminsTab from "./MultisigAdminsTab.vue";
 import UpdateContract from "./multisig/UpdateContract.vue";
 import CreateTokenTransfer from "./multisig/CreateTokenTransfer.vue";
+import CreateDelegation from "./multisig/CreateDelegation.vue";
 export default {
   name: "ManageMultisig",
   components: {
@@ -193,12 +200,14 @@ export default {
     MultisigAdminsTab,
     UpdateContract,
     CreateTokenTransfer,
+    CreateDelegation,
   },
   data() {
     return {
       copied: false,
       showUpdateModal: false,
-      showTokenModal: true,
+      showDelegateModal: false,
+      showTokenModal: false,
       activeTab: "nfts",
       multisigAddress: "",
       multisig: {
@@ -231,6 +240,9 @@ export default {
     },
     toggleTokenModal() {
       this.showTokenModal = !this.showTokenModal;
+    },
+    toggleDelegateModal() {
+      this.showDelegateModal = !this.showDelegateModal;
     },
   },
 };
