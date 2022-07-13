@@ -11,7 +11,7 @@
           >
             <template>
               <div style="flex: 1">
-                <h2 class="lg">Transfer Tokens</h2>
+                <h2 class="bold-text">Transfer Tokens</h2>
               </div>
             </template>
             <el-button
@@ -68,7 +68,7 @@ import { validateAddress } from "@taquito/utils";
 import TokenDropdown from "./TokenDropdown.vue";
 
 export default {
-  name: "UpdateMultisig",
+  name: "MultisigTokenTransfer",
   components: { TokenDropdown },
   props: {
     showModal: { type: Boolean, default: false },

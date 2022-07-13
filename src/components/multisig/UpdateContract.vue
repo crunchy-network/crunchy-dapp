@@ -11,7 +11,7 @@
           >
             <template>
               <div style="flex: 1">
-                <h2 class="lg">Update Multisig Contract</h2>
+                <h2 class="bold-text">Update Multisig Contract</h2>
                 <p edit class="light-text small-text" style="margin-top: 10px">
                   Updates will require you to reach your previous signature
                   threshold before changes are accepted.

@@ -11,7 +11,7 @@
           >
             <template>
               <div style="flex: 1">
-                <h2 class="lg">Transfer Tokens</h2>
+                <h2 class="bold-text">Delegate to Baker</h2>
               </div>
             </template>
             <el-button
@@ -54,7 +54,7 @@
 import { validateAddress } from "@taquito/utils";
 
 export default {
-  name: "UpdateMultisig",
+  name: "CreateMultisigDelegation",
   props: {
     showModal: { type: Boolean, default: false },
     toggleModal: Function,

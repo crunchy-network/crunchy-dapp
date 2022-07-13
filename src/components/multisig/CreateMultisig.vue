@@ -11,14 +11,14 @@
           >
             <template>
               <div v-if="mode === 'edit'" style="flex: 1">
-                <h2 class="lg">Create New Multisig</h2>
+                <h2 class="bold-text">Create New Multisig</h2>
                 <p edit class="light-text small-text" style="margin-top: 10px">
                   Please provide the Tezos addresses that will be controlling
                   and administrating the multisig wallet.
                 </p>
               </div>
               <div v-else style="flex: 1">
-                <h2 class="lg">Review New Multisig</h2>
+                <h2 class="bold-text">Review New Multisig</h2>
                 <p edit class="light-text small-text" style="margin-top: 10px">
                   Please ensure that the below information is correct. If the
                   information is incorrect, the multisig creation will likely

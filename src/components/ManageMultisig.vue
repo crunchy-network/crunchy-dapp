@@ -143,15 +143,15 @@
             <el-dropdown-item tabindex="0" @click.native="toggleTokenModal">
               Create Token Transfer
             </el-dropdown-item>
-            <el-dropdown-item tabindex="1"
-              >Create NFT Transfer</el-dropdown-item
-            >
-            <el-dropdown-item tabindex="2" @click.native="toggleDelegateModal"
-              >Create Delegation</el-dropdown-item
-            >
-            <el-dropdown-item tabindex="3" @click.native="toggleUpdateModal"
-              >Update Contract</el-dropdown-item
-            >
+            <el-dropdown-item tabindex="1" @click.native="toggleNftsModal">
+              Create NFT Transfer
+            </el-dropdown-item>
+            <el-dropdown-item tabindex="2" @click.native="toggleDelegateModal">
+              Create Delegation
+            </el-dropdown-item>
+            <el-dropdown-item tabindex="3" @click.native="toggleUpdateModal">
+              Update Contract
+            </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </el-row>
@@ -178,6 +178,10 @@
       :show-modal="showDelegateModal"
       :toggle-modal="toggleDelegateModal"
     />
+    <CreateNFTTransfer
+      :show-modal="showNftsModal"
+      :toggle-modal="toggleNftsModal"
+    />
   </div>
 </template>
 
@@ -190,6 +194,7 @@ import MultisigAdminsTab from "./MultisigAdminsTab.vue";
 import UpdateContract from "./multisig/UpdateContract.vue";
 import CreateTokenTransfer from "./multisig/CreateTokenTransfer.vue";
 import CreateDelegation from "./multisig/CreateDelegation.vue";
+import CreateNFTTransfer from "./multisig/CreateNFTTransfer.vue";
 export default {
   name: "ManageMultisig",
   components: {
@@ -201,6 +206,7 @@ export default {
     UpdateContract,
     CreateTokenTransfer,
     CreateDelegation,
+    CreateNFTTransfer,
   },
   data() {
     return {
@@ -208,7 +214,8 @@ export default {
       showUpdateModal: false,
       showDelegateModal: false,
       showTokenModal: false,
-      activeTab: "nfts",
+      showNftsModal: false,
+      activeTab: "history",
       multisigAddress: "",
       multisig: {
         alias: "CrunchyMultisig.tez",
@@ -243,6 +250,9 @@ export default {
     },
     toggleDelegateModal() {
       this.showDelegateModal = !this.showDelegateModal;
+    },
+    toggleNftsModal() {
+      this.showNftsModal = !this.showNftsModal;
     },
   },
 };

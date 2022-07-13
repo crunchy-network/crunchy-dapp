@@ -592,6 +592,10 @@ h2.lg {
   font-weight: 700;
 }
 
+h2.size-md {
+  font-size: 20px;
+}
+
 ._anchor-primary {
   font-weight: 600;
   font-size: 14px;
