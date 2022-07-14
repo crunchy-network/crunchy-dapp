@@ -3,12 +3,15 @@ const config = require("../config");
 // returns token we are on, and finds the other side of the pair in the token list
 const getTokenPair = (tokens, tokenIndex, pairIndex) => {
   const token1 = tokens[tokenIndex];
-  const token2Symbol = token1.pairs[pairIndex].sides[1].symbol;
+  const token2Raw = token1.pairs[pairIndex].sides[1];
   let token2;
-  if (token2Symbol === "XTZ") {
+  if (token2Raw.symbol === "XTZ") {
     token2 = { symbol: "tez", type: "tez", tokenAddress: "tez", decimals: 6 };
   } else {
-    token2 = tokens.find((token) => token.symbol === token2Symbol);
+    token2 = tokens.find((t) => {
+      return token2Raw.tokenAddress === t.tokenAddress &&
+      (token2Raw.tokenType === "fa1.2" || token2Raw.tokenId === t.tokenId)
+    });
   }
 
   return { token1, token2 };
@@ -70,14 +73,19 @@ const buildPair = (tokens, tokenIndex, pairIndex, direction = "Direct") => {
   const tokenPair = getTokenPair(tokens, tokenIndex, pairIndex);
   let tokenA = tokenPair.token1;
   let tokenB = tokenPair.token2;
+
+  if (!tokenA || !tokenB) {
+    return false;
+  }
+
   if (direction === "Inverted") {
     aSide = 1;
     bSide = 0;
     tokenA = tokenPair.token2;
     tokenB = tokenPair.token1;
   }
-  const rawPair = tokens[tokenIndex].pairs[pairIndex];
 
+  const rawPair = tokens[tokenIndex].pairs[pairIndex];
   const pair = { a: {}, b: {} };
 
   // common properties
@@ -133,8 +141,11 @@ const buildSwapPairsFromPriceData = (tokens) => {
         continue;
       }
       if (isKnownDex(tokens[tokenIndex].pairs[pairIndex].dex)) {
-        pairs.push(buildPair(tokens, tokenIndex, pairIndex));
-        pairs.push(buildPair(tokens, tokenIndex, pairIndex, "Inverted"));
+        const pair = buildPair(tokens, tokenIndex, pairIndex);
+        if (pair) {
+          pairs.push(pair);
+          pairs.push(buildPair(tokens, tokenIndex, pairIndex, "Inverted"));
+        }
       }
     }
   }
