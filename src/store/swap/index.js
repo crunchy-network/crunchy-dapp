@@ -9,7 +9,7 @@ export default {
       inputToken: {},
       inputAmount: 1,
       outputToken: {},
-      slippageTolerance: 1.5,
+      slippageTolerance: 0.5,
     },
     currentTrade: {},
     swapPairs: [],
