@@ -585,6 +585,9 @@ export default {
     this.fetchProject();
     this.refresh();
   },
+  mounted() {
+    this.showTimer();
+  },
   methods: {
     ...mapActions(["connectWallet", "loadIfoData", "stakeIfo", "harvestIfo"]),
 
@@ -642,9 +645,6 @@ export default {
       }
       this.form.visible = true;
     },
-  },
-  mounted() {
-    this.showTimer();
   },
 };
 </script>

@@ -5,4 +5,5 @@ module.exports = {
       title: "Crunchy",
     },
   },
+  lintOnSave: "warning",
 };

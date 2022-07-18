@@ -30,8 +30,8 @@
           @click="toggleMenu"
         >
           <i
-            style="font-size: 28px"
             v-if="!showMenu"
+            style="font-size: 28px"
             class="fa-solid fa-bars-staggered"
           ></i>
           <i
@@ -73,8 +73,8 @@
               </router-link>
 
               <el-submenu
-                :popper-append-to-body="false"
                 id="defi-menu"
+                :popper-append-to-body="false"
                 index="1"
                 :class="defiActive ? 'sub-is-active' : ''"
               >
@@ -117,17 +117,16 @@
                   </svg>
                   DeFi</template
                 >
-
                 <router-link
                   tag="li"
                   class="el-menu-item submenu-item"
-                  :to="{ name: 'deep-freezer-listing' }"
+                  to="/swap"
                   active-class="is-active"
                 >
-                  <i class="fak fa-crunchy-locker"></i>
-                  <span>Deep Freezers</span>
-                </router-link>
+                  <i class="fa-solid fa-arrow-up-arrow-down"></i>
 
+                  <span>SWAP</span>
+                </router-link>
                 <router-link
                   tag="li"
                   class="el-menu-item submenu-item"
@@ -136,16 +135,6 @@
                 >
                   <i class="fak fa-crunchy-farm"></i>
                   <span>Farms</span>
-                </router-link>
-
-                <router-link
-                  tag="li"
-                  class="el-menu-item submenu-item"
-                  :to="{ name: 'fire-pit' }"
-                  active-class="is-active"
-                >
-                  <i class="fas fa-fire-alt"></i>
-                  <span>Fire Pit</span>
                 </router-link>
                 <router-link
                   tag="li"
@@ -159,12 +148,30 @@
                 <router-link
                   tag="li"
                   class="el-menu-item submenu-item"
+                  :to="{ name: 'deep-freezer-listing' }"
+                  active-class="is-active"
+                >
+                  <i class="fak fa-crunchy-locker"></i>
+                  <span>Deep Freezers</span>
+                </router-link>
+                <router-link
+                  tag="li"
+                  class="el-menu-item submenu-item"
                   to="/wtz"
                   active-class="is-active"
                 >
                   <i class="fak fa-crunchy-tez-alt"></i>
 
                   <span>WTZ</span>
+                </router-link>
+                <router-link
+                  tag="li"
+                  class="el-menu-item submenu-item"
+                  :to="{ name: 'fire-pit' }"
+                  active-class="is-active"
+                >
+                  <i class="fas fa-fire-alt"></i>
+                  <span>Fire Pit</span>
                 </router-link>
               </el-submenu>
 
@@ -194,13 +201,19 @@
                   More</template
                 >
                 <el-menu-item class="submenu-item">
-                  <i style="color: #191b1f !important" class="fa-light fa-book"></i>
+                  <i
+                    style="color: #191b1f !important"
+                    class="fa-light fa-book"
+                  ></i>
                   <a href="https://docs.crunchy.network/" target="_blank">
                     Docs
                   </a>
                 </el-menu-item>
                 <el-menu-item class="submenu-item">
-                  <i style="color: #191b1f !important" class="fab fa-discord"></i>
+                  <i
+                    style="color: #191b1f !important"
+                    class="fab fa-discord"
+                  ></i>
                   <a
                     href="https://discord.com/invite/99UnxxgB46"
                     target="_blank"
@@ -209,7 +222,10 @@
                   </a>
                 </el-menu-item>
                 <el-menu-item class="submenu-item">
-                  <i style="color: #191b1f !important" class="fab fa-telegram"></i>
+                  <i
+                    style="color: #191b1f !important"
+                    class="fab fa-telegram"
+                  ></i>
                   <a href=" https://t.me/crunchy_network" target="_blank">
                     Telegram
                   </a>

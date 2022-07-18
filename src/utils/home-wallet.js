@@ -2,7 +2,27 @@ import axios from "axios";
 import BigNumber from "bignumber.js";
 import coingecko from "./coingecko";
 import ipfs from "./ipfs";
+import teztools from "./teztools";
 
+// const makeReqest = async ({ contract, id }) => {
+//   return axios.get(`${process.env.VUE_APP_TEZTOOLS_API_URL}/token/${contract}${id ? "_" + id : ""}/price`);
+// };
+const getTokenId = (priceObj, token) => {
+  if (priceObj) {
+    if (priceObj.tokenId !== undefined) {
+      return priceObj.tokenId;
+    }
+    if (priceObj.type !== undefined) {
+      return 0;
+    }
+  }
+  if (token) {
+    if (token.tokenId !== undefined) {
+      return token.tokenId;
+    }
+  }
+  return undefined;
+};
 
 export default {
   async fetchAssetsBal(pkh) {
@@ -29,6 +49,7 @@ export default {
         balances.push({
           token: {
             token_id: 0,
+            tokenId: 0,
             contract: { address: process.env.VUE_APP_CONTRACTS_CRUNCH },
             metadata: {
               thumbnail_uri:
@@ -52,6 +73,7 @@ export default {
           token: {
             contract: { address: process.env.VUE_APP_CONTRACTS_CRDAO },
             token_id: 0,
+            tokenId: 0,
             metadata: {
               thumbnail_uri:
                 "https://ipfs.fleek.co/ipfs/bafybeigulbzm5x72qtmckxqvd3ksk6q3vlklxjgpnvvnbcofgdp6qwu43u",
@@ -64,9 +86,8 @@ export default {
       }
 
       // Get all wallet prices
-      const {
-        data: { contracts: prices },
-      } = await axios.get("https://api.teztools.io/v1/prices");
+      const { contracts: prices } = await teztools.getPricefeed();
+
       // filter out NFTs by checking for artifactURI and token symbol or alias
       balances = balances.filter(
         (val) =>
@@ -82,17 +103,22 @@ export default {
         );
 
         if (priceFilter.length > 1) {
-          priceFilter = priceFilter.filter(
-            (val) => val.symbol === balances[i]?.token?.metadata?.symbol
-          );
+          if (balances[i]?.token?.metadata !== undefined) {
+            priceFilter = priceFilter.filter(
+              (val) => val.symbol === balances[i]?.token?.metadata?.symbol
+            );
+          } else if (balances[i]?.token?.tokenId !== undefined) {
+            priceFilter = priceFilter.filter(
+              (val) => val.tokenId.toString() === balances[i].token.tokenId
+            );
+          }
         }
 
         const priceObj = priceFilter.length ? priceFilter[0] : undefined;
 
         // get current price of token
         const currentPrice = priceObj?.currentPrice || false;
-        const tokenid = priceObj?.tokenId;
-
+        const tokenid = getTokenId(priceObj, balances[i].token);
         // get token uri from prices :: This is because  balance does not return  some tokens thumbnail
         const thumbnailUri = priceObj?.thumbnailUri || false;
 
@@ -121,9 +147,15 @@ export default {
         const pricePair = priceObj?.pairs.find(
           (el) => el.dex === "Quipuswap" && el.sides[1].symbol === "XTZ"
         );
-
+        var assetSlug;
+        if (tokenid !== undefined) {
+          assetSlug = `${balances[i]?.token?.contract?.address}_${tokenid}`;
+        } else {
+          assetSlug = balances[i]?.token?.contract?.address;
+        }
         const valObj = {
           asset:
+            priceObj?.symbol ||
             balances[i]?.token?.metadata?.symbol ||
             balances[i]?.token?.contract?.alias,
           icon,
@@ -149,6 +181,8 @@ export default {
           value: value.toNumber(),
           contract: balances[i]?.token?.contract?.address,
           tokenid,
+          assetSlug,
+          decimals: balances[i]?.token?.metadata?.decimals,
         };
         if (currentPrice) {
           assets.push(valObj);
@@ -173,6 +207,8 @@ export default {
           contract: "tez",
           value: balance.toNumber(),
           valueUsd: value.toNumber(),
+          assetSlug: "tez",
+          decimals: 6,
         });
     } catch (e) {
       console.log("/utils/home-wallet", e);

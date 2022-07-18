@@ -15,8 +15,37 @@ export default {
   },
 
   async getPricefeed() {
-    return makeReqest("/token/prices").then((res) => {
-      return res.data;
+    let contracts = []
+    return makeReqest("/v1/prices").then((res) => {
+      const ret = res.data;
+      for (const c of ret.contracts) {
+        const idx = contracts.findIndex((el) => {
+          return c.tokenAddress === el.tokenAddress &&
+          (c.type === "fa1.2" || c.tokenId === el.tokenId)
+        });
+
+        if (idx > -1) {
+          contracts[idx].pairs = contracts[idx].pairs.concat(c.pairs);
+        } else {
+          contracts.push(c);
+        }
+      }
+
+      contracts.push({
+        symbol: "MTTR",
+        name: "Matter",
+        tokenAddress: "KT1K4jn23GonEmZot3pMGth7unnzZ6EaMVjY",
+        tokenId: 0,
+        decimals: 12,
+        type: "fa2",
+        thumbnailUri: "ipfs://QmZ3BWTnxAp87yfKnUGka9UeQLhHjMkDAB3KTo1UChhQas",
+        shouldPreferSymbol: false,
+        usdValue: 0,
+        pairs: [],
+      });
+
+      ret.contracts = contracts;
+      return ret;
     });
   },
   async getTokenPrice(tokenAddress, tokenId) {

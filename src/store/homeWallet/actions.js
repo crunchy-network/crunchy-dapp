@@ -126,4 +126,7 @@ export default {
         });
       });
   },
+  async walletConnected({ dispatch, rootState }) {
+    dispatch("loadWalletAsssets", rootState.wallet.pkh);
+  },
 };
