@@ -66,6 +66,7 @@ export default {
       await dispatch("fetchAllFarms");
       if (Object.keys(rootState.farms.data).length > 0) {
         const farmsData = rootState.farms.data;
+
         const crunchyStake = await homeWalletStake.getUsersCrunchyStake(
           farmsData,
           rootState.wallet.pkh

@@ -203,7 +203,7 @@
                     <div style="width: max-content">
                       <el-avatar
                         shape="circle"
-                        :size="34"
+                        :size="25"
                         style="
                           position: relative;
                           border: 3px solid #fff;
@@ -215,12 +215,12 @@
                         :src="stake.poolToken.thumbnailUri"
                         fit="cover"
                         shape="circle"
-                        :size="34"
+                        :size="25"
                         style="
                           position: relative;
                           border: 3px solid #fff;
                           vertical-align: middle;
-                          margin-left: -15px;
+                          margin-left: -12px;
                           margin-right: 10px;
                         "
                       ></el-avatar>
@@ -238,7 +238,7 @@
                     <div>
                       <el-avatar
                         shape="circle"
-                        :size="34"
+                        :size="25"
                         style="
                           position: relative;
                           border: 3px solid #fff;
@@ -250,12 +250,12 @@
                         :src="stake.poolToken.thumbnailUri"
                         fit="cover"
                         shape="circle"
-                        :size="34"
+                        :size="25"
                         style="
                           position: relative;
                           border: 3px solid #fff;
                           vertical-align: middle;
-                          margin-left: -15px;
+                          margin-left: -12px;
                           margin-right: 10px;
                         "
                       ></el-avatar>
@@ -273,7 +273,7 @@
                     <div>
                       <el-avatar
                         shape="circle"
-                        :size="34"
+                        :size="25"
                         style="
                           position: relative;
                           border: 3px solid #fff;
@@ -285,12 +285,12 @@
                         :src="stake.poolToken.token2.thumbnailUri"
                         fit="cover"
                         shape="circle"
-                        :size="34"
+                        :size="25"
                         style="
                           position: relative;
                           border: 43px solid #fff;
                           vertical-align: middle;
-                          margin-left: -15px;
+                          margin-left: -12px;
                           margin-right: 10px;
                         "
                       ></el-avatar>
@@ -308,7 +308,7 @@
                           :src="stake.poolToken.thumbnailUri"
                           fit="cover"
                           shape="circle"
-                          :size="34"
+                          :size="25"
                           style="
                             position: relative;
                             border: 3px solid #fff;
@@ -356,25 +356,29 @@
                   <el-col v-if="farm.lp" style="text-align: right" :span="4">
                     -</el-col
                   >
-                  <el-col v-else style="text-align: right" :span="4">
+                  <el-col
+                    v-else
+                    style="text-align: right; vertical-align: center"
+                    :span="4"
+                  >
                     {{
                       farm.protocol === "Dogami"
                         ? "N/A"
-                        : !showUsd
-                        ? vueNumberFormat(stake.rewardValue, {
+                        : vueNumberFormat(stake.rewardDebt, {
                             prefix: "",
-                            suffix: " ꜩ",
+                            suffix: "",
                             decimal: ".",
                             thousand: ",",
                             precision: 4,
                           })
-                        : vueNumberFormat(stake.rewardValueUsd, {
-                            prefix: "$",
-                            decimal: ".",
-                            thousand: ",",
-                            precision: 2,
-                          })
                     }}
+                    <el-avatar
+                      v-if="farm.protocol !== 'Dogami'"
+                      shape="circle"
+                      :size="25"
+                      style="border: 3px solid #fff; vertical-align: middle"
+                      :src="stake.rewardToken.thumbnailUri"
+                    ></el-avatar>
                   </el-col>
                 </template>
                 <template aria-describedby="Total Value">
