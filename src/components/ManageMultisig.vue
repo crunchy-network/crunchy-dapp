@@ -6,27 +6,6 @@
         <router-link
           tag="a"
           class="link-text"
-          :to="{ name: 'home' }"
-          type="text"
-          style="
-            font-weight: 600;
-            font-size: 16px;
-            line-height: 24px;
-            color: #555cff;
-            text-decoration: none;
-          "
-        >
-          Home
-        </router-link>
-
-        <i
-          style="font-size: 12px; color: #c0c4cc; margin: 0 5px"
-          class="fa-solid fa-angle-right"
-        ></i>
-
-        <router-link
-          tag="a"
-          class="link-text"
           :to="{ name: 'multisig' }"
           type="text"
           style="
@@ -93,10 +72,10 @@
         <div class="tab-wrapper">
           <button
             class="tab-text"
-            :style="isActiveTab('history')"
-            @click="setActiveTab('history')"
+            :style="isActiveTab('proposals')"
+            @click="setActiveTab('proposals')"
           >
-            History
+            Proposals
           </button>
           <button
             class="tab-text"
@@ -118,6 +97,14 @@
             @click="setActiveTab('admins')"
           >
             Admins
+          </button>
+
+          <button
+            class="tab-text"
+            :style="isActiveTab('history')"
+            @click="setActiveTab('history')"
+          >
+            History
           </button>
         </div>
 
@@ -161,7 +148,8 @@
       ></multisig-history-tab>
 
       <MultisigTokensTab v-if="activeTab === 'tokens'" />
-      <MultisigNFTsTab v-if="activeTab === 'nfts'" />
+      <MultisigProposalTab v-if="activeTab === 'proposals'" />
+      <multisig-nfts-tab v-if="activeTab === 'nfts'" />
       <MultisigAdminsTab v-if="activeTab === 'admins'" />
     </el-main>
 
@@ -189,25 +177,27 @@
 import MultisigHistoryTab from "./MultisigHistoryTab.vue";
 import NavMenu from "./NavMenu.vue";
 import MultisigTokensTab from "./MultisigTokensTab.vue";
-import MultisigNFTsTab from "./MultisigNftsTab.vue";
 import MultisigAdminsTab from "./MultisigAdminsTab.vue";
 import UpdateContract from "./multisig/UpdateContract.vue";
 import CreateTokenTransfer from "./multisig/CreateTokenTransfer.vue";
 import CreateDelegation from "./multisig/CreateDelegation.vue";
 import CreateNFTTransfer from "./multisig/CreateNFTTransfer.vue";
+import MultisigNftsTab from "./MultisigNftsTab.vue";
+import MultisigProposalTab from "./MultisigProposalTab.vue";
 export default {
   name: "ManageMultisig",
   components: {
     NavMenu,
     MultisigHistoryTab,
     MultisigTokensTab,
-    MultisigNFTsTab,
     MultisigAdminsTab,
     UpdateContract,
     CreateTokenTransfer,
     CreateDelegation,
     CreateNFTTransfer,
-  },
+    MultisigNftsTab,
+    MultisigProposalTab
+},
   data() {
     return {
       copied: false,
@@ -215,7 +205,7 @@ export default {
       showDelegateModal: false,
       showTokenModal: false,
       showNftsModal: false,
-      activeTab: "history",
+      activeTab: "proposals",
       multisigAddress: "",
       multisig: {
         alias: "CrunchyMultisig.tez",
@@ -229,7 +219,7 @@ export default {
     },
 
     setActiveTab(tab = "") {
-      if (["history", "nfts", "tokens", "admins"].includes(tab)) {
+      if (["history", "proposals", "nfts", "tokens", "admins"].includes(tab)) {
         this.activeTab = tab;
       }
     },

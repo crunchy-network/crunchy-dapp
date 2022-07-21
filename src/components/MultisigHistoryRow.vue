@@ -99,7 +99,7 @@
                 <el-col :span="9">
                   <template>
                     <div v-if="item.action === 'send'">
-                      <p class="light-text regular-text">To</p>
+                      <p class="light-text small-text bold-text">To</p>
                       <el-link
                         style="
                           font-weight: 600;
@@ -113,7 +113,7 @@
                       >
                     </div>
                     <div v-if="item.action === 'recieve'">
-                      <p class="light-text regular-text">From</p>
+                      <p class="light-text small-text bold-text">From</p>
                       <el-link
                         style="
                           font-weight: 600;
