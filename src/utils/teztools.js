@@ -44,19 +44,6 @@ export default {
         pairs: [],
       });
 
-      contracts.push({
-        symbol: "USDt",
-        name: "Tether USD",
-        tokenAddress: "KT1XnTn74bUtxHfDtBmm2bGZAQfhPbvKWR8o",
-        tokenId: 0,
-        decimals: 6,
-        type: "fa2",
-        thumbnailUri: "ipfs://QmRymVGWEudMfLrbjaEiXxngCRTDgWCsscjQMwizy4ZJjX",
-        shouldPreferSymbol: false,
-        usdValue: 0,
-        pairs: [],
-      });
-
       ret.contracts = contracts;
       return ret;
     });

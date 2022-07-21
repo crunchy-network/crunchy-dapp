@@ -184,7 +184,7 @@ export default {
           assetSlug,
           decimals: balances[i]?.token?.metadata?.decimals,
         };
-        if (currentPrice || balances[i]?.token?.metadata?.symbol === "USDt") {
+        if (currentPrice) {
           assets.push(valObj);
         }
       }
