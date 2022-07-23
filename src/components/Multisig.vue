@@ -3,26 +3,6 @@
     <NavMenu />
     <el-main class="page_width">
       <el-row type="flex" align="middle">
-        <router-link
-          tag="a"
-          class="link-text"
-          :to="{ name: 'home' }"
-          type="text"
-          style="
-            font-weight: 600;
-            font-size: 16px;
-            line-height: 24px;
-            color: #555cff;
-            text-decoration: none;
-          "
-        >
-          Home
-        </router-link>
-
-        <i
-          style="font-size: 12px; color: #c0c4cc; margin: 0 5px"
-          class="fa-solid fa-angle-right"
-        ></i>
         <span
           disabled
           type="text"
