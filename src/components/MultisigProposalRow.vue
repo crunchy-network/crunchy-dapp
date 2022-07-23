@@ -130,7 +130,9 @@
                         precision: 2,
                       })
                     }}
-                    <el-link>{{ item.tokenSymbol }}</el-link>
+                    <a style="color: rgba(85, 92, 255, 1)">{{
+                      item.tokenSymbol
+                    }}</a>
                   </div>
                 </el-col>
               </el-row>
@@ -158,7 +160,20 @@
                 </p>
               </template>
             </el-col>
-            <el-col class="text-right" :span="4"> </el-col>
+            <el-col class="text-right" :span="4">
+              <el-button v-if="item.action === 'lambda'" type="text">
+                Interact
+              </el-button>
+              <el-button
+                v-else-if="!(item.status.total - item.status.pending)"
+                type="text"
+              >
+                Execute
+              </el-button>
+              <el-button v-else type="text" style="color: #f9545b">
+                Rejected
+              </el-button>
+            </el-col>
           </el-row>
         </div>
       </div>
