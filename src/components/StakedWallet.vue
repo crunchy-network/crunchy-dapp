@@ -25,13 +25,14 @@
                 align="middle"
                 style="padding: 0 20px"
               >
-                <el-col :span="6">Protocol</el-col>
+                <el-col :span="4">Protocol</el-col>
                 <el-col style="text-align: right" :span="4"
                   >Staked Value</el-col
                 >
+                <el-col style="text-align: right" :span="4"></el-col>
                 <el-col style="text-align: right" :span="4">Claimable</el-col>
                 <el-col style="text-align: right" :span="4">Total Value</el-col>
-                <el-col style="text-align: right" :span="6"></el-col>
+                <el-col style="text-align: right" :span="4"></el-col>
               </el-row>
             </el-col>
           </el-row>
@@ -127,7 +128,7 @@ export default {
   },
   watch: {
     getStakes() {
-      this.paginationHandler()
+      this.paginationHandler();
     },
 
     farms(newVal) {

@@ -28,7 +28,7 @@
                 type="flex"
                 align="middle"
               >
-                <el-col style="text-align: left" :span="6">
+                <el-col style="text-align: left" :span="4">
                   <el-row type="flex" style="align-items: center">
                     <img
                       :src="farm.icon"
@@ -74,6 +74,9 @@
                         })
                   }}
                 </el-col>
+
+                <el-col style="text-align: left" :span="4"></el-col>
+
                 <template aria-describedby="Claimable">
                   <el-col v-if="!farm.lp" style="text-align: right" :span="4">
                     {{
@@ -141,7 +144,7 @@
 
                 <el-col
                   v-show="rowExpanded === false"
-                  :span="6"
+                  :span="4"
                   style="text-align: right"
                   ><el-button
                     type="text"
@@ -152,7 +155,7 @@
                 ></el-col>
                 <el-col
                   v-show="rowExpanded === true"
-                  :span="6"
+                  :span="4"
                   style="text-align: right"
                   ><el-button
                     type="text"
@@ -177,11 +180,12 @@
                 font-weight: 600;
               "
             >
-              <el-col :span="4"> Staked Token</el-col>
-              <el-col style="text-align: right" :span="4">Amount Staked</el-col>
+              <el-col :span="4"> Staked</el-col>
               <el-col style="text-align: right" :span="4">Staked Value</el-col>
+              <el-col style="text-align: right" :span="4">Amount Staked</el-col>
               <el-col style="text-align: right" :span="4">Claimable</el-col>
               <el-col style="text-align: right" :span="4">Total Value</el-col>
+              <el-col style="text-align: right" :span="4"></el-col>
             </el-row>
 
             <div v-for="(stake, index) in farm.data" :key="index">
@@ -364,7 +368,7 @@
                     {{
                       farm.protocol === "Dogami"
                         ? "N/A"
-                        : vueNumberFormat(stake.rewardDebt, {
+                        : vueNumberFormat(stake.rewardsEarned, {
                             prefix: "",
                             suffix: "",
                             decimal: ".",
