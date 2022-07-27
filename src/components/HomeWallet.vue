@@ -286,7 +286,7 @@ export default {
   components: { PortfolioWalletRow, StakedWallet },
   data() {
     return {
-      activeTab: "staked",
+      activeTab: "portfolio",
       tabledata: [],
       showUsd: false,
       currentPage: 0,
