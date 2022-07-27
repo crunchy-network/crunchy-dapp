@@ -48,6 +48,13 @@ const stableTokens = {
     decimals: 12,
     type: "fa2",
   },
+  USDt: {
+    tokenSymbol: "USDt",
+    address: "KT1XnTn74bUtxHfDtBmm2bGZAQfhPbvKWR8o",
+    tokenId: 0,
+    decimals: 6,
+    type: "fa2",
+  },
 };
 
 const dexes = [
@@ -69,6 +76,15 @@ const dexes = [
     address: "KT1WHyfr6RwJt2FKW7FgvA6sFvPPrzrMmcZt",
     poolIndex: "199501",
     tokens: [{ ...stableTokens.tzBTC }, { ...stableTokens.uBTC }],
+  },
+  {
+    address: "KT1P8cMDVmp2RdkW8Qgpwa9uR32TgbcLB7PN",
+    poolIndex: "237395",
+    tokens: [
+      { ...stableTokens.kUSD },
+      { ...stableTokens.uUSD },
+      { ...stableTokens.USDt },
+    ],
   },
 ];
 
