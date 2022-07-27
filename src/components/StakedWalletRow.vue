@@ -175,7 +175,7 @@
               :gutter="20"
               type="flex"
               align="top"
-              style="padding: 10px 20px"
+              style="padding: 10px 20px; color: #757679; font-size: 14px"
             >
               <el-col :span="4"> Staked</el-col>
               <el-col style="text-align: right" :span="4">Amount Staked</el-col>
