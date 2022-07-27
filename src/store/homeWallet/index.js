@@ -72,7 +72,10 @@ export default {
       return state.crunchyStake;
     },
     getStakes(state) {
-      return [state.crunchyStake, state.gifStake, state.dogamiStake];
+      const orderedStake = [state.gifStake, state.dogamiStake].sort(
+        (a, b) => b.staked - a.staked
+      );
+      return [state.crunchyStake, ...orderedStake];
     },
   },
 };

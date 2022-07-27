@@ -55,6 +55,7 @@
                     </a>
                   </el-row>
                 </el-col>
+                <el-col style="text-align: left" :span="4"></el-col>
 
                 <el-col style="text-align: right" :span="4">
                   {{
@@ -76,7 +77,7 @@
                 </el-col>
 
                 <el-col style="text-align: left" :span="4"></el-col>
-
+                <!-- 
                 <template aria-describedby="Claimable">
                   <el-col v-if="!farm.lp" style="text-align: right" :span="4">
                     {{
@@ -101,7 +102,7 @@
                   <el-col v-else style="text-align: right" :span="4">
                     -
                   </el-col>
-                </template>
+                </template> -->
                 <template aria-describedby=" Total Value">
                   <el-col v-if="farm.lp" style="text-align: right" :span="4">
                     {{
@@ -171,18 +172,14 @@
         <collapse-transition :duration="250" name="slide">
           <div v-if="farm.data.length > 0" v-show="rowExpanded">
             <el-row
+              :gutter="20"
               type="flex"
               align="top"
-              style="
-                padding: 10px 20px;
-                color: #757679;
-                font-size: 14px;
-                font-weight: 600;
-              "
+              style="padding: 10px 20px"
             >
               <el-col :span="4"> Staked</el-col>
-              <el-col style="text-align: right" :span="4">Staked Value</el-col>
               <el-col style="text-align: right" :span="4">Amount Staked</el-col>
+              <el-col style="text-align: right" :span="4">Staked Value</el-col>
               <el-col style="text-align: right" :span="4">Claimable</el-col>
               <el-col style="text-align: right" :span="4">Total Value</el-col>
               <el-col style="text-align: right" :span="4"></el-col>
@@ -190,6 +187,7 @@
 
             <div v-for="(stake, index) in farm.data" :key="index">
               <el-row
+                :gutter="20"
                 type="flex"
                 style="
                   padding: 10px 20px;
