@@ -64,8 +64,12 @@ function getXp(_ref) {
   var tokensInfo = [..._ref.tokensInfo];
   var toRet = [];
   tokensInfo.forEach(function (tokenInfo) {
-    var rate = new BigNumber(tokenInfo.rate);
-    var reserves = new BigNumber(tokenInfo.reserves);
+    var info = Object.assign(
+      {},
+      { rate: tokenInfo.rate, reserves: tokenInfo.reserves }
+    );
+    var rate = new BigNumber(info.rate);
+    var reserves = new BigNumber(info.reserves);
     toRet.push(rate.times(reserves).idiv(precision));
   });
   return toRet;

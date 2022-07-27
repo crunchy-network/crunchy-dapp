@@ -2,6 +2,7 @@ const Dexes = require("./Dexes");
 const { percentToDecimal } = require("./utils");
 const { Combination } = require("js-combinatorics");
 const _ = require("lodash");
+const { default: BigNumber } = require("bignumber.js");
 // throws verbose errors for better developer experience
 
 const validateSlippageToleranceInput = (route, slippageTolerance) => {
@@ -181,23 +182,6 @@ const addSlippageToleranceToWeightedRoute = (route, slippageTolerance) => {
   });
 };
 
-function deepFreeze(o) {
-  Object.freeze(o);
-  Object.getOwnPropertyNames(o).forEach(function (prop) {
-    if (
-      // eslint-disable-next-line
-      o.hasOwnProperty(prop) &&
-      o[prop] !== null &&
-      (typeof o[prop] === "object" || typeof o[prop] === "function") &&
-      !Object.isFrozen(o[prop])
-    ) {
-      deepFreeze(o[prop]);
-    }
-  });
-
-  return o;
-}
-
 const findBestRoute = (inputAmount, routePairCombos, slippageTolerance) => {
   validateFindBestRouteInput(inputAmount, routePairCombos);
   let bestRoute = { inputAmount, type: "linear" };
@@ -224,7 +208,7 @@ const findBestRoute = (inputAmount, routePairCombos, slippageTolerance) => {
       };
     }
   }
-  return deepFreeze({ ...bestRoute });
+  return { ...bestRoute };
 };
 
 const findBestWeightedRoute = (inputAmount, weightedPairs) => {
@@ -252,7 +236,7 @@ const findBestWeightedRoute = (inputAmount, weightedPairs) => {
     }
   }
 
-  return deepFreeze({ ...bestRoute });
+  return { ...bestRoute };
 };
 
 module.exports = {
