@@ -15,13 +15,16 @@ export default {
   },
 
   async getPricefeed() {
-    let contracts = []
+    // eslint-disable-next-line prefer-const
+    let contracts = [];
     return makeReqest("/v1/prices").then((res) => {
       const ret = res.data;
       for (const c of ret.contracts) {
         const idx = contracts.findIndex((el) => {
-          return c.tokenAddress === el.tokenAddress &&
-          (c.type === "fa1.2" || c.tokenId === el.tokenId)
+          return (
+            c.tokenAddress === el.tokenAddress &&
+            (c.type === "fa1.2" || c.tokenId === el.tokenId)
+          );
         });
 
         if (idx > -1) {

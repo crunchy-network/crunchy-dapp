@@ -109,7 +109,12 @@ import StakedWalletRow from "./StakedWalletRow.vue";
 export default {
   name: "StakedWalletView",
   components: { StakedWalletRow },
-  props: ["showUsd"],
+  props: {
+    showUsd: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
       currentPage: 0,

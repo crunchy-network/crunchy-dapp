@@ -268,9 +268,9 @@
                   </el-row>
 
                   <el-row
+                    v-else-if="stake.poolToken.isPlentyLp"
                     type="flex"
                     style="flex-wrap: wrap"
-                    v-else-if="stake.poolToken.isPlentyLp"
                   >
                     <div>
                       <el-avatar
@@ -303,7 +303,7 @@
                       }}
                     </span>
                   </el-row>
-                  <el-row type="flex" style="flex-wrap: wrap" v-else>
+                  <el-row v-else type="flex" style="flex-wrap: wrap">
                     <div>
                       <el-tooltip placement="top" effect="light">
                         <el-avatar
@@ -479,7 +479,16 @@ export default {
   components: {
     CollapseTransition,
   },
-  props: ["farm", "showUsd"],
+  props: {
+    farm: {
+      type: Object,
+      required: true,
+    },
+    showUsd: {
+      type: Boolean,
+      required: true,
+    },
+  },
   data() {
     return {
       rowExpanded: false,
