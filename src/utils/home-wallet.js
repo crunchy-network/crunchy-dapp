@@ -240,7 +240,9 @@ export default {
     var sum = 0;
 
     for (let i = 0; i < arr.length; i++) {
-      sum = sum + arr[i].value;
+      if (arr[i].value && !Number.isNaN(arr[i].value)) {
+        sum = sum + arr[i].value;
+      }
     }
     return sum;
   },
@@ -249,7 +251,9 @@ export default {
     var sum = 0;
 
     for (let i = 0; i < arr.length; i++) {
-      sum = sum + arr[i].valueUsd;
+      if (arr[i].value && !Number.isNaN(arr[i].valueUsd)) {
+        sum = sum + arr[i].valueUsd;
+      }
     }
     return sum;
   },
