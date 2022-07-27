@@ -56,6 +56,7 @@ export default {
         QuipuSwap: quipuswap,
         QuipuSwapTokenToTokenDex: quipuswap,
         Quipuswap: quipuswap,
+        QuipuswapStable: quipuswap,
         Vortex: vortex,
         Spicy: spicy,
         WTZ: wtz,

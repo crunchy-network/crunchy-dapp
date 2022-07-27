@@ -61,10 +61,14 @@ function calculateY(c, aNnF, s_, d, pool) {
 }
 
 function getXp(_ref) {
-  var tokensInfo = _ref.tokensInfo;
-  return tokensInfo.map(function (tokenInfo) {
-    return tokenInfo.rate.times(tokenInfo.reserves).idiv(precision);
+  var tokensInfo = [..._ref.tokensInfo];
+  var toRet = [];
+  tokensInfo.forEach(function (tokenInfo) {
+    var rate = new BigNumber(tokenInfo.rate);
+    var reserves = new BigNumber(tokenInfo.reserves);
+    toRet.push(rate.times(reserves).idiv(precision));
   });
+  return toRet;
 }
 
 var getA = function getA(t0, a0, t1, a1) {

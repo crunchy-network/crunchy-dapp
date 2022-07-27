@@ -10,7 +10,7 @@ const stableTokens = {
     tokenSymbol: "uUSD",
     address: "KT1XRPEPXbZK25r3Htzp2o1x7xdMMmfocKNW",
     decimals: 12,
-    tokenId: 2,
+    tokenId: 0,
     type: "fa2",
   },
   USDtz: {
@@ -93,11 +93,13 @@ module.exports = {
         liquidityProvidersFee: new BigNumber(storage.fee.lp_f),
         stakersFee: new BigNumber(storage.fee.stakers_f),
         interfaceFee: new BigNumber(storage.fee.ref_f),
+        devFee: new BigNumber(4500000),
       };
       dexObj.initialA = new BigNumber(storage.initial_A_f);
       dexObj.initialATime = storage.initial_A_time;
       dexObj.futureA = new BigNumber(storage.future_A_f);
       dexObj.futureATime = storage.future_A_time;
+      dexObj.poolId = 0;
       toRet.push(dexObj);
     }
     return toRet;
