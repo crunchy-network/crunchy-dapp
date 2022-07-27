@@ -5,6 +5,7 @@ export default {
   state: {
     loading: false,
     assets: [],
+    nfts: [],
     netWorth: 0,
     netWorthUsd: 0,
     crunchBal: 0,
@@ -15,6 +16,9 @@ export default {
   getters: {
     getAssets(state) {
       return state.assets;
+    },
+    getNFTs(state) {
+      return state.nfts;
     },
   },
 };

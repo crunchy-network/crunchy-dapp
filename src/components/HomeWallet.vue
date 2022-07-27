@@ -104,7 +104,6 @@
         </button>
         <button
           class="tab-text"
-          disabled
           :style="isActiveTab('nfts')"
           @click="setActiveTab('nfts')"
         >
@@ -270,16 +269,21 @@
         </div>
       </el-card>
     </div>
+    <div v-if="activeTab === 'nfts'">
+      Hi bro
+      <nft-display />
+    </div>
   </div>
 </template>
 
 <script>
 import { mapState, mapActions, mapGetters } from "vuex";
+import NftDisplay from "./NftDisplay.vue";
 // import HomeWalletTable from "./HomeWalletTable.vue";
 import PortfolioWalletRow from "./PortfolioWalletRow.vue";
 export default {
   name: "HomeWallet",
-  components: { PortfolioWalletRow },
+  components: { PortfolioWalletRow, NftDisplay },
   data() {
     return {
       activeTab: "portfolio",
