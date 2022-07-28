@@ -10,7 +10,7 @@ const stableTokens = {
     tokenSymbol: "uUSD",
     address: "KT1XRPEPXbZK25r3Htzp2o1x7xdMMmfocKNW",
     decimals: 12,
-    tokenId: 2,
+    tokenId: 0,
     type: "fa2",
   },
   USDtz: {
@@ -48,6 +48,13 @@ const stableTokens = {
     decimals: 12,
     type: "fa2",
   },
+  USDt: {
+    tokenSymbol: "USDt",
+    address: "KT1XnTn74bUtxHfDtBmm2bGZAQfhPbvKWR8o",
+    tokenId: 0,
+    decimals: 6,
+    type: "fa2",
+  },
 };
 
 const dexes = [
@@ -69,6 +76,15 @@ const dexes = [
     address: "KT1WHyfr6RwJt2FKW7FgvA6sFvPPrzrMmcZt",
     poolIndex: "199501",
     tokens: [{ ...stableTokens.tzBTC }, { ...stableTokens.uBTC }],
+  },
+  {
+    address: "KT1P8cMDVmp2RdkW8Qgpwa9uR32TgbcLB7PN",
+    poolIndex: "237395",
+    tokens: [
+      { ...stableTokens.kUSD },
+      { ...stableTokens.uUSD },
+      { ...stableTokens.USDt },
+    ],
   },
 ];
 
@@ -93,11 +109,13 @@ module.exports = {
         liquidityProvidersFee: new BigNumber(storage.fee.lp_f),
         stakersFee: new BigNumber(storage.fee.stakers_f),
         interfaceFee: new BigNumber(storage.fee.ref_f),
+        devFee: new BigNumber(4500000),
       };
       dexObj.initialA = new BigNumber(storage.initial_A_f);
       dexObj.initialATime = storage.initial_A_time;
       dexObj.futureA = new BigNumber(storage.future_A_f);
       dexObj.futureATime = storage.future_A_time;
+      dexObj.poolId = 0;
       toRet.push(dexObj);
     }
     return toRet;

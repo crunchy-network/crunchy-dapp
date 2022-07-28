@@ -67,6 +67,13 @@ module.exports = {
         cashDecimals: 8,
         tokenDecimals: 12,
       },
+      {
+        dexAddress: "KT1UJBvm4hv11Uvu6r4c8zE5K2EfmwiRVgsm",
+        cashSymbol: "USDt",
+        tokenSymbol: "UUSD",
+        cashDecimals: 6,
+        tokenDecimals: 12,
+      },
     ];
     const toRet = [];
 

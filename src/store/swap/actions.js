@@ -7,12 +7,14 @@ import {
   buildWtzPairs,
   buildYouvesPairs,
   buildPlentyStablePairs,
+  buildQuipuStablePairs,
 } from "../../lib/SwapRouter";
 import teztools from "./../../utils/teztools";
 import vortex from "./../../utils/vortex";
 import spicy from "./../../utils/spicy";
 import youves from "../../utils/youves";
 import plenty from "../../utils/plenty";
+import quipuStable from "../../utils/quipuswap-stable"
 export default {
   updateForm(state, payload) {
     state.commit("updateSwapForm", payload);
@@ -81,6 +83,17 @@ export default {
     state.commit("updateDexLoading", { dex, loading: false });
   },
 
+
+  async loadQuipuStablePairs(state){
+    const dex = "QuipuStable";
+    const pools = await quipuStable.getQuipuswapStableDexes();
+    state.commit("updateDexPairs", {
+      dex,
+      pairs: buildQuipuStablePairs(pools),
+    });
+    state.commit("updateDexLoading", { dex, loading: false });
+  },
+
   updateDexApis({ dispatch, commit }) {
     commit("updateDexLoading", { dex: "tezTools", loading: true });
     commit("updateDexLoading", { dex: "vortex", loading: true });
@@ -88,12 +101,14 @@ export default {
     commit("updateDexLoading", { dex: "WTZ", loading: true });
     commit("updateDexLoading", { dex: "Youves", loading: true });
     commit("updateDexLoading", { dex: "Plenty", loading: true });
+    commit("updateDexLoading", { dex: "QuipuStable", loading: true });
     dispatch("loadTezToolsSwapPairs");
     dispatch("loadVortexSwapPairs");
     dispatch("loadSpicySwapPairs");
     dispatch("loadWtzSwapPairs");
     dispatch("loadYouvesSwapPairs");
     dispatch("loadPlentyStablePairs");
+    dispatch("loadQuipuStablePairs");
   },
   walletConnected({ dispatch }) {
     dispatch("updateDexApis");

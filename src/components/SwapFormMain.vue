@@ -445,7 +445,6 @@ export default {
         Tezos,
         this.getPkh
       );
-      console.log(op);
       const toBatch = [...fee, ...op].map((o) => ({
         ...o,
         kind: "transaction",

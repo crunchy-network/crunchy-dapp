@@ -104,20 +104,20 @@
         </button>
         <button
           class="tab-text"
+          :style="isActiveTab('staked')"
+          @click="setActiveTab('staked')"
+        >
+          Staked
+        </button>
+        <button
+          class="tab-text"
           disabled
           :style="isActiveTab('nfts')"
           @click="setActiveTab('nfts')"
         >
           NFTs
         </button>
-        <button
-          class="tab-text"
-          disabled
-          :style="isActiveTab('farming')"
-          @click="setActiveTab('farming')"
-        >
-          Farming
-        </button>
+
         <button
           class="tab-text"
           disabled
@@ -270,16 +270,20 @@
         </div>
       </el-card>
     </div>
+
+    <div v-if="activeTab === 'staked'">
+      <staked-wallet :show-usd="showUsd"></staked-wallet>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapState, mapActions, mapGetters } from "vuex";
-// import HomeWalletTable from "./HomeWalletTable.vue";
 import PortfolioWalletRow from "./PortfolioWalletRow.vue";
+import StakedWallet from "./StakedWallet.vue";
 export default {
   name: "HomeWallet",
-  components: { PortfolioWalletRow },
+  components: { PortfolioWalletRow, StakedWallet },
   data() {
     return {
       activeTab: "portfolio",
@@ -312,9 +316,10 @@ export default {
   },
   created() {
     this.refresh();
+    this.loadStakeAssets();
   },
   methods: {
-    ...mapActions(["loadWalletAsssets"]),
+    ...mapActions(["loadWalletAsssets", "loadStakeAssets"]),
 
     refresh() {
       this.loadWalletAsssets(this.$route.params.walletAddress);
@@ -328,7 +333,7 @@ export default {
     },
 
     setActiveTab(tab = "") {
-      if (["portfolio", "nfts", "farming", "history"].includes(tab)) {
+      if (["portfolio", "nfts", "staked", "history"].includes(tab)) {
         this.activeTab = tab;
       }
     },
@@ -454,5 +459,9 @@ export default {
     box-sizing: border-box;
     border-radius: 8px;
   }
+}
+
+.el-input__inner {
+  border-radius: 28px;
 }
 </style>

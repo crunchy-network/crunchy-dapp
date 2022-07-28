@@ -5,6 +5,8 @@ const buildPair = (dex, token1, token1Index, token2, token2Index) => {
   pair.dexAddress = dex.address;
   pair.direction = "Direct";
   pair.tokensInfo = dex.tokensInfo;
+  pair.fee = dex.fee;
+  pair.pool = dex;
   pair.a = {
     tokenId: token1.tokenId,
     tokenAddress: token1.address,

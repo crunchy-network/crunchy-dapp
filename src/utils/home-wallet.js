@@ -2,6 +2,7 @@ import axios from "axios";
 import BigNumber from "bignumber.js";
 import coingecko from "./coingecko";
 import ipfs from "./ipfs";
+import teztools from "./teztools";
 
 // const makeReqest = async ({ contract, id }) => {
 //   return axios.get(`${process.env.VUE_APP_TEZTOOLS_API_URL}/token/${contract}${id ? "_" + id : ""}/price`);
@@ -85,9 +86,7 @@ export default {
       }
 
       // Get all wallet prices
-      const {
-        data: { contracts: prices },
-      } = await axios.get("https://api.teztools.io/v1/prices");
+      const { contracts: prices } = await teztools.getPricefeed();
 
       // filter out NFTs by checking for artifactURI and token symbol or alias
       balances = balances.filter(
@@ -241,7 +240,9 @@ export default {
     var sum = 0;
 
     for (let i = 0; i < arr.length; i++) {
-      sum = sum + arr[i].value;
+      if (arr[i].value && !Number.isNaN(arr[i].value)) {
+        sum = sum + arr[i].value;
+      }
     }
     return sum;
   },
@@ -250,7 +251,9 @@ export default {
     var sum = 0;
 
     for (let i = 0; i < arr.length; i++) {
-      sum = sum + arr[i].valueUsd;
+      if (arr[i].value && !Number.isNaN(arr[i].valueUsd)) {
+        sum = sum + arr[i].valueUsd;
+      }
     }
     return sum;
   },
