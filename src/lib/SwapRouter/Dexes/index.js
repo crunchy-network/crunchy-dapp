@@ -7,6 +7,7 @@ const WTZ = require("./Wtz");
 const Youves = require("./Youves");
 const PlentyStable = require("./PlentyStable");
 const PlentyCtezTez = require("./PlentyCtezTez");
+const QuipuswapStable = require("./QuipuswapStable");
 
 module.exports = {
   LiquidityBaking,
@@ -18,4 +19,5 @@ module.exports = {
   Youves,
   PlentyCtezTez,
   PlentyStable,
+  QuipuswapStable,
 };

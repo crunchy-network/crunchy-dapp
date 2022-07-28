@@ -38,6 +38,10 @@ export default {
         loading: false,
         pairs: [],
       },
+      QuipuStable: {
+        loading: false,
+        pairs: [],
+      },
     },
     swapPairsNew: [],
   },
@@ -55,6 +59,7 @@ export default {
         ...apis.WTZ.pairs,
         ...apis.Youves.pairs,
         ...apis.Plenty.pairs,
+        ...apis.QuipuStable.pairs,
       ];
     },
     getApiLoadingStatus: (state) => {
