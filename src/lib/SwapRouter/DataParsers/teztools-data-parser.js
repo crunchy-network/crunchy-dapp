@@ -9,8 +9,10 @@ const getTokenPair = (tokens, tokenIndex, pairIndex) => {
     token2 = { symbol: "tez", type: "tez", tokenAddress: "tez", decimals: 6 };
   } else {
     token2 = tokens.find((t) => {
-      return token2Raw.tokenAddress === t.tokenAddress &&
-      (token2Raw.tokenType === "fa1.2" || token2Raw.tokenId === t.tokenId)
+      return (
+        token2Raw.tokenAddress === t.tokenAddress &&
+        (token2Raw.tokenType === "fa1.2" || token2Raw.tokenId === t.tokenId)
+      );
     });
   }
 
