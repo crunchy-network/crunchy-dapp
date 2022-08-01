@@ -34,16 +34,20 @@ function getSwapOutput(input, pair) {
 const buildDexOperation = (dex, trade, walletAddres, tezos) => {
   const input = convertToMuTez(trade.input, trade.a);
   const output = convertToMuTez(trade.output, trade.b);
-
+  console.log(dex);
   const transfers = [
-    dex.methods.swap(
-      trade.pool.poolId,
-      trade.a.infoIndex,
-      trade.b.infoIndex,
-      input,
-      output,
-      `${secondsFromNow(300)}`
-    ),
+    dex.contract.methods
+      .swap(
+        trade.pool.poolId,
+        trade.a.infoIndex,
+        trade.b.infoIndex,
+        input,
+        output,
+        `${secondsFromNow(300)}`
+      )
+      .toTransferParams({
+        mutez: true,
+      }),
   ];
 
   return addTokenApprovalOperators(
