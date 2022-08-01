@@ -14,9 +14,9 @@ export default {
       staked: 0,
       claimable: 0,
       totalValue: 0,
-      stakedUsdd: 0,
-      claimableUsdd: 0,
-      totalValueUsdd: 0,
+      stakedUsd: 0,
+      claimableUsd: 0,
+      totalValueUsd: 0,
       data: [],
     },
     quipusStake: {
@@ -27,9 +27,9 @@ export default {
       staked: 0,
       claimable: 0,
       totalValue: 0,
-      stakedUsdd: 0,
-      claimableUsdd: 0,
-      totalValueUsdd: 0,
+      stakedUsd: 0,
+      claimableUsd: 0,
+      totalValueUsd: 0,
       data: [],
     },
     dogamiStake: {
@@ -39,9 +39,9 @@ export default {
       staked: 0,
       claimable: 0,
       totalValue: 0,
-      stakedUsdd: 0,
-      claimableUsdd: 0,
-      totalValueUsdd: 0,
+      stakedUsd: 0,
+      claimableUsd: 0,
+      totalValueUsd: 0,
       data: [],
     },
     gifStake: {
@@ -51,9 +51,9 @@ export default {
       staked: 0,
       claimable: 0,
       totalValue: 0,
-      stakedUsdd: 0,
-      claimableUsdd: 0,
-      totalValueUsdd: 0,
+      stakedUsd: 0,
+      claimableUsd: 0,
+      totalValueUsd: 0,
       data: [],
     },
     priceFeed: [],
@@ -70,6 +70,20 @@ export default {
     },
     getCrunchyStake(state) {
       return state.crunchyStake;
+    },
+    getStakedValues(state) {
+      return {
+        xtz:
+          state.crunchyStake.staked +
+          state.quipusStake.staked +
+          state.dogamiStake.staked +
+          state.gifStake.staked,
+        usd:
+          state.crunchyStake.stakedUsd +
+          state.quipusStake.stakedUsd +
+          state.dogamiStake.stakedUsd +
+          state.gifStake.stakedUsd,
+      };
     },
     getStakes(state) {
       const orderedStake = [state.gifStake, state.dogamiStake].sort(
