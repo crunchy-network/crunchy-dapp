@@ -4,6 +4,7 @@ import { buildSwapPairsFromData as buildSpicyPairs } from "./DataParsers/spicy-d
 import { buildSwapPairsFromData as buildWtzPairs } from "./DataParsers/wtz-data-parser";
 import { buildSwapPairsFromData as buildYouvesPairs } from "./DataParsers/youves-data-parser";
 import { buildSwapPairsFromData as buildPlentyStablePairs } from "./DataParsers/plenty-stable-data-parser";
+import { buildSwapPairsFromData as buildQuipuStablePairs } from "./DataParsers/quipu-stable-data-parser";
 import {
   getAllCombinations,
   findBestRoute,
@@ -27,4 +28,5 @@ export {
   calculatePriceImpact,
   buildYouvesPairs,
   buildPlentyStablePairs,
+  buildQuipuStablePairs,
 };

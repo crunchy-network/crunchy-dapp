@@ -268,16 +268,7 @@ export default {
     },
     tokenList() {
       this.updateInitialSelectedTokens(this.tokenList);
-      if (this.getSwapForm.inputToken.asset === undefined) {
-        const tez = this.tokenList.find((t) => t.assetSlug === "tez");
-        this.updateForm({ inputToken: tez });
-      }
-      if (this.getSwapForm.outputToken.asset === undefined) {
-        const crDao = this.tokenList.find(
-          (t) => t.assetSlug === `${process.env.VUE_APP_CONTRACTS_CRDAO}_0`
-        );
-        this.updateForm({ outputToken: crDao });
-      }
+      this.handleDefaults();
     },
   },
   created() {
@@ -307,6 +298,7 @@ export default {
           const outputToken = this.tokenList.find((t) => t.assetSlug === to);
           this.updateForm({ inputToken, outputToken });
         }
+        this.handleDefaults();
       }
     },
     updateInitialSelectedTokens(tokenList) {
@@ -329,6 +321,18 @@ export default {
         form.outputToken = outputToken;
       }
       this.updateForm(form);
+    },
+    handleDefaults() {
+      if (this.getSwapForm.inputToken.asset === undefined) {
+        const tez = this.tokenList.find((t) => t.assetSlug === "tez");
+        this.updateForm({ inputToken: tez });
+      }
+      if (this.getSwapForm.outputToken.asset === undefined) {
+        const crDao = this.tokenList.find(
+          (t) => t.assetSlug === `${process.env.VUE_APP_CONTRACTS_CRDAO}_0`
+        );
+        this.updateForm({ outputToken: crDao });
+      }
     },
     async subscribeToTzktForDexUpdateTrigger(dexCall) {
       const connection = new signalR.HubConnectionBuilder()
@@ -445,7 +449,6 @@ export default {
         Tezos,
         this.getPkh
       );
-      console.log(op);
       const toBatch = [...fee, ...op].map((o) => ({
         ...o,
         kind: "transaction",

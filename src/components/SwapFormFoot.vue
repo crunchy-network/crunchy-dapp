@@ -54,7 +54,7 @@ import { calculatePriceImpact } from "../lib/SwapRouter";
 export default {
   data: () => ({
     routingFee: ROUTING_FEE_PERCENT,
-    toleranceOptions: [1, 1.5],
+    toleranceOptions: [0.5, 1],
     customSlippage: "",
     impactColor: "#757679",
   }),

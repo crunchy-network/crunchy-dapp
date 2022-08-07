@@ -8,7 +8,7 @@ const { getFlatCfmmOutput } = require("../SwapRates/flat-cfmm");
 const { addTokenApprovalOperators } = require("../TokenTypes");
 
 const DEX_FEE = 0.15;
-const CASH_TOKENS = ["kUSD", "WUSDC", "tzBTC", "USDTz"];
+const CASH_TOKENS = ["kUSD", "WUSDC", "tzBTC", "USDTz", "USDt"];
 const getSwapOutput = (input, pair) => {
   const inputAfterFee = input * percentToDecimal(DEX_FEE);
   return getFlatCfmmOutput(inputAfterFee, pair);
