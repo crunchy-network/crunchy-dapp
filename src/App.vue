@@ -551,7 +551,6 @@ header .grid-content button.el-button {
   border-bottom: 2px solid #f4f4f4;
   padding-bottom: 14px;
   margin-bottom: 14px;
-  min-width: 900px;
 }
 
 ._table-header * {

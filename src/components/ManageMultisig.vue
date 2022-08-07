@@ -182,7 +182,7 @@ import UpdateContract from "./multisig/UpdateContract.vue";
 import CreateTokenTransfer from "./multisig/CreateTokenTransfer.vue";
 import CreateDelegation from "./multisig/CreateDelegation.vue";
 import CreateNFTTransfer from "./multisig/CreateNFTTransfer.vue";
-import MultisigNftsTab from "./MultisigNftsTab.vue";
+import MultisigNftsTab from "./MultisigNFTsTab.vue";
 import MultisigProposalTab from "./MultisigProposalTab.vue";
 export default {
   name: "ManageMultisig",

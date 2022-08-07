@@ -2,13 +2,22 @@
   <el-card style="margin-top: 24px">
     <div class="responsive-table">
       <div>
-        <el-row type="flex" :gutter="20" class="_table-header">
-          <el-col :span="4"> Action </el-col>
-          <el-col :span="8"> Details </el-col>
-          <el-col :span="4">Expires</el-col>
-          <el-col class="text-right" :span="4"> Status </el-col>
-          <el-col class="text-right" :span="4"> </el-col>
+        <el-row class="_table-header" type="flex" align="middle">
+          <el-col :span="24">
+            <el-row
+              type="flex"
+              align="middle"
+              :gutter="20"
+              style="padding: 0 20px"
+            >
+              <el-col :span="5"> Action </el-col>
+              <el-col :span="10"> Details </el-col>
+              <el-col :span="3">Expires</el-col>
+              <el-col class="text-right" :span="3"> Status </el-col>
+              <el-col class="text-right" :span="3"> </el-col> </el-row
+          ></el-col>
         </el-row>
+
         <multisig-proposal-row
           v-for="(history, index) in histories"
           :key="index"
