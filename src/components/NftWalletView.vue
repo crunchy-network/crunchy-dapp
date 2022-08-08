@@ -280,20 +280,25 @@ export default {
       return require("../assets/nfts/icon1.png");
     },
     convertNftsToCollectionItems(nfts) {
-      return nfts.map((nft) => {
+      const toRet = [];
+      return nfts.forEach((nft) => {
         const metadata = nft.token.metadata;
-        return {
-          name: metadata.name,
-          art: this.getImgUri(metadata.thumbnailUri),
-          value: "3.2",
-          links: [
-            {
-              name: "OBJKT",
-              icon: "https://tezos.art/objkt.png",
-              url: this.getObjktLink(nft.token),
-            },
-          ],
-        };
+        if (metadata) {
+          toRet.push({
+            name: metadata.name,
+            art: this.getImgUri(metadata.thumbnailUri),
+            value: "3.2",
+            links: [
+              {
+                name: "OBJKT",
+                icon: "https://tezos.art/objkt.png",
+                url: this.getObjktLink(nft.token),
+              },
+            ],
+          });
+        } else {
+          console.log(nft.token);
+        }
       });
     },
     getObjktLink(token) {
