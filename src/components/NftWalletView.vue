@@ -268,7 +268,10 @@ export default {
         }
         return require(`../${knownContract.thumbnailUrl}`);
       }
-      return this.getImgUri(firstToken.token.metadata.thumbnailUri);
+      if (firstToken.token.metadata) {
+        return this.getImgUri(firstToken.token.metadata.thumbnailUri);
+      }
+      return "";
     },
     getBestIcon(knownContract) {
       if (knownContract) {
