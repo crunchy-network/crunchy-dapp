@@ -456,10 +456,6 @@ export default {
 .tab-wrapper {
   display: flex;
   align-items: flex-start;
-  padding: 0 0 0 90px;
-  @media (max-width: 768px) {
-    padding: 0 0 0 0px;
-  }
 }
 
 .tab-text {
