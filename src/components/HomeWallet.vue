@@ -150,6 +150,13 @@
         >
           Staked
         </button>
+        <button
+          class="tab-text"
+          :style="isActiveTab('nfts')"
+          @click="setActiveTab('nfts')"
+        >
+          NFTs
+        </button>
 
         <a
           class="tab-text"
@@ -319,6 +326,9 @@
     <div v-if="activeTab === 'staked'">
       <staked-wallet :show-usd="showUsd"></staked-wallet>
     </div>
+    <div v-if="activeTab === 'nfts'">
+      <NftWalletView />
+    </div>
   </div>
 </template>
 
@@ -326,12 +336,14 @@
 import { mapState, mapActions, mapGetters } from "vuex";
 import PortfolioWalletRow from "./PortfolioWalletRow.vue";
 import StakedWallet from "./StakedWallet.vue";
+import NftWalletView from "./NftWalletView.vue";
+
 export default {
   name: "HomeWallet",
-  components: { PortfolioWalletRow, StakedWallet },
+  components: { PortfolioWalletRow, StakedWallet, NftWalletView },
   data() {
     return {
-      activeTab: "nfts",
+      activeTab: "portfolio",
       tabledata: [],
       showUsd: false,
       currentPage: 0,
@@ -378,7 +390,7 @@ export default {
     },
 
     setActiveTab(tab = "") {
-      if (["portfolio", "staked"].includes(tab)) {
+      if (["portfolio", "staked", "nfts"].includes(tab)) {
         this.activeTab = tab;
       }
     },

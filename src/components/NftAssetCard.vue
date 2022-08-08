@@ -12,7 +12,7 @@
   >
     <el-card
       class="box-card"
-      style="box-shadow: 0px 0px 24px rgba(21, 21, 52, 0.04); height: 100%;"
+      style="box-shadow: 0px 0px 24px rgba(21, 21, 52, 0.04); height: 100%"
       body-style="padding: 5px 14px 20px;"
     >
       <div class="inner">
@@ -20,7 +20,7 @@
           <el-row
             v-if="type === 'collections'"
             type="flex"
-            style="align-items: center"
+            style="align-items: center; overflow: hidden"
           >
             <el-avatar
               :src="icon"
@@ -64,7 +64,7 @@
             justify="end"
             align="middle"
           >
-            <el-dropdown trigger="click">
+            <el-dropdown trigger="click" @command="goToSite">
               <el-button
                 style="transform: rotate(90deg); padding: 10px"
                 icon="el-icon-more"
@@ -77,7 +77,7 @@
                   </h2>
                 </el-dropdown-item>
                 <div v-for="(link, index) in links" :key="index">
-                  <el-dropdown-item>
+                  <el-dropdown-item :command="link.url">
                     <el-avatar
                       :src="link.icon"
                       fit="cover"
@@ -180,6 +180,11 @@ export default {
     onCollectionSelect: {
       type: Function,
       default: () => {},
+    },
+  },
+  methods: {
+    goToSite(url) {
+      window.open(url, "_blank").focus();
     },
   },
 };

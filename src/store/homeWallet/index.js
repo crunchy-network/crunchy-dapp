@@ -6,6 +6,7 @@ export default {
     loading: false,
     loadingStake: false,
     assets: [],
+    nfts: [],
     crunchyStake: {
       protocol: "Crunchy",
       url: "https://app.crunchy.network/#/farms",
@@ -70,6 +71,9 @@ export default {
     },
     getCrunchyStake(state) {
       return state.crunchyStake;
+    },
+    getNFTs(state) {
+      return state.nfts;
     },
     getStakedValues(state) {
       return {

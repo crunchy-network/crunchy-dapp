@@ -29,10 +29,11 @@ export default {
     // return array for token balances and filtered data
 
     const assets = [];
+    const NFTs = {};
     try {
       // Fetch all token balance linked to an address
       let { data: balances } = await axios.get(
-        `https://staging.api.tzkt.io/v1/tokens/balances?account=${pkh}&balance.gt=0&limit=10000&select=token,balance`
+        `https://api.tzkt.io/v1/tokens/balances?account=${pkh}&balance.gt=0&limit=10000&select=token,balance`
       );
 
       // Fetch the currrent price of xtz in USD to multiply the price of tokens
@@ -89,13 +90,29 @@ export default {
       const { contracts: prices } = await teztools.getPricefeed();
 
       // filter out NFTs by checking for artifactURI and token symbol or alias
-      balances = balances.filter(
-        (val) =>
+      const tokens = [];
+
+      const isToken = (val) => {
+        return (
           !val.token?.metadata?.artifactUri &&
           (val?.token?.metadata?.symbol || val?.token?.contract?.alias) &&
           !val.toke?.metadata?.formats
-      );
+        );
+      };
 
+      balances.forEach((val) => {
+        if (isToken(val)) {
+          tokens.push(val);
+        } else {
+          const contractAddress = val.token.contract.address;
+          if (NFTs[contractAddress] !== undefined) {
+            NFTs[contractAddress].push(val);
+          } else {
+            NFTs[contractAddress] = [val];
+          }
+        }
+      });
+      balances = tokens;
       // map through all the balances to sort data
       for (let i = 0; i < balances.length; i++) {
         let priceFilter = prices.filter(
@@ -213,7 +230,7 @@ export default {
     } catch (e) {
       console.log("/utils/home-wallet", e);
     }
-    return assets;
+    return { assets, nfts: NFTs };
   },
 
   handleChrunchBal(arr) {
