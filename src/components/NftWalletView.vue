@@ -247,17 +247,22 @@ export default {
         if (found) {
           console.log(found);
         }
-        toRet.push({
-          address: k,
-          count: nfts[k].length,
-          name:
-            firstToken.token.contract.alias ||
-            `${firstToken.token.contract.address.slice(0, 8)}...`,
-          icon: this.getBestIcon(found),
-          thumbnailUri: this.getBestThumbnail(found, firstToken),
-          collection: true,
-          items: this.convertNftsToCollectionItems(nfts[k]),
-        });
+        try {
+          toRet.push({
+            address: k,
+            count: nfts[k].length,
+            name:
+              firstToken.token.contract.alias ||
+              `${firstToken.token.contract.address.slice(0, 8)}...`,
+            icon: this.getBestIcon(found),
+            thumbnailUri: this.getBestThumbnail(found, firstToken),
+            collection: true,
+            items: this.convertNftsToCollectionItems(nfts[k]),
+          });
+        } catch (e) {
+          console.log(`error on nft`, nfts[k]);
+          console.log(e);
+        }
       });
       return toRet;
     },
