@@ -7,7 +7,7 @@
           <div class="grid-content" style="height: 100%">
             <el-card
               class="box-card fire-pit"
-              shadow="never"
+              shadow="always"
               style="height: 100%"
             >
               <h2>Fire Pit</h2>
@@ -97,7 +97,7 @@
       <el-row type="flex" class="farm-list" style="margin-top: 25px">
         <el-col :span="24">
           <div class="grid-content">
-            <el-card class="box-card">
+            <el-card shadow="always" class="box-card">
               <div class="responsive-table">
                 <div>
                   <el-table

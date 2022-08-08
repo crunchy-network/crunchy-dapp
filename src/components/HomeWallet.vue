@@ -7,7 +7,7 @@
       :gutter="10"
     >
       <el-col :xs="24" :md="12" :lg="5">
-        <el-card v-loading="homeWallet.loading" class="top">
+        <el-card v-loading="homeWallet.loading" shadow="always" class="top">
           <h2 style="font-weight: 600; font-size: 16px; color: #757679ff">
             Portfolio Value
           </h2>
@@ -33,7 +33,7 @@
         </el-card>
       </el-col>
       <el-col :xs="24" :md="12" :lg="5">
-        <el-card v-loading="homeWallet.loading" class="top">
+        <el-card v-loading="homeWallet.loading" shadow="always" class="top">
           <h2 style="font-weight: 600; font-size: 16px; color: #757679ff">
             Staked Value
           </h2>
@@ -70,7 +70,7 @@
         <el-divider direction="horizontal"></el-divider>
       </el-col>
       <el-col :xs="24" :md="12" :lg="5">
-        <el-card v-loading="homeWallet.loading" class="top">
+        <el-card v-loading="homeWallet.loading" shadow="always" class="top">
           <h2 style="font-weight: 600; font-size: 16px; color: #757679ff">
             CRUNCH Balance
           </h2>
@@ -95,7 +95,7 @@
         </el-card>
       </el-col>
       <el-col :xs="24" :md="12" :lg="5">
-        <el-card v-loading="homeWallet.loading" class="top">
+        <el-card v-loading="homeWallet.loading" shadow="always" class="top">
           <h2 style="font-weight: 600; font-size: 16px; color: #757679ff">
             crDAO Balance
           </h2>
@@ -187,7 +187,7 @@
     </el-row>
 
     <div v-if="activeTab === 'portfolio'">
-      <el-card v-loading="homeWallet.loading">
+      <el-card v-loading="homeWallet.loading" shadow="always">
         <div class="responsive-table">
           <div>
             <el-row

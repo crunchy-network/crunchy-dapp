@@ -4,7 +4,7 @@
     <div id="wrapper">
       <el-row :gutter="40">
         <el-col :xs="24" :md="12"
-          ><el-card class="grid-content box top-box box-card" shadow="never">
+          ><el-card class="grid-content box top-box box-card" shadow="always">
             <div class="column-center">
               <div class="logo-wrapper">
                 <img src="./../assets/pixel.png" class="logo" />
@@ -66,6 +66,7 @@
           ><el-card
             v-loading="ifo.loading"
             class="grid-content box top-box swap-box box-card"
+            shadow="always"
           >
             <!-- <div class="column-center">
               <h1 class="swap-title">Token Swap Details</h1>
