@@ -286,7 +286,7 @@ export default {
     },
     convertNftsToCollectionItems(nfts) {
       const toRet = [];
-      return nfts.forEach((nft) => {
+      nfts.forEach((nft) => {
         const metadata = nft.token.metadata;
         if (metadata) {
           toRet.push({
@@ -305,6 +305,7 @@ export default {
           console.log(nft.token);
         }
       });
+      return toRet;
     },
     getObjktLink(token) {
       return `https://objkt.com/asset/${token.contract.address}/${token.tokenId}`;
