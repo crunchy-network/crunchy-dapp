@@ -138,17 +138,17 @@
       <div class="tab-wrapper">
         <button
           class="tab-text"
-          :style="isActiveTab('portfolio')"
-          @click="setActiveTab('portfolio')"
+          :style="isActiveTab('wallet')"
+          @click="setActiveTab('wallet')"
         >
-          Portfolio
+          Wallet
         </button>
         <button
           class="tab-text"
-          :style="isActiveTab('staked')"
-          @click="setActiveTab('staked')"
+          :style="isActiveTab('staking')"
+          @click="setActiveTab('staking')"
         >
-          Staked
+          Staking
         </button>
         <button
           class="tab-text"
@@ -157,7 +157,14 @@
         >
           NFTs
         </button>
-
+        <button
+          class="tab-text"
+          disabled
+          :style="isActiveTab('liquidity')"
+          @click="setActiveTab('liquidity')"
+        >
+          Liquidity
+        </button>
         <a
           class="tab-text"
           style="color: #555cff; text-decoration: none"
@@ -193,7 +200,7 @@
       </div>
     </el-row>
 
-    <div v-if="activeTab === 'portfolio'">
+    <div v-if="activeTab === 'wallet'">
       <el-card v-loading="homeWallet.loading">
         <div class="responsive-table">
           <div>
@@ -323,7 +330,7 @@
       </el-card>
     </div>
 
-    <div v-if="activeTab === 'staked'">
+    <div v-if="activeTab === 'staking'">
       <staked-wallet :show-usd="showUsd"></staked-wallet>
     </div>
     <div v-if="activeTab === 'nfts'">
@@ -343,7 +350,7 @@ export default {
   components: { PortfolioWalletRow, StakedWallet, NftWalletView },
   data() {
     return {
-      activeTab: "portfolio",
+      activeTab: "wallet",
       tabledata: [],
       showUsd: false,
       currentPage: 0,
@@ -385,12 +392,12 @@ export default {
     isActiveTab(tab) {
       return (
         this.activeTab === tab &&
-        " border-bottom: 6px solid #555CFF; color: #555CFF"
+        " border-bottom: 3px solid #FF4D4B; color: #FF4D4B"
       );
     },
 
     setActiveTab(tab = "") {
-      if (["portfolio", "staked", "nfts"].includes(tab)) {
+      if (["portfolio", "staking", "liquidity", "nfts"].includes(tab)) {
         this.activeTab = tab;
       }
     },
@@ -477,7 +484,7 @@ export default {
 .tab-text {
   min-width: 100px;
   text-align: center;
-  padding: 5px 20px;
+  padding: 2px 20px;
   font-weight: 700;
   font-size: 16px;
   line-height: 24px;
@@ -488,6 +495,7 @@ export default {
   transition: 0.3s ease all;
   margin: 0;
   border: 0;
+  border-bottom: 3px solid transparent;
   background: transparent;
   &:disabled {
     color: #191b1f66;
