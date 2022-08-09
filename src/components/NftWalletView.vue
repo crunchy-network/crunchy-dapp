@@ -35,12 +35,6 @@
           </span>
         </template>
       </el-row>
-      <div>
-        <el-select collapse-tags value="collections" placeholder="Collections">
-          <el-option class="select" label="Collections" value="collections">
-          </el-option>
-        </el-select>
-      </div>
     </el-row>
     <el-row
       type="flex"
@@ -50,10 +44,10 @@
     >
       <el-col v-for="(nft, index) in tabledata" :key="index" :lg="4" :md="6">
         <nft-asset-card
-          :art="nft.art"
-          :thumbnail="nft.thumbnailUri"
-          :count="nft.count"
-          :icon="nft.icon"
+          :art="getImage(nft.art)"
+          :thumbnail="getImage(nft.art)"
+          :count="getCount(nft)"
+          :icon="getImage(nft.thumbnailUri)"
           :links="nft.links"
           :name="nft.name"
           :value="nft.value"
@@ -127,7 +121,6 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
 import NftAssetCard from "./NftAssetCard.vue";
-import knownWalletContracts from "../knownContracts.json";
 export default {
   name: "NftWalletView",
   components: { NftAssetCard },
@@ -152,17 +145,21 @@ export default {
       this.paginationHandler();
     },
     getNFTs() {
-      this.collection = this.convertNftDataToTableView(this.getNFTs);
+      this.collection = this.getNFTs;
     },
   },
   created() {
-    this.collection = this.convertNftDataToTableView(this.getNFTs);
+    if (this.getNFTs.length === 0) {
+      this.fetchNFTs(this.$route.params.walletAddress);
+    } else {
+      this.collection = this.getNFTs;
+    }
   },
   mounted() {
     this.paginationHandler();
   },
   methods: {
-    ...mapActions(["loadWalletAsssets"]),
+    ...mapActions(["loadWalletAsssets", "fetchNFTs"]),
     refresh() {
       this.loadWalletAsssets(this.$route.params.walletAddress);
     },
@@ -239,87 +236,22 @@ export default {
       this.nextPage = 1;
       this.prevPage = 0;
     },
-    convertNftDataToTableView(nfts) {
-      const toRet = [];
-      Object.keys(nfts).forEach((k) => {
-        const firstToken = nfts[k][0];
-        const found = knownWalletContracts.find((c) => c.address.includes(k));
-        if (found) {
-          console.log(found);
-        }
-        try {
-          toRet.push({
-            address: k,
-            count: nfts[k].length,
-            name:
-              firstToken.token.contract.alias ||
-              `${firstToken.token.contract.address.slice(0, 8)}...`,
-            icon: this.getBestIcon(found),
-            thumbnailUri: this.getBestThumbnail(found, firstToken),
-            collection: true,
-            items: this.convertNftsToCollectionItems(nfts[k]),
-          });
-        } catch (e) {
-          console.log(`error on nft`, nfts[k]);
-          console.log(e);
-        }
-      });
-      return toRet;
+    getCollectionName(contract) {
+      if (!contract) return "";
+      const collection = this.collection.find((k) => k.address === contract);
+      return collection.name || collection.address;
     },
-    getBestThumbnail(knownContract, firstToken) {
-      if (knownContract) {
-        if (knownContract.discoverUrl) {
-          return require(`../${knownContract.discoverUrl}`);
-        }
-        return require(`../${knownContract.thumbnailUrl}`);
+    getCount(collection) {
+      return collection.items?.length;
+    },
+    getImage(image) {
+      if (!image) {
+        return "";
       }
-      if (firstToken.token.metadata) {
-        return this.getImgUri(firstToken.token.metadata.thumbnailUri);
+      if (image.startsWith("assets")) {
+        return require(`../${image}`);
       }
-      return "";
-    },
-    getBestIcon(knownContract) {
-      if (knownContract) {
-        return require(`../${knownContract.thumbnailUrl}`);
-      }
-      return require("../assets/nfts/icon1.png");
-    },
-    convertNftsToCollectionItems(nfts) {
-      const toRet = [];
-      nfts.forEach((nft) => {
-        const metadata = nft.token.metadata;
-        if (metadata) {
-          toRet.push({
-            name: metadata.name,
-            art: this.getImgUri(metadata.thumbnailUri),
-            value: "3.2",
-            links: [
-              {
-                name: "OBJKT",
-                icon: "https://tezos.art/objkt.png",
-                url: this.getObjktLink(nft.token),
-              },
-            ],
-          });
-        } else {
-          console.log(nft.token);
-        }
-      });
-      return toRet;
-    },
-    getObjktLink(token) {
-      return `https://objkt.com/asset/${token.contract.address}/${token.tokenId}`;
-    },
-    getCollectionName(address) {
-      const collection = this.collection.find((c) => c.address === address);
-      return collection.name;
-    },
-    getImgUri(uri) {
-      if (uri.startsWith("ipfs")) {
-        return uri.replace("ipfs://", "https://ipfs.io/ipfs/");
-      } else {
-        return uri;
-      }
+      return image;
     },
   },
 };

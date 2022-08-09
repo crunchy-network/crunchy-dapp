@@ -5,9 +5,10 @@ export default {
 
   updateAssets(state, assets) {
     state.assets = assets.assets;
-    state.nfts = assets.nfts;
   },
-
+  updateNfts(state, assets) {
+    state.nfts = assets.collections;
+  },
   updateNetworth(state, value) {
     state.netWorth = value;
   },

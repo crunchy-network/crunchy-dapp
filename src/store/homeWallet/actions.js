@@ -8,6 +8,7 @@ export default {
     if (!pkh && !rootState.wallet.pkh) {
       // @todo
     } else {
+      homeWallet.fetchNFts(pkh || rootState.wallet.pkh);
       return homeWallet
         .fetchAssetsBal(pkh || rootState.wallet.pkh)
         .then((res) => {
@@ -16,11 +17,23 @@ export default {
     }
   },
 
+  async fetchNFTs({ rootState, commit }, pkh) {
+    if (!pkh && !rootState.wallet.pkh) {
+      // @todo
+    } else {
+      homeWallet.fetchNFts(pkh || rootState.wallet.pkh).then((res) => {
+        commit("updateNfts", res);
+      });
+    }
+  },
+
   async loadWalletAsssets({ dispatch, commit }, pkh) {
     commit("updateHomeWalletLoading", true);
     dispatch("fetchHomeWalletBalances", pkh).then(() => {
       dispatch("loadBalAndNetworth");
-      commit("updateHomeWalletLoading", false);
+      dispatch("fetchNFTs", pkh).then(() => {
+        commit("updateHomeWalletLoading", false);
+      });
     });
   },
 
