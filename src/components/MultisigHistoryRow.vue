@@ -245,7 +245,9 @@ import multisigUtils from "../utils/multisig";
 export default {
   name: "MultisigHistoryRow",
   props: {
+    // eslint-disable-next-line vue/require-default-prop
     date: String,
+    // eslint-disable-next-line vue/require-default-prop
     items: Array,
   },
 

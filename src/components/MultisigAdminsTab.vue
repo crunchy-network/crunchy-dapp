@@ -2,10 +2,19 @@
   <el-card style="margin-top: 24px">
     <div class="responsive-table">
       <div>
-        <el-row type="flex" style="gap: 15px" class="_table-header">
-          <el-col :span="9"> Address </el-col>
-          <el-col class="text-right" :span="6"> TX Signed </el-col>
-          <el-col class="text-right" :span="9"> Last Signed </el-col>
+        <el-row class="_table-header" type="flex" align="middle">
+          <el-col :span="24">
+            <el-row
+              type="flex"
+              align="middle"
+              :gutter="20"
+              style="padding: 0 20px"
+            >
+              <el-col :span="9"> Address </el-col>
+              <el-col class="text-right" :span="6"> TX Signed </el-col>
+              <el-col class="text-right" :span="9"> Last Signed </el-col>
+            </el-row>
+          </el-col>
         </el-row>
         <MultisigAdminRow
           v-for="(admin, index) in admins"
