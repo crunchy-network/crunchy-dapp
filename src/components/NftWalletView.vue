@@ -133,7 +133,7 @@ export default {
       nextPage: 1,
       prevPage: 0,
       tabledata: [],
-      displayCount: 12,
+      displayCount: 24,
       collection: [],
     };
   },
