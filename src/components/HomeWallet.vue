@@ -152,7 +152,6 @@
         </button>
         <button
           class="tab-text"
-          disabled
           :style="isActiveTab('liquidity')"
           @click="setActiveTab('liquidity')"
         >
@@ -327,6 +326,9 @@
     <div v-if="activeTab === 'staking'">
       <staked-wallet :show-usd="showUsd"></staked-wallet>
     </div>
+    <div v-if="activeTab === 'liquidity'">
+      <LiquidityWallet :show-usd="showUsd" />
+    </div>
   </div>
 </template>
 
@@ -334,12 +336,13 @@
 import { mapState, mapActions, mapGetters } from "vuex";
 import PortfolioWalletRow from "./PortfolioWalletRow.vue";
 import StakedWallet from "./StakedWallet.vue";
+import LiquidityWallet from "./LiquidityWallet.vue";
 export default {
   name: "HomeWallet",
-  components: { PortfolioWalletRow, StakedWallet },
+  components: { PortfolioWalletRow, StakedWallet, LiquidityWallet },
   data() {
     return {
-      activeTab: "wallet",
+      activeTab: "liquidity",
       tabledata: [],
       showUsd: false,
       currentPage: 0,
