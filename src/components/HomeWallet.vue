@@ -195,7 +195,7 @@
     </el-row>
 
     <div v-if="activeTab === 'portfolio'">
-      <el-card v-loading="homeWallet.loading">
+      <el-card v-loading="homeWallet.loading" shadow="always">
         <div class="responsive-table">
           <div>
             <el-row
