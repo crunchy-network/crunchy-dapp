@@ -342,7 +342,7 @@ export default {
   min-width: 100%;
   min-height: 70px;
   background: #fff;
-  box-shadow: 0px 10px 16px rgba(21,21,52,.05);
+  box-shadow: 0px 10px 16px rgba(21, 21, 52, 0.05);
 }
 
 .more_submenu .el-menu-item.submenu-item {
