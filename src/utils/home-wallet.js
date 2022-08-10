@@ -116,6 +116,7 @@ export default {
               contractDetails?.alias || contractDetails?.address || "",
             name: metadata.name,
             art: getImgUri(imgURI),
+            objkLink: getObjktLink(nft.token),
             links: [
               {
                 name: "OBJKT",
@@ -170,6 +171,10 @@ export default {
         .sort((a, b) => b.items.length - a.items.length),
     };
   },
+  async getNftCollectionData(nfts, address) {
+    return nfts.find((nft) => nft.address === address);
+  },
+
   async fetchAssetsBal(pkh) {
     // return array for token balances and filtered data
 
