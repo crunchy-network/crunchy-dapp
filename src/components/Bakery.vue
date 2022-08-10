@@ -29,7 +29,7 @@
           <div class="grid-content" style="height: 100%">
             <el-card
               class="box-card bakery"
-              shadow="never"
+              shadow="always"
               style="height: 100%"
             >
               <h2>Token Bakery</h2>

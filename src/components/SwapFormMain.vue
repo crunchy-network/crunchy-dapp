@@ -1,5 +1,9 @@
 <template>
-  <el-card v-loading="isLoading" class="swap-form-main-box-card">
+  <el-card
+    v-loading="isLoading"
+    class="swap-form-main-box-card"
+    shadow="always"
+  >
     <span class="swap-header"> SWAP </span>
     <div class="from-section">
       <span> From</span>
