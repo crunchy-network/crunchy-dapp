@@ -22,7 +22,6 @@ import { mapState } from "vuex";
 import ConnectWallet from "./ConnectWallet.vue";
 import HomeWallet from "./HomeWallet.vue";
 import NavMenu from "./NavMenu.vue";
-import NftWalletView from "./NftWalletView.vue";
 
 export default {
   name: "HomeWalletPage",
