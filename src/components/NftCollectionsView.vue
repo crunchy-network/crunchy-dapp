@@ -2,6 +2,7 @@
   <el-card
     v-loading="getNFTsLoading"
     style="background-color: transparent; border: 0"
+    body-style="padding: 0"
     shadow="never"
   >
     <el-row

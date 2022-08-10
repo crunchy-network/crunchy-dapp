@@ -124,7 +124,7 @@
 
     <el-row
       style="
-        margin: 46px 0 32px 0;
+        margin: 46px 0 22px 0;
         border-bottom: 1.5px solid rgba(117, 118, 121, 0.1);
         align-items: center;
         flex-wrap: wrap-reverse;
@@ -200,7 +200,7 @@
       </div>
     </el-row>
 
-    <div v-if="activeTab === 'portfolio'">
+    <div v-if="activeTab === 'wallet'">
       <el-card v-loading="homeWallet.loading" shadow="always">
         <div class="responsive-table">
           <div>
@@ -397,7 +397,7 @@ export default {
     },
 
     setActiveTab(tab = "") {
-      if (["portfolio", "staking", "liquidity", "nfts"].includes(tab)) {
+      if (["wallet", "staking", "liquidity", "nfts"].includes(tab)) {
         this.activeTab = tab;
       }
     },

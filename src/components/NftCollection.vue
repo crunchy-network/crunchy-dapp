@@ -1,5 +1,9 @@
 <template>
-  <el-card style="background-color: transparent; border: 0" shadow="never">
+  <el-card
+    style="background-color: transparent; border: 0"
+    body-style="padding: 0"
+    shadow="never"
+  >
     <el-row
       type="flex"
       align="stretch"
