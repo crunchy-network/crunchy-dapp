@@ -19,6 +19,7 @@
           :links="nft.links"
           :link="nft.objkLink"
           :name="nft.name"
+          :page-change="currentPage"
           :value="nft.value"
           :type="'collection'"
         ></nft-asset-card>

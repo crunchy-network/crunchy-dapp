@@ -22,6 +22,7 @@
           :link="nft.objkLink"
           :name="nft.name"
           :value="nft.value"
+          :page-change="currentPage"
           :on-collection-select="
             () => {
               setCollectionName(nft.name || nft.address);

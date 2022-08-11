@@ -228,6 +228,10 @@ export default {
       type: Function,
       default: () => {},
     },
+    pageChange: {
+      type: Number,
+      default: 1,
+    },
   },
   data() {
     return {
@@ -236,11 +240,9 @@ export default {
     };
   },
   watch: {
-    art(newValue) {
-      console.log(newValue);
-    },
-    thumbnailLoaded(newValue) {
-      console.log("VALUE", newValue);
+    pageChange() {
+      this.thumbnailLoaded = false;
+      this.artLoaded = false;
     },
   },
   methods: {
