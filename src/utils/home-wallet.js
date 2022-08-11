@@ -134,7 +134,7 @@ export default {
       try {
         let collection = {
           address: k,
-          thumbnailUri: undefined,
+          thumbnailUri: require("../assets/nfts/not-found.png"),
           art: undefined,
           items: [],
           name: "",

@@ -107,27 +107,40 @@
             </el-dropdown>
           </el-row>
         </template> -->
-        <div style="margin: 5px 0">
-          <div style="position: relative; width: 100%; border-radius: 8px">
+        <div
+          style="margin: 5px 0; flex: 1; display: flex; flex-direction: column"
+        >
+          <div
+            style="
+              position: relative;
+              width: 100%;
+              border-radius: 8px;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              flex: 1;
+            "
+          >
             <template>
               <template v-if="type === 'collections'">
-                <img
+                <ImgCache
                   :style="!thumbnailLoaded && 'display: none'"
                   class="art"
                   :src="thumbnail"
                   alt=""
-                  @load="thumbnailLoaded = true"
+                  :on-load="() => (thumbnailLoaded = true)"
                 />
                 <NftImageSkeleton v-if="!thumbnailLoaded" />
               </template>
               <template v-else>
-                <img
+                <ImgCache
                   :style="!artLoaded ? 'display: none' : ''"
                   class="art"
                   :src="art"
                   alt=""
-                  @load="artLoaded = true"
-                  @click="() => goToSite(link)"
+                  :on-load="() => (artLoaded = true)"
+                  :on-click="() => goToSite(link)"
                 />
                 <NftImageSkeleton v-if="!artLoaded" />
               </template>
@@ -184,9 +197,10 @@
 
 <script>
 import NftImageSkeleton from "./NftImageSkeleton.vue";
+import ImgCache from "./ImgCache.vue";
 export default {
   name: "NftAssetCard",
-  components: { NftImageSkeleton },
+  components: { NftImageSkeleton, ImgCache },
   props: {
     icon: {
       type: String,
@@ -257,11 +271,23 @@ export default {
 * {
   box-sizing: border-box;
 }
+
+.art-wrapper {
+  position: relative;
+  width: 100%;
+  border-radius: 8px;
+}
 img.art {
   width: 100%;
   max-height: 165px;
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
   border-radius: 8px;
+}
+
+@media (max-width: 991px) {
+  img.art {
+    max-height: unset;
+  }
 }
 .count-wrapper {
   background: #191b1f;
@@ -273,7 +299,7 @@ img.art {
   color: #fcfcfd;
   position: absolute;
   top: 5px;
-  right: 10px;
+  right: 5px;
 }
 .inner {
   display: flex;
