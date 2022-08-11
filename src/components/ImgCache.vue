@@ -1,5 +1,11 @@
 <template>
-  <img v-if="pathToFile" :src="pathToFile" :alt="alt" />
+  <img
+    v-if="pathToFile"
+    :src="pathToFile"
+    :alt="alt"
+    @click="onClick"
+    @load="onLoad"
+  />
 </template>
 
 <script>
@@ -13,6 +19,14 @@ export default {
     alt: {
       type: String,
       required: true,
+    },
+    onClick: {
+      type: Function,
+      default: () => {},
+    },
+    onLoad: {
+      type: Function,
+      default: () => {},
     },
   },
   data: function () {

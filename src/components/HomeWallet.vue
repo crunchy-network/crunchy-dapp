@@ -135,7 +135,16 @@
       justify="space-between"
       align="bottom"
     >
-      <div class="tab-wrapper">
+      <el-select class="tab-select-element" v-model="activeTab" placeholder="Select Tab">
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        >
+        </el-option>
+      </el-select>
+      <div class="tab-wrapper tab-custom-element">
         <button
           class="tab-text"
           :style="isActiveTab('wallet')"
@@ -358,6 +367,24 @@ export default {
       nextPage: 1,
       prevPage: 0,
       displayCount: 12,
+      options: [
+        {
+          value: "wallet",
+          label: "Wallet",
+        },
+        {
+          value: "staking",
+          label: "Staking",
+        },
+        {
+          value: "liquidity",
+          label: "Liquidity",
+        },
+        {
+          value: "nfts",
+          label: "NFTs",
+        },
+      ],
     };
   },
   computed: {
@@ -528,5 +555,19 @@ export default {
 
 .el-input__inner {
   border-radius: 28px;
+}
+
+.tab-select-element {
+  display: none;
+  width: 100%;
+}
+@media (max-width: 600px) {
+  .tab-select-element {
+    display: block;
+  }
+
+  .tab-custom-element {
+    display: none;
+  }
 }
 </style>

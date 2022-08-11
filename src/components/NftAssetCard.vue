@@ -184,6 +184,7 @@
                 font-size: 12px;
                 color: #191b1f;
                 margin: 0;
+                word-wrap: break-word;
               "
             >
               {{ name }}
