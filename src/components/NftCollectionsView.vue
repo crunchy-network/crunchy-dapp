@@ -14,8 +14,8 @@
       <el-col v-for="(nft, index) in tabledata" :key="index" :lg="4" :md="6">
         <nft-asset-card
           :key="index"
-          :art="getImage(nft.art)"
-          :thumbnail="getImage(nft.art)"
+          :art="getImage(nft.art) || '../assets/nfts/not-found.png'"
+          :thumbnail="getImage(nft.art) || '../assets/nfts/not-found.png'"
           :count="getCount(nft)"
           :icon="getImage(nft.thumbnailUri)"
           :links="nft.links"
@@ -186,12 +186,18 @@ export default {
     },
     getImage(image) {
       if (!image) {
-        return "";
+        return "https://res.cloudinary.com/melvin-manni/image/upload/v1660322565/fgpwgssbhq2bfmsjerur.png";
       }
       if (image.startsWith("assets")) {
-        return require(`../${image}`);
+        return (
+          require(`../${image}`) ||
+          "https://res.cloudinary.com/melvin-manni/image/upload/v1660322565/fgpwgssbhq2bfmsjerur.png"
+        );
       }
-      return image;
+      return (
+        image ||
+        "https://res.cloudinary.com/melvin-manni/image/upload/v1660322565/fgpwgssbhq2bfmsjerur.png"
+      );
     },
   },
 };

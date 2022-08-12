@@ -52,10 +52,10 @@ const getOBJKTCollections = async (contractList) => {
 
 function getImgUri(uri) {
   if (!uri) {
-    return "";
+    return "https://res.cloudinary.com/melvin-manni/image/upload/v1660322565/fgpwgssbhq2bfmsjerur.png";
   }
   if (uri.startsWith("ipfs")) {
-    return uri.replace("ipfs://", "https://ipfs.io/ipfs/");
+    return ipfs.transformUri(uri);
   } else {
     return uri;
   }
@@ -134,8 +134,9 @@ export default {
       try {
         let collection = {
           address: k,
-          thumbnailUri: "/assets/nfts/not-found.png",
-          art: undefined,
+          thumbnailUri:
+            "https://res.cloudinary.com/melvin-manni/image/upload/v1660322565/fgpwgssbhq2bfmsjerur.png",
+          art: "https://res.cloudinary.com/melvin-manni/image/upload/v1660322565/fgpwgssbhq2bfmsjerur.png",
           items: [],
           name: "",
         };
