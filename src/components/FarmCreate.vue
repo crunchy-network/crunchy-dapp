@@ -26,8 +26,8 @@
             <div class="grid-content" style="height: 100%">
               <el-card
                 v-loading="loading"
-                class="box-card"
                 shadow="always"
+                class="box-card"
                 style="height: 100%"
               >
                 <el-alert
@@ -257,7 +257,7 @@
 
           <el-col :span="8">
             <div class="grid-content" style="height: 100%">
-              <el-card class="box-card" shadow="never" style="height: 100%">
+              <el-card class="box-card" shadow="always" style="height: 100%">
                 <h3 style="margin-top: 0">Farm Summary</h3>
                 <el-row
                   type="flex"

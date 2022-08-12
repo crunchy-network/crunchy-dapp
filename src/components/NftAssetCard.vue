@@ -13,10 +13,10 @@
     <el-card
       class="box-card"
       style="box-shadow: 0px 0px 24px rgba(21, 21, 52, 0.04); height: 100%"
-      body-style="padding: 5px 14px 20px;"
+      body-style="padding: 5px 14px 20px; height: 100%; box-sizing: border-box;"
     >
       <div class="inner">
-        <template>
+        <!-- <template>
           <el-row
             v-if="type === 'collections'"
             type="flex"
@@ -106,36 +106,90 @@
               </el-dropdown-menu>
             </el-dropdown>
           </el-row>
-        </template>
-        <div style="margin: 5px 0">
-          <div style="position: relative; width: 100%; border-radius: 8px">
+        </template> -->
+        <div
+          style="margin: 5px 0; flex: 1; display: flex; flex-direction: column"
+        >
+          <div
+            style="
+              position: relative;
+              width: 100%;
+              border-radius: 8px;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              flex: 1;
+            "
+          >
             <template>
-              <img
-                v-if="type === 'collections'"
-                class="art"
-                :src="thumbnail"
-                alt=""
-              />
-              <img v-else class="art" :src="art" alt="" />
+              <template v-if="type === 'collections'">
+                <img
+                  :style="!thumbnailLoaded && 'display: none'"
+                  class="art"
+                  :src="thumbnail"
+                  alt=""
+                  @load="thumbnailLoaded = true"
+                />
+                <NftImageSkeleton v-if="!thumbnailLoaded" />
+              </template>
+              <template v-else>
+                <ImgCache
+                  :style="!artLoaded ? 'display: none' : ''"
+                  class="art"
+                  :src="art"
+                  alt=""
+                  :on-load="() => (artLoaded = true)"
+                  :on-click="() => goToSite(link)"
+                />
+                <NftImageSkeleton v-if="!artLoaded" />
+              </template>
             </template>
             <div v-if="type === 'collections'" class="count-wrapper">
               {{ count }} <i style="margin-left: 5px" class="fas fa-image"></i>
             </div>
           </div>
         </div>
-        <div v-if="type === 'collection'" style="margin-top: auto">
-          <h2
-            style="
-              font-weight: 600 !important;
-              font-size: 12px;
-              color: #555cff;
-              word-break: break-all;
-              margin-right: 3px;
-              margin: 0;
-            "
-          >
-            {{ name }}
-          </h2>
+        <div style="margin-top: auto">
+          <div v-if="type === 'collection'" style="margin-top: auto">
+            <h2
+              style="
+                font-weight: 600 !important;
+                font-size: 12px;
+                color: #555cff;
+                word-break: break-all;
+                margin-right: 3px;
+                margin: 0;
+                cursor: pointer;
+              "
+              @click="() => goToSite(link)"
+            >
+              {{ name }}
+            </h2>
+          </div>
+          <div v-else>
+            <h2
+              style="
+                font-weight: 600 !important;
+                font-size: 12px;
+                color: #757679;
+                margin: 0;
+              "
+            >
+              Collection
+            </h2>
+            <h2
+              style="
+                font-weight: 600 !important;
+                font-size: 12px;
+                color: #191b1f;
+                margin: 0;
+                word-wrap: break-word;
+              "
+            >
+              {{ name }}
+            </h2>
+          </div>
         </div>
       </div>
     </el-card>
@@ -143,8 +197,11 @@
 </template>
 
 <script>
+import NftImageSkeleton from "./NftImageSkeleton.vue";
+import ImgCache from "./ImgCache.vue";
 export default {
   name: "NftAssetCard",
+  components: { NftImageSkeleton, ImgCache },
   props: {
     icon: {
       type: String,
@@ -174,12 +231,33 @@ export default {
       type: String || Number,
       default: "NA",
     },
+    // eslint-disable-next-line vue/require-default-prop
     links: {
       type: Array,
+    },
+    link: {
+      type: String,
+      default: "",
     },
     onCollectionSelect: {
       type: Function,
       default: () => {},
+    },
+    pageChange: {
+      type: Number,
+      default: 1,
+    },
+  },
+  data() {
+    return {
+      thumbnailLoaded: false,
+      artLoaded: false,
+    };
+  },
+  watch: {
+    pageChange() {
+      this.thumbnailLoaded = false;
+      this.artLoaded = false;
     },
   },
   methods: {
@@ -194,10 +272,23 @@ export default {
 * {
   box-sizing: border-box;
 }
+
+.art-wrapper {
+  position: relative;
+  width: 100%;
+  border-radius: 8px;
+}
 img.art {
   width: 100%;
+  max-height: 165px;
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
   border-radius: 8px;
+}
+
+@media (max-width: 991px) {
+  img.art {
+    max-height: unset;
+  }
 }
 .count-wrapper {
   background: #191b1f;
@@ -209,12 +300,12 @@ img.art {
   color: #fcfcfd;
   position: absolute;
   top: 5px;
-  right: 10px;
+  right: 5px;
 }
 .inner {
   display: flex;
   flex-direction: column;
-  /* justify-content: space-between; */
+  justify-content: space-between;
   height: 100%;
 }
 </style>

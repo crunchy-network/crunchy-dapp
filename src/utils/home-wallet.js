@@ -50,12 +50,15 @@ const getOBJKTCollections = async (contractList) => {
   return response.data.data.fa;
 };
 
-function getImgUri(uri) {
+function getImgUri(uri, collection) {
   if (!uri) {
-    return "";
+    return "https://res.cloudinary.com/melvin-manni/image/upload/v1660322565/fgpwgssbhq2bfmsjerur.png";
   }
   if (uri.startsWith("ipfs")) {
-    return uri.replace("ipfs://", "https://ipfs.io/ipfs/");
+    const uriId = uri.split("/")[2];
+    return collection
+      ? `https://assets.objkt.media/file/assets-003/${uriId}/thumb288`
+      : uri.replace("ipfs://", "https://ipfs.io/ipfs/");
   } else {
     return uri;
   }
@@ -93,14 +96,14 @@ export default {
     const populateKnownCollectionFields = (collection, found) => {
       const toRet = { ...collection };
       toRet.thumbnailUri = found.thumbnailUrl;
-      toRet.art = found.discoverUrl || found.thumbnailUrl;
+      toRet.art = found.thumbnailUrl || found.discoverUrl;
       toRet.name = found.name;
       return toRet;
     };
 
     const populateObjktData = (collection, data) => {
       collection.name = data.name;
-      collection.art = getImgUri(data.logo);
+      collection.art = getImgUri(data.logo, true);
     };
 
     const buildNFTData = (nfts) => {
@@ -116,6 +119,7 @@ export default {
               contractDetails?.alias || contractDetails?.address || "",
             name: metadata.name,
             art: getImgUri(imgURI),
+            objkLink: getObjktLink(nft.token),
             links: [
               {
                 name: "OBJKT",
@@ -133,8 +137,9 @@ export default {
       try {
         let collection = {
           address: k,
-          thumbnailUri: undefined,
-          art: undefined,
+          thumbnailUri:
+            "https://res.cloudinary.com/melvin-manni/image/upload/v1660322565/fgpwgssbhq2bfmsjerur.png",
+          art: "https://res.cloudinary.com/melvin-manni/image/upload/v1660322565/fgpwgssbhq2bfmsjerur.png",
           items: [],
           name: "",
         };
@@ -170,6 +175,10 @@ export default {
         .sort((a, b) => b.items.length - a.items.length),
     };
   },
+  async getNftCollectionData(nfts, address) {
+    return nfts.find((nft) => nft.address === address);
+  },
+
   async fetchAssetsBal(pkh) {
     // return array for token balances and filtered data
 

@@ -43,4 +43,12 @@ export default {
   updatePriceFeed(state, value) {
     state.priceFeed = value;
   },
+
+  updateNftsLoading(state, value) {
+    state.loadingNfts = value;
+  },
+
+  updateNftCollection(state, value) {
+    state.nftCollection = value;
+  },
 };

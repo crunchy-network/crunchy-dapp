@@ -2,6 +2,7 @@ const Dexes = require("./Dexes");
 const { percentToDecimal } = require("./utils");
 const { Combination } = require("js-combinatorics");
 const _ = require("lodash");
+// eslint-disable-next-line no-unused-vars
 const { default: BigNumber } = require("bignumber.js");
 // throws verbose errors for better developer experience
 

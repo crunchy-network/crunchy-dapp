@@ -7,7 +7,7 @@
       :gutter="10"
     >
       <el-col :xs="24" :md="12" :lg="5">
-        <el-card v-loading="homeWallet.loading" class="top">
+        <el-card v-loading="homeWallet.loading" shadow="always" class="top">
           <h2 style="font-weight: 600; font-size: 16px; color: #757679ff">
             Portfolio Value
           </h2>
@@ -33,7 +33,7 @@
         </el-card>
       </el-col>
       <el-col :xs="24" :md="12" :lg="5">
-        <el-card v-loading="homeWallet.loading" class="top">
+        <el-card v-loading="homeWallet.loading" shadow="always" class="top">
           <h2 style="font-weight: 600; font-size: 16px; color: #757679ff">
             Staked Value
           </h2>
@@ -70,7 +70,7 @@
         <el-divider direction="horizontal"></el-divider>
       </el-col>
       <el-col :xs="24" :md="12" :lg="5">
-        <el-card v-loading="homeWallet.loading" class="top">
+        <el-card v-loading="homeWallet.loading" shadow="always" class="top">
           <h2 style="font-weight: 600; font-size: 16px; color: #757679ff">
             CRUNCH Balance
           </h2>
@@ -95,7 +95,7 @@
         </el-card>
       </el-col>
       <el-col :xs="24" :md="12" :lg="5">
-        <el-card v-loading="homeWallet.loading" class="top">
+        <el-card v-loading="homeWallet.loading" shadow="always" class="top">
           <h2 style="font-weight: 600; font-size: 16px; color: #757679ff">
             crDAO Balance
           </h2>
@@ -124,7 +124,7 @@
 
     <el-row
       style="
-        margin: 46px 0 32px 0;
+        margin: 46px 0 22px 0;
         border-bottom: 1.5px solid rgba(117, 118, 121, 0.1);
         align-items: center;
         flex-wrap: wrap-reverse;
@@ -135,20 +135,34 @@
       justify="space-between"
       align="bottom"
     >
-      <div class="tab-wrapper">
+      <el-select
+        v-model="activeTab"
+        class="tab-select-element"
+        placeholder="Select Tab"
+      >
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+          :disabled="item.value === 'liquidity'"
+        >
+        </el-option>
+      </el-select>
+      <div class="tab-wrapper tab-custom-element">
         <button
           class="tab-text"
-          :style="isActiveTab('portfolio')"
-          @click="setActiveTab('portfolio')"
+          :style="isActiveTab('wallet')"
+          @click="setActiveTab('wallet')"
         >
-          Portfolio
+          Wallet
         </button>
         <button
           class="tab-text"
-          :style="isActiveTab('staked')"
-          @click="setActiveTab('staked')"
+          :style="isActiveTab('staking')"
+          @click="setActiveTab('staking')"
         >
-          Staked
+          Staking
         </button>
         <button
           class="tab-text"
@@ -157,7 +171,14 @@
         >
           NFTs
         </button>
-
+        <button
+          class="tab-text"
+          disabled
+          :style="isActiveTab('liquidity')"
+          @click="setActiveTab('liquidity')"
+        >
+          Liquidity
+        </button>
         <a
           class="tab-text"
           style="color: #555cff; text-decoration: none"
@@ -193,8 +214,8 @@
       </div>
     </el-row>
 
-    <div v-if="activeTab === 'portfolio'">
-      <el-card v-loading="homeWallet.loading">
+    <div v-if="activeTab === 'wallet'">
+      <el-card v-loading="homeWallet.loading" shadow="always">
         <div class="responsive-table">
           <div>
             <el-row
@@ -323,7 +344,7 @@
       </el-card>
     </div>
 
-    <div v-if="activeTab === 'staked'">
+    <div v-if="activeTab === 'staking'">
       <staked-wallet :show-usd="showUsd"></staked-wallet>
     </div>
     <div v-if="activeTab === 'nfts'">
@@ -343,7 +364,7 @@ export default {
   components: { PortfolioWalletRow, StakedWallet, NftWalletView },
   data() {
     return {
-      activeTab: "portfolio",
+      activeTab: "nfts",
       tabledata: [],
       showUsd: false,
       currentPage: 0,
@@ -351,6 +372,24 @@ export default {
       nextPage: 1,
       prevPage: 0,
       displayCount: 12,
+      options: [
+        {
+          value: "wallet",
+          label: "Wallet",
+        },
+        {
+          value: "staking",
+          label: "Staking",
+        },
+        {
+          value: "liquidity",
+          label: "Liquidity",
+        },
+        {
+          value: "nfts",
+          label: "NFTs",
+        },
+      ],
     };
   },
   computed: {
@@ -385,12 +424,12 @@ export default {
     isActiveTab(tab) {
       return (
         this.activeTab === tab &&
-        " border-bottom: 6px solid #555CFF; color: #555CFF"
+        " border-bottom: 3px solid #FF4D4B; color: #FF4D4B"
       );
     },
 
     setActiveTab(tab = "") {
-      if (["portfolio", "staked", "nfts"].includes(tab)) {
+      if (["wallet", "staking", "liquidity", "nfts"].includes(tab)) {
         this.activeTab = tab;
       }
     },
@@ -468,16 +507,12 @@ export default {
 .tab-wrapper {
   display: flex;
   align-items: flex-start;
-  padding: 0 0 0 90px;
-  @media (max-width: 768px) {
-    padding: 0 0 0 0px;
-  }
 }
 
 .tab-text {
   min-width: 100px;
   text-align: center;
-  padding: 5px 20px;
+  padding: 2px 20px;
   font-weight: 700;
   font-size: 16px;
   line-height: 24px;
@@ -488,6 +523,7 @@ export default {
   transition: 0.3s ease all;
   margin: 0;
   border: 0;
+  border-bottom: 3px solid transparent;
   background: transparent;
   &:disabled {
     color: #191b1f66;
@@ -524,5 +560,19 @@ export default {
 
 .el-input__inner {
   border-radius: 28px;
+}
+
+.tab-select-element {
+  display: none;
+  width: 100%;
+}
+@media (max-width: 600px) {
+  .tab-select-element {
+    display: block;
+  }
+
+  .tab-custom-element {
+    display: none;
+  }
 }
 </style>

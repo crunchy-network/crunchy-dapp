@@ -31,137 +31,70 @@
               line-height: 24px;
             "
           >
-            {{ getCollectionName(activeCollection) }}
+            {{ activeCollectionName }}
           </span>
         </template>
       </el-row>
     </el-row>
-    <el-row
-      type="flex"
-      align="stretch"
-      style="flex-wrap: wrap; row-gap: 20px"
-      :gutter="20"
+    <nft-collections-view
+      v-if="viewPage === 'collections'"
+      :set-collection-name="getCollectionName"
+      :set-collection-view="setCollectionView"
     >
-      <el-col v-for="(nft, index) in tabledata" :key="index" :lg="4" :md="6">
-        <nft-asset-card
-          :art="getImage(nft.art)"
-          :thumbnail="getImage(nft.art)"
-          :count="getCount(nft)"
-          :icon="getImage(nft.thumbnailUri)"
-          :links="nft.links"
-          :name="nft.name"
-          :value="nft.value"
-          :on-collection-select="
-            () => {
-              return setCollectionView(nft.address);
-            }
-          "
-          :type="viewPage"
-        ></nft-asset-card>
-      </el-col>
-    </el-row>
-    <div style="margin-top: auto">
-      <div id="pagination">
-        <el-button
-          :disabled="currentPage === 0"
-          style="margin-right: 12px"
-          @click="handleStart"
-        >
-          <i class="fal fa-angle-left"></i>
-          <i class="fal fa-angle-left"></i>
-        </el-button>
-        <el-button :disabled="currentPage === 0" @click="handlePrevPage">
-          <i class="fal fa-angle-left"></i>
-        </el-button>
-
-        <h2
-          style="
-            font-weight: 800;
-            font-size: 14px;
-            color: #191b1f;
-            opacity: 0.5;
-            margin: 0 19px;
-          "
-        >
-          {{
-            vueNumberFormat(nextPage > pages ? pages : nextPage, {
-              prefix: "",
-              decimal: ".",
-              thousand: ",",
-              precision: 0,
-            })
-          }}
-          out of
-          {{
-            vueNumberFormat(pages, {
-              prefix: "",
-              decimal: ".",
-              thousand: ",",
-              precision: 0,
-            })
-          }}
-        </h2>
-        <el-button :disabled="nextPage + 1 > pages" @click="handleNextPage">
-          <i class="fal fa-angle-right"></i>
-        </el-button>
-
-        <el-button
-          :disabled="nextPage + 1 > pages"
-          style="margin-left: 12px"
-          @click="handleEnd"
-        >
-          <i class="fal fa-angle-right"></i>
-          <i class="fal fa-angle-right"></i>
-        </el-button>
-      </div>
-    </div>
+    </nft-collections-view>
+    <nft-collection v-else :collection="activeCollection"></nft-collection>
   </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
-import NftAssetCard from "./NftAssetCard.vue";
+import { mapActions } from "vuex";
+import NftCollectionsView from "./NftCollectionsView.vue";
+import NftCollection from "./NftCollection.vue";
 export default {
   name: "NftWalletView",
-  components: { NftAssetCard },
+  components: { NftCollectionsView, NftCollection },
   data() {
     return {
       currentPage: 0,
       pages: 0,
       viewPage: "collections",
       activeCollection: "",
+      activeCollectionName: "",
       nextPage: 1,
       prevPage: 0,
       tabledata: [],
-      displayCount: 12,
-      collection: [],
+      displayCount: 24,
     };
   },
-  computed: {
-    ...mapGetters(["getNFTs"]),
-  },
+
   watch: {
-    activeCollection() {
-      this.paginationHandler();
+    loading(val) {
+      console.log(val);
     },
-    getNFTs() {
-      this.collection = this.getNFTs;
+    activeCollection(newVal) {
+      this.fetchNftCollection(newVal);
     },
   },
+
   created() {
-    if (this.getNFTs.length === 0) {
-      this.fetchNFTs(this.$route.params.walletAddress);
-    } else {
-      this.collection = this.getNFTs;
-    }
+    this.fetchNFTs(this.$route.params.walletAddress);
   },
+
   mounted() {
-    this.paginationHandler();
+    setInterval(() => {
+      this.refresh();
+    }, 1000 * 60 * 5);
   },
+
   methods: {
-    ...mapActions(["loadWalletAsssets", "fetchNFTs"]),
+    ...mapActions([
+      "loadWalletAsssets",
+      "fetchNFTs",
+      "softFetchNFTs",
+      "fetchNftCollection",
+    ]),
     refresh() {
-      this.loadWalletAsssets(this.$route.params.walletAddress);
+      this.softFetchNFTs(this.$route.params.walletAddress);
     },
 
     setCollectionView(collection) {
@@ -173,85 +106,8 @@ export default {
         this.activeCollection = "";
       }
     },
-
-    paginationHandler() {
-      const data =
-        this.viewPage === "collections"
-          ? this.collection
-          : this.collection.find((c) => c.address === this.activeCollection)
-              .items || [];
-
-      this.pages = Math.ceil(data.length / this.displayCount);
-      this.handleVisibleData();
-    },
-    handleVisibleData() {
-      const data =
-        this.viewPage === "collections"
-          ? this.collection
-          : this.collection.find((c) => c.address === this.activeCollection)
-              .items || [];
-      const next = this.nextPage > this.pages ? this.pages : this.nextPage;
-      this.tabledata = data.slice(
-        (next - 1) * this.displayCount,
-        this.nextPage * this.displayCount > data.length
-          ? data.length
-          : next * this.displayCount
-      );
-    },
-    handleNextPage() {
-      if (this.nextPage + 1 <= this.pages) {
-        this.currentPage = this.nextPage;
-        this.prevPage = this.nextPage - 1;
-        this.nextPage = this.nextPage + 1;
-        this.handleVisibleData();
-      }
-    },
-    handlePrevPage() {
-      if (this.currentPage > 0) {
-        this.currentPage = this.prevPage;
-        this.nextPage = this.prevPage + 1;
-        this.prevPage = this.prevPage - 1;
-        this.handleVisibleData();
-      }
-    },
-    handleEnd() {
-      if (this.currentPage !== this.pages) {
-        this.currentPage = this.pages;
-        this.nextPage = this.pages;
-        this.prevPage = this.pages - 1;
-        this.handleVisibleData();
-      }
-    },
-    handleStart() {
-      if (this.currentPage !== 0) {
-        this.currentPage = 0;
-        this.nextPage = 1;
-        this.prevPage = 0;
-        this.handleVisibleData();
-      }
-    },
-    resetPagination() {
-      this.currentPage = 0;
-      this.pages = 0;
-      this.nextPage = 1;
-      this.prevPage = 0;
-    },
     getCollectionName(contract) {
-      if (!contract) return "";
-      const collection = this.collection.find((k) => k.address === contract);
-      return collection.name || collection.address;
-    },
-    getCount(collection) {
-      return collection.items?.length;
-    },
-    getImage(image) {
-      if (!image) {
-        return "";
-      }
-      if (image.startsWith("assets")) {
-        return require(`../${image}`);
-      }
-      return image;
+      this.activeCollectionName = contract;
     },
   },
 };

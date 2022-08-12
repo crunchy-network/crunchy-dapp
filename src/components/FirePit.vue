@@ -2,12 +2,17 @@
   <div id="fire-pit">
     <nav-menu></nav-menu>
     <el-main style="margin-top: 90px">
-      <el-row :gutter="20" type="flex" style="flex-wrap: wrap; row-gap: 20px">
+      <el-row
+        :gutter="20"
+        type="flex"
+        justify="space-between"
+        style="flex-wrap: wrap; row-gap: 20px"
+      >
         <el-col :lg="16">
           <div class="grid-content" style="height: 100%">
             <el-card
               class="box-card fire-pit"
-              shadow="never"
+              shadow="always"
               style="height: 100%"
             >
               <h2>Fire Pit</h2>
@@ -57,9 +62,9 @@
             </el-card>
           </div>
         </el-col>
-        <el-col :lg="8">
+        <el-col :lg="6">
           <div class="grid-content" style="height: 100%">
-            <DaasCard />
+            <CrunchBurned />
           </div>
         </el-col>
       </el-row>
@@ -97,7 +102,7 @@
       <el-row type="flex" class="farm-list" style="margin-top: 25px">
         <el-col :span="24">
           <div class="grid-content">
-            <el-card class="box-card">
+            <el-card shadow="always" class="box-card">
               <div class="responsive-table">
                 <div>
                   <el-table
@@ -203,15 +208,15 @@
 </template>
 
 <script>
-import DaasCard from "./DaasCard.vue";
 import { mapState, mapActions } from "vuex";
 import NavMenu from "./NavMenu.vue";
+import CrunchBurned from "./CrunchBurned.vue";
 
 export default {
   name: "FirePit",
   components: {
-    DaasCard,
     NavMenu,
+    CrunchBurned,
   },
   computed: {
     ...mapState(["burnRecord", "wallet"]),

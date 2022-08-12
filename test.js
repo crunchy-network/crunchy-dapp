@@ -1,18 +1,18 @@
 const QuipuStable = require("./src/utils/quipuswap-stable");
-const swapRate = require("./src/lib/SwapRouter/SwapRates/quipuCurve");
+// const swapRate = require("./src/lib/SwapRouter/SwapRates/quipuCurve");
 const { default: BigNumber } = require("bignumber.js");
 const {
   buildSwapPairsFromData,
 } = require("./src/lib/SwapRouter/DataParsers/quipu-stable-data-parser");
 const { getSwapOutput } = require("./src/lib/SwapRouter/Dexes/QuipuswapStable");
 
-function getFees(fees) {
-  const { liquidityProvidersFee, stakersFee, interfaceFee, devFee } = fees;
+// function getFees(fees) {
+//   const { liquidityProvidersFee, stakersFee, interfaceFee, devFee } = fees;
 
-  return liquidityProvidersFee.plus(stakersFee).plus(interfaceFee).plus(devFee);
-}
+//   return liquidityProvidersFee.plus(stakersFee).plus(interfaceFee).plus(devFee);
+// }
 
-const FEE_DENOMINATOR = new BigNumber(10000000000);
+// const FEE_DENOMINATOR = new BigNumber(10000000000);
 
 async function test() {
   const data = await QuipuStable.getQuipuswapStableDexes();
