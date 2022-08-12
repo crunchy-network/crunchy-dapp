@@ -50,13 +50,15 @@ const getOBJKTCollections = async (contractList) => {
   return response.data.data.fa;
 };
 
-function getImgUri(uri) {
+function getImgUri(uri, collection) {
   if (!uri) {
     return "https://res.cloudinary.com/melvin-manni/image/upload/v1660322565/fgpwgssbhq2bfmsjerur.png";
   }
   if (uri.startsWith("ipfs")) {
     const uriId = uri.split("/")[2];
-    return `https://assets.objkt.media/file/assets-003/${uriId}/thumb288`;
+    return collection
+      ? `https://assets.objkt.media/file/assets-003/${uriId}/thumb288`
+      : uri.replace("ipfs://", "https://ipfs.io/ipfs/");
   } else {
     return uri;
   }
@@ -101,7 +103,7 @@ export default {
 
     const populateObjktData = (collection, data) => {
       collection.name = data.name;
-      collection.art = getImgUri(data.logo);
+      collection.art = getImgUri(data.logo, true);
     };
 
     const buildNFTData = (nfts) => {
