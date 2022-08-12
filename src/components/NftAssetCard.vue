@@ -124,12 +124,12 @@
           >
             <template>
               <template v-if="type === 'collections'">
-                <ImgCache
+                <img
                   :style="!thumbnailLoaded && 'display: none'"
                   class="art"
                   :src="thumbnail"
                   alt=""
-                  :on-load="() => (thumbnailLoaded = true)"
+                  @load="thumbnailLoaded = true"
                 />
                 <NftImageSkeleton v-if="!thumbnailLoaded" />
               </template>

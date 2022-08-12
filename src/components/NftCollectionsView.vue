@@ -119,7 +119,8 @@ export default {
     ...mapGetters(["getNFTs", "getNFTsLoading"]),
   },
   watch: {
-    getNFTs() {
+    getNFTs(newVal) {
+      console.log(newVal);
       this.paginationHandler();
     },
   },

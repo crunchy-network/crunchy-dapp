@@ -93,7 +93,7 @@ export default {
     const populateKnownCollectionFields = (collection, found) => {
       const toRet = { ...collection };
       toRet.thumbnailUri = found.thumbnailUrl;
-      toRet.art = found.discoverUrl || found.thumbnailUrl;
+      toRet.art = found.thumbnailUrl || found.discoverUrl;
       toRet.name = found.name;
       return toRet;
     };
@@ -134,7 +134,7 @@ export default {
       try {
         let collection = {
           address: k,
-          thumbnailUri: require("../assets/nfts/not-found.png"),
+          thumbnailUri: "/assets/nfts/not-found.png",
           art: undefined,
           items: [],
           name: "",

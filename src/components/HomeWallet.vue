@@ -135,12 +135,17 @@
       justify="space-between"
       align="bottom"
     >
-      <el-select class="tab-select-element" v-model="activeTab" placeholder="Select Tab">
+      <el-select
+        v-model="activeTab"
+        class="tab-select-element"
+        placeholder="Select Tab"
+      >
         <el-option
           v-for="item in options"
           :key="item.value"
           :label="item.label"
           :value="item.value"
+          :disabled="item.value === 'liquidity'"
         >
         </el-option>
       </el-select>

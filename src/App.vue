@@ -536,6 +536,10 @@ header .grid-content button.el-button {
   text-align: center;
 }
 
+.el-select-dropdown__item.selected {
+  color: #ff4d4b  !important;
+}
+
 /* REPSONSIVE STYLE */
 
 /* divider */
