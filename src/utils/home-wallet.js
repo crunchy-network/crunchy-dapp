@@ -55,7 +55,8 @@ function getImgUri(uri) {
     return "https://res.cloudinary.com/melvin-manni/image/upload/v1660322565/fgpwgssbhq2bfmsjerur.png";
   }
   if (uri.startsWith("ipfs")) {
-    return ipfs.transformUri(uri);
+    const uriId = uri.split("/")[2];
+    return `https://assets.objkt.media/file/assets-003/${uriId}/thumb288`;
   } else {
     return uri;
   }
