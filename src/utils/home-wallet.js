@@ -55,10 +55,7 @@ function getImgUri(uri, collection) {
     return "https://res.cloudinary.com/melvin-manni/image/upload/v1660322565/fgpwgssbhq2bfmsjerur.png";
   }
   if (uri.startsWith("ipfs")) {
-    const uriId = uri.split("/")[2];
-    return collection
-      ? `https://assets.objkt.media/file/assets-003/${uriId}/thumb288`
-      : uri.replace("ipfs://", "https://ipfs.io/ipfs/");
+    return uri.replace("ipfs://", "https://cloudflare-ipfs.com/ipfs/");
   } else {
     return uri;
   }

@@ -364,7 +364,7 @@ export default {
   components: { PortfolioWalletRow, StakedWallet, NftWalletView },
   data() {
     return {
-      activeTab: "nfts",
+      activeTab: "wallet",
       tabledata: [],
       showUsd: false,
       currentPage: 0,
