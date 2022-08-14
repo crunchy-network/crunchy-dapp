@@ -3,7 +3,7 @@ import BigNumber from "bignumber.js";
 import coingecko from "./coingecko";
 import ipfs from "./ipfs";
 import teztools from "./teztools";
-
+import knownContracts from "../knownContracts.json";
 // const makeReqest = async ({ contract, id }) => {
 //   return axios.get(`${process.env.VUE_APP_TEZTOOLS_API_URL}/token/${contract}${id ? "_" + id : ""}/price`);
 // };
@@ -24,7 +24,161 @@ const getTokenId = (priceObj, token) => {
   return undefined;
 };
 
+const generateObjktQuery = (contractList) => {
+  return `
+    query contracts {
+      fa(where: {contract: {_in: ${contractList}}}) {
+        collection_id
+        contract
+        description
+        editions
+        logo
+        metadata
+        name
+        collection_type
+      }
+    }
+  `;
+};
+
+const getOBJKTCollections = async (contractList) => {
+  const query = generateObjktQuery(JSON.stringify(contractList));
+  const response = await axios.post("https://data.objkt.com/v2/graphql", {
+    query,
+  });
+
+  return response.data.data.fa;
+};
+
+function getImgUri(uri, collection) {
+  if (!uri) {
+    return "https://res.cloudinary.com/melvin-manni/image/upload/v1660322565/fgpwgssbhq2bfmsjerur.png";
+  }
+  if (uri.startsWith("ipfs")) {
+    const uriId = uri.split("/")[2];
+    return collection
+      ? `https://assets.objkt.media/file/assets-003/${uriId}/thumb288`
+      : uri.replace("ipfs://", "https://ipfs.io/ipfs/");
+  } else {
+    return uri;
+  }
+}
+
+function getObjktLink(token) {
+  return `https://objkt.com/asset/${token.contract.address}/${token.tokenId}`;
+}
+
 export default {
+  async fetchNFts(pkh) {
+    const { data: balances } = await axios.get(
+      `https://api.tzkt.io/v1/tokens/balances?account=${pkh}&balance.gt=0&limit=10000&select=token,balance`
+    );
+    const isToken = (val) => {
+      return (
+        !val.token?.metadata?.artifactUri &&
+        (val?.token?.metadata?.symbol || val?.token?.contract?.alias) &&
+        !val.toke?.metadata?.formats
+      );
+    };
+    const groupedNFTs = {};
+
+    balances.forEach((val) => {
+      if (!isToken(val)) {
+        const contractAddress = val.token.contract.address;
+        if (groupedNFTs[contractAddress] !== undefined) {
+          groupedNFTs[contractAddress].push(val);
+        } else {
+          groupedNFTs[contractAddress] = [val];
+        }
+      }
+    });
+
+    const populateKnownCollectionFields = (collection, found) => {
+      const toRet = { ...collection };
+      toRet.thumbnailUri = found.thumbnailUrl;
+      toRet.art = found.thumbnailUrl || found.discoverUrl;
+      toRet.name = found.name;
+      return toRet;
+    };
+
+    const populateObjktData = (collection, data) => {
+      collection.name = data.name;
+      collection.art = getImgUri(data.logo, true);
+    };
+
+    const buildNFTData = (nfts) => {
+      const toRet = [];
+
+      nfts.forEach((nft) => {
+        const metadata = nft.token.metadata;
+        if (metadata) {
+          const imgURI = metadata.displayUri || metadata.thumbnailUri || "";
+          const contractDetails = nft.token.contract;
+          toRet.push({
+            collectionName:
+              contractDetails?.alias || contractDetails?.address || "",
+            name: metadata.name,
+            art: getImgUri(imgURI),
+            objkLink: getObjktLink(nft.token),
+            links: [
+              {
+                name: "OBJKT",
+                icon: "https://tezos.art/objkt.png",
+                url: getObjktLink(nft.token),
+              },
+            ],
+          });
+        }
+      });
+      return toRet;
+    };
+    const unknownCollections = [];
+    const collections = Object.keys(groupedNFTs).map((k) => {
+      try {
+        let collection = {
+          address: k,
+          thumbnailUri:
+            "https://res.cloudinary.com/melvin-manni/image/upload/v1660322565/fgpwgssbhq2bfmsjerur.png",
+          art: "https://res.cloudinary.com/melvin-manni/image/upload/v1660322565/fgpwgssbhq2bfmsjerur.png",
+          items: [],
+          name: "",
+        };
+        const found = knownContracts.find((kc) => kc.address.includes(k));
+
+        if (found) {
+          collection = populateKnownCollectionFields(collection, found);
+        } else {
+          unknownCollections.push(k);
+        }
+        collection.items = buildNFTData(groupedNFTs[k]);
+        return collection;
+      } catch (e) {
+        console.log("error building group", groupedNFTs[k]);
+        console.log(e);
+      }
+    });
+    if (unknownCollections.length > 0) {
+      const objktData = await getOBJKTCollections(unknownCollections);
+      objktData.forEach((d) => {
+        const collection = collections.find((c) => c.address === d.contract);
+        populateObjktData(collection, d);
+      });
+    }
+    const stillMissingArt = collections.filter((c) => c.art === undefined);
+    stillMissingArt.forEach((col) => {
+      col.name = col.items[0]?.collectionName;
+      col.art = col.items[0]?.art;
+    });
+    return {
+      collections: collections
+        .filter((c) => c.items.length > 0)
+        .sort((a, b) => b.items.length - a.items.length),
+    };
+  },
+  async getNftCollectionData(nfts, address) {
+    return nfts.find((nft) => nft.address === address);
+  },
+
   async fetchAssetsBal(pkh) {
     // return array for token balances and filtered data
 
@@ -32,7 +186,7 @@ export default {
     try {
       // Fetch all token balance linked to an address
       let { data: balances } = await axios.get(
-        `https://staging.api.tzkt.io/v1/tokens/balances?account=${pkh}&balance.gt=0&limit=10000&select=token,balance`
+        `https://api.tzkt.io/v1/tokens/balances?account=${pkh}&balance.gt=0&limit=10000&select=token,balance`
       );
 
       // Fetch the currrent price of xtz in USD to multiply the price of tokens
@@ -90,13 +244,22 @@ export default {
       const { contracts: prices } = await teztools.getPricefeed();
 
       // filter out NFTs by checking for artifactURI and token symbol or alias
-      balances = balances.filter(
-        (val) =>
+      const tokens = [];
+
+      const isToken = (val) => {
+        return (
           !val.token?.metadata?.artifactUri &&
           (val?.token?.metadata?.symbol || val?.token?.contract?.alias) &&
           !val.toke?.metadata?.formats
-      );
+        );
+      };
 
+      balances.forEach((val) => {
+        if (isToken(val)) {
+          tokens.push(val);
+        }
+      });
+      balances = tokens;
       // map through all the balances to sort data
       for (let i = 0; i < balances.length; i++) {
         let priceFilter = prices.filter(
@@ -215,7 +378,7 @@ export default {
     } catch (e) {
       console.log("/utils/home-wallet", e);
     }
-    return assets;
+    return { assets };
   },
 
   handleChrunchBal(arr) {

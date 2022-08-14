@@ -90,7 +90,7 @@
       >
         <el-col :xs="24" :sm="24" :lg="12">
           <div class="grid-content lp-locker-progress" style="height: 100%">
-            <el-card class="box-card" shadow="never" style="height: 100%">
+            <el-card class="box-card" shadow="always" style="height: 100%">
               <el-row type="flex" justify="space-between">
                 <el-col>
                   <img
@@ -150,7 +150,7 @@
           <div class="grid-content" style="height: 100%">
             <el-card
               class="box-card"
-              shadow="never"
+              shadow="always"
               style="height: 100%; background: #f4f4f4"
             >
               <el-avatar
@@ -184,7 +184,7 @@
         </el-col>
         <el-col :xs="24" :sm="12" :lg="6">
           <div class="grid-content" style="height: 100%">
-            <el-card class="box-card" shadow="never" style="height: 100%">
+            <el-card class="box-card" shadow="always" style="height: 100%">
               <el-avatar shape="circle" :size="48" style="background: #1ec37f">
                 <img
                   src="./../assets/svg-icons/lock.svg"
@@ -224,7 +224,7 @@
         </el-col>
         <el-col :xs="24" :sm="12" :lg="6">
           <div class="grid-content" style="height: 100%">
-            <el-card class="box-card" shadow="never" style="height: 100%">
+            <el-card class="box-card" shadow="always" style="height: 100%">
               <el-avatar
                 shape="circle"
                 :size="48"
@@ -256,7 +256,7 @@
 
         <el-col :xs="24" :sm="12" :lg="6">
           <div class="grid-content lp-locker-progress" style="height: 100%">
-            <el-card class="box-card" shadow="never" style="height: 100%">
+            <el-card class="box-card" shadow="always" style="height: 100%">
               <el-avatar shape="circle" :size="48" style="background: #555cff">
                 <img
                   src="./../assets/svg-icons/lock.svg"
@@ -297,7 +297,7 @@
 
         <el-col :xs="24" :sm="12" :lg="6">
           <div class="grid-content" style="height: 100%">
-            <el-card class="box-card" shadow="never" style="height: 100%">
+            <el-card class="box-card" shadow="always" style="height: 100%">
               <el-avatar
                 shape="circle"
                 :size="48"
@@ -333,7 +333,7 @@
         </el-col>
         <el-col :xs="24" :sm="12" :lg="6">
           <div class="grid-content" style="height: 100%">
-            <el-card class="box-card" shadow="never" style="height: 100%">
+            <el-card class="box-card" shadow="always" style="height: 100%">
               <el-avatar
                 shape="circle"
                 icon="fas fa-sack-dollar"
@@ -376,6 +376,7 @@
           <el-card
             class="grid-content box margin-bottom-24"
             style="min-width: max-content"
+            shadow="always"
           >
             <el-row
               type="flex"
@@ -458,6 +459,7 @@
           <el-card
             class="grid-content box margin-bottom-24"
             style="min-width: max-content"
+            shadow="always"
           >
             <el-row
               type="flex"
@@ -539,6 +541,7 @@
           <el-card
             class="grid-content box margin-bottom-24"
             style="min-width: max-content"
+            shadow="always"
           >
             <el-row
               type="flex"

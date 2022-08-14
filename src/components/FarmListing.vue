@@ -30,7 +30,7 @@
                 <el-card
                   v-loading="farms.loading"
                   class="box-card"
-                  shadow="never"
+                  shadow="always"
                   style="height: 100%"
                 >
                   <el-avatar
@@ -81,7 +81,7 @@
                 <el-card
                   v-loading="farms.loading"
                   class="box-card"
-                  shadow="never"
+                  shadow="always"
                   style="height: 100%"
                 >
                   <el-avatar
@@ -122,7 +122,7 @@
                 <el-card
                   v-loading="farms.loading"
                   class="box-card"
-                  shadow="never"
+                  shadow="always"
                   style="height: 100%"
                 >
                   <el-avatar
@@ -171,7 +171,7 @@
                 <el-card
                   v-loading="farms.loading"
                   class="box-card"
-                  shadow="never"
+                  shadow="always"
                   style="height: 100%"
                 >
                   <el-avatar
@@ -199,7 +199,7 @@
                 <el-card
                   v-loading="farms.loading"
                   class="box-card"
-                  shadow="never"
+                  shadow="always"
                   style="height: 100%"
                 >
                   <el-avatar
@@ -229,7 +229,7 @@
                 <el-card
                   v-loading="farms.loading"
                   class="box-card"
-                  shadow="never"
+                  shadow="always"
                   style="height: 100%"
                 >
                   <el-avatar
@@ -372,7 +372,7 @@
       <el-row type="flex" class="farm-list" style="margin-top: 25px">
         <el-col :span="24">
           <div class="grid-content">
-            <el-card v-loading="farms.loading" class="box-card">
+            <el-card v-loading="farms.loading" shadow="always" class="box-card">
               <div class="responsive-table">
                 <div>
                   <el-row

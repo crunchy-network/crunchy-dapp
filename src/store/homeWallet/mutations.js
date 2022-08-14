@@ -4,9 +4,11 @@ export default {
   },
 
   updateAssets(state, assets) {
-    state.assets = assets;
+    state.assets = assets.assets;
   },
-
+  updateNfts(state, assets) {
+    state.nfts = assets.collections;
+  },
   updateNetworth(state, value) {
     state.netWorth = value;
   },
@@ -40,5 +42,13 @@ export default {
   },
   updatePriceFeed(state, value) {
     state.priceFeed = value;
+  },
+
+  updateNftsLoading(state, value) {
+    state.loadingNfts = value;
+  },
+
+  updateNftCollection(state, value) {
+    state.nftCollection = value;
   },
 };

@@ -5,7 +5,10 @@ export default {
   state: {
     loading: false,
     loadingStake: false,
+    loadingNfts: false,
     assets: [],
+    nfts: [],
+    nftCollection: {},
     crunchyStake: {
       protocol: "Crunchy",
       url: "https://app.crunchy.network/#/farms",
@@ -70,6 +73,15 @@ export default {
     },
     getCrunchyStake(state) {
       return state.crunchyStake;
+    },
+    getNFTs(state) {
+      return state.nfts;
+    },
+    getNFTCollection(state) {
+      return state.nftCollection;
+    },
+    getNFTsLoading(state) {
+      return state.loadingNfts;
     },
     getStakedValues(state) {
       return {

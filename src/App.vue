@@ -103,6 +103,7 @@ body {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
+
 .responsive-table > div {
   min-width: max-content;
 }
@@ -534,6 +535,10 @@ header .grid-content button.el-button {
 
 .text-center {
   text-align: center;
+}
+
+.el-select-dropdown__item.selected {
+  color: #ff4d4b !important;
 }
 
 /* REPSONSIVE STYLE */
