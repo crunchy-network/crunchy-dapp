@@ -170,6 +170,11 @@ export default {
           return true;
         }
       }
+      if (token.name) {
+        if (token.name.toLowerCase().includes(search)) {
+          return true;
+        }
+      }
       return false;
     },
 
