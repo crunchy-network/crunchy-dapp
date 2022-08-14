@@ -26,7 +26,7 @@
           <el-row type="flex" class="ifo-list" style="margin-top: 25px">
             <el-col :span="24">
               <div class="grid-content">
-                <el-card class="box-card">
+                <el-card class="box-card" shadow="always">
                   <el-row
                     type="flex"
                     align="middle"

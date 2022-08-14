@@ -22,7 +22,7 @@
     <el-row :gutter="20" type="flex" align="top" style="margin-top: 25px">
       <el-col :span="16">
         <div class="grid-content">
-          <el-card class="box-card">
+          <el-card class="box-card" shadow="always">
             <el-form
               ref="form1"
               v-loading.lock="rckt.loading"
@@ -164,7 +164,7 @@
     <el-row :gutter="20" type="flex" align="top" style="margin-top: 35px">
       <el-col :span="16">
         <div class="grid-content">
-          <el-card class="box-card">
+          <el-card class="box-card" shadow="always" >
             <el-form
               ref="form2"
               v-loading.lock="rckt.loading"

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const makeRequest = async (uri) => {
-  return axios.get(`https://spicyb.sdaotools.xyz${uri}`);
+  return axios.get(`https://spicya.sdaotools.xyz${uri}`);
 };
 
 export default {

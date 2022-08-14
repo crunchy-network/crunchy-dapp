@@ -12,7 +12,7 @@
         z-index: 999;
         display: flex;
         align-items: center;
-        border-bottom: 1.5px solid rgba(25, 27, 31, 0.1);
+        border-bottom: 1px solid #f2f2f2;
       "
     >
       <el-row class="el-menu-row" type="flex" justify="space-between">
@@ -68,7 +68,7 @@
                 exact
                 active-class="is-active"
               >
-                <i v-if="mobile" class="fak fa-crunchy-home"></i>
+                <i v-if="mobile" class="fak fa-crunchy-home-alt"></i>
                 <span>Home</span>
               </router-link>
 
@@ -123,7 +123,7 @@
                   to="/swap"
                   active-class="is-active"
                 >
-                  <i class="fa-solid fa-arrow-up-arrow-down"></i>
+                  <i class="fak fa-crunchy-swap-alt"></i>
 
                   <span>SWAP</span>
                 </router-link>
@@ -133,7 +133,7 @@
                   :to="{ name: 'farm-listing' }"
                   active-class="is-active"
                 >
-                  <i class="fak fa-crunchy-farm"></i>
+                  <i class="fak fa-crunchy-farm-alt"></i>
                   <span>Farms</span>
                 </router-link>
                 <router-link
@@ -142,7 +142,7 @@
                   :to="{ name: 'ifo-list' }"
                   active-class="is-active"
                 >
-                  <i class="fak fa-regular fa-farm"></i>
+                  <i class="fak fa-light fa-farm"></i>
                   <span>IFO</span>
                 </router-link>
                 <router-link
@@ -170,7 +170,7 @@
                   :to="{ name: 'fire-pit' }"
                   active-class="is-active"
                 >
-                  <i class="fas fa-fire-alt"></i>
+                  <i class="fak fal fa-fire"></i>
                   <span>Fire Pit</span>
                 </router-link>
               </el-submenu>
@@ -336,12 +336,13 @@ export default {
 
 .el-menu-row {
   border-right: none !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  border-bottom: none;
   margin: 0;
   align-items: center;
   min-width: 100%;
   min-height: 70px;
   background: #fff;
+  box-shadow: 0px 10px 16px rgba(21, 21, 52, 0.05);
 }
 
 .more_submenu .el-menu-item.submenu-item {
