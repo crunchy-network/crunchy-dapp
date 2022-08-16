@@ -6,7 +6,13 @@ const getTokenPair = (tokens, tokenIndex, pairIndex) => {
   const token2Raw = token1.pairs[pairIndex].sides[1];
   let token2;
   if (token2Raw.symbol === "XTZ") {
-    token2 = { symbol: "tez", type: "tez", tokenAddress: "tez", decimals: 6 };
+    token2 = {
+      symbol: "tez",
+      tokenSymbol: "tez",
+      type: "tez",
+      tokenAddress: "tez",
+      decimals: 6,
+    };
   } else {
     token2 = tokens.find((t) => {
       return (

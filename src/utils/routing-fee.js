@@ -7,7 +7,10 @@ const convertToMuTez = (amount, token) => {
 const getQuipuDex = (swapPairs, token) => {
   console.log(swapPairs[0], token);
   return swapPairs.find(
-    (p) => p.dex === "Quipuswap" && p.a.assetSlug === token.assetSlug
+    (p) =>
+      p.dex === "Quipuswap" &&
+      p.a.assetSlug === token.assetSlug &&
+      p.b.tokenSymbol === "tez"
   );
 };
 
@@ -29,12 +32,13 @@ const makeTradeObject = (inputToken, fee, quipuDex) => {
     tokenAddress: "tez",
     decimals: 6,
   };
+  const output = Quipuswap.getSwapOutput(fee, quipuDex);
 
   return {
     a: inputToken,
     b: tez,
     input: fee,
-    minOut: fee * slippageTolerance,
+    minOut: output * slippageTolerance,
     dexAddress: quipuDex.dexAddress,
   };
 };
@@ -126,9 +130,8 @@ const buildRoutingFeeOperation = async (
       fee,
       tezos
     );
-  } else {
-    return sendShitcoinToTreasury(inputToken, sender, fee, tezos);
   }
+  return sendShitcoinToTreasury(inputToken, sender, fee, tezos);
 };
 
 export { buildRoutingFeeOperation };
