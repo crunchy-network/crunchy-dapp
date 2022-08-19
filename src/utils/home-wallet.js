@@ -216,6 +216,24 @@ export default {
     return assets;
   },
 
+  async getQuipuLp(pkh) {
+    const lp = [];
+    try {
+      // Fetch all token balance linked to an address
+      const { data: balances } = await axios.get(
+        `https://staging.api.tzkt.io/v1/tokens/balances?account=${pkh}&balance.gt=0&limit=10000&select=token,balance`
+      );
+
+      const lpBal = balances.filter((val) =>
+        val.contract.alias.contains("QuipuSwap")
+      );
+
+      console.log(lpBal, lp);
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   handleChrunchBal(arr) {
     return arr.filter(
       (val) => val.contract === process.env.VUE_APP_CONTRACTS_CRUNCH

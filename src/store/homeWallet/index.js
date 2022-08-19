@@ -56,6 +56,18 @@ export default {
       totalValueUsd: 0,
       data: [],
     },
+    lp: {
+      quipuswap: {
+        dex: "Quipuswap",
+        isQuipuLp: true,
+        thumbnailUri:
+          "https://res.cloudinary.com/melvin-manni/image/upload/v1645292809/c1rutxlzllilmtuibcdo.png",
+        totalValue: 0,
+        totalValueUsd: 0,
+        positionsCount: 0,
+        positions: [],
+      },
+    },
     priceFeed: [],
     netWorth: 0,
     netWorthUsd: 0,
