@@ -56,7 +56,7 @@
       <el-row :gutter="20" type="flex" align="top" style="margin-top: 25px">
         <el-col :span="16">
           <div class="grid-content">
-            <el-card class="box-card">
+            <el-card class="box-card" shadow="always">
               <el-form
                 ref="form"
                 v-loading.lock="wtz.loading"
@@ -317,7 +317,7 @@
             <h2 style="margin-top: 50px; margin-bottom: 30px">
               Recent WTZ Transactions
             </h2>
-            <el-card class="box-card" shadow="never">
+            <el-card class="box-card" shadow="always">
               <el-table
                 v-loading="wtz.loading"
                 :data="wtz.txs"
@@ -453,7 +453,7 @@
               v-if="showUsd === true"
               v-loading="wtz.loading"
               class="box-card"
-              shadow="never"
+              shadow="always"
               style="height: 100%"
             >
               <el-avatar
@@ -494,7 +494,7 @@
               v-if="showUsd === false"
               v-loading="wtz.loading"
               class="box-card"
-              shadow="never"
+              shadow="always"
               style="height: 100%"
             >
               <el-avatar

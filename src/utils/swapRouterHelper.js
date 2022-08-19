@@ -36,9 +36,9 @@ const getAssetSlug = (token) => {
 
 const toTokenListItem = (token) => {
   token = farmUtils.overrideMetadata(token);
-
   return {
     asset: token.symbol,
+    name: token.name,
     icon: ipfs.transformUri(
       token.thumbnailUri ||
         "https://static.thenounproject.com/png/796573-200.png"

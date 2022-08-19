@@ -169,12 +169,18 @@ export default {
     },
     getImage(image) {
       if (!image) {
-        return "";
+        return "https://res.cloudinary.com/melvin-manni/image/upload/v1660322565/fgpwgssbhq2bfmsjerur.png";
       }
       if (image.startsWith("assets")) {
-        return require(`../${image}`);
+        return (
+          require(`../${image}`) ||
+          "https://res.cloudinary.com/melvin-manni/image/upload/v1660322565/fgpwgssbhq2bfmsjerur.png"
+        );
       }
-      return image;
+      return (
+        image ||
+        "https://res.cloudinary.com/melvin-manni/image/upload/v1660322565/fgpwgssbhq2bfmsjerur.png"
+      );
     },
   },
 };

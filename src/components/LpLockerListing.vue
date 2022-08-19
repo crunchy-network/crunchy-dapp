@@ -35,7 +35,7 @@
                 <el-card
                   v-loading="lpLockers.loading"
                   class="box-card"
-                  shadow="never"
+                  shadow="always"
                   style="height: 100%"
                 >
                   <el-avatar
@@ -72,7 +72,7 @@
                 <el-card
                   v-loading="lpLockers.loading"
                   class="box-card"
-                  shadow="never"
+                  shadow="always"
                   style="height: 100%"
                 >
                   <el-avatar
@@ -108,7 +108,7 @@
                 <el-card
                   v-loading="lpLockers.loading"
                   class="box-card"
-                  shadow="never"
+                  shadow="always"
                   style="height: 100%"
                 >
                   <el-avatar
@@ -153,7 +153,7 @@
                 <el-card
                   v-loading="lpLockers.loading"
                   class="box-card"
-                  shadow="never"
+                  shadow="always"
                   style="height: 100%"
                 >
                   <el-avatar
@@ -202,7 +202,7 @@
                 <el-card
                   v-loading="lpLockers.loading"
                   class="box-card"
-                  shadow="never"
+                  shadow="always"
                   style="height: 100%"
                 >
                   <el-avatar
@@ -251,7 +251,7 @@
                 <el-card
                   v-loading="lpLockers.loading"
                   class="box-card"
-                  shadow="never"
+                  shadow="always"
                   style="height: 100%"
                 >
                   <el-avatar
@@ -338,7 +338,11 @@
       <el-row type="flex" class="freezer-list" style="margin-top: 25px">
         <el-col :span="24">
           <div class="grid-content">
-            <el-card v-loading="lpLockers.loading" class="box-card">
+            <el-card
+              v-loading="lpLockers.loading"
+              class="box-card"
+              shadow="always"
+            >
               <div class="responsive-table">
                 <div>
                   <el-row
