@@ -1,6 +1,5 @@
 import homeWallet from "../../utils/home-wallet";
 import homeWalletStake from "../../utils/home-wallet-stake";
-import { getWalletContract } from "../../utils/tezos";
 import teztools from "../../utils/teztools";
 
 export default {
@@ -71,7 +70,6 @@ export default {
     commit("updatePriceFeed", priceFeed);
     await Promise.all([
       dispatch("loadCrunchyStake"),
-      dispatch("loadQuipuLpStake"),
       dispatch("loadDogamiStake"),
       dispatch("loadGIFStake"),
     ]).then(() => {
@@ -82,7 +80,6 @@ export default {
   async softUpdateStakeAssets({ dispatch }) {
     await Promise.all([
       dispatch("loadCrunchyStake"),
-      dispatch("loadQuipuLpStake"),
       dispatch("loadDogamiStake"),
       dispatch("loadGIFStake"),
     ]);
@@ -114,19 +111,6 @@ export default {
     }
   },
 
-  async loadQuipuLpStake({ rootState, state, dispatch, commit }) {
-    // try {
-    //   const quipusStake = await homeWalletStake.getUsersQuipusStake(
-    //     rootState.wallet.pkh,
-    //     state.priceFeed
-    //   );
-    //   const quipus = {...state.quipusStake, ...quipusStake};
-    //   commit("updateQuipusStake", quipus);
-    // } catch (error) {
-    //   console.log(error);
-    // }
-  },
-
   async loadDogamiStake({ rootState, state, dispatch, commit }) {
     try {
       const dogamiStake = await homeWalletStake.getDogamiStake(
@@ -149,18 +133,20 @@ export default {
     }
   },
 
-  async harvestQuipuLpStake({ commit, rootState, dispatch }, contract) {
-    const lpContract = await getWalletContract(contract);
+  async fetchAllLiquidity({ rootState, commit }, pkh) {
+    commit("updateLpLoading", true);
+    const account = pkh || rootState.wallet.pkh;
+    try {
+      const [quipuswap] = await Promise.all([homeWallet.getQuipuLp(account)]);
 
-    lpContract.methods
-      .withdrawProfit(rootState.wallet.pkh)
-      .send()
-      .then((tx) => {
-        tx.confirmation().then(() => {
-          dispatch("loadQuipuLpStake");
-        });
-      });
+      commit("updateQuipuswapLp", quipuswap);
+    } catch (error) {
+      console.log("Error", error);
+    } finally {
+      commit("updateLpLoading", false);
+    }
   },
+
   async walletConnected({ dispatch, rootState }) {
     dispatch("loadWalletAsssets", rootState.wallet.pkh);
   },

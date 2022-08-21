@@ -3,7 +3,7 @@
     id="nft-wallet-view"
     style="min-height: 50vh; display: flex; flex-direction: column"
   >
-    <el-card v-loading="homeWallet.loadingStake">
+    <el-card v-loading="getLpLoading">
       <div class="responsive-table">
         <div>
           <el-row
@@ -102,7 +102,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import LiquidityWalletRow from "./LiquidityWalletRow.vue";
 
 export default {
@@ -122,102 +122,111 @@ export default {
       prevPage: 0,
       tabledata: [],
       displayCount: 12,
-      liquidity: [
-        {
-          id: "1",
-          dex: "Quipuswap",
-          isQuipuLp: true,
-          thumbnailUri:
-            "https://res.cloudinary.com/melvin-manni/image/upload/v1645292809/c1rutxlzllilmtuibcdo.png",
-          totalValue: 2320.23,
-          totalValueUsd: 4273.309296,
-          positionsCount: 2,
-          positions: [
-            {
-              lp: "GIF/XTZ",
-              poolToken: {
-                symbol: "GIF",
-                thumbnailUri:
-                  "https://res.cloudinary.com/melvin-manni/image/upload/v1655318339/ibrhctmf97vlo8cgdla6.svg",
-              },
-              lpBalance: 12.2,
-              xtzSide: 850,
-              xtzSideUsd: 1577.716982,
-              tokenSide: 1.24,
-              totalValue: 1700,
-              totalValueUsd: 3139.604729,
-            },
-            {
-              lp: "CRUNCH/XTZ",
-              poolToken: {
-                symbol: "CRUNCH",
-                thumbnailUri:
-                  "https://ipfs.fleek.co/ipfs/bafybeienhhbxz53n3gtg7stjou2zs3lmhupahwovv2kxwh5uass3bc5xzq",
-              },
-              lpBalance: 1.4,
-              xtzSide: 260,
-              xtzSideUsd: 484.250468,
-              tokenSide: 10000,
-              totalValue: 520,
-              totalValueUsd: 966.864155,
-            },
-          ],
-        },
-        {
-          id: "2",
-          dex: "Plenty",
-          isPlentyLp: true,
-          thumbnailUri:
-            "https://res.cloudinary.com/melvin-manni/image/upload/v1645292809/nstgjnest4jrhcsgwymf.png",
-          positionsCount: "2",
-          totalValue: 400.4,
-          totalValueUsd: 744.95326,
-          positions: [],
-        },
-        {
-          dex: "Youves",
-          isYouvesLp: true,
-          thumbnailUri:
-            "https://res.cloudinary.com/melvin-manni/image/upload/v1660017312/sathlsrqehsjnvv0w8wv.svg",
-          totalValue: 241.2,
-          totalValueUsd: 473.9087,
-          positionsCount: "1",
-          positions: [],
-        },
-        {
-          dex: "Vortex",
-          isVortexLp: true,
-          thumbnailUri: "https://www.gitbook.com/cdn-cgi/image/width=40,height=40,fit=contain,dpr=1,format=auto/https%3A%2F%2F3533877337-files.gitbook.io%2F~%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FyX7WTYr0YMeQcemP26Of%252Ficon%252F76rbNGaJiDxSJwFIjsLQ%252FGroup%25201494.png%3Falt%3Dmedia%26token%3D829a380f-2d70-4ceb-ac23-8c2aaddf8fe5",
-          totalValue: 0,
-          totalValueUsd: 0,
-          positionsCount: "1",
-          positions: [],
-        },
-      ],
+      // liquidity: [
+      //   {
+      //     id: "1",
+      //     dex: "Quipuswap",
+      //     isQuipuLp: true,
+      //     thumbnailUri:
+      //       "https://res.cloudinary.com/melvin-manni/image/upload/v1645292809/c1rutxlzllilmtuibcdo.png",
+      //     totalValue: 2320.23,
+      //     totalValueUsd: 4273.309296,
+      //     positionsCount: 2,
+      //     positions: [
+      //       {
+      //         lp: "GIF/XTZ",
+      //         poolToken: {
+      //           symbol: "GIF",
+      //           thumbnailUri:
+      //             "https://res.cloudinary.com/melvin-manni/image/upload/v1655318339/ibrhctmf97vlo8cgdla6.svg",
+      //         },
+      //         lpBalance: 12.2,
+      //         xtzSide: 850,
+      //         xtzSideUsd: 1577.716982,
+      //         tokenSide: 1.24,
+      //         totalValue: 1700,
+      //         totalValueUsd: 3139.604729,
+      //       },
+      //       {
+      //         lp: "CRUNCH/XTZ",
+      //         poolToken: {
+      //           symbol: "CRUNCH",
+      //           thumbnailUri:
+      //             "https://ipfs.fleek.co/ipfs/bafybeienhhbxz53n3gtg7stjou2zs3lmhupahwovv2kxwh5uass3bc5xzq",
+      //         },
+      //         lpBalance: 1.4,
+      //         xtzSide: 260,
+      //         xtzSideUsd: 484.250468,
+      //         tokenSide: 10000,
+      //         totalValue: 520,
+      //         totalValueUsd: 966.864155,
+      //       },
+      //     ],
+      //   },
+      //   {
+      //     id: "2",
+      //     dex: "Plenty",
+      //     isPlentyLp: true,
+      //     thumbnailUri:
+      //       "https://res.cloudinary.com/melvin-manni/image/upload/v1645292809/nstgjnest4jrhcsgwymf.png",
+      //     positionsCount: "2",
+      //     totalValue: 400.4,
+      //     totalValueUsd: 744.95326,
+      //     positions: [],
+      //   },
+      //   {
+      //     dex: "Youves",
+      //     isYouvesLp: true,
+      //     thumbnailUri:
+      //       "https://res.cloudinary.com/melvin-manni/image/upload/v1660017312/sathlsrqehsjnvv0w8wv.svg",
+      //     totalValue: 241.2,
+      //     totalValueUsd: 473.9087,
+      //     positionsCount: "1",
+      //     positions: [],
+      //   },
+      //   {
+      //     dex: "Vortex",
+      //     isVortexLp: true,
+      //     thumbnailUri: "https://www.gitbook.com/cdn-cgi/image/width=40,height=40,fit=contain,dpr=1,format=auto/https%3A%2F%2F3533877337-files.gitbook.io%2F~%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FyX7WTYr0YMeQcemP26Of%252Ficon%252F76rbNGaJiDxSJwFIjsLQ%252FGroup%25201494.png%3Falt%3Dmedia%26token%3D829a380f-2d70-4ceb-ac23-8c2aaddf8fe5",
+      //     totalValue: 0,
+      //     totalValueUsd: 0,
+      //     positionsCount: "1",
+      //     positions: [],
+      //   },
+      // ],
     };
   },
   computed: {
-    ...mapState(["homeWallet"]),
+    ...mapGetters(["getLpLoading", "getLp"]),
   },
   watch: {
-    liquidity(newVal) {
-      this.paginationHandler();
+    getLp() {
+      this.refresh();
+    },
+    "$route.params.walletAddress"() {
+      this.refresh();
     },
   },
   mounted() {
-    this.paginationHandler();
+    this.refresh();
   },
   methods: {
+    ...mapActions(["fetchAllLiquidity"]),
+    refresh() {
+      this.fetchAllLiquidity(this.$route.params.walletAddress).then(() => {
+        this.paginationHandler();
+      });
+    },
     paginationHandler() {
-      this.pages = Math.ceil(this.liquidity.length / this.displayCount);
+      this.pages = Math.ceil(this.getLp.length / this.displayCount);
       this.handleVisibleData();
     },
     handleVisibleData() {
       const next = this.nextPage > this.pages ? this.pages : this.nextPage;
-      this.tabledata = this.liquidity.slice(
+      this.tabledata = this.getLp.slice(
         (next - 1) * this.displayCount,
-        this.nextPage * this.displayCount > this.liquidity.length
-          ? this.liquidity.length
+        this.nextPage * this.displayCount > this.getLp.length
+          ? this.getLp.length
           : next * this.displayCount
       );
     },

@@ -60,6 +60,7 @@ export default {
       data: [],
     },
     lp: {
+      loading: false,
       quipuswap: {
         dex: "Quipuswap",
         isQuipuLp: true,
@@ -114,6 +115,13 @@ export default {
         (a, b) => b.staked - a.staked
       );
       return [state.crunchyStake, ...orderedStake];
+    },
+    getLp(state) {
+      return [state.lp.quipuswap];
+    },
+
+    getLpLoading(state) {
+      return state.lp.loading;
     },
   },
 };

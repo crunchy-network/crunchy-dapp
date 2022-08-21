@@ -173,7 +173,6 @@
         </button>
         <button
           class="tab-text"
-          disabled
           :style="isActiveTab('liquidity')"
           @click="setActiveTab('liquidity')"
         >
@@ -350,6 +349,9 @@
     <div v-if="activeTab === 'nfts'">
       <NftWalletView />
     </div>
+    <div v-if="activeTab === 'liquidity'">
+      <LiquidityWallet :show-usd="showUsd" />
+    </div>
   </div>
 </template>
 
@@ -358,10 +360,16 @@ import { mapState, mapActions, mapGetters } from "vuex";
 import PortfolioWalletRow from "./PortfolioWalletRow.vue";
 import StakedWallet from "./StakedWallet.vue";
 import NftWalletView from "./NftWalletView.vue";
+import LiquidityWallet from "./LiquidityWallet.vue";
 
 export default {
   name: "HomeWallet",
-  components: { PortfolioWalletRow, StakedWallet, NftWalletView },
+  components: {
+    PortfolioWalletRow,
+    StakedWallet,
+    NftWalletView,
+    LiquidityWallet,
+  },
   data() {
     return {
       activeTab: "liquidity",

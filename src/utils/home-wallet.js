@@ -4,6 +4,8 @@ import coingecko from "./coingecko";
 import ipfs from "./ipfs";
 import teztools from "./teztools";
 import knownContracts from "../knownContracts.json";
+import tzkt from "./tzkt";
+import { merge } from "lodash";
 // const makeReqest = async ({ contract, id }) => {
 //   return axios.get(`${process.env.VUE_APP_TEZTOOLS_API_URL}/token/${contract}${id ? "_" + id : ""}/price`);
 // };
@@ -379,6 +381,12 @@ export default {
   },
 
   async getQuipuLp(pkh) {
+    const quipu = {
+      totalValue: 0,
+      totalValueUsd: 0,
+      positionsCount: 0,
+      positions: [],
+    };
     const lp = [];
     try {
       // Fetch all token balance linked to an address
@@ -386,11 +394,108 @@ export default {
         `https://staging.api.tzkt.io/v1/tokens/balances?account=${pkh}&balance.gt=0&limit=10000&select=token,balance`
       );
 
-      const lpBal = balances.filter((val) =>
-        val.contract.alias.contains("QuipuSwap")
+      const [
+        { data: fa2Factory },
+        { data: fa2FactoryOld },
+        { data: fa2FactoryOld3 },
+      ] = await Promise.all([
+        axios.get(
+          "https://api.tzkt.io/v1/accounts/KT1PvEyN1xCFCgorN92QCfYjw3axS6jawCiJ/contracts?limit=10000"
+        ),
+        axios.get(
+          "https://api.tzkt.io/v1/accounts/KT1GDtv3sqhWeSsXLWgcGsmoH5nRRGJd8xVc/contracts?limit=10000"
+        ),
+        axios.get(
+          "https://api.tzkt.io/v1/accounts/KT1SwH9P1Tx8a58Mm6qBExQFTcy2rwZyZiXS/contracts?limit=10000"
+        ),
+      ]);
+
+      const lpBal = balances.filter(
+        (val) =>
+          fa2Factory.find(
+            (contract) => contract.address === val.token?.contract?.address
+          ) ||
+          fa2FactoryOld.find(
+            (contract) => contract.address === val.token?.contract?.address
+          ) ||
+          fa2FactoryOld3.find(
+            (contract) => contract.address === val.token?.contract?.address
+          )
       );
 
-      console.log(lpBal, lp);
+      quipu.positionsCount = lpBal.length;
+
+      for (let i = 0; i < lpBal.length; i++) {
+        const address = lpBal[i].token.contract.address;
+
+        const {
+          data: { storage: tokenStorage },
+        } = await tzkt.getContractStorage(address);
+
+        console.log(tokenStorage);
+
+        const tokenObjkt = {
+          address: address,
+          balance: lpBal[i].balance,
+          lpBalance: new BigNumber(lpBal[i].balance).div(1e6).toNumber(),
+          tokenAddress: tokenStorage.token_address,
+          tokenId: tokenStorage.token_id,
+          tezPool: tokenStorage.tez_pool,
+          tokenPool: tokenStorage.token_pool,
+          totalReward: tokenStorage.total_reward,
+          totalSupply: tokenStorage.total_supply,
+
+          tokenType: {
+            fa2: true,
+          },
+        };
+
+        const { data: tokenMetaData } = await axios.get(
+          `https://api.teztools.io/v1/${tokenObjkt.tokenAddress}${
+            tokenObjkt.tokenId && "_" + tokenObjkt.tokenId
+          }/price`
+        );
+
+        tokenMetaData.pairs = tokenMetaData.pairs.find(
+          (val) => val.address === tokenObjkt.address
+        );
+
+        tokenMetaData.thumbnailUri = ipfs.transformUri(
+          tokenMetaData.thumbnailUri
+        );
+
+        const xtzUsd = await coingecko.getXtzUsdPrice();
+
+        const xtzSide = new BigNumber(tokenObjkt.balance)
+          .times(tokenObjkt.tezPool)
+          .div(tokenObjkt.totalSupply);
+
+        const tokenSide = new BigNumber(tokenObjkt.balance)
+          .times(tokenObjkt.tokenPool)
+          .div(tokenObjkt.totalSupply);
+
+        tokenObjkt.xtzSide = xtzSide.div(1e6).toNumber();
+
+        tokenObjkt.xtzSideUsd = tokenObjkt.xtzSide * xtzUsd;
+
+        tokenObjkt.tokenSide = tokenSide
+          .div(10 ** tokenMetaData.decimals)
+          .toNumber();
+
+        tokenObjkt.totalValue = tokenObjkt.lpBalance;
+
+        tokenObjkt.totalValueUsd = tokenObjkt.totalValue * xtzUsd;
+
+        lp.push(merge(tokenMetaData, tokenObjkt));
+
+        quipu.totalValue += tokenObjkt.totalValue;
+        quipu.totalValueUsd += tokenObjkt.totalValueUsd;
+      }
+
+      quipu.positions = lp;
+
+      console.log(quipu);
+      return quipu;
     } catch (error) {
       console.log(error);
     }

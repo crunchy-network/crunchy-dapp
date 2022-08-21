@@ -51,4 +51,11 @@ export default {
   updateNftCollection(state, value) {
     state.nftCollection = value;
   },
+
+  updateQuipuswapLp(state, value) {
+    state.lp.quipuswap = { ...state.lp.quipuswap, ...value };
+  },
+  updateLpLoading(state, value) {
+    state.lp.loading = value;
+  },
 };
