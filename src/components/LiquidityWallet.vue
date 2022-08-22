@@ -201,12 +201,13 @@ export default {
   },
   watch: {
     getLp() {
-      this.refresh();
+      this.handlePagination();
     },
     "$route.params.walletAddress"() {
       this.refresh();
     },
   },
+
   mounted() {
     this.refresh();
   },

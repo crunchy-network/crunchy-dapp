@@ -482,7 +482,7 @@ export default {
           .div(10 ** tokenMetaData.decimals)
           .toNumber();
 
-        tokenObjkt.totalValue = tokenObjkt.lpBalance;
+        tokenObjkt.totalValue = tokenObjkt.xtzSide * 2;
 
         tokenObjkt.totalValueUsd = tokenObjkt.totalValue * xtzUsd;
 
