@@ -395,10 +395,18 @@ export default {
       );
 
       const [
+        { data: fa1Factory },
+        { data: fa1FactoryOld },
         { data: fa2Factory },
         { data: fa2FactoryOld },
         { data: fa2FactoryOld3 },
       ] = await Promise.all([
+        axios.get(
+          "https://api.tzkt.io/v1/accounts/KT1FWHLMk5tHbwuSsp31S4Jum4dTVmkXpfJw/contracts?limit=10000"
+        ),
+        axios.get(
+          "https://api.tzkt.io/v1/accounts/KT1Lw8hCoaBrHeTeMXbqHPG4sS4K1xn7yKcD/contracts?limit=10000"
+        ),
         axios.get(
           "https://api.tzkt.io/v1/accounts/KT1PvEyN1xCFCgorN92QCfYjw3axS6jawCiJ/contracts?limit=10000"
         ),
@@ -419,6 +427,12 @@ export default {
             (contract) => contract.address === val.token?.contract?.address
           ) ||
           fa2FactoryOld3.find(
+            (contract) => contract.address === val.token?.contract?.address
+          ) ||
+          fa1Factory.find(
+            (contract) => contract.address === val.token?.contract?.address
+          ) ||
+          fa1FactoryOld.find(
             (contract) => contract.address === val.token?.contract?.address
           )
       );
