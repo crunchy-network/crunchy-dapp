@@ -58,7 +58,7 @@ const swapTokenForTezAndSendToTreasury = async (
     trade,
     sender,
     tezos,
-    process.env.VUE_APP_DEX_AGGREGATE_TOKEN_DESTINATION
+    process.env.VUE_APP_DEX_AGGREGATE_TEZ_DESTINATION
   );
   return op;
 };
