@@ -203,26 +203,19 @@ export default {
     getLp() {
       this.paginationHandler();
     },
-    "$route.params.walletAddress": {
-      immediate: true,
-      handler() {
-        this.refresh();
-      },
-    },
   },
 
   created() {
     setInterval(() => {
-      softLoadAllLiquidity();
+      this.softLoadAllLiquidity();
     }, 1000 * 60 * 5);
   },
+
+  mounted() {
+    this.paginationHandler();
+  },
   methods: {
-    ...mapActions(["loadAllLiquidity", " softLoadAllLiquidity"]),
-    refresh() {
-      this.loadAllLiquidity(this.$route.params.walletAddress).then(() => {
-        this.paginationHandler();
-      });
-    },
+    ...mapActions([" softLoadAllLiquidity"]),
     paginationHandler() {
       this.pages = Math.ceil(this.getLp.length / this.displayCount);
       this.handleVisibleData();
