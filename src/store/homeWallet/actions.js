@@ -133,7 +133,20 @@ export default {
     }
   },
 
-  async fetchAllLiquidity({ rootState, commit }, pkh) {
+  async loadAllLiquidity({ rootState, commit }, pkh) {
+    commit("updateLpLoading", true);
+    const account = pkh || rootState.wallet.pkh;
+    try {
+      const [quipuswap] = await Promise.all([homeWallet.getQuipuLp(account)]);
+
+      commit("updateQuipuswapLp", quipuswap);
+    } catch (error) {
+      console.log("Error", error);
+    } finally {
+      commit("updateLpLoading", false);
+    }
+  },
+  async softLoadAllLiquidity({ rootState, commit }, pkh) {
     commit("updateLpLoading", true);
     const account = pkh || rootState.wallet.pkh;
     try {

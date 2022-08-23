@@ -372,7 +372,7 @@ export default {
   },
   data() {
     return {
-      activeTab: "liquidity",
+      activeTab: "wallet",
       tabledata: [],
       showUsd: false,
       currentPage: 0,
@@ -421,9 +421,10 @@ export default {
   created() {
     this.refresh();
     this.loadStakeAssets();
+    this.loadAllLiquidity()
   },
   methods: {
-    ...mapActions(["loadWalletAsssets", "loadStakeAssets"]),
+    ...mapActions(["loadWalletAsssets", "loadStakeAssets", "loadAllLiquidity"]),
 
     refresh() {
       this.loadWalletAsssets(this.$route.params.walletAddress);
