@@ -458,15 +458,11 @@ export default {
           tokenPool: tokenStorage.token_pool,
           totalReward: tokenStorage.total_reward,
           totalSupply: tokenStorage.total_supply,
-
-          tokenType: {
-            fa2: true,
-          },
         };
 
         const { data: tokenMetaData } = await axios.get(
           `https://api.teztools.io/v1/${tokenObjkt.tokenAddress}${
-            tokenObjkt.tokenId && "_" + tokenObjkt.tokenId
+            tokenObjkt.tokenId ? "_" + tokenObjkt.tokenId : ""
           }/price`
         );
 

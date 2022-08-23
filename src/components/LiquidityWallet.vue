@@ -201,7 +201,7 @@ export default {
   },
   watch: {
     getLp() {
-      this.handlePagination();
+      this.paginationHandler();
     },
     "$route.params.walletAddress"() {
       this.refresh();
