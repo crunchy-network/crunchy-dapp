@@ -15,26 +15,26 @@ const getSwapOutput = (input, pair) => {
   return getAmmSwapOutput(inputAfterFee, pair);
 };
 
-const tezToToken = (dex, trade, walletAddress, tezos) => {
+const tezToToken = (dex, trade, sender, tezos, recipient) => {
   const tokenA = { ...trade.a };
   const tokenB = { ...trade.b };
   return dex.methods
-    .tezToTokenPayment(convertToMuTez(trade.minOut, tokenB), walletAddress)
+    .tezToTokenPayment(convertToMuTez(trade.minOut, tokenB), recipient)
     .toTransferParams(fromOpOpts(convertToMuTez(trade.input, tokenA)));
 };
 
-const tokenToTez = async (dex, trade, walletAddres, tezos) => {
+const tokenToTez = async (dex, trade, sender, tezos, recipient) => {
   const input = convertToMuTez(trade.input, trade.a);
   const output = convertToMuTez(trade.minOut, trade.b);
   const transfers = [
     dex.methods
-      .tokenToTezPayment(input, output, walletAddres)
+      .tokenToTezPayment(input, output, recipient)
       .toTransferParams(fromOpOpts(undefined)),
   ];
-
+  console.log("here", transfers);
   return await addTokenApprovalOperators(
     trade,
-    walletAddres,
+    sender,
     input,
     transfers,
     tezos
@@ -56,9 +56,18 @@ const getTransactionType = (trade) => {
   throw new Error("Unsupported transation type \n", JSON.stringify(trade));
 };
 
-const buildDexOperation = (dex, trade, walletAddres, tezos) => {
+const buildDexOperation = (
+  dex,
+  trade,
+  sender,
+  tezos,
+  recipient = undefined
+) => {
+  if (!recipient) {
+    recipient = sender;
+  }
   const operation = getTransactionType(trade);
-  return operation(dex.contract, trade, walletAddres, tezos);
+  return operation(dex.contract, trade, sender, tezos, recipient);
 };
 
 module.exports = {
