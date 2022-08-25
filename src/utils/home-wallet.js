@@ -380,7 +380,7 @@ export default {
     return { assets };
   },
 
-  async getQuipuLp(pkh) {
+  async getQuipuLp(balances) {
     const quipu = {
       totalValue: 0,
       totalValueUsd: 0,
@@ -390,10 +390,6 @@ export default {
     const lp = [];
     try {
       // Fetch all token balance linked to an address
-      const { data: balances } = await axios.get(
-        `https://staging.api.tzkt.io/v1/tokens/balances?account=${pkh}&balance.gt=0&limit=10000&select=token,balance`
-      );
-
       const [
         { data: fa1Factory },
         { data: fa1FactoryOld },
@@ -445,8 +441,6 @@ export default {
         const {
           data: { storage: tokenStorage },
         } = await tzkt.getContractStorage(address);
-
-        console.log(tokenStorage);
 
         const tokenObjkt = {
           address: address,
@@ -504,8 +498,113 @@ export default {
 
       quipu.positions = lp;
 
-      console.log(quipu);
       return quipu;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  async getVortexyLp(balances) {
+    const vortex = {
+      totalValue: 0,
+      totalValueUsd: 0,
+      positionsCount: 0,
+      positions: [],
+    };
+    const lp = [];
+    try {
+      // Fetch all token balance linked to an address
+
+      const [{ data: fa1Factory }, { data: fa2Factory }] = await Promise.all([
+        axios.get(
+          "https://api.tzkt.io/v1/accounts/KT1UnRsTyHVGADQWDgvENL3e9i6RMnTVfmia/contracts?limit=10000"
+        ),
+        axios.get(
+          "https://api.tzkt.io/v1/accounts/KT1JW8AeCbvshGkyrsyu1cWa5Vt7GSpNKrUz/contracts?limit=10000"
+        ),
+      ]);
+
+      const lpBal = balances.filter(
+        (val) =>
+          fa2Factory.find(
+            (contract) => contract.address === val.token?.contract?.address
+          ) ||
+          fa1Factory.find(
+            (contract) => contract.address === val.token?.contract?.address
+          )
+      );
+
+      vortex.positionsCount = lpBal.length;
+
+      for (let i = 0; i < lpBal.length; i++) {
+        const address = lpBal[i].token.contract.address;
+
+        const {
+          data: { storage: tokenStorage },
+        } = await tzkt.getContractStorage(address);
+
+        const tkContract = await tzkt.getContractStorage(address);
+
+        console.log(address, "ADDRESS");
+        console.log(tkContract, "Contract");
+
+        const tokenObjkt = {
+          address: address,
+          balance: lpBal[i].balance,
+          lpBalance: new BigNumber(lpBal[i].balance).div(1e6).toNumber(),
+          tokenAddress: tokenStorage.tokenAddress,
+          tokenId: tokenStorage.tokenId,
+          tezPool: tokenStorage.xtzPool,
+          tokenPool: tokenStorage.tokenPool,
+          totalSupply: tokenStorage.lqtTotal,
+        };
+
+        const { data: tokenMetaData } = await axios.get(
+          `https://api.teztools.io/v1/${tokenObjkt.tokenAddress}${
+            tokenObjkt.tokenId ? "_" + tokenObjkt.tokenId : ""
+          }/price`
+        );
+
+        tokenMetaData.pairs = tokenMetaData.pairs.find(
+          (val) => val.address === tokenObjkt.address
+        );
+
+        tokenMetaData.thumbnailUri = ipfs.transformUri(
+          tokenMetaData.thumbnailUri
+        );
+
+        const xtzUsd = await coingecko.getXtzUsdPrice();
+
+        const xtzSide = new BigNumber(tokenObjkt.balance)
+          .times(tokenObjkt.tezPool)
+          .div(tokenObjkt.totalSupply);
+
+        const tokenSide = new BigNumber(tokenObjkt.balance)
+          .times(tokenObjkt.tokenPool)
+          .div(tokenObjkt.totalSupply);
+
+        tokenObjkt.xtzSide = xtzSide.div(1e6).toNumber();
+
+        tokenObjkt.xtzSideUsd = tokenObjkt.xtzSide * xtzUsd;
+
+        tokenObjkt.tokenSide = tokenSide
+          .div(10 ** tokenMetaData.decimals)
+          .toNumber();
+
+        tokenObjkt.totalValue = tokenObjkt.xtzSide * 2;
+
+        tokenObjkt.totalValueUsd = tokenObjkt.totalValue * xtzUsd;
+
+        lp.push(merge(tokenMetaData, tokenObjkt));
+
+        vortex.totalValue += tokenObjkt.totalValue;
+        vortex.totalValueUsd += tokenObjkt.totalValueUsd;
+      }
+
+      vortex.positions = lp;
+
+      console.log(vortex, "VORTEX");
+      return vortex;
     } catch (error) {
       console.log(error);
     }

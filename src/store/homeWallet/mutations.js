@@ -55,6 +55,9 @@ export default {
   updateQuipuswapLp(state, value) {
     state.lp.quipuswap = { ...state.lp.quipuswap, ...value };
   },
+  updateVortexLp(state, value) {
+    state.lp.vortex = { ...state.lp.vortex, ...value };
+  },
   updateLpLoading(state, value) {
     state.lp.loading = value;
   },

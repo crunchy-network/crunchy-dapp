@@ -1,3 +1,4 @@
+import axios from "axios";
 import homeWallet from "../../utils/home-wallet";
 import homeWalletStake from "../../utils/home-wallet-stake";
 import teztools from "../../utils/teztools";
@@ -32,8 +33,6 @@ export default {
     if (state.nfts.length > 1) {
       collection = await homeWallet.getNftCollectionData(state.nfts, address);
     }
-
-    console.log("Col", collection);
 
     commit("updateNftCollection", collection);
   },
@@ -137,9 +136,17 @@ export default {
     commit("updateLpLoading", true);
     const account = pkh || rootState.wallet.pkh;
     try {
-      const [quipuswap] = await Promise.all([homeWallet.getQuipuLp(account)]);
+      const { data: balances } = await axios.get(
+        `https://staging.api.tzkt.io/v1/tokens/balances?account=${account}&balance.gt=0&limit=10000&select=token,balance`
+      );
+
+      const [quipuswap, vortex] = await Promise.all([
+        homeWallet.getQuipuLp(balances),
+        homeWallet.getVortexyLp(balances),
+      ]);
 
       commit("updateQuipuswapLp", quipuswap);
+      commit("updateVortexLp", vortex);
     } catch (error) {
       console.log("Error", error);
     } finally {
@@ -147,16 +154,24 @@ export default {
     }
   },
   async softLoadAllLiquidity({ rootState, commit }, pkh) {
-    commit("updateLpLoading", true);
     const account = pkh || rootState.wallet.pkh;
+
     try {
-      const [quipuswap] = await Promise.all([homeWallet.getQuipuLp(account)]);
+      const { data: balances } = await axios.get(
+        `https://staging.api.tzkt.io/v1/tokens/balances?account=${account}&balance.gt=0&limit=10000&select=token,balance`
+      );
+
+      const [quipuswap, vortex] = await Promise.all([
+        homeWallet.getQuipuLp(balances),
+        homeWallet.getVortexyLp(balances),
+      ]);
+
+      commit("updateQuipuswapLp", quipuswap);
+      commit("updateVortexLp", vortex);
 
       commit("updateQuipuswapLp", quipuswap);
     } catch (error) {
       console.log("Error", error);
-    } finally {
-      commit("updateLpLoading", false);
     }
   },
 

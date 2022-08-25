@@ -335,7 +335,7 @@
                 margin-top: 20px;
               "
             >
-              You currently do not have any liquidity pool tokens.
+              You currently do not have any {{ lp.dex }} liquidity pool tokens.
             </h2>
           </div>
         </collapse-transition>
