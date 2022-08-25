@@ -3,7 +3,7 @@
     id="nft-wallet-view"
     style="min-height: 50vh; display: flex; flex-direction: column"
   >
-    <el-card v-loading="homeWallet.loadingStake" shadow="always" >
+    <el-card v-loading="homeWallet.loadingStake" shadow="always">
       <div class="responsive-table">
         <div>
           <el-row

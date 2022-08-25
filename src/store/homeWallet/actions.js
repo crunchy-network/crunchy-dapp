@@ -1,6 +1,5 @@
 import homeWallet from "../../utils/home-wallet";
 import homeWalletStake from "../../utils/home-wallet-stake";
-import { getWalletContract } from "../../utils/tezos";
 import teztools from "../../utils/teztools";
 
 export default {
