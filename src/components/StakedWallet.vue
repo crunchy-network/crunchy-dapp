@@ -142,14 +142,14 @@ export default {
   },
   created() {
     setInterval(() => {
-      this.softUpdateStakeAssets();
+      this.softUpdateStakeAssets(this.$route.params.walletAddress);
     }, 1000 * 60 * 10);
   },
   mounted() {
     this.paginationHandler();
   },
   methods: {
-    ...mapActions(["softUpdateStakeAssets", "loadStakeAssets"]),
+    ...mapActions(["softUpdateStakeAssets"]),
     paginationHandler() {
       this.pages = Math.ceil(this.getStakes.length / this.displayCount);
       this.handleVisibleData();

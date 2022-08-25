@@ -70,21 +70,19 @@ export default {
     const { contracts: priceFeed } = await teztools.getPricefeed();
     commit("updatePriceFeed", priceFeed);
     await Promise.all([
-      dispatch("loadCrunchyStake"),
-      dispatch("loadQuipuLpStake"),
-      dispatch("loadDogamiStake"),
-      dispatch("loadGIFStake"),
+      dispatch("loadCrunchyStake", pkh),
+      dispatch("loadDogamiStake", pkh),
+      dispatch("loadGIFStake", pkh),
     ]).then(() => {
       commit("updateStakeLoading", false);
     });
   },
 
-  async softUpdateStakeAssets({ dispatch }) {
+  async softUpdateStakeAssets({ dispatch }, pkh) {
     await Promise.all([
-      dispatch("loadCrunchyStake"),
-      dispatch("loadQuipuLpStake"),
-      dispatch("loadDogamiStake"),
-      dispatch("loadGIFStake"),
+      dispatch("loadCrunchyStake", pkh),
+      dispatch("loadDogamiStake", pkh),
+      dispatch("loadGIFStake", pkh),
     ]);
   },
 
@@ -95,7 +93,7 @@ export default {
     commit("updateNetworthUsd", homeWallet.calcUsdNetworth(state.assets));
   },
 
-  async loadCrunchyStake({ rootState, state, dispatch, commit }) {
+  async loadCrunchyStake({ rootState, state, dispatch, commit }, pkh) {
     try {
       await dispatch("fetchAllFarms");
       if (Object.keys(rootState.farms.data).length > 0) {
@@ -103,7 +101,7 @@ export default {
 
         const crunchyStake = await homeWalletStake.getUsersCrunchyStake(
           farmsData,
-          rootState.wallet.pkh
+          pkh || rootState.wallet.pkh
         );
 
         const crunchy = { ...state.crunchyStake, ...crunchyStake };
@@ -114,23 +112,10 @@ export default {
     }
   },
 
-  async loadQuipuLpStake({ rootState, state, dispatch, commit }) {
-    // try {
-    //   const quipusStake = await homeWalletStake.getUsersQuipusStake(
-    //     rootState.wallet.pkh,
-    //     state.priceFeed
-    //   );
-    //   const quipus = {...state.quipusStake, ...quipusStake};
-    //   commit("updateQuipusStake", quipus);
-    // } catch (error) {
-    //   console.log(error);
-    // }
-  },
-
-  async loadDogamiStake({ rootState, state, dispatch, commit }) {
+  async loadDogamiStake({ rootState, state, dispatch, commit }, pkh) {
     try {
       const dogamiStake = await homeWalletStake.getDogamiStake(
-        rootState.wallet.pkh
+        pkh || rootState.wallet.pkh
       );
       const dogami = { ...state.dogamiStake, ...dogamiStake };
       commit("updateDogamiStake", dogami);
@@ -139,9 +124,11 @@ export default {
     }
   },
 
-  async loadGIFStake({ rootState, state, dispatch, commit }) {
+  async loadGIFStake({ rootState, state, dispatch, commit }, pkh) {
     try {
-      const gifStake = await homeWalletStake.getGIFStake(rootState.wallet.pkh);
+      const gifStake = await homeWalletStake.getGIFStake(
+        pkh || rootState.wallet.pkh
+      );
       const gif = { ...state.gifStake, ...gifStake };
       commit("updateGIFStake", gif);
     } catch (error) {
@@ -149,18 +136,6 @@ export default {
     }
   },
 
-  async harvestQuipuLpStake({ commit, rootState, dispatch }, contract) {
-    const lpContract = await getWalletContract(contract);
-
-    lpContract.methods
-      .withdrawProfit(rootState.wallet.pkh)
-      .send()
-      .then((tx) => {
-        tx.confirmation().then(() => {
-          dispatch("loadQuipuLpStake");
-        });
-      });
-  },
   async walletConnected({ dispatch, rootState }) {
     dispatch("loadWalletAsssets", rootState.wallet.pkh);
   },

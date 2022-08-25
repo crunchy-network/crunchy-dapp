@@ -412,13 +412,13 @@ export default {
   },
   created() {
     this.refresh();
-    this.loadStakeAssets();
   },
   methods: {
     ...mapActions(["loadWalletAsssets", "loadStakeAssets"]),
 
     refresh() {
       this.loadWalletAsssets(this.$route.params.walletAddress);
+      this.loadStakeAssets(this.$route.params.walletAddress);
     },
 
     isActiveTab(tab) {
