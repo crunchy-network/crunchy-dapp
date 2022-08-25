@@ -169,7 +169,7 @@
                   </el-row>
 
                   <el-row
-                    v-else-if="lp.isQuipuLp"
+                    v-else-if="lp.isQuipuLp || lp.isVortexLp"
                     type="flex"
                     style="flex-wrap: wrap"
                   >

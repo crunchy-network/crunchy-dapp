@@ -12,7 +12,7 @@ async function getUserQuipuLp(pkh) {
     "token_to_exchange"
   );
 
-  const quipuLpAddress = quipuLp.map((val) => val.value);
+  const quipuLpAddress = quipuLp.map((val) => val?.value);
 
   for (let index = 0; index < quipuLpAddress.length; index++) {
     const val = quipuLpAddress[index];
@@ -35,8 +35,8 @@ async function getUserQuipuLp(pkh) {
 
       const tokenObjkt = {
         address: val,
-        ledger: resp[0].value,
-        user_rewards: userReward[0].value,
+        ledger: resp[0]?.value,
+        user_rewards: userReward[0]?.value,
         tokenAddress: tokenStorage.token_address,
         tokenId: tokenStorage.token_id,
         tezPool: tokenStorage.tez_pool,
@@ -175,7 +175,7 @@ export default {
     );
 
     userFarms = userFarms.filter(
-      (val) => val.value.rewardDebt !== "0" || val.value.amount !== "0"
+      (val) => val?.value.rewardDebt !== "0" || val?.value.amount !== "0"
     );
 
     for (let index = 0; index < userFarms.length; index++) {
@@ -312,7 +312,7 @@ export default {
       );
 
       const userStake = stake[pkh];
-      const depositAmount = new BigNumber(userStake.value)
+      const depositAmount = new BigNumber(userStake?.value)
         .div(new BigNumber(10).pow(tokenMetaData.decimals))
         .toNumber();
       const rewardsEarned = new BigNumber(userStake.reward)

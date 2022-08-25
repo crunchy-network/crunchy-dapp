@@ -360,7 +360,7 @@ export default {
       // const value = balance.multipliedBy(usdMul);
 
       assets
-        .sort((a, b) => b.value - a.value)
+        .sort((a, b) => b?.value - a?.value)
         .unshift({
           asset: "XTZ",
           priceUsd: new BigNumber(usdMul).toNumber(),
@@ -524,29 +524,27 @@ export default {
         ),
       ]);
 
-      const lpBal = balances.filter(
-        (val) =>
+      const lpBal = balances.filter((val) => {
+        return (
           fa2Factory.find(
             (contract) => contract.address === val.token?.contract?.address
           ) ||
           fa1Factory.find(
             (contract) => contract.address === val.token?.contract?.address
           )
-      );
+        );
+      });
 
       vortex.positionsCount = lpBal.length;
 
       for (let i = 0; i < lpBal.length; i++) {
-        const address = lpBal[i].token.contract.address;
+        const { data: tkContract } = await tzkt.getContractStorage(
+          lpBal[i].token.contract.address
+        );
 
-        const {
-          data: { storage: tokenStorage },
-        } = await tzkt.getContractStorage(address);
+        const address = tkContract.admin;
 
-        const tkContract = await tzkt.getContractStorage(address);
-
-        console.log(address, "ADDRESS");
-        console.log(tkContract, "Contract");
+        const { data: tokenStorage } = await tzkt.getContractStorage(address);
 
         const tokenObjkt = {
           address: address,
@@ -564,6 +562,8 @@ export default {
             tokenObjkt.tokenId ? "_" + tokenObjkt.tokenId : ""
           }/price`
         );
+
+        console.log("META", tokenMetaData);
 
         tokenMetaData.pairs = tokenMetaData.pairs.find(
           (val) => val.address === tokenObjkt.address
@@ -634,8 +634,8 @@ export default {
     var sum = 0;
 
     for (let i = 0; i < arr.length; i++) {
-      if (arr[i].value && !Number.isNaN(arr[i].value)) {
-        sum = sum + arr[i].value;
+      if (arr[i]?.value && !Number.isNaN(arr[i]?.value)) {
+        sum = sum + arr[i]?.value;
       }
     }
     return sum;
@@ -645,8 +645,8 @@ export default {
     var sum = 0;
 
     for (let i = 0; i < arr.length; i++) {
-      if (arr[i].value && !Number.isNaN(arr[i].valueUsd)) {
-        sum = sum + arr[i].valueUsd;
+      if (arr[i]?.value && !Number.isNaN(arr[i]?.valueUsd)) {
+        sum = sum + arr[i]?.valueUsd;
       }
     }
     return sum;
