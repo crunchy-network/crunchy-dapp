@@ -420,14 +420,12 @@ export default {
   },
   created() {
     this.refresh();
-    this.loadStakeAssets();
   },
   methods: {
     ...mapActions(["loadWalletAsssets", "loadStakeAssets", "loadAllLiquidity"]),
 
     refresh() {
       this.loadWalletAsssets(this.$route.params.walletAddress);
-      this.loadAllLiquidity(this.$route.params.walletAddress);
     },
 
     isActiveTab(tab) {

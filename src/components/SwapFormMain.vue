@@ -440,23 +440,24 @@ export default {
       }
       return num;
     },
-
     async onSubmit() {
       const fee = await buildRoutingFeeOperation(
         this.getPkh,
         this.getCurrentTrade,
         this.getSwapForm.inputAmount,
-        Tezos
+        Tezos,
+        this.getSwapPairs
       );
       const op = await buildOperationParams(
         this.getCurrentTrade,
         Tezos,
         this.getPkh
       );
-      const toBatch = [...fee, ...op].map((o) => ({
+      const toBatch = [...op, ...fee].map((o) => ({
         ...o,
         kind: "transaction",
       }));
+      console.log(toBatch);
       try {
         const batchOp = await Tezos.wallet.batch(toBatch).send();
         this.$notify({
