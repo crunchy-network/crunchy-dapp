@@ -142,7 +142,7 @@ export default {
 
       const [quipuswap, vortex] = await Promise.all([
         homeWallet.getQuipuLp(balances),
-        homeWallet.getVortexyLp(balances),
+        homeWallet.getVortexyLp(balances, account),
       ]);
 
       commit("updateQuipuswapLp", quipuswap);
@@ -163,7 +163,7 @@ export default {
 
       const [quipuswap, vortex] = await Promise.all([
         homeWallet.getQuipuLp(balances),
-        homeWallet.getVortexyLp(balances),
+        homeWallet.getVortexyLp(balances, account),
       ]);
 
       commit("updateQuipuswapLp", quipuswap);

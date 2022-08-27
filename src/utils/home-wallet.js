@@ -504,7 +504,7 @@ export default {
     }
   },
 
-  async getVortexyLp(balances) {
+  async getVortexyLp(balances = [], pkh) {
     const vortex = {
       totalValue: 0,
       totalValueUsd: 0,
@@ -513,19 +513,39 @@ export default {
     };
     const lp = [];
     try {
+      const [{ data: youXtz }, { data: hdaoXtz }, { data: gifXtz }] =
+        await Promise.all([
+          axios.get(
+            `https://api.tzkt.io/v1/tokens/balances?token.contract=KT1W6FrLW9d8Y6NVQzx487KCXrTGK1RWtJNh&account=${pkh}&balance.ne=0`
+          ),
+          axios.get(
+            `https://api.tzkt.io/v1/tokens/balances?token.contract=KT1RMfFJphfVwdbaJx7DhFrZ9du5pREVSEyN&account=${pkh}&balance.ne=0`
+          ),
+          axios.get(
+            `https://api.tzkt.io/v1/contracts/KT1SjZYVjdBCBurUUA6W5Qymri2pWJGyu7Tt/bigmaps/tokens/keys?key=${pkh}`
+          ),
+        ]);
+
       // Fetch all token balance linked to an address
 
-      const [{ data: fa1Factory }, { data: fa2Factory }] = await Promise.all([
-        axios.get(
-          "https://api.tzkt.io/v1/accounts/KT1UnRsTyHVGADQWDgvENL3e9i6RMnTVfmia/contracts?limit=10000"
-        ),
-        axios.get(
-          "https://api.tzkt.io/v1/accounts/KT1JW8AeCbvshGkyrsyu1cWa5Vt7GSpNKrUz/contracts?limit=10000"
-        ),
-      ]);
+      const [{ data: manager1 }, { data: fa1Factory }, { data: fa2Factory }] =
+        await Promise.all([
+          axios.get(
+            "https://api.tzkt.io/v1/accounts/KT1PwnTa2f1Uac958RFTk6i6EecPNgJrtHKv/contracts?limit=10000"
+          ),
+          axios.get(
+            "https://api.tzkt.io/v1/accounts/KT1UnRsTyHVGADQWDgvENL3e9i6RMnTVfmia/contracts?limit=10000"
+          ),
+          axios.get(
+            "https://api.tzkt.io/v1/accounts/KT1JW8AeCbvshGkyrsyu1cWa5Vt7GSpNKrUz/contracts?limit=10000"
+          ),
+        ]);
 
       const lpBal = balances.filter((val) => {
         return (
+          manager1.find(
+            (contract) => contract.address === val.token?.contract?.address
+          ) ||
           fa2Factory.find(
             (contract) => contract.address === val.token?.contract?.address
           ) ||
@@ -534,6 +554,26 @@ export default {
           )
         );
       });
+
+      if (youXtz.length === 1) {
+        lpBal.push(...youXtz);
+      }
+
+      if (hdaoXtz.length === 1) {
+        lpBal.push(...hdaoXtz);
+      }
+
+      if (gifXtz.length === 1) {
+        const [{ value: gifXtzBal }] = gifXtz;
+        lpBal.push({
+          balance: gifXtzBal,
+          token: {
+            contract: {
+              address: "KT1SjZYVjdBCBurUUA6W5Qymri2pWJGyu7Tt",
+            },
+          },
+        });
+      }
 
       vortex.positionsCount = lpBal.length;
 
