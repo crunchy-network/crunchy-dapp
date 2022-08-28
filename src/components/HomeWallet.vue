@@ -1,127 +1,6 @@
 <template>
   <div>
-    <el-row
-      type="flex"
-      style="flex-wrap: wrap; row-gap: 10px"
-      justify="space-between"
-      :gutter="10"
-    >
-      <el-col :xs="24" :md="12" :lg="5">
-        <el-card v-loading="homeWallet.loading" shadow="always" class="top">
-          <h2 style="font-weight: 600; font-size: 16px; color: #757679ff">
-            Portfolio Value
-          </h2>
-
-          <h2 style="font-weight: 600; font-size: 28px; margin-bottom: 0">
-            {{
-              !showUsd
-                ? vueNumberFormat(homeWallet.netWorth, {
-                    prefix: "",
-                    suffix: " ꜩ",
-                    decimal: ".",
-                    thousand: ",",
-                    precision: 2,
-                  })
-                : vueNumberFormat(homeWallet.netWorthUsd, {
-                    prefix: "$",
-                    decimal: ".",
-                    thousand: ",",
-                    precision: 2,
-                  })
-            }}
-          </h2>
-        </el-card>
-      </el-col>
-      <el-col :xs="24" :md="12" :lg="5">
-        <el-card v-loading="homeWallet.loading" shadow="always" class="top">
-          <h2 style="font-weight: 600; font-size: 16px; color: #757679ff">
-            Staked Value
-          </h2>
-
-          <h2 style="font-weight: 600; font-size: 28px; margin-bottom: 0">
-            {{
-              !showUsd
-                ? vueNumberFormat(getStakedValues.xtz, {
-                    prefix: "",
-                    suffix: " ꜩ",
-                    decimal: ".",
-                    thousand: ",",
-                    precision: 2,
-                  })
-                : vueNumberFormat(getStakedValues.usd, {
-                    prefix: "$",
-                    decimal: ".",
-                    thousand: ",",
-                    precision: 2,
-                  })
-            }}
-          </h2>
-        </el-card>
-      </el-col>
-
-      <el-col
-        style="display: flex; justify-content: center; align-items: center"
-        :xs="24"
-        :md="24"
-        :lg="1"
-        class="divider"
-      >
-        <el-divider direction="vertical"></el-divider>
-        <el-divider direction="horizontal"></el-divider>
-      </el-col>
-      <el-col :xs="24" :md="12" :lg="5">
-        <el-card v-loading="homeWallet.loading" shadow="always" class="top">
-          <h2 style="font-weight: 600; font-size: 16px; color: #757679ff">
-            CRUNCH Balance
-          </h2>
-          <el-row type="flex" justify="space-between">
-            <h2 style="font-weight: 600; font-size: 28px; margin-bottom: 0">
-              {{
-                vueNumberFormat(homeWallet.crunchBal, {
-                  prefix: "",
-                  decimal: ".",
-                  thousand: ",",
-                  precision: 2,
-                })
-              }}
-            </h2>
-            <el-avatar
-              src="https://ipfs.fleek.co/ipfs/bafybeienhhbxz53n3gtg7stjou2zs3lmhupahwovv2kxwh5uass3bc5xzq"
-              fit="cover"
-              shape="circle"
-              :size="40"
-            ></el-avatar>
-          </el-row>
-        </el-card>
-      </el-col>
-      <el-col :xs="24" :md="12" :lg="5">
-        <el-card v-loading="homeWallet.loading" shadow="always" class="top">
-          <h2 style="font-weight: 600; font-size: 16px; color: #757679ff">
-            crDAO Balance
-          </h2>
-
-          <el-row type="flex" justify="space-between">
-            <h2 style="font-weight: 600; font-size: 28px; margin-bottom: 0">
-              {{
-                vueNumberFormat(homeWallet.crDaoBal, {
-                  prefix: "",
-                  decimal: ".",
-                  thousand: ",",
-                  precision: 2,
-                })
-              }}
-            </h2>
-            <el-avatar
-              src="https://ipfs.fleek.co/ipfs/bafybeigulbzm5x72qtmckxqvd3ksk6q3vlklxjgpnvvnbcofgdp6qwu43u"
-              fit="cover"
-              shape="circle"
-              :size="40"
-            ></el-avatar>
-          </el-row>
-        </el-card>
-      </el-col>
-    </el-row>
-
+    <HomeWalletStats :loading="homeWallet.loading" :show-usd="showUsd" />
     <el-row
       style="
         margin: 46px 0 22px 0;
@@ -358,10 +237,16 @@ import { mapState, mapActions, mapGetters } from "vuex";
 import PortfolioWalletRow from "./PortfolioWalletRow.vue";
 import StakedWallet from "./StakedWallet.vue";
 import NftWalletView from "./NftWalletView.vue";
+import HomeWalletStats from "./HomeWalletStats.vue";
 
 export default {
   name: "HomeWallet",
-  components: { PortfolioWalletRow, StakedWallet, NftWalletView },
+  components: {
+    PortfolioWalletRow,
+    StakedWallet,
+    NftWalletView,
+    HomeWalletStats,
+  },
   data() {
     return {
       activeTab: "wallet",

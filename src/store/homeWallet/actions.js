@@ -50,7 +50,7 @@ export default {
   async loadWalletAsssets({ dispatch, commit }, pkh) {
     commit("updateHomeWalletLoading", true);
     dispatch("fetchHomeWalletBalances", pkh).then(() => {
-      dispatch("loadBalAndNetworth");
+      dispatch("loadBalAndPortfolio");
       dispatch("fetchNFTs", pkh).then(() => {
         commit("updateHomeWalletLoading", false);
       });
@@ -59,7 +59,7 @@ export default {
 
   async softUpdateWalletAssets({ dispatch }) {
     dispatch("fetchHomeWalletBalances").then(() => {
-      dispatch("loadBalAndNetworth");
+      dispatch("loadBalAndPortfolio");
       dispatch("loadCrunchyStake");
     });
   },
@@ -85,11 +85,11 @@ export default {
     ]);
   },
 
-  async loadBalAndNetworth({ state, commit }) {
+  async loadBalAndPortfolio({ state, commit }) {
     commit("updateCrunchBal", homeWallet.handleChrunchBal(state.assets));
     commit("updateCrDAOBal", homeWallet.handleCrDAOBal(state.assets));
-    commit("updateNetworth", homeWallet.calcNetworth(state.assets));
-    commit("updateNetworthUsd", homeWallet.calcUsdNetworth(state.assets));
+    commit("updatePortfolio", homeWallet.calcNetworth(state.assets));
+    commit("updatePortfolioUsd", homeWallet.calcUsdNetworth(state.assets));
   },
 
   async loadCrunchyStake({ rootState, state, dispatch, commit }, pkh) {

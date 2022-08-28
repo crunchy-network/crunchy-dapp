@@ -22,19 +22,6 @@ export default {
       totalValueUsd: 0,
       data: [],
     },
-    quipusStake: {
-      protocol: "Quipuswap",
-      url: "https://quipuswap.com/",
-      icon: "https://res.cloudinary.com/melvin-manni/image/upload/v1654109475/aa6hmwgxec401jikysta.svg",
-      lp: true,
-      staked: 0,
-      claimable: 0,
-      totalValue: 0,
-      stakedUsd: 0,
-      claimableUsd: 0,
-      totalValueUsd: 0,
-      data: [],
-    },
     dogamiStake: {
       protocol: "Dogami",
       url: "https://marketplace.dogami.com/stake",
@@ -60,8 +47,8 @@ export default {
       data: [],
     },
     priceFeed: [],
-    netWorth: 0,
-    netWorthUsd: 0,
+    portfolio: 0,
+    portfolioUsd: 0,
     crunchBal: 0,
     crDaoBal: 0,
   },
@@ -83,19 +70,52 @@ export default {
     getNFTsLoading(state) {
       return state.loadingNfts;
     },
-    getStakedValues(state) {
-      return {
-        xtz:
-          state.crunchyStake.staked +
-          state.quipusStake.staked +
-          state.dogamiStake.staked +
-          state.gifStake.staked,
-        usd:
-          state.crunchyStake.stakedUsd +
-          state.quipusStake.stakedUsd +
-          state.dogamiStake.stakedUsd +
-          state.gifStake.stakedUsd,
+    getLoadingStake(state) {
+      return true;
+    },
+    getStatsValues(state) {
+      let lp = 0;
+      let lpUsd = 0;
+
+      let net = 0;
+      let netUsd = 0;
+
+      for (const key of Object.keys(state.lp || {})) {
+        lp += state.lp[key].totalValue ? state.lp[key].totalValue : 0;
+        lpUsd += state.lp[key].totalValueUsd ? state.lp[key].totalValueUsd : 0;
+      }
+
+      const stats = {
+        staked: {
+          xtz:
+            state.crunchyStake.staked +
+            state.dogamiStake.staked +
+            state.gifStake.staked,
+          usd:
+            state.crunchyStake.stakedUsd +
+            state.dogamiStake.stakedUsd +
+            state.gifStake.stakedUsd,
+        },
+        portfolio: {
+          xtz: state.portfolio,
+          usd: state.portfolioUsd,
+        },
+        lp: {
+          xtz: lp,
+          usd: lpUsd,
+        },
       };
+
+      for (const key of Object.keys(stats)) {
+        net += stats[key].xtz;
+        netUsd += stats[key].usd;
+      }
+
+      stats.netWorth = {
+        xtz: net,
+        usd: netUsd,
+      };
+      return stats;
     },
     getStakes(state) {
       const orderedStake = [state.gifStake, state.dogamiStake].sort(
