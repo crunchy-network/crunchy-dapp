@@ -377,7 +377,7 @@ export default {
         (t) => t.assetSlug === token.assetSlug
       );
       if (found) {
-        return this.roundDown(found.balance, 6);
+        return this.roundDown(found.availableBalance || found.balance, 6);
       }
       return 0;
     },
