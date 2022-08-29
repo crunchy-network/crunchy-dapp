@@ -1,5 +1,5 @@
 <template>
-  <el-row :gutter="40" type="flex" align="middle" style="flex-wrap: wrap">
+  <el-row :gutter="40" type="flex" align="stretch" style="flex-wrap: wrap">
     <el-col :md="14">
       <el-card
         v-loading="loading"
