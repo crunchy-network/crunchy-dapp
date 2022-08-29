@@ -85,12 +85,12 @@ export default {
         "https://raw.githubusercontent.com/Plenty-DeFi/Plenty-Logo/main/PlentyTokenIcon.png";
     }
 
-    // LB
+    // LB (aka Sirius)
     if (meta.tokenAddress === "KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo") {
-      meta.symbol = "tzBTC";
-      meta.name = "tzBTC";
+      meta.symbol = "SIRS";
+      meta.name = "Sirius";
       meta.thumbnailUri =
-        "https://tzbtc.io/wp-content/uploads/2020/03/tzbtc_logo_single.svg";
+        "ipfs://bafkreia7eltusu666hfjuxyt2tvjiyu2skj53txz7e2ovmzh7yv4amfgua";
     }
 
     // USDtz
