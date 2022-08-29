@@ -3,7 +3,7 @@
     id="nft-wallet-view"
     style="min-height: 50vh; display: flex; flex-direction: column"
   >
-    <el-card v-loading="homeWallet.loadingStake" shadow="always" >
+    <el-card v-loading="homeWallet.loadingStake" shadow="always">
       <div class="responsive-table">
         <div>
           <el-row
@@ -142,14 +142,14 @@ export default {
   },
   created() {
     setInterval(() => {
-      this.softUpdateStakeAssets();
+      this.softUpdateStakeAssets(this.$route.params.walletAddress);
     }, 1000 * 60 * 10);
   },
   mounted() {
     this.paginationHandler();
   },
   methods: {
-    ...mapActions(["softUpdateStakeAssets", "loadStakeAssets"]),
+    ...mapActions(["softUpdateStakeAssets"]),
     paginationHandler() {
       this.pages = Math.ceil(this.getStakes.length / this.displayCount);
       this.handleVisibleData();
