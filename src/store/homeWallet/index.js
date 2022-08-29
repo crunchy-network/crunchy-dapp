@@ -22,19 +22,6 @@ export default {
       totalValueUsd: 0,
       data: [],
     },
-    quipusStake: {
-      protocol: "Quipuswap",
-      url: "https://quipuswap.com/",
-      icon: "https://res.cloudinary.com/melvin-manni/image/upload/v1654109475/aa6hmwgxec401jikysta.svg",
-      lp: true,
-      staked: 0,
-      claimable: 0,
-      totalValue: 0,
-      stakedUsd: 0,
-      claimableUsd: 0,
-      totalValueUsd: 0,
-      data: [],
-    },
     dogamiStake: {
       protocol: "Dogami",
       url: "https://marketplace.dogami.com/stake",
@@ -59,9 +46,34 @@ export default {
       totalValueUsd: 0,
       data: [],
     },
+    lp: {
+      loading: false,
+      quipuswap: {
+        dex: "Quipuswap",
+        isQuipuLp: true,
+        url: "https://quipuswap.com/liquidity/add/tez-KT193D4vozYnhGJQVtw7CoxxqphqUEEwK6Vb_0",
+        thumbnailUri:
+          "https://res.cloudinary.com/melvin-manni/image/upload/v1645292809/c1rutxlzllilmtuibcdo.png",
+        totalValue: 0,
+        totalValueUsd: 0,
+        positionsCount: 0,
+        positions: [],
+      },
+      vortex: {
+        dex: "Vortex",
+        isVortexLp: true,
+        url: "https://app.vortex.network/vortex/liquidity",
+        thumbnailUri:
+          "https://www.gitbook.com/cdn-cgi/image/width=40,height=40,fit=contain,dpr=1,format=auto/https%3A%2F%2F3533877337-files.gitbook.io%2F~%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FyX7WTYr0YMeQcemP26Of%252Ficon%252F76rbNGaJiDxSJwFIjsLQ%252FGroup%25201494.png%3Falt%3Dmedia%26token%3D829a380f-2d70-4ceb-ac23-8c2aaddf8fe5",
+        totalValue: 0,
+        totalValueUsd: 0,
+        positionsCount: 0,
+        positions: [],
+      },
+    },
     priceFeed: [],
-    netWorth: 0,
-    netWorthUsd: 0,
+    portfolio: 0,
+    portfolioUsd: 0,
     crunchBal: 0,
     crDaoBal: 0,
   },
@@ -83,25 +95,65 @@ export default {
     getNFTsLoading(state) {
       return state.loadingNfts;
     },
-    getStakedValues(state) {
-      return {
-        xtz:
-          state.crunchyStake.staked +
-          state.quipusStake.staked +
-          state.dogamiStake.staked +
-          state.gifStake.staked,
-        usd:
-          state.crunchyStake.stakedUsd +
-          state.quipusStake.stakedUsd +
-          state.dogamiStake.stakedUsd +
-          state.gifStake.stakedUsd,
+    getLoadingStake(state) {
+      return true;
+    },
+    getStatsValues(state) {
+      let lp = 0;
+      let lpUsd = 0;
+
+      let net = 0;
+      let netUsd = 0;
+
+      for (const key of Object.keys(state.lp || {})) {
+        lp += state.lp[key].totalValue ? state.lp[key].totalValue : 0;
+        lpUsd += state.lp[key].totalValueUsd ? state.lp[key].totalValueUsd : 0;
+      }
+
+      const stats = {
+        staked: {
+          xtz:
+            state.crunchyStake.staked +
+            state.dogamiStake.staked +
+            state.gifStake.staked,
+          usd:
+            state.crunchyStake.stakedUsd +
+            state.dogamiStake.stakedUsd +
+            state.gifStake.stakedUsd,
+        },
+        portfolio: {
+          xtz: state.portfolio,
+          usd: state.portfolioUsd,
+        },
+        lp: {
+          xtz: lp,
+          usd: lpUsd,
+        },
       };
+
+      for (const key of Object.keys(stats)) {
+        net += stats[key].xtz;
+        netUsd += stats[key].usd;
+      }
+
+      stats.netWorth = {
+        xtz: net,
+        usd: netUsd,
+      };
+      return stats;
     },
     getStakes(state) {
       const orderedStake = [state.gifStake, state.dogamiStake].sort(
         (a, b) => b.staked - a.staked
       );
       return [state.crunchyStake, ...orderedStake];
+    },
+    getLp(state) {
+      return [state.lp.quipuswap, state.lp.vortex];
+    },
+
+    getLpLoading(state) {
+      return state.lp.loading;
     },
   },
 };

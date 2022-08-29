@@ -1,5 +1,5 @@
 <template>
-  <div style="margin-bottom: 120px">
+  <div style="margin-bottom: 100px">
     <el-header
       id="nav-menu"
       style="

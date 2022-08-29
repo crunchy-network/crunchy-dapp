@@ -1,127 +1,6 @@
 <template>
   <div>
-    <el-row
-      type="flex"
-      style="flex-wrap: wrap; row-gap: 10px"
-      justify="space-between"
-      :gutter="10"
-    >
-      <el-col :xs="24" :md="12" :lg="5">
-        <el-card v-loading="homeWallet.loading" shadow="always" class="top">
-          <h2 style="font-weight: 600; font-size: 16px; color: #757679ff">
-            Portfolio Value
-          </h2>
-
-          <h2 style="font-weight: 600; font-size: 28px; margin-bottom: 0">
-            {{
-              !showUsd
-                ? vueNumberFormat(homeWallet.netWorth, {
-                    prefix: "",
-                    suffix: " ꜩ",
-                    decimal: ".",
-                    thousand: ",",
-                    precision: 2,
-                  })
-                : vueNumberFormat(homeWallet.netWorthUsd, {
-                    prefix: "$",
-                    decimal: ".",
-                    thousand: ",",
-                    precision: 2,
-                  })
-            }}
-          </h2>
-        </el-card>
-      </el-col>
-      <el-col :xs="24" :md="12" :lg="5">
-        <el-card v-loading="homeWallet.loading" shadow="always" class="top">
-          <h2 style="font-weight: 600; font-size: 16px; color: #757679ff">
-            Staked Value
-          </h2>
-
-          <h2 style="font-weight: 600; font-size: 28px; margin-bottom: 0">
-            {{
-              !showUsd
-                ? vueNumberFormat(getStakedValues.xtz, {
-                    prefix: "",
-                    suffix: " ꜩ",
-                    decimal: ".",
-                    thousand: ",",
-                    precision: 2,
-                  })
-                : vueNumberFormat(getStakedValues.usd, {
-                    prefix: "$",
-                    decimal: ".",
-                    thousand: ",",
-                    precision: 2,
-                  })
-            }}
-          </h2>
-        </el-card>
-      </el-col>
-
-      <el-col
-        style="display: flex; justify-content: center; align-items: center"
-        :xs="24"
-        :md="24"
-        :lg="1"
-        class="divider"
-      >
-        <el-divider direction="vertical"></el-divider>
-        <el-divider direction="horizontal"></el-divider>
-      </el-col>
-      <el-col :xs="24" :md="12" :lg="5">
-        <el-card v-loading="homeWallet.loading" shadow="always" class="top">
-          <h2 style="font-weight: 600; font-size: 16px; color: #757679ff">
-            CRUNCH Balance
-          </h2>
-          <el-row type="flex" justify="space-between">
-            <h2 style="font-weight: 600; font-size: 28px; margin-bottom: 0">
-              {{
-                vueNumberFormat(homeWallet.crunchBal, {
-                  prefix: "",
-                  decimal: ".",
-                  thousand: ",",
-                  precision: 2,
-                })
-              }}
-            </h2>
-            <el-avatar
-              src="https://ipfs.fleek.co/ipfs/bafybeienhhbxz53n3gtg7stjou2zs3lmhupahwovv2kxwh5uass3bc5xzq"
-              fit="cover"
-              shape="circle"
-              :size="40"
-            ></el-avatar>
-          </el-row>
-        </el-card>
-      </el-col>
-      <el-col :xs="24" :md="12" :lg="5">
-        <el-card v-loading="homeWallet.loading" shadow="always" class="top">
-          <h2 style="font-weight: 600; font-size: 16px; color: #757679ff">
-            crDAO Balance
-          </h2>
-
-          <el-row type="flex" justify="space-between">
-            <h2 style="font-weight: 600; font-size: 28px; margin-bottom: 0">
-              {{
-                vueNumberFormat(homeWallet.crDaoBal, {
-                  prefix: "",
-                  decimal: ".",
-                  thousand: ",",
-                  precision: 2,
-                })
-              }}
-            </h2>
-            <el-avatar
-              src="https://ipfs.fleek.co/ipfs/bafybeigulbzm5x72qtmckxqvd3ksk6q3vlklxjgpnvvnbcofgdp6qwu43u"
-              fit="cover"
-              shape="circle"
-              :size="40"
-            ></el-avatar>
-          </el-row>
-        </el-card>
-      </el-col>
-    </el-row>
-
+    <HomeWalletStats :loading="homeWallet.loading" :show-usd="showUsd" />
     <el-row
       style="
         margin: 46px 0 22px 0;
@@ -162,8 +41,17 @@
           :style="isActiveTab('staking')"
           @click="setActiveTab('staking')"
         >
-          Staking
+          Staked
         </button>
+
+        <button
+          class="tab-text"
+          :style="isActiveTab('liquidity')"
+          @click="setActiveTab('liquidity')"
+        >
+          Liquidity
+        </button>
+
         <button
           class="tab-text"
           :style="isActiveTab('nfts')"
@@ -171,14 +59,7 @@
         >
           NFTs
         </button>
-        <button
-          class="tab-text"
-          disabled
-          :style="isActiveTab('liquidity')"
-          @click="setActiveTab('liquidity')"
-        >
-          Liquidity
-        </button>
+
         <a
           class="tab-text"
           style="color: #555cff; text-decoration: none"
@@ -350,6 +231,9 @@
     <div v-if="activeTab === 'nfts'">
       <NftWalletView />
     </div>
+    <div v-if="activeTab === 'liquidity'">
+      <LiquidityWallet :show-usd="showUsd" />
+    </div>
   </div>
 </template>
 
@@ -358,10 +242,18 @@ import { mapState, mapActions, mapGetters } from "vuex";
 import PortfolioWalletRow from "./PortfolioWalletRow.vue";
 import StakedWallet from "./StakedWallet.vue";
 import NftWalletView from "./NftWalletView.vue";
+import LiquidityWallet from "./LiquidityWallet.vue";
+import HomeWalletStats from "./HomeWalletStats.vue";
 
 export default {
   name: "HomeWallet",
-  components: { PortfolioWalletRow, StakedWallet, NftWalletView },
+  components: {
+    PortfolioWalletRow,
+    StakedWallet,
+    NftWalletView,
+    HomeWalletStats,
+    LiquidityWallet,
+  },
   data() {
     return {
       activeTab: "wallet",
@@ -414,17 +306,18 @@ export default {
     this.refresh();
   },
   methods: {
-    ...mapActions(["loadWalletAsssets", "loadStakeAssets"]),
+    ...mapActions(["loadWalletAsssets", "loadStakeAssets", "loadAllLiquidity"]),
 
     refresh() {
       this.loadWalletAsssets(this.$route.params.walletAddress);
+      this.loadAllLiquidity(this.$route.params.walletAddress);
       this.loadStakeAssets(this.$route.params.walletAddress);
     },
 
     isActiveTab(tab) {
       return (
         this.activeTab === tab &&
-        " border-bottom: 3px solid #FF4D4B; color: #FF4D4B"
+        " border-bottom: 3px solid #FF4D4B; color: #FF4D4B; font-weight: 700"
       );
     },
 
@@ -513,12 +406,12 @@ export default {
   min-width: 100px;
   text-align: center;
   padding: 2px 20px;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 16px;
   line-height: 24px;
   text-align: center;
   text-transform: capitalize;
-  color: #191b1f;
+  color: #757679;
   cursor: pointer;
   transition: 0.3s ease all;
   margin: 0;

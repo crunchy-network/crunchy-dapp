@@ -4,6 +4,8 @@ import coingecko from "./coingecko";
 import ipfs from "./ipfs";
 import teztools from "./teztools";
 import knownContracts from "../knownContracts.json";
+import tzkt from "./tzkt";
+import { merge } from "lodash";
 // const makeReqest = async ({ contract, id }) => {
 //   return axios.get(`${process.env.VUE_APP_TEZTOOLS_API_URL}/token/${contract}${id ? "_" + id : ""}/price`);
 // };
@@ -361,7 +363,7 @@ export default {
       // const value = balance.multipliedBy(usdMul);
 
       assets
-        .sort((a, b) => b.value - a.value)
+        .sort((a, b) => b?.value - a?.value)
         .unshift({
           asset: "XTZ",
           priceUsd: new BigNumber(usdMul).toNumber(),
@@ -381,6 +383,276 @@ export default {
       console.log("/utils/home-wallet", e);
     }
     return { assets };
+  },
+
+  async getQuipuLp(balances) {
+    const quipu = {
+      totalValue: 0,
+      totalValueUsd: 0,
+      positionsCount: 0,
+      positions: [],
+    };
+    const lp = [];
+    try {
+      // Fetch all token balance linked to an address
+      const [
+        { data: fa1Factory },
+        { data: fa1FactoryOld },
+        { data: fa2Factory },
+        { data: fa2FactoryOld },
+        { data: fa2FactoryOld3 },
+      ] = await Promise.all([
+        axios.get(
+          "https://api.tzkt.io/v1/accounts/KT1FWHLMk5tHbwuSsp31S4Jum4dTVmkXpfJw/contracts?limit=10000"
+        ),
+        axios.get(
+          "https://api.tzkt.io/v1/accounts/KT1Lw8hCoaBrHeTeMXbqHPG4sS4K1xn7yKcD/contracts?limit=10000"
+        ),
+        axios.get(
+          "https://api.tzkt.io/v1/accounts/KT1PvEyN1xCFCgorN92QCfYjw3axS6jawCiJ/contracts?limit=10000"
+        ),
+        axios.get(
+          "https://api.tzkt.io/v1/accounts/KT1GDtv3sqhWeSsXLWgcGsmoH5nRRGJd8xVc/contracts?limit=10000"
+        ),
+        axios.get(
+          "https://api.tzkt.io/v1/accounts/KT1SwH9P1Tx8a58Mm6qBExQFTcy2rwZyZiXS/contracts?limit=10000"
+        ),
+      ]);
+
+      const lpBal = balances.filter(
+        (val) =>
+          fa2Factory.find(
+            (contract) => contract.address === val.token?.contract?.address
+          ) ||
+          fa2FactoryOld.find(
+            (contract) => contract.address === val.token?.contract?.address
+          ) ||
+          fa2FactoryOld3.find(
+            (contract) => contract.address === val.token?.contract?.address
+          ) ||
+          fa1Factory.find(
+            (contract) => contract.address === val.token?.contract?.address
+          ) ||
+          fa1FactoryOld.find(
+            (contract) => contract.address === val.token?.contract?.address
+          )
+      );
+
+      quipu.positionsCount = lpBal.length;
+
+      for (let i = 0; i < lpBal.length; i++) {
+        const address = lpBal[i].token.contract.address;
+
+        const {
+          data: { storage: tokenStorage },
+        } = await tzkt.getContractStorage(address);
+
+        const tokenObjkt = {
+          address: address,
+          balance: lpBal[i].balance,
+          lpBalance: new BigNumber(lpBal[i].balance).div(1e6).toNumber(),
+          tokenAddress: tokenStorage.token_address,
+          tokenId: tokenStorage.token_id,
+          tezPool: tokenStorage.tez_pool,
+          tokenPool: tokenStorage.token_pool,
+          totalReward: tokenStorage.total_reward,
+          totalSupply: tokenStorage.total_supply,
+        };
+
+        const { data: tokenMetaData } = await axios.get(
+          `https://api.teztools.io/v1/${tokenObjkt.tokenAddress}${
+            tokenObjkt.tokenId ? "_" + tokenObjkt.tokenId : ""
+          }/price`
+        );
+
+        tokenMetaData.pairs = tokenMetaData.pairs.find(
+          (val) => val.address === tokenObjkt.address
+        );
+
+        tokenMetaData.thumbnailUri = ipfs.transformUri(
+          tokenMetaData.thumbnailUri
+        );
+
+        const xtzUsd = await coingecko.getXtzUsdPrice();
+
+        const xtzSide = new BigNumber(tokenObjkt.balance)
+          .times(tokenObjkt.tezPool)
+          .div(tokenObjkt.totalSupply);
+
+        const tokenSide = new BigNumber(tokenObjkt.balance)
+          .times(tokenObjkt.tokenPool)
+          .div(tokenObjkt.totalSupply);
+
+        tokenObjkt.xtzSide = xtzSide.div(1e6).toNumber();
+
+        tokenObjkt.xtzSideUsd = tokenObjkt.xtzSide * xtzUsd;
+
+        tokenObjkt.tokenSide = tokenSide
+          .div(10 ** tokenMetaData.decimals)
+          .toNumber();
+
+        tokenObjkt.totalValue = tokenObjkt.xtzSide * 2;
+
+        tokenObjkt.totalValueUsd = tokenObjkt.totalValue * xtzUsd;
+
+        lp.push(merge(tokenMetaData, tokenObjkt));
+
+        quipu.totalValue += tokenObjkt.totalValue;
+        quipu.totalValueUsd += tokenObjkt.totalValueUsd;
+      }
+
+      quipu.positions = lp;
+
+      return quipu;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  async getVortexyLp(balances = [], pkh) {
+    const vortex = {
+      totalValue: 0,
+      totalValueUsd: 0,
+      positionsCount: 0,
+      positions: [],
+    };
+    const lp = [];
+    try {
+      const [{ data: youXtz }, { data: hdaoXtz }, { data: gifXtz }] =
+        await Promise.all([
+          axios.get(
+            `https://api.tzkt.io/v1/tokens/balances?token.contract=KT1W6FrLW9d8Y6NVQzx487KCXrTGK1RWtJNh&account=${pkh}&balance.ne=0`
+          ),
+          axios.get(
+            `https://api.tzkt.io/v1/tokens/balances?token.contract=KT1RMfFJphfVwdbaJx7DhFrZ9du5pREVSEyN&account=${pkh}&balance.ne=0`
+          ),
+          axios.get(
+            `https://api.tzkt.io/v1/contracts/KT1SjZYVjdBCBurUUA6W5Qymri2pWJGyu7Tt/bigmaps/tokens/keys?key=${pkh}`
+          ),
+        ]);
+
+      // Fetch all token balance linked to an address
+
+      const [{ data: manager1 }, { data: fa1Factory }, { data: fa2Factory }] =
+        await Promise.all([
+          axios.get(
+            "https://api.tzkt.io/v1/accounts/KT1PwnTa2f1Uac958RFTk6i6EecPNgJrtHKv/contracts?limit=10000"
+          ),
+          axios.get(
+            "https://api.tzkt.io/v1/accounts/KT1UnRsTyHVGADQWDgvENL3e9i6RMnTVfmia/contracts?limit=10000"
+          ),
+          axios.get(
+            "https://api.tzkt.io/v1/accounts/KT1JW8AeCbvshGkyrsyu1cWa5Vt7GSpNKrUz/contracts?limit=10000"
+          ),
+        ]);
+
+      const lpBal = balances.filter((val) => {
+        return (
+          manager1.find(
+            (contract) => contract.address === val.token?.contract?.address
+          ) ||
+          fa2Factory.find(
+            (contract) => contract.address === val.token?.contract?.address
+          ) ||
+          fa1Factory.find(
+            (contract) => contract.address === val.token?.contract?.address
+          )
+        );
+      });
+
+      if (youXtz.length === 1) {
+        lpBal.push(...youXtz);
+      }
+
+      if (hdaoXtz.length === 1) {
+        lpBal.push(...hdaoXtz);
+      }
+
+      if (gifXtz.length === 1) {
+        const [{ value: gifXtzBal }] = gifXtz;
+        lpBal.push({
+          balance: gifXtzBal,
+          token: {
+            contract: {
+              address: "KT1SjZYVjdBCBurUUA6W5Qymri2pWJGyu7Tt",
+            },
+          },
+        });
+      }
+
+      vortex.positionsCount = lpBal.length;
+
+      for (let i = 0; i < lpBal.length; i++) {
+        const { data: tkContract } = await tzkt.getContractStorage(
+          lpBal[i].token.contract.address
+        );
+
+        const address = tkContract.admin;
+
+        const { data: tokenStorage } = await tzkt.getContractStorage(address);
+
+        const tokenObjkt = {
+          address: address,
+          balance: lpBal[i].balance,
+          lpBalance: new BigNumber(lpBal[i].balance).div(1e6).toNumber(),
+          tokenAddress: tokenStorage.tokenAddress,
+          tokenId: tokenStorage.tokenId,
+          tezPool: tokenStorage.xtzPool,
+          tokenPool: tokenStorage.tokenPool,
+          totalSupply: tokenStorage.lqtTotal,
+        };
+
+        const { data: tokenMetaData } = await axios.get(
+          `https://api.teztools.io/v1/${tokenObjkt.tokenAddress}${
+            tokenObjkt.tokenId ? "_" + tokenObjkt.tokenId : ""
+          }/price`
+        );
+
+        console.log("META", tokenMetaData);
+
+        tokenMetaData.pairs = tokenMetaData.pairs.find(
+          (val) => val.address === tokenObjkt.address
+        );
+
+        tokenMetaData.thumbnailUri = ipfs.transformUri(
+          tokenMetaData.thumbnailUri
+        );
+
+        const xtzUsd = await coingecko.getXtzUsdPrice();
+
+        const xtzSide = new BigNumber(tokenObjkt.balance)
+          .times(tokenObjkt.tezPool)
+          .div(tokenObjkt.totalSupply);
+
+        const tokenSide = new BigNumber(tokenObjkt.balance)
+          .times(tokenObjkt.tokenPool)
+          .div(tokenObjkt.totalSupply);
+
+        tokenObjkt.xtzSide = xtzSide.div(1e6).toNumber();
+
+        tokenObjkt.xtzSideUsd = tokenObjkt.xtzSide * xtzUsd;
+
+        tokenObjkt.tokenSide = tokenSide
+          .div(10 ** tokenMetaData.decimals)
+          .toNumber();
+
+        tokenObjkt.totalValue = tokenObjkt.xtzSide * 2;
+
+        tokenObjkt.totalValueUsd = tokenObjkt.totalValue * xtzUsd;
+
+        lp.push(merge(tokenMetaData, tokenObjkt));
+
+        vortex.totalValue += tokenObjkt.totalValue;
+        vortex.totalValueUsd += tokenObjkt.totalValueUsd;
+      }
+
+      vortex.positions = lp;
+
+      console.log(vortex, "VORTEX");
+      return vortex;
+    } catch (error) {
+      console.log(error);
+    }
   },
 
   handleChrunchBal(arr) {
@@ -407,8 +679,8 @@ export default {
     var sum = 0;
 
     for (let i = 0; i < arr.length; i++) {
-      if (arr[i].value && !Number.isNaN(arr[i].value)) {
-        sum = sum + arr[i].value;
+      if (arr[i]?.value && !Number.isNaN(arr[i]?.value)) {
+        sum = sum + arr[i]?.value;
       }
     }
     return sum;
@@ -418,8 +690,8 @@ export default {
     var sum = 0;
 
     for (let i = 0; i < arr.length; i++) {
-      if (arr[i].value && !Number.isNaN(arr[i].valueUsd)) {
-        sum = sum + arr[i].valueUsd;
+      if (arr[i]?.value && !Number.isNaN(arr[i]?.valueUsd)) {
+        sum = sum + arr[i]?.valueUsd;
       }
     }
     return sum;
