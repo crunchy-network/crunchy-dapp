@@ -51,6 +51,7 @@ export default {
       quipuswap: {
         dex: "Quipuswap",
         isQuipuLp: true,
+        url: "https://quipuswap.com/liquidity/add/tez-KT193D4vozYnhGJQVtw7CoxxqphqUEEwK6Vb_0",
         thumbnailUri:
           "https://res.cloudinary.com/melvin-manni/image/upload/v1645292809/c1rutxlzllilmtuibcdo.png",
         totalValue: 0,
@@ -61,6 +62,7 @@ export default {
       vortex: {
         dex: "Vortex",
         isVortexLp: true,
+        url: "https://app.vortex.network/vortex/liquidity",
         thumbnailUri:
           "https://www.gitbook.com/cdn-cgi/image/width=40,height=40,fit=contain,dpr=1,format=auto/https%3A%2F%2F3533877337-files.gitbook.io%2F~%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FyX7WTYr0YMeQcemP26Of%252Ficon%252F76rbNGaJiDxSJwFIjsLQ%252FGroup%25201494.png%3Falt%3Dmedia%26token%3D829a380f-2d70-4ceb-ac23-8c2aaddf8fe5",
         totalValue: 0,

@@ -41,15 +41,9 @@
           :style="isActiveTab('staking')"
           @click="setActiveTab('staking')"
         >
-          Stake
+          Staked
         </button>
-        <button
-          class="tab-text"
-          :style="isActiveTab('nfts')"
-          @click="setActiveTab('nfts')"
-        >
-          NFTs
-        </button>
+
         <button
           class="tab-text"
           :style="isActiveTab('liquidity')"
@@ -57,6 +51,15 @@
         >
           Liquidity
         </button>
+
+        <button
+          class="tab-text"
+          :style="isActiveTab('nfts')"
+          @click="setActiveTab('nfts')"
+        >
+          NFTs
+        </button>
+
         <a
           class="tab-text"
           style="color: #555cff; text-decoration: none"
