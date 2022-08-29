@@ -4,7 +4,7 @@
       <el-card
         v-loading="loading"
         style="height: 100%"
-        body-style="padding: 32px 42px;"
+        body-style="padding: 32px 42px; height: 100%; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between"
         shadows="never"
       >
         <div style="margin-bottom: 65px">
