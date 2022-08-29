@@ -411,7 +411,7 @@ export default {
   line-height: 24px;
   text-align: center;
   text-transform: capitalize;
-  color: #8C8D8F;
+  color: #757679;
   cursor: pointer;
   transition: 0.3s ease all;
   margin: 0;
