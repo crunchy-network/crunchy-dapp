@@ -32,7 +32,7 @@
           type="flex"
           style="row-gap: 10px; flex-wrap: wrap; justify-content: space-between"
         >
-          <el-col :span="8" :xs="24" :sm="7">
+          <el-col style="width: max-content">
             <p class="small-title">Portfolio Balance</p>
             <h2 class="value">
               {{
@@ -60,7 +60,7 @@
           >
             <el-divider direction="vertical"></el-divider>
           </el-col>
-          <el-col :span="8" :xs="24" :sm="7">
+          <el-col style="width: max-content">
             <p class="small-title">Staked Balance</p>
             <h2 class="value">
               {{
@@ -88,7 +88,7 @@
           >
             <el-divider direction="vertical"></el-divider>
           </el-col>
-          <el-col :span="8" :xs="24" :sm="7">
+          <el-col style="width: max-content">
             <p class="small-title">Liquidity Balance</p>
             <h2 class="value">
               {{
