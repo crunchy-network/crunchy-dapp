@@ -9,12 +9,12 @@ export default {
   updateNfts(state, assets) {
     state.nfts = assets.collections;
   },
-  updateNetworth(state, value) {
-    state.netWorth = value;
+  updatePortfolio(state, value) {
+    state.portfolio = value;
   },
 
-  updateNetworthUsd(state, value) {
-    state.netWorthUsd = value;
+  updatePortfolioUsd(state, value) {
+    state.portfolioUsd = value;
   },
 
   updateCrDAOBal(state, value) {
