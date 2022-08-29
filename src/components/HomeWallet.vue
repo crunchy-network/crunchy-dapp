@@ -41,7 +41,7 @@
           :style="isActiveTab('staking')"
           @click="setActiveTab('staking')"
         >
-          Staking
+          Stake
         </button>
         <button
           class="tab-text"
