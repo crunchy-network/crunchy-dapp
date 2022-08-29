@@ -317,7 +317,7 @@ export default {
     isActiveTab(tab) {
       return (
         this.activeTab === tab &&
-        " border-bottom: 3px solid #FF4D4B; color: #FF4D4B"
+        " border-bottom: 3px solid #FF4D4B; color: #FF4D4B; font-weight: 700"
       );
     },
 
@@ -406,12 +406,12 @@ export default {
   min-width: 100px;
   text-align: center;
   padding: 2px 20px;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 16px;
   line-height: 24px;
   text-align: center;
   text-transform: capitalize;
-  color: #191b1f;
+  color: #8C8D8F;
   cursor: pointer;
   transition: 0.3s ease all;
   margin: 0;
