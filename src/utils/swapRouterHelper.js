@@ -10,6 +10,7 @@ import ipfs from "./ipfs";
 import farmUtils from "./farm";
 
 const getAssetSlug = (token) => {
+  if (token.assetSlug) return token.assetSlug;
   if (token.symbol === "XTZ") return "tez";
   if (token.type === "fa1.2") {
     return `${token.tokenAddress}_0`;
