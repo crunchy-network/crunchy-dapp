@@ -1,15 +1,28 @@
 const {
-  percentToDecimal,
   convertToMuTez,
   secondsFromNow,
+  percentToDecimal,
 } = require("../utils.js");
 const { addTokenApprovalOperators } = require("../TokenTypes");
 const { getAmmSwapOutput } = require("../SwapRates/amm");
 
-const DEX_FEE = 0.3;
+const DEX_FEE = 0.003;
+
+const getDexFee = (input, pair) => {
+  const feeEst = input * DEX_FEE;
+  const decimalMover = Math.pow(10, pair.a.decimals);
+  const bigNumber = Math.round(feeEst * decimalMover);
+  if (bigNumber < 1) {
+    return 1 / decimalMover;
+  }
+  return bigNumber / decimalMover;
+};
 
 const getSwapOutput = (input, pair) => {
-  const inputAfterFee = input * percentToDecimal(DEX_FEE);
+  var inputAfterFee = input - getDexFee(input, pair);
+  if (inputAfterFee < 0) {
+    inputAfterFee = 0;
+  }
   return getAmmSwapOutput(inputAfterFee, pair);
 };
 
