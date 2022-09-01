@@ -1,8 +1,4 @@
-const {
-  convertToMuTez,
-  secondsFromNow,
-  percentToDecimal,
-} = require("../utils.js");
+const { convertToMuTez, secondsFromNow } = require("../utils.js");
 const { addTokenApprovalOperators } = require("../TokenTypes");
 const { getAmmSwapOutput } = require("../SwapRates/amm");
 

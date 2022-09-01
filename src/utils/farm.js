@@ -117,7 +117,8 @@ export default {
 
     // tdao
     if (meta.tokenAddress === "KT1Cjx8hYwzaCAke6rLWoZBLp8w89VeAduAR") {
-      meta.thumbnailUri = "ipfs://bafkreiffgj3yc7chn4wgytfhq2rvdg2eiuzdhsytlr5oyipe7zmnihfk6q";
+      meta.thumbnailUri =
+        "ipfs://bafkreiffgj3yc7chn4wgytfhq2rvdg2eiuzdhsytlr5oyipe7zmnihfk6q";
     }
 
     return meta;

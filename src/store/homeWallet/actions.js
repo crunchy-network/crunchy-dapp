@@ -78,7 +78,6 @@ export default {
 
   async softUpdateStakeAssets({ dispatch }, pkh) {
     await Promise.all([
-
       dispatch("loadCrunchyStake", pkh),
       dispatch("loadDogamiStake", pkh),
       dispatch("loadGIFStake", pkh),
@@ -110,7 +109,6 @@ export default {
       console.log(error);
     }
   },
-
 
   async loadDogamiStake({ rootState, state, dispatch, commit }, pkh) {
     try {

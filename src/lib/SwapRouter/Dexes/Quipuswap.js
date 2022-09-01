@@ -39,6 +39,7 @@ const tezToToken = (dex, trade, sender, tezos, recipient) => {
 
 const tokenToTez = async (dex, trade, sender, tezos, recipient) => {
   const input = convertToMuTez(trade.input, trade.a);
+  console.log(trade);
   var output = convertToMuTez(trade.minOut, trade.b);
 
   const transfers = [
