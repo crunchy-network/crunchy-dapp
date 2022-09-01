@@ -24,7 +24,6 @@
           :key="item.value"
           :label="item.label"
           :value="item.value"
-          :disabled="item.value === 'liquidity'"
         >
         </el-option>
       </el-select>
