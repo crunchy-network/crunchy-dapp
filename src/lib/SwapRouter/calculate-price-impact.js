@@ -18,11 +18,17 @@ const getNewPoolEstimate = (tradeList) => {
 };
 
 const simulateNewTradeOutput = (estimatedPools, inputAmount = 1) => {
+  if (!estimatedPools.length) {
+    return { inputAmount: 1, outputAmount: 0 };
+  }
   const { outputAmount } = getOutputOfTrade(inputAmount, estimatedPools);
   return { inputAmount, outputAmount };
 };
 
 const simulateNewWeightedTradeOutput = (estimatedPools, inputAmount = 1) => {
+  if (!estimatedPools.length) {
+    return { inputAmount: 1, outputAmount: 0 };
+  }
   const { outputAmount } = getOutputOfWeightedTrade(
     inputAmount,
     estimatedPools

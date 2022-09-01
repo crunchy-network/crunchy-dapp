@@ -466,6 +466,7 @@ export default {
           decimals = Math.min(decimals, 6);
         }
         if (numStr.split(".")[1].length > decimals) {
+          amount = parseFloat(amount);
           return amount.toFixed(decimals);
         }
       }
@@ -488,7 +489,6 @@ export default {
         ...o,
         kind: "transaction",
       }));
-      console.log(toBatch);
       try {
         const batchOp = await Tezos.wallet.batch(toBatch).send();
         this.$notify({

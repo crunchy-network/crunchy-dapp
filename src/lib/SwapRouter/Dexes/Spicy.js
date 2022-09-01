@@ -18,12 +18,19 @@ const getDexFee = (input, pair) => {
   return bigNumber / decimalMover;
 };
 
+const getOutput = (output, token) => {
+  const decimalMover = Math.pow(10, token.decimals);
+  const bigNumber = parseFloat(Math.floor(output * decimalMover));
+  return bigNumber / decimalMover;
+};
+
 const getSwapOutput = (input, pair) => {
   var inputAfterFee = input - getDexFee(input, pair);
   if (inputAfterFee < 0) {
     inputAfterFee = 0;
   }
-  return getAmmSwapOutput(inputAfterFee, pair);
+  const result = getAmmSwapOutput(inputAfterFee, pair);
+  return getOutput(result, pair.b);
 };
 
 const buildDexOperation = async (dex, trade, walletAddress, tezos) => {

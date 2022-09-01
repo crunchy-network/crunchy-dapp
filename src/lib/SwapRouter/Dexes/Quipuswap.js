@@ -13,13 +13,7 @@ const DEX_FEE = 0.3;
 
 const roundOutput = (output, pair) => {
   const decimalMover = Math.pow(10, pair.b.decimals);
-  const bigNumber = parseFloat(Math.round(output * decimalMover));
-  if (pair.a.assetSlug === "KT1GaEvbD4zA3pHs7mv3grpuqR1KGtjXAEDe_0") {
-    console.log(decimalMover);
-  }
-  if (bigNumber < 1) {
-    return 1 / decimalMover;
-  }
+  const bigNumber = parseFloat(Math.floor(output * decimalMover));
   return bigNumber / decimalMover;
 };
 
@@ -34,20 +28,24 @@ const getSwapOutput = (input, pair) => {
 const tezToToken = (dex, trade, sender, tezos, recipient) => {
   const tokenA = { ...trade.a };
   const tokenB = { ...trade.b };
+  var output = convertToMuTez(trade.minOut, tokenB);
+  if (output === 0) {
+    output = 1;
+  }
   return dex.methods
-    .tezToTokenPayment(convertToMuTez(trade.minOut, tokenB), recipient)
+    .tezToTokenPayment(output, recipient)
     .toTransferParams(fromOpOpts(convertToMuTez(trade.input, tokenA)));
 };
 
 const tokenToTez = async (dex, trade, sender, tezos, recipient) => {
   const input = convertToMuTez(trade.input, trade.a);
-  const output = convertToMuTez(trade.minOut, trade.b);
+  var output = convertToMuTez(trade.minOut, trade.b);
+
   const transfers = [
     dex.methods
       .tokenToTezPayment(input, output, recipient)
       .toTransferParams(fromOpOpts(undefined)),
   ];
-  console.log("here", transfers);
   return await addTokenApprovalOperators(
     trade,
     sender,

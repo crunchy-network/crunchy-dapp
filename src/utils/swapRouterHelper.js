@@ -103,6 +103,14 @@ const getBestTrade = (form, routePairs) => {
       );
     }
   }
+  if (bestRoute.trades.length === 0) {
+    return {
+      trades: [],
+      inputAmount: inputAmount,
+      outputAmount: 0,
+      outputWithSlippage: 0,
+    };
+  }
 
   return addSlippageToleranceToRoute(bestRoute, slippageTolerance);
 };
