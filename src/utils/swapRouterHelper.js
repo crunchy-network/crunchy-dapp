@@ -33,6 +33,7 @@ const toTokenListItem = (token) => {
         "https://static.thenounproject.com/png/796573-200.png"
     ),
     balance: 0,
+    decimals: token.decimals,
     assetSlug: getAssetSlug(token),
     priceUsd: token.usdValue,
   };

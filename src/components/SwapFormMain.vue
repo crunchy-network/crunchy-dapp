@@ -9,7 +9,12 @@
       <span> From</span>
       <span v-if="shouldShowBalance()"
         >Balance:
-        {{ vueNumberFormat(getBalanceOfSelectedToken(getSwapForm.inputToken)) }}
+        {{
+          formatDecimals(
+            getBalanceOfSelectedToken(getSwapForm.inputToken),
+            getSwapForm.inputToken
+          )
+        }}
       </span>
     </div>
 
@@ -68,7 +73,10 @@
       <span v-if="shouldShowBalance()">
         Balance:
         {{
-          vueNumberFormat(getBalanceOfSelectedToken(getSwapForm.outputToken))
+          formatDecimals(
+            getBalanceOfSelectedToken(getSwapForm.outputToken),
+            getSwapForm.outputToken
+          )
         }}</span
       >
     </div>
@@ -77,7 +85,9 @@
         :id="'tokenOutput'"
         :list="tokenList"
         :on-change="handleOutputChange"
-        :amount="handleLargeDecimals(getCurrentTrade.outputAmount)"
+        :amount="
+          formatDecimals(getCurrentTrade.outputAmount, getSwapForm.outputToken)
+        "
         :input-disabled="true"
         :selected-token="getSwapForm.outputToken"
       />
@@ -355,7 +365,20 @@ export default {
       });
     },
     reverseSwap() {
+      const outputBalance = this.getBalanceOfSelectedToken(
+        this.getSwapForm.outputToken
+      );
+      var newInput = this.getSwapForm.inputAmount;
+      if (outputBalance < newInput) {
+        newInput = outputBalance;
+      }
+      newInput = this.formatDecimals(
+        newInput,
+        this.getSwapForm.outputToken,
+        false
+      );
       this.updateForm({
+        inputAmount: newInput,
         inputToken: { ...this.getSwapForm.outputToken },
         outputToken: { ...this.getSwapForm.inputToken },
       });
@@ -430,15 +453,19 @@ export default {
     maxOut(amount) {
       this.updateForm({ inputAmount: amount });
     },
-    handleLargeDecimals(num) {
-      const numStr = String(num);
+    formatDecimals(amount, token, defaultTez = true) {
+      const numStr = String(amount);
       // String Contains Decimal
       if (numStr.includes(".")) {
-        if (numStr.split(".")[1].length > 6) {
-          return num.toFixed(6);
+        var decimals = parseInt(token.decimals);
+        if (defaultTez) {
+          decimals = Math.min(decimals, 6);
+        }
+        if (numStr.split(".")[1].length > decimals) {
+          return amount.toFixed(decimals);
         }
       }
-      return num;
+      return amount;
     },
     async onSubmit() {
       const fee = await buildRoutingFeeOperation(
