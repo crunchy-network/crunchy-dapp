@@ -458,6 +458,10 @@ export default {
       // String Contains Decimal
       if (numStr.includes(".")) {
         var decimals = parseInt(token.decimals);
+        if (isNaN(decimals)) {
+          console.warn("NaN decimals for token", token);
+          decimals = 6;
+        }
         if (defaultTez) {
           decimals = Math.min(decimals, 6);
         }
