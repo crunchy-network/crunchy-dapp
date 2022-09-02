@@ -527,7 +527,7 @@ export default {
             `https://api.tzkt.io/v1/tokens/balances?token.contract=KT1RMfFJphfVwdbaJx7DhFrZ9du5pREVSEyN&account=${pkh}&balance.ne=0`
           ),
           axios.get(
-            `https://api.tzkt.io/v1/contracts/KT1SjZYVjdBCBurUUA6W5Qymri2pWJGyu7Tt/bigmaps/tokens/keys?key=${pkh}`
+            `https://api.tzkt.io/v1/contracts/KT1SjZYVjdBCBurUUA6W5Qymri2pWJGyu7Tt/bigmaps/tokens/keys?key=${pkh}&active=true`
           ),
         ]);
 
