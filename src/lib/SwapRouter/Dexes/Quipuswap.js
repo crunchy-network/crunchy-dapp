@@ -9,29 +9,44 @@ const { addTokenApprovalOperators } = require("../TokenTypes");
 const { getAmmSwapOutput } = require("../SwapRates/amm");
 
 const DEX_FEE = 0.3;
+// const NDF = 0.003;
+
+const roundOutput = (output, pair) => {
+  const decimalMover = Math.pow(10, pair.b.decimals);
+  const bigNumber = parseFloat(Math.floor(output * decimalMover));
+  return bigNumber / decimalMover;
+};
 
 const getSwapOutput = (input, pair) => {
   const inputAfterFee = input * percentToDecimal(DEX_FEE);
-  return getAmmSwapOutput(inputAfterFee, pair);
+  const output = getAmmSwapOutput(inputAfterFee, pair);
+  const toRet = roundOutput(output, pair);
+
+  return toRet;
 };
 
 const tezToToken = (dex, trade, sender, tezos, recipient) => {
   const tokenA = { ...trade.a };
   const tokenB = { ...trade.b };
+  var output = convertToMuTez(trade.minOut, tokenB);
+  if (output === 0) {
+    output = 1;
+  }
   return dex.methods
-    .tezToTokenPayment(convertToMuTez(trade.minOut, tokenB), recipient)
+    .tezToTokenPayment(output, recipient)
     .toTransferParams(fromOpOpts(convertToMuTez(trade.input, tokenA)));
 };
 
 const tokenToTez = async (dex, trade, sender, tezos, recipient) => {
   const input = convertToMuTez(trade.input, trade.a);
-  const output = convertToMuTez(trade.minOut, trade.b);
+  console.log(trade);
+  var output = convertToMuTez(trade.minOut, trade.b);
+
   const transfers = [
     dex.methods
       .tokenToTezPayment(input, output, recipient)
       .toTransferParams(fromOpOpts(undefined)),
   ];
-  console.log("here", transfers);
   return await addTokenApprovalOperators(
     trade,
     sender,

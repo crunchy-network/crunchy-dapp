@@ -10,6 +10,7 @@ import ipfs from "./ipfs";
 import farmUtils from "./farm";
 
 const getAssetSlug = (token) => {
+  if (token.assetSlug) return token.assetSlug;
   if (token.symbol === "XTZ") return "tez";
   if (token.type === "fa1.2") {
     return `${token.tokenAddress}_0`;
@@ -33,6 +34,7 @@ const toTokenListItem = (token) => {
         "https://static.thenounproject.com/png/796573-200.png"
     ),
     balance: 0,
+    decimals: token.decimals,
     assetSlug: getAssetSlug(token),
     priceUsd: token.usdValue,
   };
@@ -79,11 +81,11 @@ const getBestTrade = (form, routePairs) => {
     console.log("no combos");
     return undefined;
   }
-  const bestRoute = findBestRoute(
-    inputAmount * ROUTING_FEE_RATIO,
-    combos,
-    slippageTolerance
-  );
+  var inputAfterRatio = inputAmount * ROUTING_FEE_RATIO;
+  if (inputToken.decimals === 0) {
+    inputAfterRatio = inputAmount;
+  }
+  const bestRoute = findBestRoute(inputAfterRatio, combos, slippageTolerance);
   const weightedCombos = routePairs.filter(
     (p) =>
       p.a.assetSlug === inputToken.assetSlug &&
@@ -91,7 +93,7 @@ const getBestTrade = (form, routePairs) => {
   );
   if (weightedCombos.length > 1) {
     const bestWeightedRoute = findBestWeightedRoute(
-      inputAmount * ROUTING_FEE_RATIO,
+      inputAfterRatio,
       weightedCombos
     );
     if (bestWeightedRoute.outputAmount > bestRoute.outputAmount) {
@@ -100,6 +102,14 @@ const getBestTrade = (form, routePairs) => {
         slippageTolerance
       );
     }
+  }
+  if (bestRoute.trades.length === 0) {
+    return {
+      trades: [],
+      inputAmount: inputAmount,
+      outputAmount: 0,
+      outputWithSlippage: 0,
+    };
   }
 
   return addSlippageToleranceToRoute(bestRoute, slippageTolerance);

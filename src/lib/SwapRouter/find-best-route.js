@@ -184,6 +184,7 @@ const addSlippageToleranceToWeightedRoute = (route, slippageTolerance) => {
 };
 
 const findBestRoute = (inputAmount, routePairCombos, slippageTolerance) => {
+  inputAmount = parseFloat(inputAmount);
   validateFindBestRouteInput(inputAmount, routePairCombos);
   let bestRoute = { inputAmount, type: "linear" };
   for (var i = 0; i < routePairCombos.length; i++) {

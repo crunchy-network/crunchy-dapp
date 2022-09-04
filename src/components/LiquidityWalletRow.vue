@@ -141,7 +141,7 @@
                     :href="`https://tzkt.io/${position.address}/operations/`"
                     target="_blank"
                     rel="noopener noreferrer"
-                    style="text-decoration: none;"
+                    style="text-decoration: none"
                   >
                     <template>
                       <el-row

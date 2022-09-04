@@ -111,6 +111,9 @@ const buildRoutingFeeOperation = async (
     return [];
   }
   const inputToken = route.slippageTrades[0].a;
+  if (inputToken.decimals === 0) {
+    return [];
+  }
   const fee = route.inputAmount / ROUTING_FEE_RATIO - route.inputAmount;
 
   if (fee < 0) {
