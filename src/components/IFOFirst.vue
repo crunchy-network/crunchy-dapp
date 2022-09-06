@@ -65,6 +65,7 @@ p {
   align-items: center;
   width: 100%;
   height: 100px;
+  background: none;
 }
 .launch-date-container {
   margin-top: 30px;
