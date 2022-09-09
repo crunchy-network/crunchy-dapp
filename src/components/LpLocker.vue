@@ -1,34 +1,58 @@
 <template>
   <div id="lp-locker">
-    <nav-menu>
-      <el-switch
-        v-model="showUsd"
-        style="margin-right: 24px"
-        active-color="#1EC37F"
-        inactive-color="#555CFF"
-        active-text="USD"
-        inactive-text="XTZ"
-      >
-      </el-switch>
-      <el-button
-        type="primary"
-        round
-        style="font-weight: bold"
-        @click="showCreateDialog"
-        ><img
-          src="./../assets/svg-icons/lock.svg"
-          style="
-            width: 24px;
-            height: 24px;
-            vertical-align: middle;
-            margin-right: 6px;
-            margin-top: -6px;
-            margin-bottom: -6px;
-          "
-        />Lock LP Tokens</el-button
-      ></nav-menu
-    >
+    <nav-menu />
     <el-main style="margin-top: 90px">
+      <el-row
+        :gutter="20"
+        type="flex"
+        align="middle"
+        style="margin-bottom: 24px; flex-wrap: wrap; row-gap: 10px"
+      >
+        <el-col :span="16">
+          <div class="grid-content">
+            <h2
+              style="
+                margin-top: 0;
+                margin-bottom: 5px;
+                font-weight: 700;
+                font-size: 28px;
+                line-height: 42px;
+              "
+            >
+              Deep Freezers
+            </h2>
+            <span
+              style="
+                color: #8c8d8f;
+                font-weight: 400;
+                font-size: 16px;
+                line-height: 24px;
+              "
+              >Lock Liquidity Pool (LP) tokens and unlock at a fixed date.</span
+            >
+          </div>
+        </el-col>
+        <el-col :span="8" style="text-align: right">
+          <el-button
+            type="primary"
+            round
+            style="font-weight: bold"
+            @click="showCreateDialog"
+            ><img
+              src="./../assets/svg-icons/lock.svg"
+              style="
+                width: 24px;
+                height: 24px;
+                vertical-align: middle;
+                margin-right: 6px;
+                margin-top: -6px;
+                margin-bottom: -6px;
+              "
+            />Lock LP Tokens</el-button
+          >
+        </el-col>
+      </el-row>
+
       <el-row
         type="flex"
         :gutter="20"
@@ -296,23 +320,16 @@
         </el-col>
       </el-row>
 
-      <el-row
-        :gutter="20"
-        type="flex"
-        align="bottom"
-        style="margin-bottom: 24px; flex-wrap: wrap; row-gap: 10px"
-      >
-        <el-col :span="24">
-          <div class="grid-content">
-            <h2 style="margin-top: 0; margin-bottom: 5px">Deep Freezers</h2>
-            <span style="font-size: 14px"
-              >Lock Liquidity Pool (LP) tokens and unlock at a fixed date.</span
-            >
-          </div>
-        </el-col>
-      </el-row>
-
       <el-tabs v-model="activeTab">
+        <el-switch
+          v-model="showUsd"
+          style="float: right; margin-right: 24px; margin-top: -48px"
+          active-color="#1EC37F"
+          inactive-color="#555CFF"
+          active-text="USD"
+          inactive-text="XTZ"
+        >
+        </el-switch>
         <el-tab-pane label="All Locks" name="all">
           <LpLockerListing
             :lockers="activeLockers"
@@ -445,6 +462,9 @@ export default {
   }
   .el-tabs__nav-wrap::after {
     background: $--color-outter-light-gray-border;
+  }
+  .el-tabs__content {
+    overflow: visible;
   }
 }
 </style>
