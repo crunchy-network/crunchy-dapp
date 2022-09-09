@@ -18,12 +18,12 @@
         <el-row
           :gutter="20"
           class="locker-row"
-          :class="{ expanded: locker.rowExpanded }"
+          :class="{ expanded: locker.rowExpanded, withdrawn: !locker.active }"
           style="margin-left: 0; margin-right: 0"
           type="flex"
           align="middle"
         >
-          <el-col :sm="8" :lg="6" style="font-weight: bold">
+          <el-col :sm="7" :lg="5" style="font-weight: bold">
             <el-avatar
               shape="circle"
               :size="40"
@@ -102,6 +102,7 @@
                 >
               </div>
               <el-progress
+                v-if="locker.active"
                 :percentage="locker.percentLocked"
                 :format="format"
                 type="circle"
@@ -136,7 +137,12 @@
           >
 
           <el-col style="text-align: right" :sm="7" :lg="5">
-            <template v-if="locker.isUnlocked">
+            <template v-if="!locker.active">
+              <span style="color: #1ec37f; text-transform: uppercase"
+                >Withdrawn</span
+              >
+            </template>
+            <template v-else-if="locker.isUnlocked">
               <span style="color: #555cff; text-transform: uppercase"
                 >Complete</span
               >
@@ -145,6 +151,35 @@
               {{ locker.timeUntilUnlocked | humanizeDuration }}
             </template>
           </el-col>
+
+          <el-col class="locker-menu" style="text-align: right" :span="1">
+            <el-dropdown
+              v-if="locker.active"
+              trigger="click"
+              @command="handleCommand"
+            >
+              <el-button
+                type="primary"
+                icon="fak fa-crunchy-more-alt"
+                plain
+                circle
+              ></el-button>
+              <el-dropdown-menu slot="dropdown" :data-lock-id="locker.id">
+                <!-- <el-dropdown-item command="add" v-if="!locker.isUnlocked">Add to Lock</el-dropdown-item> -->
+                <!-- <el-dropdown-item command="relock" v-if="locker.isUnlocked">Relock</el-dropdown-item> -->
+                <!-- <el-dropdown-item command="split">Split Lock</el-dropdown-item> -->
+                <el-dropdown-item v-if="locker.isUnlocked" command="withdraw"
+                  >Withdrawal LP</el-dropdown-item
+                >
+                <el-dropdown-item
+                  v-if="locker.token.isQuipuLp"
+                  command="withdrawProfit"
+                  >Claim Baking Rewards</el-dropdown-item
+                >
+                <!-- <el-dropdown-item command="transfer">Transfer Ownership</el-dropdown-item> -->
+              </el-dropdown-menu>
+            </el-dropdown>
+          </el-col>
         </el-row>
       </div>
     </el-col>
@@ -152,10 +187,10 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 
 export default {
-  name: "LpLockerListingRow",
+  name: "LpLockerMyLockersRow",
   components: {},
   props: {
     locker: {
@@ -181,6 +216,21 @@ export default {
     ...mapState(["wallet", "lpLockers"]),
   },
   methods: {
+    ...mapActions(["withdrawLp", "withdrawLpProfit"]),
+
+    async handleCommand(command, dropdownItem) {
+      const lockId = dropdownItem.$parent.$el.dataset.lockId;
+
+      switch (command) {
+        case "withdraw":
+          this.withdrawLp({ lockId });
+          break;
+        case "withdrawProfit":
+          this.withdrawLpProfit({ lockId });
+          break;
+      }
+    },
+
     format() {
       return "";
       // return percentage === 100 ? 'Full' : `${percentage}%`;
@@ -192,4 +242,24 @@ export default {
 <style lang="scss" scoped>
 @import "../crunchy-variables.scss";
 @import "~element-ui/packages/theme-chalk/src/common/var";
+
+::v-deep {
+  .withdrawn {
+    opacity: 0.5;
+  }
+  .locker-menu {
+    .el-button--primary.is-plain {
+      background: #fff;
+      border: 2px solid $--color-primary;
+      &:hover,
+      &:focus {
+        background: $--color-primary;
+      }
+
+      i {
+        width: 14px;
+      }
+    }
+  }
+}
 </style>

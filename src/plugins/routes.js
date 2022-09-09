@@ -1,7 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 // import Home from './../components/Home.vue'
-import LpLockerListing from "./../components/LpLockerListing.vue";
+import LpLocker from "./../components/LpLocker.vue";
 import LpLockerItem from "./../components/LpLockerItem.vue";
 import FarmListing from "./../components/FarmListing.vue";
 import FarmCreate from "./../components/FarmCreate.vue";
@@ -34,7 +34,7 @@ const routes = [
   {
     name: "deep-freezer-listing",
     path: "/freezers",
-    component: LpLockerListing,
+    component: LpLocker,
   },
   {
     name: "deep-freezer-item",

@@ -24,7 +24,7 @@
                     align="middle"
                     style="padding: 0 20px"
                   >
-                    <el-col :sm="8" :lg="6">Pair</el-col>
+                    <el-col :sm="7" :lg="5">Pair</el-col>
                     <el-col :sm="2" :lg="5">DEX</el-col>
                     <el-col style="text-align: right" :sm="7" :lg="4"
                       >TVL
@@ -45,16 +45,24 @@
                     <el-col style="text-align: right" :sm="7" :lg="5"
                       >Next Unlock</el-col
                     >
+                    <el-col style="text-align: right" :span="1">&nbsp;</el-col>
                   </el-row>
                 </el-col>
               </el-row>
 
-              <LpLockerListingRow
+              <LpLockerMyLockersRow
                 v-for="locker in orderedLockers"
                 :key="locker.id"
                 :locker="locker"
                 :show-usd="showUsd"
-              ></LpLockerListingRow>
+              ></LpLockerMyLockersRow>
+
+              <el-empty
+                v-if="!lockers.length"
+                description="You have no LP Lockers"
+              >
+                <i class="fak fa-crunchy-locker"></i>
+              </el-empty>
             </div>
           </div>
         </el-card>
@@ -65,12 +73,14 @@
 
 <script>
 import _ from "lodash";
-import LpLockerListingRow from "./LpLockerListingRow.vue";
+import LpLockerMyLockersRow from "./LpLockerMyLockersRow.vue";
+
+const imgLock = require("../assets/svg-icons/lock.svg");
 
 export default {
-  name: "LpLockerListing",
+  name: "LpLockerMyLockers",
   components: {
-    LpLockerListingRow,
+    LpLockerMyLockersRow,
   },
   props: {
     lockers: {
@@ -83,12 +93,33 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      imgLock,
+    };
   },
   computed: {
     orderedLockers: function () {
-      return _.orderBy(this.lockers, ["isUnlocked", "tvlTez"], ["asc", "desc"]);
+      return _.orderBy(
+        this.lockers,
+        ["active", "isUnlocked", "tvlTez"],
+        ["desc", "asc", "desc"]
+      );
     },
   },
 };
 </script>
+
+<style lang="scss" scoped>
+@import "../crunchy-variables.scss";
+@import "~element-ui/packages/theme-chalk/src/common/var";
+
+::v-deep {
+  .el-empty__image {
+    display: none;
+  }
+  .el-empty__bottom {
+    font-size: 72px;
+    color: $--color-text-light-gray;
+  }
+}
+</style>
