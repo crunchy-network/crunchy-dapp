@@ -80,6 +80,17 @@ export default {
         positionsCount: 0,
         positions: [],
       },
+      plenty: {
+        dex: "Plenty",
+        isSpicyLp: true,
+        url: "https://www.plentydefi.com/liquidity",
+        thumbnailUri:
+          "https://res.cloudinary.com/melvin-manni/image/upload/v1645292809/nstgjnest4jrhcsgwymf.png",
+        totalValue: 0,
+        totalValueUsd: 0,
+        positionsCount: 0,
+        positions: [],
+      },
     },
     priceFeed: [],
     portfolio: 0,
@@ -159,7 +170,12 @@ export default {
       return [state.crunchyStake, ...orderedStake];
     },
     getLp(state) {
-      return [state.lp.quipuswap, state.lp.vortex, state.lp.spicyswap];
+      return [
+        state.lp.quipuswap,
+        state.lp.plenty,
+        state.lp.vortex,
+        state.lp.spicyswap,
+      ];
     },
 
     getLpLoading(state) {

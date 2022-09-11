@@ -80,6 +80,38 @@
                             precision: 2,
                           })
                     }}
+
+                    <template name="show-full-amount">
+                      <template
+                        v-if="
+                          `${lp.totalValue}`.split('.')[1] &&
+                          `${lp.totalValue}`.split('.')[1].startsWith('00') &&
+                          !showUsd
+                        "
+                      >
+                        <el-tooltip
+                          :content="`${lp.totalValue}`"
+                          placement="top"
+                          ><i class="el-icon-info"></i>
+                        </el-tooltip>
+                      </template>
+
+                      <template
+                        v-if="
+                          `${lp.totalValueUsd}`.split('.')[1] &&
+                          `${lp.totalValueUsd}`
+                            .split('.')[1]
+                            .startsWith('00') &&
+                          showUsd
+                        "
+                      >
+                        <el-tooltip
+                          :content="`${lp.totalValueUsd}`"
+                          placement="top"
+                          ><i class="el-icon-info"></i>
+                        </el-tooltip>
+                      </template>
+                    </template>
                   </el-col>
                 </template>
 
@@ -120,7 +152,10 @@
               <el-col :span="4"> Liquidity Pairs</el-col>
               <el-col style="text-align: right" :span="4">LP Tokens</el-col>
               <template name="">
-                <el-col v-if="lp.isSpicyLp" style="text-align: right" :span="4"
+                <el-col
+                  v-if="lp.isSpicyLp || lp.isPlentyLp"
+                  style="text-align: right"
+                  :span="4"
                   >Token 0 Side</el-col
                 >
                 <el-col v-else style="text-align: right" :span="4"
@@ -128,7 +163,10 @@
                 >
               </template>
               <template>
-                <el-col v-if="lp.isSpicyLp" style="text-align: right" :span="4"
+                <el-col
+                  v-if="lp.isSpicyLp || lp.isPlentyLp"
+                  style="text-align: right"
+                  :span="4"
                   >Token 1 Side</el-col
                 >
                 <el-col v-else style="text-align: right" :span="4"
@@ -159,7 +197,7 @@
                   >
                     <template>
                       <el-row
-                        v-if="lp.isSpicyLp"
+                        v-if="lp.isSpicyLp || lp.isPlentyLp"
                         type="flex"
                         style="flex-wrap: wrap"
                       >
@@ -189,7 +227,7 @@
                           ></el-avatar>
                         </div>
                         <span style="color: #555cff">
-                          {{ position.token1.symbol }}/{{
+                          {{ position.token0.symbol }}/{{
                             position.token1.symbol
                           }}
                         </span>
@@ -229,43 +267,6 @@
                           XTZ/{{ position.symbol }}
                         </span>
                       </el-row>
-
-                      <el-row
-                        v-else-if="lp.isPlentyLp"
-                        type="flex"
-                        style="flex-wrap: wrap"
-                      >
-                        <div>
-                          <el-avatar
-                            shape="circle"
-                            :size="25"
-                            style="
-                              position: relative;
-                              border: 3px solid #fff;
-                              vertical-align: middle;
-                            "
-                            :src="position.token1.thumbnailUri"
-                          ></el-avatar>
-                          <el-avatar
-                            :src="position.token2.thumbnailUri"
-                            fit="cover"
-                            shape="circle"
-                            :size="25"
-                            style="
-                              position: relative;
-                              border: 43px solid #fff;
-                              vertical-align: middle;
-                              margin-left: -12px;
-                              margin-right: 10px;
-                            "
-                          ></el-avatar>
-                        </div>
-                        <span style="color: #555cff">
-                          {{ position.token1.symbol }}/{{
-                            position.token2.symbol
-                          }}
-                        </span>
-                      </el-row>
                       <el-row v-else type="flex" style="flex-wrap: wrap">
                         <div>
                           <el-tooltip placement="top" effect="light">
@@ -302,6 +303,7 @@
                   </template>
                   <template
                     v-if="
+                      `${position.lpBalance}`.split('.')[1] &&
                       `${position.lpBalance}`.split('.')[1].startsWith('00')
                     "
                   >
@@ -313,7 +315,7 @@
                   </template>
                 </el-col>
                 <el-col style="text-align: right" :span="4">
-                  <template v-if="lp.isSpicyLp">
+                  <template v-if="lp.isSpicyLp || lp.isPlentyLp">
                     {{
                       vueNumberFormat(position.token0Side, {
                         prefix: "",
@@ -348,7 +350,7 @@
                     style="text-align: right; vertical-align: center"
                     :span="4"
                   >
-                    <template v-if="lp.isSpicyLp">
+                    <template v-if="lp.isSpicyLp || lp.isPlentyLp">
                       {{
                         vueNumberFormat(position.token1Side, {
                           prefix: "",
@@ -391,6 +393,37 @@
                             precision: 2,
                           })
                     }}
+                    <template name="show-full-amount">
+                      <template
+                        v-if="
+                          `${position.totalValue}`.split('.')[1] &&
+                          `${position.totalValue}`.split('.')[1].startsWith('00') &&
+                          !showUsd
+                        "
+                      >
+                        <el-tooltip
+                          :content="`${position.totalValue}`"
+                          placement="top"
+                          ><i class="el-icon-info"></i>
+                        </el-tooltip>
+                      </template>
+
+                      <template
+                        v-if="
+                          `${position.totalValueUsd}`.split('.')[1] &&
+                          `${position.totalValueUsd}`
+                            .split('.')[1]
+                            .startsWith('00') &&
+                          showUsd
+                        "
+                      >
+                        <el-tooltip
+                          :content="`${position.totalValueUsd}`"
+                          placement="top"
+                          ><i class="el-icon-info"></i>
+                        </el-tooltip>
+                      </template>
+                    </template>
                   </el-col>
                 </template>
                 <el-col style="text-align: right" :span="4"> </el-col>

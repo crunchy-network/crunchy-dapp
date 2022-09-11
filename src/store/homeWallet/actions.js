@@ -144,15 +144,18 @@ export default {
       );
       const xtzUsd = await coingecko.getXtzUsdPrice();
 
-      const [quipuswap, vortex, spicyswap] = await Promise.all([
+      const [quipuswap, vortex, spicyswap, plenty] = await Promise.all([
         homeWallet.getQuipuLp(balances, xtzUsd),
         homeWallet.getVortexyLp(balances, xtzUsd, account),
         homeWallet.getSpicySwapLp(balances, xtzUsd),
+        homeWallet.getPlentyLp(balances, xtzUsd),
       ]);
 
       commit("updateQuipuswapLp", quipuswap);
       commit("updateVortexLp", vortex);
       commit("updateSpicyLp", spicyswap);
+      commit("updatePlentyLp", plenty);
+
     } catch (error) {
       console.log("Error", error);
     } finally {
@@ -168,15 +171,17 @@ export default {
       );
       const xtzUsd = await coingecko.getXtzUsdPrice();
 
-      const [quipuswap, vortex, spicyswap] = await Promise.all([
+      const [quipuswap, vortex, spicyswap, plenty] = await Promise.all([
         homeWallet.getQuipuLp(balances, xtzUsd),
         homeWallet.getVortexyLp(balances, xtzUsd, account),
         homeWallet.getSpicySwapLp(balances, xtzUsd),
+        homeWallet.getPlentyLp(balances, xtzUsd),
       ]);
 
       commit("updateQuipuswapLp", quipuswap);
       commit("updateVortexLp", vortex);
       commit("updateSpicyLp", spicyswap);
+      commit("updatePlentyLp", plenty);
     } catch (error) {
       console.log("Error", error);
     }

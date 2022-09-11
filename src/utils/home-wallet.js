@@ -7,9 +7,6 @@ import knownContracts from "../knownContracts.json";
 import tzkt from "./tzkt";
 import { merge } from "lodash";
 
-// const makeReqest = async ({ contract, id }) => {
-//   return axios.get(`${process.env.VUE_APP_TEZTOOLS_API_URL}/token/${contract}${id ? "_" + id : ""}/price`);
-// };
 const getTokenId = (priceObj, token) => {
   if (priceObj) {
     if (priceObj.tokenId !== undefined) {
@@ -756,14 +753,126 @@ export default {
 
         spicy.positions = lp;
 
-        console.log("SPICY", spicy);
-
         return spicy;
       }
     } catch (error) {
       console.log(error);
     }
   },
+
+  async getPlentyLp(balances = [], xtzUsd) {
+    const plenty = {
+      totalValue: 0,
+      totalValueUsd: 0,
+      positionsCount: 0,
+      positions: [],
+    };
+
+    const lp = [];
+
+    try {
+      const { data: plentyCreator } = await axios.get(
+        "https://api.tzkt.io/v1/accounts/tz1NbDzUQCcV2kp3wxdVHVSZEDeq2h97mweW/contracts?limit=10000"
+      );
+
+      const lpBal = balances.filter(
+        (val) =>
+          plentyCreator.find(
+            (contract) => contract.address === val.token?.contract?.address
+          ) && val.token?.metadata?.symbol === "PLP"
+      );
+
+      plenty.positionsCount = lpBal.length;
+
+      for (let i = 0; i < lpBal.length; i++) {
+        const address = lpBal[i].token.contract.address;
+        const { data: lpStorage } = await tzkt.getContractStorage(address);
+        const { data: tokenStorage } = await tzkt.getContractStorage(
+          lpStorage.exchangeAddress
+        );
+
+        const decimals = lpBal[i].token?.metadata?.decimals || 6;
+        console.log(decimals);
+        if (decimals) {
+          const tokenObjkt = {
+            address: address,
+            balance: lpBal[i].balance,
+            lpBalance: new BigNumber(lpBal[i].balance)
+              .div(10 ** decimals)
+              .toFixed(),
+            token0: {
+              address: tokenStorage.token1Address,
+              tokenId: tokenStorage.token1Id,
+            },
+            token1: {
+              address: tokenStorage.token2Address,
+              tokenId: tokenStorage.token2Id,
+            },
+            token0Pool: tokenStorage.token1_pool,
+            token1Pool: tokenStorage.token2_pool,
+            totalSupply: tokenStorage.totalSupply,
+          };
+
+          const { data: token0MetaData } = await axios.get(
+            `https://api.teztools.io/v1/${tokenObjkt.token0.address}/price`
+          );
+          const { data: token1MetaData } = await axios.get(
+            `https://api.teztools.io/v1/${tokenObjkt.token1.address}${
+              tokenObjkt.token1.tokenId ? "_" + tokenObjkt.token1.tokenId : ""
+            }/price`
+          );
+
+          token0MetaData.thumbnailUri = ipfs.transformUri(
+            token0MetaData.thumbnailUri
+          );
+
+          token1MetaData.thumbnailUri = ipfs.transformUri(
+            token1MetaData.thumbnailUri
+          );
+
+          const token0 = new BigNumber(tokenObjkt.balance)
+            .times(tokenObjkt.token0Pool)
+            .div(tokenObjkt.totalSupply);
+
+          const token1 = new BigNumber(tokenObjkt.balance)
+            .times(tokenObjkt.token1Pool)
+            .div(tokenObjkt.totalSupply);
+
+          tokenObjkt.token0Side = token0
+            .div(10 ** token0MetaData.decimals)
+            .toNumber();
+          tokenObjkt.token1Side = token1
+            .div(10 ** token1MetaData.decimals)
+            .toNumber();
+
+          tokenObjkt.totalValue =
+            tokenObjkt.token0Side * token0MetaData.currentPrice +
+            tokenObjkt.token1Side * token1MetaData.currentPrice;
+
+          tokenObjkt.totalValueUsd = tokenObjkt.totalValue * xtzUsd;
+
+          lp.push(
+            merge(
+              { token0: token0MetaData, token1: token1MetaData },
+              tokenObjkt
+            )
+          );
+
+          plenty.totalValue += tokenObjkt.totalValue;
+          plenty.totalValueUsd += tokenObjkt.totalValueUsd;
+        }
+
+        plenty.positions = lp;
+
+        console.log(plenty);
+
+        return plenty;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   handleChrunchBal(arr) {
     return arr.filter(
       (val) => val.contract === process.env.VUE_APP_CONTRACTS_CRUNCH

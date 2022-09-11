@@ -61,6 +61,9 @@ export default {
   updateSpicyLp(state, value) {
     state.lp.spicyswap = { ...state.lp.spicyswap, ...value };
   },
+  updatePlentyLp(state, value) {
+    state.lp.plenty = { ...state.lp.plenty, ...value };
+  },
   updateLpLoading(state, value) {
     state.lp.loading = value;
   },
