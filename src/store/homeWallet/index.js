@@ -70,6 +70,16 @@ export default {
         positionsCount: 0,
         positions: [],
       },
+      spicyswap: {
+        dex: "SpicySwap",
+        isSpicyLp: true,
+        url: "https://spicyswap.xyz/#/app",
+        thumbnailUri: "https://docs.spicyswap.xyz/img/spicy.png",
+        totalValue: 0,
+        totalValueUsd: 0,
+        positionsCount: 0,
+        positions: [],
+      },
     },
     priceFeed: [],
     portfolio: 0,
@@ -149,7 +159,7 @@ export default {
       return [state.crunchyStake, ...orderedStake];
     },
     getLp(state) {
-      return [state.lp.quipuswap, state.lp.vortex];
+      return [state.lp.quipuswap, state.lp.vortex, state.lp.spicyswap];
     },
 
     getLpLoading(state) {

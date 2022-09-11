@@ -1,4 +1,5 @@
 import axios from "axios";
+import coingecko from "../../utils/coingecko";
 import homeWallet from "../../utils/home-wallet";
 import homeWalletStake from "../../utils/home-wallet-stake";
 import teztools from "../../utils/teztools";
@@ -141,14 +142,17 @@ export default {
       const { data: balances } = await axios.get(
         `https://staging.api.tzkt.io/v1/tokens/balances?account=${account}&balance.gt=0&limit=10000&select=token,balance`
       );
+      const xtzUsd = await coingecko.getXtzUsdPrice();
 
-      const [quipuswap, vortex] = await Promise.all([
-        homeWallet.getQuipuLp(balances),
-        homeWallet.getVortexyLp(balances, account),
+      const [quipuswap, vortex, spicyswap] = await Promise.all([
+        homeWallet.getQuipuLp(balances, xtzUsd),
+        homeWallet.getVortexyLp(balances, xtzUsd, account),
+        homeWallet.getSpicySwapLp(balances, xtzUsd),
       ]);
 
       commit("updateQuipuswapLp", quipuswap);
       commit("updateVortexLp", vortex);
+      commit("updateSpicyLp", spicyswap);
     } catch (error) {
       console.log("Error", error);
     } finally {
@@ -162,16 +166,17 @@ export default {
       const { data: balances } = await axios.get(
         `https://staging.api.tzkt.io/v1/tokens/balances?account=${account}&balance.gt=0&limit=10000&select=token,balance`
       );
+      const xtzUsd = await coingecko.getXtzUsdPrice();
 
-      const [quipuswap, vortex] = await Promise.all([
-        homeWallet.getQuipuLp(balances),
-        homeWallet.getVortexyLp(balances, account),
+      const [quipuswap, vortex, spicyswap] = await Promise.all([
+        homeWallet.getQuipuLp(balances, xtzUsd),
+        homeWallet.getVortexyLp(balances, xtzUsd, account),
+        homeWallet.getSpicySwapLp(balances, xtzUsd),
       ]);
 
       commit("updateQuipuswapLp", quipuswap);
       commit("updateVortexLp", vortex);
-
-      commit("updateQuipuswapLp", quipuswap);
+      commit("updateSpicyLp", spicyswap);
     } catch (error) {
       console.log("Error", error);
     }
