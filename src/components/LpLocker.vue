@@ -381,7 +381,6 @@ export default {
     },
 
     activeLockers: function () {
-      console.log(this.lpLockers.data);
       return _.filter(this.lpLockers.data, (l) => l.active === true);
     },
 
