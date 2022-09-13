@@ -142,20 +142,24 @@ export default {
       const { data: balances } = await axios.get(
         `https://staging.api.tzkt.io/v1/tokens/balances?account=${account}&balance.gt=0&limit=10000&select=token,balance`
       );
+
+      const {
+        data: { contracts: priceFeed },
+      } = await axios.get("https://api.teztools.io/v1/prices");
+
       const xtzUsd = await coingecko.getXtzUsdPrice();
 
-      const [quipuswap, vortex, spicyswap, plenty] = await Promise.all([
-        homeWallet.getQuipuLp(balances, xtzUsd),
-        homeWallet.getVortexyLp(balances, xtzUsd, account),
-        homeWallet.getSpicySwapLp(balances, xtzUsd),
-        homeWallet.getPlentyLp(balances, xtzUsd),
+      const [quipuswap, vortex, plenty] = await Promise.all([
+        homeWallet.getQuipuLp(balances, xtzUsd, priceFeed),
+        homeWallet.getVortexyLp(balances, xtzUsd, account, priceFeed),
+        homeWallet.getPlentyLp(balances, xtzUsd, priceFeed),
+        homeWallet.getSpicySwapLp(balances, xtzUsd, priceFeed),
       ]);
 
       commit("updateQuipuswapLp", quipuswap);
       commit("updateVortexLp", vortex);
-      commit("updateSpicyLp", spicyswap);
+      // commit("updateSpicyLp", spicyswap);
       commit("updatePlentyLp", plenty);
-
     } catch (error) {
       console.log("Error", error);
     } finally {
@@ -169,18 +173,21 @@ export default {
       const { data: balances } = await axios.get(
         `https://staging.api.tzkt.io/v1/tokens/balances?account=${account}&balance.gt=0&limit=10000&select=token,balance`
       );
+      const {
+        data: { contracts: priceFeed },
+      } = await axios.get("https://api.teztools.io/v1/prices");
       const xtzUsd = await coingecko.getXtzUsdPrice();
 
-      const [quipuswap, vortex, spicyswap, plenty] = await Promise.all([
-        homeWallet.getQuipuLp(balances, xtzUsd),
-        homeWallet.getVortexyLp(balances, xtzUsd, account),
-        homeWallet.getSpicySwapLp(balances, xtzUsd),
-        homeWallet.getPlentyLp(balances, xtzUsd),
+      const [quipuswap, vortex, plenty] = await Promise.all([
+        homeWallet.getQuipuLp(balances, xtzUsd, priceFeed),
+        homeWallet.getVortexyLp(balances, xtzUsd, account, priceFeed),
+        homeWallet.getPlentyLp(balances, xtzUsd, priceFeed),
+        homeWallet.getSpicySwapLp(balances, xtzUsd, priceFeed),
       ]);
 
       commit("updateQuipuswapLp", quipuswap);
       commit("updateVortexLp", vortex);
-      commit("updateSpicyLp", spicyswap);
+      // commit("updateSpicyLp", spicyswap);
       commit("updatePlentyLp", plenty);
     } catch (error) {
       console.log("Error", error);

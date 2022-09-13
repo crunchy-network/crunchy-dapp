@@ -24,6 +24,38 @@ const getTokenId = (priceObj, token) => {
   return undefined;
 };
 
+const getPrice = (address, tokenId, priceFeed) => {
+  let price = priceFeed.find(
+    (val) =>
+      (val.tokenAddress === address || val.address === address) &&
+      (tokenId && val.tokenId ? val.tokenId.toString() === tokenId : true)
+  );
+
+  if (!price) {
+    price = priceFeed.find(
+      (val) => val.tokenAddress === address || val.address === address
+    );
+
+    if (!price) {
+      axios
+        .get(
+          `https://api.teztools.io/v1/${address}${
+            tokenId ? "_" + tokenId : ""
+          }/price`
+        )
+        .then(({ data }) => {
+          console.log("THEN", data);
+          price = data;
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
+  }
+
+  return price;
+};
+
 const generateObjktQuery = (contractList) => {
   return `
     query contracts {
@@ -383,7 +415,7 @@ export default {
     return { assets };
   },
 
-  async getQuipuLp(balances, xtzUsd) {
+  async getQuipuLp(balances, xtzUsd, priceFeed) {
     const quipu = {
       totalValue: 0,
       totalValueUsd: 0,
@@ -457,15 +489,15 @@ export default {
           totalSupply: tokenStorage.total_supply,
         };
 
-        const { data: tokenMetaData } = await axios.get(
-          `https://api.teztools.io/v1/${tokenObjkt.tokenAddress}${
-            tokenObjkt.tokenId ? "_" + tokenObjkt.tokenId : ""
-          }/price`
+        const tokenMetaData = getPrice(
+          tokenObjkt.tokenAddress,
+          tokenObjkt.tokenId,
+          priceFeed
         );
 
-        tokenMetaData.pairs = tokenMetaData.pairs.find(
-          (val) => val.address === tokenObjkt.address
-        );
+        if (!tokenMetaData) {
+          return;
+        }
 
         tokenMetaData.thumbnailUri = ipfs.transformUri(
           tokenMetaData.thumbnailUri
@@ -505,7 +537,7 @@ export default {
     }
   },
 
-  async getVortexyLp(balances = [], xtzUsd, pkh) {
+  async getVortexyLp(balances = [], xtzUsd, pkh, priceFeed) {
     const vortex = {
       totalValue: 0,
       totalValueUsd: 0,
@@ -598,15 +630,15 @@ export default {
           totalSupply: tokenStorage.lqtTotal,
         };
 
-        const { data: tokenMetaData } = await axios.get(
-          `https://api.teztools.io/v1/${tokenObjkt.tokenAddress}${
-            tokenObjkt.tokenId ? "_" + tokenObjkt.tokenId : ""
-          }/price`
+        const tokenMetaData = getPrice(
+          tokenObjkt.tokenAddress,
+          tokenObjkt.tokenId,
+          priceFeed
         );
 
-        tokenMetaData.pairs = tokenMetaData.pairs.find(
-          (val) => val.address === tokenObjkt.address
-        );
+        if (!tokenMetaData) {
+          return;
+        }
 
         tokenMetaData.thumbnailUri = ipfs.transformUri(
           tokenMetaData.thumbnailUri
@@ -646,7 +678,7 @@ export default {
     }
   },
 
-  async getSpicySwapLp(balances = [], xtzUsd) {
+  async getSpicySwapLp(balances = [], xtzUsd, priceFeed) {
     const decimals = 18;
     const spicy = {
       totalValue: 0,
@@ -662,10 +694,11 @@ export default {
         "https://api.tzkt.io/v1/accounts/KT1PwoZxyv4XkPEGnTqWYvjA1UYiPTgAGyqL/contracts?limit=10000"
       );
 
-      const lpBal = balances.filter((val) =>
-        spicyRouter.find(
-          (contract) => contract.address === val.token?.contract?.address
-        )
+      const lpBal = balances.filter(
+        (val) =>
+          spicyRouter.find(
+            (contract) => contract.address === val.token?.contract?.address
+          ) && val.token?.metadata?.symbol === "SSLP"
       );
 
       spicy.positionsCount = lpBal.length;
@@ -679,88 +712,84 @@ export default {
           data: [lpTotalSupply],
         } = await tzkt.getContractBigMapKeys(
           address,
-          "assets.token_total_supply"
+          "assets.token_total_supply",
+          { select: "value" }
         );
 
-        if (lpTotalSupply) {
-          const tokenObjkt = {
-            address: address,
-            balance: lpBal[i].balance,
-            lpBalance: new BigNumber(lpBal[i].balance)
-              .div(10 ** decimals)
-              .toFixed(),
-            token0: tokenStorage.token0,
-            token1: tokenStorage.token1,
-            token0Pool: tokenStorage.reserve0,
-            token1Pool: tokenStorage.reserve1,
-            totalSupply: lpTotalSupply.value,
-          };
+        const tokenObjkt = {
+          address: address,
+          balance: lpBal[i].balance,
+          lpBalance: new BigNumber(lpBal[i].balance)
+            .div(10 ** decimals)
+            .toFixed(),
+          token0: tokenStorage.token0,
+          token1: tokenStorage.token1,
+          token0Pool: tokenStorage.reserve0,
+          token1Pool: tokenStorage.reserve1,
+          totalSupply: lpTotalSupply,
+        };
 
-          const { data: token0MetaData } = await axios.get(
-            `https://api.teztools.io/v1/${
-              tokenObjkt.token0.fa2_address || tokenObjkt.token0.fa1_address
-            }${
-              tokenObjkt.token0.token_id ? "_" + tokenObjkt.token0.token_id : ""
-            }/price`
-          );
-          const { data: token1MetaData } = await axios.get(
-            `https://api.teztools.io/v1/${
-              tokenObjkt.token1.fa2_address || tokenObjkt.token1.fa1_address
-            }${
-              tokenObjkt.token1.token_id ? "_" + tokenObjkt.token1.token_id : ""
-            }/price`
-          );
+        const token0MetaData = getPrice(
+          tokenObjkt.token0.fa2_address,
+          tokenObjkt.token0.token_id,
+          priceFeed
+        );
+        const token1MetaData = getPrice(
+          tokenObjkt.token1.fa2_address,
+          tokenObjkt.token1.token_id,
+          priceFeed
+        );
 
-          token0MetaData.thumbnailUri = ipfs.transformUri(
-            token0MetaData.thumbnailUri
-          );
-
-          token1MetaData.thumbnailUri = ipfs.transformUri(
-            token1MetaData.thumbnailUri
-          );
-
-          const token0 = new BigNumber(tokenObjkt.balance)
-            .times(tokenObjkt.token0Pool)
-            .div(tokenObjkt.totalSupply);
-
-          const token1 = new BigNumber(tokenObjkt.balance)
-            .times(tokenObjkt.token1Pool)
-            .div(tokenObjkt.totalSupply);
-
-          tokenObjkt.token0Side = token0
-            .div(10 ** token0MetaData.decimals)
-            .toNumber();
-          tokenObjkt.token1Side = token1
-            .div(10 ** token1MetaData.decimals)
-            .toNumber();
-
-          tokenObjkt.totalValue =
-            tokenObjkt.token0Side * token0MetaData.currentPrice +
-            tokenObjkt.token1Side * token1MetaData.currentPrice;
-
-          tokenObjkt.totalValueUsd = tokenObjkt.totalValue * xtzUsd;
-
-          lp.push(
-            merge(
-              { token0: token0MetaData, token1: token1MetaData },
-              tokenObjkt
-            )
-          );
-
-          spicy.totalValue += tokenObjkt.totalValue;
-          spicy.totalValueUsd += tokenObjkt.totalValueUsd;
+        if (!token0MetaData || !token1MetaData) {
+          return;
         }
 
-        spicy.positions = lp;
+        token0MetaData.thumbnailUri = ipfs.transformUri(
+          token0MetaData.thumbnailUri
+        );
 
-        return spicy;
+        token1MetaData.thumbnailUri = ipfs.transformUri(
+          token1MetaData.thumbnailUri
+        );
+
+        const token0 = new BigNumber(tokenObjkt.balance)
+          .times(tokenObjkt.token0Pool)
+          .div(tokenObjkt.totalSupply);
+
+        const token1 = new BigNumber(tokenObjkt.balance)
+          .times(tokenObjkt.token1Pool)
+          .div(tokenObjkt.totalSupply);
+
+        tokenObjkt.token0Side = token0
+          .div(10 ** token0MetaData.decimals)
+          .toNumber();
+        tokenObjkt.token1Side = token1
+          .div(10 ** token1MetaData.decimals)
+          .toNumber();
+
+        tokenObjkt.totalValue =
+          tokenObjkt.token0Side * token0MetaData.currentPrice +
+          tokenObjkt.token1Side * token1MetaData.currentPrice;
+
+        tokenObjkt.totalValueUsd = tokenObjkt.totalValue * xtzUsd;
+
+        lp.push(
+          merge({ token0: token0MetaData, token1: token1MetaData }, tokenObjkt)
+        );
+
+        spicy.totalValue += tokenObjkt.totalValue;
+        spicy.totalValueUsd += tokenObjkt.totalValueUsd;
       }
+
+      spicy.positions = lp;
+
+      return spicy;
     } catch (error) {
       console.log(error);
     }
   },
 
-  async getPlentyLp(balances = [], xtzUsd) {
+  async getPlentyLp(balances = [], xtzUsd, priceFeed) {
     const plenty = {
       totalValue: 0,
       totalValueUsd: 0,
@@ -813,14 +842,20 @@ export default {
             totalSupply: tokenStorage.totalSupply,
           };
 
-          const { data: token0MetaData } = await axios.get(
-            `https://api.teztools.io/v1/${tokenObjkt.token0.address}/price`
+          const token0MetaData = getPrice(
+            tokenObjkt.token0.address,
+            tokenObjkt.token0.tokenId,
+            priceFeed
           );
-          const { data: token1MetaData } = await axios.get(
-            `https://api.teztools.io/v1/${tokenObjkt.token1.address}${
-              tokenObjkt.token1.tokenId ? "_" + tokenObjkt.token1.tokenId : ""
-            }/price`
+          const token1MetaData = getPrice(
+            tokenObjkt.token1.address,
+            tokenObjkt.token1.tokenId,
+            priceFeed
           );
+
+          if (!token0MetaData || !token1MetaData) {
+            return;
+          }
 
           token0MetaData.thumbnailUri = ipfs.transformUri(
             token0MetaData.thumbnailUri
@@ -861,13 +896,10 @@ export default {
           plenty.totalValue += tokenObjkt.totalValue;
           plenty.totalValueUsd += tokenObjkt.totalValueUsd;
         }
-
-        plenty.positions = lp;
-
-        console.log(plenty);
-
-        return plenty;
       }
+
+      plenty.positions = lp;
+      return plenty;
     } catch (error) {
       console.log(error);
     }

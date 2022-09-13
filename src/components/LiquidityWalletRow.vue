@@ -397,7 +397,9 @@
                       <template
                         v-if="
                           `${position.totalValue}`.split('.')[1] &&
-                          `${position.totalValue}`.split('.')[1].startsWith('00') &&
+                          `${position.totalValue}`
+                            .split('.')[1]
+                            .startsWith('00') &&
                           !showUsd
                         "
                       >

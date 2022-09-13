@@ -168,7 +168,7 @@ export default {
 
   created() {
     setInterval(() => {
-      this.softLoadAllLiquidity();
+      this.softLoadAllLiquidity(this.$route.params.walletAddress);
     }, 1000 * 60 * 5);
   },
 
