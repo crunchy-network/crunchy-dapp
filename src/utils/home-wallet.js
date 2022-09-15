@@ -474,37 +474,35 @@ export default {
         );
 
         if (!tokenMetaData) {
-          return;
+          tokenMetaData.thumbnailUri = ipfs.transformUri(
+            tokenMetaData.thumbnailUri
+          );
+
+          const xtzSide = new BigNumber(tokenObjkt.balance)
+            .times(tokenObjkt.tezPool)
+            .div(tokenObjkt.totalSupply);
+
+          const tokenSide = new BigNumber(tokenObjkt.balance)
+            .times(tokenObjkt.tokenPool)
+            .div(tokenObjkt.totalSupply);
+
+          tokenObjkt.xtzSide = xtzSide.div(1e6).toNumber();
+
+          tokenObjkt.xtzSideUsd = tokenObjkt.xtzSide * xtzUsd;
+
+          tokenObjkt.tokenSide = tokenSide
+            .div(10 ** tokenMetaData.decimals)
+            .toNumber();
+
+          tokenObjkt.totalValue = tokenObjkt.xtzSide * 2;
+
+          tokenObjkt.totalValueUsd = tokenObjkt.totalValue * xtzUsd;
+
+          lp.push(merge(tokenMetaData, tokenObjkt));
+
+          quipu.totalValue += tokenObjkt.totalValue;
+          quipu.totalValueUsd += tokenObjkt.totalValueUsd;
         }
-
-        tokenMetaData.thumbnailUri = ipfs.transformUri(
-          tokenMetaData.thumbnailUri
-        );
-
-        const xtzSide = new BigNumber(tokenObjkt.balance)
-          .times(tokenObjkt.tezPool)
-          .div(tokenObjkt.totalSupply);
-
-        const tokenSide = new BigNumber(tokenObjkt.balance)
-          .times(tokenObjkt.tokenPool)
-          .div(tokenObjkt.totalSupply);
-
-        tokenObjkt.xtzSide = xtzSide.div(1e6).toNumber();
-
-        tokenObjkt.xtzSideUsd = tokenObjkt.xtzSide * xtzUsd;
-
-        tokenObjkt.tokenSide = tokenSide
-          .div(10 ** tokenMetaData.decimals)
-          .toNumber();
-
-        tokenObjkt.totalValue = tokenObjkt.xtzSide * 2;
-
-        tokenObjkt.totalValueUsd = tokenObjkt.totalValue * xtzUsd;
-
-        lp.push(merge(tokenMetaData, tokenObjkt));
-
-        quipu.totalValue += tokenObjkt.totalValue;
-        quipu.totalValueUsd += tokenObjkt.totalValueUsd;
       }
 
       quipu.positions = lp;
@@ -613,38 +611,36 @@ export default {
           priceFeed
         );
 
-        if (!tokenMetaData) {
-          return;
+        if (tokenMetaData) {
+          tokenMetaData.thumbnailUri = ipfs.transformUri(
+            tokenMetaData.thumbnailUri
+          );
+
+          const xtzSide = new BigNumber(tokenObjkt.balance)
+            .times(tokenObjkt.tezPool)
+            .div(tokenObjkt.totalSupply);
+
+          const tokenSide = new BigNumber(tokenObjkt.balance)
+            .times(tokenObjkt.tokenPool)
+            .div(tokenObjkt.totalSupply);
+
+          tokenObjkt.xtzSide = xtzSide.div(1e6).toNumber();
+
+          tokenObjkt.xtzSideUsd = tokenObjkt.xtzSide * xtzUsd;
+
+          tokenObjkt.tokenSide = tokenSide
+            .div(10 ** tokenMetaData.decimals)
+            .toNumber();
+
+          tokenObjkt.totalValue = tokenObjkt.xtzSide * 2;
+
+          tokenObjkt.totalValueUsd = tokenObjkt.totalValue * xtzUsd;
+
+          lp.push(merge(tokenMetaData, tokenObjkt));
+
+          vortex.totalValue += tokenObjkt.totalValue;
+          vortex.totalValueUsd += tokenObjkt.totalValueUsd;
         }
-
-        tokenMetaData.thumbnailUri = ipfs.transformUri(
-          tokenMetaData.thumbnailUri
-        );
-
-        const xtzSide = new BigNumber(tokenObjkt.balance)
-          .times(tokenObjkt.tezPool)
-          .div(tokenObjkt.totalSupply);
-
-        const tokenSide = new BigNumber(tokenObjkt.balance)
-          .times(tokenObjkt.tokenPool)
-          .div(tokenObjkt.totalSupply);
-
-        tokenObjkt.xtzSide = xtzSide.div(1e6).toNumber();
-
-        tokenObjkt.xtzSideUsd = tokenObjkt.xtzSide * xtzUsd;
-
-        tokenObjkt.tokenSide = tokenSide
-          .div(10 ** tokenMetaData.decimals)
-          .toNumber();
-
-        tokenObjkt.totalValue = tokenObjkt.xtzSide * 2;
-
-        tokenObjkt.totalValueUsd = tokenObjkt.totalValue * xtzUsd;
-
-        lp.push(merge(tokenMetaData, tokenObjkt));
-
-        vortex.totalValue += tokenObjkt.totalValue;
-        vortex.totalValueUsd += tokenObjkt.totalValueUsd;
       }
 
       vortex.positions = lp;
@@ -719,47 +715,46 @@ export default {
           priceFeed
         );
 
-        if (!token0MetaData || !token1MetaData) {
-          !token0MetaData
-            ? console.log("address", tokenObjkt.token0.fa2_address)
-            : console.log("address", tokenObjkt.token1.fa2_address);
+        if (token0MetaData && token1MetaData) {
+          token0MetaData.thumbnailUri = ipfs.transformUri(
+            token0MetaData.thumbnailUri
+          );
+
+          token1MetaData.thumbnailUri = ipfs.transformUri(
+            token1MetaData.thumbnailUri
+          );
+
+          const token0 = new BigNumber(tokenObjkt.balance)
+            .times(tokenObjkt.token0Pool)
+            .div(tokenObjkt.totalSupply);
+
+          const token1 = new BigNumber(tokenObjkt.balance)
+            .times(tokenObjkt.token1Pool)
+            .div(tokenObjkt.totalSupply);
+
+          tokenObjkt.token0Side = token0
+            .div(10 ** token0MetaData.decimals)
+            .toNumber();
+          tokenObjkt.token1Side = token1
+            .div(10 ** token1MetaData.decimals)
+            .toNumber();
+
+          tokenObjkt.totalValue =
+            tokenObjkt.token0Side * token0MetaData.currentPrice +
+            tokenObjkt.token1Side * token1MetaData.currentPrice;
+
+          tokenObjkt.totalValueUsd = tokenObjkt.totalValue * xtzUsd;
+
+          lp.push(
+            merge(
+              { token0: token0MetaData, token1: token1MetaData },
+              tokenObjkt
+            )
+          );
+
+          spicy.totalValue += tokenObjkt.totalValue;
+          spicy.totalValueUsd += tokenObjkt.totalValueUsd;
         }
-
-        token0MetaData.thumbnailUri = ipfs.transformUri(
-          token0MetaData.thumbnailUri
-        );
-
-        token1MetaData.thumbnailUri = ipfs.transformUri(
-          token1MetaData.thumbnailUri
-        );
-
-        const token0 = new BigNumber(tokenObjkt.balance)
-          .times(tokenObjkt.token0Pool)
-          .div(tokenObjkt.totalSupply);
-
-        const token1 = new BigNumber(tokenObjkt.balance)
-          .times(tokenObjkt.token1Pool)
-          .div(tokenObjkt.totalSupply);
-
-        tokenObjkt.token0Side = token0
-          .div(10 ** token0MetaData.decimals)
-          .toNumber();
-        tokenObjkt.token1Side = token1
-          .div(10 ** token1MetaData.decimals)
-          .toNumber();
-
-        tokenObjkt.totalValue =
-          tokenObjkt.token0Side * token0MetaData.currentPrice +
-          tokenObjkt.token1Side * token1MetaData.currentPrice;
-
-        tokenObjkt.totalValueUsd = tokenObjkt.totalValue * xtzUsd;
-
-        lp.push(
-          merge({ token0: token0MetaData, token1: token1MetaData }, tokenObjkt)
-        );
-
-        spicy.totalValue += tokenObjkt.totalValue;
-        spicy.totalValueUsd += tokenObjkt.totalValueUsd;
       }
 
       spicy.positions = lp;
@@ -803,41 +798,37 @@ export default {
 
         const decimals = lpBal[i].token?.metadata?.decimals || 6;
 
-        if (decimals) {
-          const tokenObjkt = {
-            address: address,
-            balance: lpBal[i].balance,
-            lpBalance: new BigNumber(lpBal[i].balance)
-              .div(10 ** decimals)
-              .toFixed(),
-            token0: {
-              address: tokenStorage.token1Address,
-              tokenId: tokenStorage.token1Id,
-            },
-            token1: {
-              address: tokenStorage.token2Address,
-              tokenId: tokenStorage.token2Id,
-            },
-            token0Pool: tokenStorage.token1_pool,
-            token1Pool: tokenStorage.token2_pool,
-            totalSupply: tokenStorage.totalSupply,
-          };
+        const tokenObjkt = {
+          address: address,
+          balance: lpBal[i].balance,
+          lpBalance: new BigNumber(lpBal[i].balance)
+            .div(10 ** decimals)
+            .toFixed(),
+          token0: {
+            address: tokenStorage.token1Address,
+            tokenId: tokenStorage.token1Id,
+          },
+          token1: {
+            address: tokenStorage.token2Address,
+            tokenId: tokenStorage.token2Id,
+          },
+          token0Pool: tokenStorage.token1_pool,
+          token1Pool: tokenStorage.token2_pool,
+          totalSupply: tokenStorage.totalSupply,
+        };
 
-          const token0MetaData = getPrice(
-            tokenObjkt.token0.address,
-            tokenObjkt.token0.tokenId,
-            priceFeed
-          );
-          const token1MetaData = getPrice(
-            tokenObjkt.token1.address,
-            tokenObjkt.token1.tokenId,
-            priceFeed
-          );
+        const token0MetaData = getPrice(
+          tokenObjkt.token0.address,
+          tokenObjkt.token0.tokenId,
+          priceFeed
+        );
+        const token1MetaData = getPrice(
+          tokenObjkt.token1.address,
+          tokenObjkt.token1.tokenId,
+          priceFeed
+        );
 
-          if (!token0MetaData || !token1MetaData) {
-            return;
-          }
-
+        if (token0MetaData && token1MetaData) {
           token0MetaData.thumbnailUri = ipfs.transformUri(
             token0MetaData.thumbnailUri
           );

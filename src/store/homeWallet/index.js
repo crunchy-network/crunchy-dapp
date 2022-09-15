@@ -174,7 +174,7 @@ export default {
         state.lp.quipuswap,
         state.lp.plenty,
         state.lp.vortex,
-        // state.lp.spicyswap,
+        state.lp.spicyswap,
       ];
     },
 

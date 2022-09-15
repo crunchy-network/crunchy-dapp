@@ -149,7 +149,7 @@ export default {
 
       const xtzUsd = await coingecko.getXtzUsdPrice();
 
-      const [quipuswap, vortex, plenty] = await Promise.all([
+      const [quipuswap, vortex, plenty, spicyswap] = await Promise.all([
         homeWallet.getQuipuLp(balances, xtzUsd, priceFeed),
         homeWallet.getVortexyLp(balances, xtzUsd, account, priceFeed),
         homeWallet.getPlentyLp(balances, xtzUsd, priceFeed),
@@ -158,7 +158,7 @@ export default {
 
       commit("updateQuipuswapLp", quipuswap);
       commit("updateVortexLp", vortex);
-      // commit("updateSpicyLp", spicyswap);
+      commit("updateSpicyLp", spicyswap);
       commit("updatePlentyLp", plenty);
     } catch (error) {
       console.log("Error", error);
@@ -178,7 +178,7 @@ export default {
       } = await axios.get("https://api.teztools.io/v1/prices");
       const xtzUsd = await coingecko.getXtzUsdPrice();
 
-      const [quipuswap, vortex, plenty] = await Promise.all([
+      const [quipuswap, vortex, plenty, spicyswap] = await Promise.all([
         homeWallet.getQuipuLp(balances, xtzUsd, priceFeed),
         homeWallet.getVortexyLp(balances, xtzUsd, account, priceFeed),
         homeWallet.getPlentyLp(balances, xtzUsd, priceFeed),
@@ -187,7 +187,7 @@ export default {
 
       commit("updateQuipuswapLp", quipuswap);
       commit("updateVortexLp", vortex);
-      // commit("updateSpicyLp", spicyswap);
+      commit("updateSpicyLp", spicyswap);
       commit("updatePlentyLp", plenty);
     } catch (error) {
       console.log("Error", error);
