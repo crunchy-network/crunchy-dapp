@@ -25,33 +25,13 @@ const getTokenId = (priceObj, token) => {
 };
 
 const getPrice = (address, tokenId, priceFeed) => {
-  let price = priceFeed.find(
+  const price = priceFeed.find(
     (val) =>
-      (val.tokenAddress === address || val.address === address) &&
-      (tokenId && val.tokenId ? val.tokenId.toString() === tokenId : true)
+      val.tokenAddress === address &&
+      (tokenId !== undefined && val.tokenId !== undefined
+        ? val.tokenId.toString() === tokenId
+        : true)
   );
-
-  if (!price) {
-    price = priceFeed.find(
-      (val) => val.tokenAddress === address || val.address === address
-    );
-
-    if (!price) {
-      axios
-        .get(
-          `https://api.teztools.io/v1/${address}${
-            tokenId ? "_" + tokenId : ""
-          }/price`
-        )
-        .then(({ data }) => {
-          console.log("THEN", data);
-          price = data;
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    }
-  }
 
   return price;
 };
@@ -468,8 +448,6 @@ export default {
           )
       );
 
-      quipu.positionsCount = lpBal.length;
-
       for (let i = 0; i < lpBal.length; i++) {
         const address = lpBal[i].token.contract.address;
 
@@ -530,6 +508,7 @@ export default {
       }
 
       quipu.positions = lp;
+      quipu.positionsCount = lp.length;
 
       return quipu;
     } catch (error) {
@@ -608,8 +587,6 @@ export default {
         });
       }
 
-      vortex.positionsCount = lpBal.length;
-
       for (let i = 0; i < lpBal.length; i++) {
         const { data: tkContract } = await tzkt.getContractStorage(
           lpBal[i].token.contract.address
@@ -671,6 +648,7 @@ export default {
       }
 
       vortex.positions = lp;
+      vortex.positionsCount = lp.length;
 
       return vortex;
     } catch (error) {
@@ -701,8 +679,6 @@ export default {
           ) && val.token?.metadata?.symbol === "SSLP"
       );
 
-      spicy.positionsCount = lpBal.length;
-
       for (let i = 0; i < lpBal.length; i++) {
         const address = lpBal[i].token.contract.address;
 
@@ -715,6 +691,9 @@ export default {
           "assets.token_total_supply",
           { select: "value" }
         );
+
+        // console.log(`Contract: ${address}`);
+        // console.log(`LP Total: ${lpTotalSupply}`);
 
         const tokenObjkt = {
           address: address,
@@ -741,7 +720,9 @@ export default {
         );
 
         if (!token0MetaData || !token1MetaData) {
-          return;
+          !token0MetaData
+            ? console.log("address", tokenObjkt.token0.fa2_address)
+            : console.log("address", tokenObjkt.token1.fa2_address);
         }
 
         token0MetaData.thumbnailUri = ipfs.transformUri(
@@ -782,7 +763,9 @@ export default {
       }
 
       spicy.positions = lp;
+      spicy.positionsCount = lp.length;
 
+      console.log(`SPICY: ${spicy}`);
       return spicy;
     } catch (error) {
       console.log(error);
@@ -811,8 +794,6 @@ export default {
           ) && val.token?.metadata?.symbol === "PLP"
       );
 
-      plenty.positionsCount = lpBal.length;
-
       for (let i = 0; i < lpBal.length; i++) {
         const address = lpBal[i].token.contract.address;
         const { data: lpStorage } = await tzkt.getContractStorage(address);
@@ -821,7 +802,7 @@ export default {
         );
 
         const decimals = lpBal[i].token?.metadata?.decimals || 6;
-        console.log(decimals);
+
         if (decimals) {
           const tokenObjkt = {
             address: address,
@@ -899,6 +880,8 @@ export default {
       }
 
       plenty.positions = lp;
+      plenty.positionsCount = lp.length;
+
       return plenty;
     } catch (error) {
       console.log(error);
