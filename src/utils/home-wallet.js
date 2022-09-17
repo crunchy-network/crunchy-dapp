@@ -473,7 +473,7 @@ export default {
           priceFeed
         );
 
-        if (!tokenMetaData) {
+        if (tokenMetaData) {
           tokenMetaData.thumbnailUri = ipfs.transformUri(
             tokenMetaData.thumbnailUri
           );
