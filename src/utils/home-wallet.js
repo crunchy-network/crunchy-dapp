@@ -879,6 +879,89 @@ export default {
     }
   },
 
+  async getBakersLp(balances = [], xtzUsd, priceFeed) {
+    const sirius = {
+      totalValue: 0,
+      totalValueUsd: 0,
+      positionsCount: 0,
+      positions: [],
+    };
+
+    const lp = [];
+
+    try {
+      const lpBal = balances.filter(
+        (val) =>
+          val.token?.contract?.address ===
+          "KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo"
+      );
+
+      const { data: tokenStorage } = await tzkt.getContractStorage(
+        "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5"
+      );
+
+      for (let i = 0; i < lpBal.length; i++) {
+        const address = lpBal[i].token.contract.address;
+
+        const tokenObjkt = {
+          address: address,
+          balance: lpBal[i].balance,
+          lpBalance: new BigNumber(lpBal[i].balance).toNumber(),
+          tokenAddress: tokenStorage.tokenAddress,
+          tezPool: tokenStorage.xtzPool,
+          tokenPool: tokenStorage.tokenPool,
+          totalSupply: tokenStorage.lqtTotal,
+        };
+
+        console.log(tokenObjkt);
+
+        const tokenMetaData = getPrice(
+          tokenObjkt.tokenAddress,
+          undefined,
+          priceFeed
+        );
+
+        if (tokenMetaData) {
+          tokenMetaData.thumbnailUri = ipfs.transformUri(
+            tokenMetaData.thumbnailUri
+          );
+
+          const xtzSide = new BigNumber(tokenObjkt.balance)
+            .times(tokenObjkt.tezPool)
+            .div(tokenObjkt.totalSupply);
+
+          const tokenSide = new BigNumber(tokenObjkt.balance)
+            .times(tokenObjkt.tokenPool)
+            .div(tokenObjkt.totalSupply);
+
+          tokenObjkt.xtzSide = xtzSide.div(1e6).toNumber();
+
+          tokenObjkt.xtzSideUsd = tokenObjkt.xtzSide * xtzUsd;
+
+          tokenObjkt.tokenSide = tokenSide
+            .div(10 ** tokenMetaData.decimals)
+            .toNumber();
+
+          tokenObjkt.totalValue = tokenObjkt.xtzSide * 2;
+
+          tokenObjkt.totalValueUsd = tokenObjkt.totalValue * xtzUsd;
+
+          lp.push(merge(tokenMetaData, tokenObjkt));
+
+          sirius.totalValue += tokenObjkt.totalValue;
+          sirius.totalValueUsd += tokenObjkt.totalValueUsd;
+        }
+      }
+
+      sirius.positions = lp;
+      sirius.positionsCount = lp.length;
+      console.log("SIRIUS", sirius);
+      return sirius;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   handleChrunchBal(arr) {
     return arr.filter(
       (val) => val.contract === process.env.VUE_APP_CONTRACTS_CRUNCH

@@ -64,6 +64,9 @@ export default {
   updatePlentyLp(state, value) {
     state.lp.plenty = { ...state.lp.plenty, ...value };
   },
+  updateSiriusLp(state, value) {
+    state.lp.sirius = { ...state.lp.sirius, ...value };
+  },
   updateLpLoading(state, value) {
     state.lp.loading = value;
   },

@@ -91,6 +91,17 @@ export default {
         positionsCount: 0,
         positions: [],
       },
+      sirius: {
+        dex: "SIRS",
+        isSIRS: true,
+        url: "https://tzkt.io/KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5/dex",
+        thumbnailUri:
+          "https://res.cloudinary.com/melvin-manni/image/upload/v1663429978/clon2gn98sk8r4sv4ks6.png",
+        totalValue: 0,
+        totalValueUsd: 0,
+        positionsCount: 0,
+        positions: [],
+      },
     },
     priceFeed: [],
     portfolio: 0,
@@ -117,7 +128,7 @@ export default {
       return state.loadingNfts;
     },
     getLoadingStake(state) {
-      return true;
+      return state.loadingStake;
     },
     getStatsValues(state) {
       let lp = 0;
@@ -171,6 +182,7 @@ export default {
     },
     getLp(state) {
       return [
+        state.lp.sirius,
         state.lp.quipuswap,
         state.lp.plenty,
         state.lp.vortex,
