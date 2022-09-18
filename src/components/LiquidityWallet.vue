@@ -176,7 +176,7 @@ export default {
     this.paginationHandler();
   },
   methods: {
-    ...mapActions([" softLoadAllLiquidity"]),
+    ...mapActions(["softLoadAllLiquidity"]),
     paginationHandler() {
       this.pages = Math.ceil(this.getLp.length / this.displayCount);
       this.handleVisibleData();

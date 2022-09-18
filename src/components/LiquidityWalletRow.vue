@@ -234,7 +234,9 @@
                       </el-row>
 
                       <el-row
-                        v-else-if="lp.isQuipuLp || lp.isVortexLp"
+                        v-else-if="
+                          lp.isQuipuLp || lp.isVortexLp || lp.isSiriusLp
+                        "
                         type="flex"
                         style="flex-wrap: wrap"
                       >
@@ -325,7 +327,21 @@
                         precision: 2,
                       })
                     }}
+
+                    <template
+                      v-if="
+                        `${position.token0Side}`.split('.')[1] &&
+                        `${position.token0Side}`.split('.')[1].startsWith('00')
+                      "
+                    >
+                      <el-tooltip
+                        :content="`${position.token0Side}`"
+                        placement="top"
+                        ><i class="el-icon-info"></i>
+                      </el-tooltip>
+                    </template>
                   </template>
+
                   <template v-else>
                     {{
                       !showUsd
@@ -343,6 +359,34 @@
                             precision: 2,
                           })
                     }}
+
+                    <template name="show-full-amount-xtzSide">
+                      <template
+                        v-if="
+                          `${lp.xtzSide}`.split('.')[1] &&
+                          `${lp.xtzSide}`.split('.')[1].startsWith('00') &&
+                          !showUsd
+                        "
+                      >
+                        <el-tooltip :content="`${lp.xtzSide}`" placement="top"
+                          ><i class="el-icon-info"></i>
+                        </el-tooltip>
+                      </template>
+
+                      <template
+                        v-if="
+                          `${lp.xtzSideUsd}`.split('.')[1] &&
+                          `${lp.xtzSideUsd}`.split('.')[1].startsWith('00') &&
+                          showUsd
+                        "
+                      >
+                        <el-tooltip
+                          :content="`${lp.xtzSideUsd}`"
+                          placement="top"
+                          ><i class="el-icon-info"></i>
+                        </el-tooltip>
+                      </template>
+                    </template>
                   </template>
                 </el-col>
                 <template aria-describedby=" Reward Value">
@@ -360,6 +404,20 @@
                           precision: 2,
                         })
                       }}
+                      <template
+                        v-if="
+                          `${position.token1Side}`.split('.')[1] &&
+                          `${position.token1Side}`
+                            .split('.')[1]
+                            .startsWith('00')
+                        "
+                      >
+                        <el-tooltip
+                          :content="`${position.token1Side}`"
+                          placement="top"
+                          ><i class="el-icon-info"></i>
+                        </el-tooltip>
+                      </template>
                     </template>
 
                     <template v-else>
@@ -372,6 +430,18 @@
                           precision: 2,
                         })
                       }}
+                      <template
+                        v-if="
+                          `${position.tokenSide}`.split('.')[1] &&
+                          `${position.tokenSide}`.split('.')[1].startsWith('00')
+                        "
+                      >
+                        <el-tooltip
+                          :content="`${position.tokenSide}`"
+                          placement="top"
+                          ><i class="el-icon-info"></i>
+                        </el-tooltip>
+                      </template>
                     </template>
                   </el-col>
                 </template>
