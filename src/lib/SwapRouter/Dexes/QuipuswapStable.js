@@ -33,8 +33,7 @@ function getSwapOutput(input, pair) {
 
 const buildDexOperation = (dex, trade, walletAddres, tezos) => {
   const input = convertToMuTez(trade.input, trade.a);
-  const output = convertToMuTez(trade.output, trade.b);
-  console.log(dex);
+  const output = convertToMuTez(trade.minOut, trade.b);
   const transfers = [
     dex.contract.methods
       .swap(
