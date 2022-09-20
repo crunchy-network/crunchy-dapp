@@ -6,9 +6,7 @@ import teztools from "./teztools";
 import knownContracts from "../knownContracts.json";
 import tzkt from "./tzkt";
 import { merge } from "lodash";
-// const makeReqest = async ({ contract, id }) => {
-//   return axios.get(`${process.env.VUE_APP_TEZTOOLS_API_URL}/token/${contract}${id ? "_" + id : ""}/price`);
-// };
+
 const getTokenId = (priceObj, token) => {
   if (priceObj) {
     if (priceObj.tokenId !== undefined) {
@@ -24,6 +22,18 @@ const getTokenId = (priceObj, token) => {
     }
   }
   return undefined;
+};
+
+const getPrice = (address, tokenId, priceFeed) => {
+  const price = priceFeed.find(
+    (val) =>
+      val.tokenAddress === address &&
+      (tokenId !== undefined && val.tokenId !== undefined
+        ? val.tokenId.toString() === tokenId
+        : true)
+  );
+
+  return price;
 };
 
 const generateObjktQuery = (contractList) => {
@@ -385,7 +395,7 @@ export default {
     return { assets };
   },
 
-  async getQuipuLp(balances) {
+  async getQuipuLp(balances, xtzUsd, priceFeed) {
     const quipu = {
       totalValue: 0,
       totalValueUsd: 0,
@@ -438,8 +448,6 @@ export default {
           )
       );
 
-      quipu.positionsCount = lpBal.length;
-
       for (let i = 0; i < lpBal.length; i++) {
         const address = lpBal[i].token.contract.address;
 
@@ -459,49 +467,46 @@ export default {
           totalSupply: tokenStorage.total_supply,
         };
 
-        const { data: tokenMetaData } = await axios.get(
-          `https://api.teztools.io/v1/${tokenObjkt.tokenAddress}${
-            tokenObjkt.tokenId ? "_" + tokenObjkt.tokenId : ""
-          }/price`
+        const tokenMetaData = getPrice(
+          tokenObjkt.tokenAddress,
+          tokenObjkt.tokenId,
+          priceFeed
         );
 
-        tokenMetaData.pairs = tokenMetaData.pairs.find(
-          (val) => val.address === tokenObjkt.address
-        );
+        if (tokenMetaData) {
+          tokenMetaData.thumbnailUri = ipfs.transformUri(
+            tokenMetaData.thumbnailUri
+          );
 
-        tokenMetaData.thumbnailUri = ipfs.transformUri(
-          tokenMetaData.thumbnailUri
-        );
+          const xtzSide = new BigNumber(tokenObjkt.balance)
+            .times(tokenObjkt.tezPool)
+            .div(tokenObjkt.totalSupply);
 
-        const xtzUsd = await coingecko.getXtzUsdPrice();
+          const tokenSide = new BigNumber(tokenObjkt.balance)
+            .times(tokenObjkt.tokenPool)
+            .div(tokenObjkt.totalSupply);
 
-        const xtzSide = new BigNumber(tokenObjkt.balance)
-          .times(tokenObjkt.tezPool)
-          .div(tokenObjkt.totalSupply);
+          tokenObjkt.xtzSide = xtzSide.div(1e6).toNumber();
 
-        const tokenSide = new BigNumber(tokenObjkt.balance)
-          .times(tokenObjkt.tokenPool)
-          .div(tokenObjkt.totalSupply);
+          tokenObjkt.xtzSideUsd = tokenObjkt.xtzSide * xtzUsd;
 
-        tokenObjkt.xtzSide = xtzSide.div(1e6).toNumber();
+          tokenObjkt.tokenSide = tokenSide
+            .div(10 ** tokenMetaData.decimals)
+            .toNumber();
 
-        tokenObjkt.xtzSideUsd = tokenObjkt.xtzSide * xtzUsd;
+          tokenObjkt.totalValue = tokenObjkt.xtzSide * 2;
 
-        tokenObjkt.tokenSide = tokenSide
-          .div(10 ** tokenMetaData.decimals)
-          .toNumber();
+          tokenObjkt.totalValueUsd = tokenObjkt.totalValue * xtzUsd;
 
-        tokenObjkt.totalValue = tokenObjkt.xtzSide * 2;
+          lp.push(merge(tokenMetaData, tokenObjkt));
 
-        tokenObjkt.totalValueUsd = tokenObjkt.totalValue * xtzUsd;
-
-        lp.push(merge(tokenMetaData, tokenObjkt));
-
-        quipu.totalValue += tokenObjkt.totalValue;
-        quipu.totalValueUsd += tokenObjkt.totalValueUsd;
+          quipu.totalValue += tokenObjkt.totalValue;
+          quipu.totalValueUsd += tokenObjkt.totalValueUsd;
+        }
       }
 
       quipu.positions = lp;
+      quipu.positionsCount = lp.length;
 
       return quipu;
     } catch (error) {
@@ -509,7 +514,7 @@ export default {
     }
   },
 
-  async getVortexyLp(balances = [], pkh) {
+  async getVortexyLp(balances = [], xtzUsd, pkh, priceFeed) {
     const vortex = {
       totalValue: 0,
       totalValueUsd: 0,
@@ -580,8 +585,6 @@ export default {
         });
       }
 
-      vortex.positionsCount = lpBal.length;
-
       for (let i = 0; i < lpBal.length; i++) {
         const { data: tkContract } = await tzkt.getContractStorage(
           lpBal[i].token.contract.address
@@ -602,54 +605,358 @@ export default {
           totalSupply: tokenStorage.lqtTotal,
         };
 
-        const { data: tokenMetaData } = await axios.get(
-          `https://api.teztools.io/v1/${tokenObjkt.tokenAddress}${
-            tokenObjkt.tokenId ? "_" + tokenObjkt.tokenId : ""
-          }/price`
+        const tokenMetaData = getPrice(
+          tokenObjkt.tokenAddress,
+          tokenObjkt.tokenId,
+          priceFeed
         );
 
-        console.log("META", tokenMetaData);
+        if (tokenMetaData) {
+          tokenMetaData.thumbnailUri = ipfs.transformUri(
+            tokenMetaData.thumbnailUri
+          );
 
-        tokenMetaData.pairs = tokenMetaData.pairs.find(
-          (val) => val.address === tokenObjkt.address
-        );
+          const xtzSide = new BigNumber(tokenObjkt.balance)
+            .times(tokenObjkt.tezPool)
+            .div(tokenObjkt.totalSupply);
 
-        tokenMetaData.thumbnailUri = ipfs.transformUri(
-          tokenMetaData.thumbnailUri
-        );
+          const tokenSide = new BigNumber(tokenObjkt.balance)
+            .times(tokenObjkt.tokenPool)
+            .div(tokenObjkt.totalSupply);
 
-        const xtzUsd = await coingecko.getXtzUsdPrice();
+          tokenObjkt.xtzSide = xtzSide.div(1e6).toNumber();
 
-        const xtzSide = new BigNumber(tokenObjkt.balance)
-          .times(tokenObjkt.tezPool)
-          .div(tokenObjkt.totalSupply);
+          tokenObjkt.xtzSideUsd = tokenObjkt.xtzSide * xtzUsd;
 
-        const tokenSide = new BigNumber(tokenObjkt.balance)
-          .times(tokenObjkt.tokenPool)
-          .div(tokenObjkt.totalSupply);
+          tokenObjkt.tokenSide = tokenSide
+            .div(10 ** tokenMetaData.decimals)
+            .toNumber();
 
-        tokenObjkt.xtzSide = xtzSide.div(1e6).toNumber();
+          tokenObjkt.totalValue = tokenObjkt.xtzSide * 2;
 
-        tokenObjkt.xtzSideUsd = tokenObjkt.xtzSide * xtzUsd;
+          tokenObjkt.totalValueUsd = tokenObjkt.totalValue * xtzUsd;
 
-        tokenObjkt.tokenSide = tokenSide
-          .div(10 ** tokenMetaData.decimals)
-          .toNumber();
+          lp.push(merge(tokenMetaData, tokenObjkt));
 
-        tokenObjkt.totalValue = tokenObjkt.xtzSide * 2;
-
-        tokenObjkt.totalValueUsd = tokenObjkt.totalValue * xtzUsd;
-
-        lp.push(merge(tokenMetaData, tokenObjkt));
-
-        vortex.totalValue += tokenObjkt.totalValue;
-        vortex.totalValueUsd += tokenObjkt.totalValueUsd;
+          vortex.totalValue += tokenObjkt.totalValue;
+          vortex.totalValueUsd += tokenObjkt.totalValueUsd;
+        }
       }
 
       vortex.positions = lp;
+      vortex.positionsCount = lp.length;
 
-      console.log(vortex, "VORTEX");
       return vortex;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  async getSpicySwapLp(balances = [], xtzUsd, priceFeed) {
+    const decimals = 18;
+    const spicy = {
+      totalValue: 0,
+      totalValueUsd: 0,
+      positionsCount: 0,
+      positions: [],
+    };
+
+    const lp = [];
+
+    try {
+      const { data: spicyRouter } = await axios.get(
+        "https://api.tzkt.io/v1/accounts/KT1PwoZxyv4XkPEGnTqWYvjA1UYiPTgAGyqL/contracts?limit=10000"
+      );
+
+      const lpBal = balances.filter(
+        (val) =>
+          spicyRouter.find(
+            (contract) => contract.address === val.token?.contract?.address
+          ) && val.token?.metadata?.symbol === "SSLP"
+      );
+
+      for (let i = 0; i < lpBal.length; i++) {
+        const address = lpBal[i].token.contract.address;
+
+        const { data: tokenStorage } = await tzkt.getContractStorage(address);
+
+        const {
+          data: [lpTotalSupply],
+        } = await tzkt.getContractBigMapKeys(
+          address,
+          "assets.token_total_supply",
+          { select: "value" }
+        );
+
+        // console.log(`Contract: ${address}`);
+        // console.log(`LP Total: ${lpTotalSupply}`);
+
+        const tokenObjkt = {
+          address: address,
+          balance: lpBal[i].balance,
+          lpBalance: new BigNumber(lpBal[i].balance)
+            .div(10 ** decimals)
+            .toFixed(),
+          token0: tokenStorage.token0,
+          token1: tokenStorage.token1,
+          token0Pool: tokenStorage.reserve0,
+          token1Pool: tokenStorage.reserve1,
+          totalSupply: lpTotalSupply,
+        };
+
+        const token0MetaData = getPrice(
+          tokenObjkt.token0.fa2_address,
+          tokenObjkt.token0.token_id,
+          priceFeed
+        );
+        const token1MetaData = getPrice(
+          tokenObjkt.token1.fa2_address,
+          tokenObjkt.token1.token_id,
+          priceFeed
+        );
+
+        if (token0MetaData && token1MetaData) {
+          token0MetaData.thumbnailUri = ipfs.transformUri(
+            token0MetaData.thumbnailUri
+          );
+
+          token1MetaData.thumbnailUri = ipfs.transformUri(
+            token1MetaData.thumbnailUri
+          );
+
+          const token0 = new BigNumber(tokenObjkt.balance)
+            .times(tokenObjkt.token0Pool)
+            .div(tokenObjkt.totalSupply);
+
+          const token1 = new BigNumber(tokenObjkt.balance)
+            .times(tokenObjkt.token1Pool)
+            .div(tokenObjkt.totalSupply);
+
+          tokenObjkt.token0Side = token0
+            .div(10 ** token0MetaData.decimals)
+            .toNumber();
+          tokenObjkt.token1Side = token1
+            .div(10 ** token1MetaData.decimals)
+            .toNumber();
+
+          tokenObjkt.totalValue =
+            tokenObjkt.token0Side * token0MetaData.currentPrice +
+            tokenObjkt.token1Side * token1MetaData.currentPrice;
+
+          tokenObjkt.totalValueUsd = tokenObjkt.totalValue * xtzUsd;
+
+          lp.push(
+            merge(
+              { token0: token0MetaData, token1: token1MetaData },
+              tokenObjkt
+            )
+          );
+
+          spicy.totalValue += tokenObjkt.totalValue;
+          spicy.totalValueUsd += tokenObjkt.totalValueUsd;
+        }
+      }
+
+      spicy.positions = lp;
+      spicy.positionsCount = lp.length;
+
+      console.log(`SPICY: ${spicy}`);
+      return spicy;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  async getPlentyLp(balances = [], xtzUsd, priceFeed) {
+    const plenty = {
+      totalValue: 0,
+      totalValueUsd: 0,
+      positionsCount: 0,
+      positions: [],
+    };
+
+    const lp = [];
+
+    try {
+      const { data: plentyCreator } = await axios.get(
+        "https://api.tzkt.io/v1/accounts/tz1NbDzUQCcV2kp3wxdVHVSZEDeq2h97mweW/contracts?limit=10000"
+      );
+
+      const lpBal = balances.filter(
+        (val) =>
+          plentyCreator.find(
+            (contract) => contract.address === val.token?.contract?.address
+          ) && val.token?.metadata?.symbol === "PLP"
+      );
+
+      for (let i = 0; i < lpBal.length; i++) {
+        const address = lpBal[i].token.contract.address;
+        const { data: lpStorage } = await tzkt.getContractStorage(address);
+        const { data: tokenStorage } = await tzkt.getContractStorage(
+          lpStorage.exchangeAddress
+        );
+
+        const decimals = lpBal[i].token?.metadata?.decimals || 6;
+
+        const tokenObjkt = {
+          address: address,
+          balance: lpBal[i].balance,
+          lpBalance: new BigNumber(lpBal[i].balance)
+            .div(10 ** decimals)
+            .toFixed(),
+          token0: {
+            address: tokenStorage.token1Address,
+            tokenId: tokenStorage.token1Id,
+          },
+          token1: {
+            address: tokenStorage.token2Address,
+            tokenId: tokenStorage.token2Id,
+          },
+          token0Pool: tokenStorage.token1_pool,
+          token1Pool: tokenStorage.token2_pool,
+          totalSupply: tokenStorage.totalSupply,
+        };
+
+        const token0MetaData = getPrice(
+          tokenObjkt.token0.address,
+          tokenObjkt.token0.tokenId,
+          priceFeed
+        );
+        const token1MetaData = getPrice(
+          tokenObjkt.token1.address,
+          tokenObjkt.token1.tokenId,
+          priceFeed
+        );
+
+        if (token0MetaData && token1MetaData) {
+          token0MetaData.thumbnailUri = ipfs.transformUri(
+            token0MetaData.thumbnailUri
+          );
+
+          token1MetaData.thumbnailUri = ipfs.transformUri(
+            token1MetaData.thumbnailUri
+          );
+
+          const token0 = new BigNumber(tokenObjkt.balance)
+            .times(tokenObjkt.token0Pool)
+            .div(tokenObjkt.totalSupply);
+
+          const token1 = new BigNumber(tokenObjkt.balance)
+            .times(tokenObjkt.token1Pool)
+            .div(tokenObjkt.totalSupply);
+
+          tokenObjkt.token0Side = token0
+            .div(10 ** token0MetaData.decimals)
+            .toNumber();
+          tokenObjkt.token1Side = token1
+            .div(10 ** token1MetaData.decimals)
+            .toNumber();
+
+          tokenObjkt.totalValue =
+            tokenObjkt.token0Side * token0MetaData.currentPrice +
+            tokenObjkt.token1Side * token1MetaData.currentPrice;
+
+          tokenObjkt.totalValueUsd = tokenObjkt.totalValue * xtzUsd;
+
+          lp.push(
+            merge(
+              { token0: token0MetaData, token1: token1MetaData },
+              tokenObjkt
+            )
+          );
+
+          plenty.totalValue += tokenObjkt.totalValue;
+          plenty.totalValueUsd += tokenObjkt.totalValueUsd;
+        }
+      }
+
+      plenty.positions = lp;
+      plenty.positionsCount = lp.length;
+
+      return plenty;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  async getBakersLp(balances = [], xtzUsd, priceFeed) {
+    const sirius = {
+      totalValue: 0,
+      totalValueUsd: 0,
+      positionsCount: 0,
+      positions: [],
+    };
+
+    const lp = [];
+
+    try {
+      const lpBal = balances.filter(
+        (val) =>
+          val.token?.contract?.address ===
+          "KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo"
+      );
+
+      const { data: tokenStorage } = await tzkt.getContractStorage(
+        "KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5"
+      );
+
+      for (let i = 0; i < lpBal.length; i++) {
+        const address = lpBal[i].token.contract.address;
+
+        const tokenObjkt = {
+          address: address,
+          balance: lpBal[i].balance,
+          lpBalance: new BigNumber(lpBal[i].balance).toNumber(),
+          tokenAddress: tokenStorage.tokenAddress,
+          tezPool: tokenStorage.xtzPool,
+          tokenPool: tokenStorage.tokenPool,
+          totalSupply: tokenStorage.lqtTotal,
+        };
+
+        console.log(tokenObjkt);
+
+        const tokenMetaData = getPrice(
+          tokenObjkt.tokenAddress,
+          undefined,
+          priceFeed
+        );
+
+        if (tokenMetaData) {
+          tokenMetaData.thumbnailUri = ipfs.transformUri(
+            tokenMetaData.thumbnailUri
+          );
+
+          const xtzSide = new BigNumber(tokenObjkt.balance)
+            .times(tokenObjkt.tezPool)
+            .div(tokenObjkt.totalSupply);
+
+          const tokenSide = new BigNumber(tokenObjkt.balance)
+            .times(tokenObjkt.tokenPool)
+            .div(tokenObjkt.totalSupply);
+
+          tokenObjkt.xtzSide = xtzSide.div(1e6).toNumber();
+
+          tokenObjkt.xtzSideUsd = tokenObjkt.xtzSide * xtzUsd;
+
+          tokenObjkt.tokenSide = tokenSide
+            .div(10 ** tokenMetaData.decimals)
+            .toNumber();
+
+          tokenObjkt.totalValue = tokenObjkt.xtzSide * 2;
+
+          tokenObjkt.totalValueUsd = tokenObjkt.totalValue * xtzUsd;
+
+          lp.push(merge(tokenMetaData, tokenObjkt));
+
+          sirius.totalValue += tokenObjkt.totalValue;
+          sirius.totalValueUsd += tokenObjkt.totalValueUsd;
+        }
+      }
+
+      sirius.positions = lp;
+      sirius.positionsCount = lp.length;
+      console.log("SIRIUS", sirius);
+      return sirius;
     } catch (error) {
       console.log(error);
     }

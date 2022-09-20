@@ -5,56 +5,6 @@ import ipfs from "./ipfs";
 // import teztools from "./teztools";
 import tzkt from "./tzkt";
 
-// async function getUserQuipuLp(pkh) {
-//   const userQuipuLp = [];
-//   const { data: quipuLp } = await tzkt.getContractBigMapKeys(
-//     process.env.VUE_APP_CONTRACTS_QUIPU_FA2_FACTORY,
-//     "token_to_exchange"
-//   );
-
-//   const quipuLpAddress = quipuLp.map((val) => val?.value);
-
-//   for (let index = 0; index < quipuLpAddress.length; index++) {
-//     const val = quipuLpAddress[index];
-
-//     const { data: resp } = await tzkt.getContractBigMapKeys(val, "ledger", {
-//       key: pkh,
-//     });
-//     if (resp.length > 0) {
-//       const [
-//         {
-//           data: { storage: tokenStorage },
-//         },
-//         { data: userReward },
-//       ] = await Promise.all([
-//         await tzkt.getContractStorage(val),
-//         await tzkt.getContractBigMapKeys(val, "user_rewards", {
-//           key: pkh,
-//         }),
-//       ]);
-
-//       const tokenObjkt = {
-//         address: val,
-//         ledger: resp[0]?.value,
-//         user_rewards: userReward[0]?.value,
-//         tokenAddress: tokenStorage.token_address,
-//         tokenId: tokenStorage.token_id,
-//         tezPool: tokenStorage.tez_pool,
-//         tokenPool: tokenStorage.token_pool,
-//         totalReward: tokenStorage.total_reward,
-//         totalSupply: tokenStorage.total_supply,
-//         rewardPerShare: tokenStorage.reward_per_share,
-//         rewardPaid: tokenStorage.reward_paid,
-//         reward: tokenStorage.reward,
-//         rewardPerSec: tokenStorage.reward_per_sec,
-//       };
-//       userQuipuLp.push(tokenObjkt);
-//     }
-//   }
-
-//   return userQuipuLp;
-// }
-
 function calculateGIFRewards(
   claimableXTZ,
   multiplier,
@@ -68,7 +18,6 @@ function calculateGIFRewards(
   userTier
 ) {
   let value = 0;
-  console.log(currentCycle);
   if (multiplier) {
     // Initialize variables
 
@@ -291,8 +240,6 @@ export default {
       ),
     ]);
 
-    console.log("DATAOBJ", dataObjs);
-
     if (dataObjs.length > 0) {
       const [{ value: addressId }] = dataObjs;
 
@@ -415,8 +362,6 @@ export default {
             Number(userTier)
           ) / 1000000;
         // Calculating Rewards earned
-
-        console.log(rewardsEarned);
 
         userStakes.push({
           ...gif,

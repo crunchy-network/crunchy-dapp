@@ -58,6 +58,15 @@ export default {
   updateVortexLp(state, value) {
     state.lp.vortex = { ...state.lp.vortex, ...value };
   },
+  updateSpicyLp(state, value) {
+    state.lp.spicyswap = { ...state.lp.spicyswap, ...value };
+  },
+  updatePlentyLp(state, value) {
+    state.lp.plenty = { ...state.lp.plenty, ...value };
+  },
+  updateSiriusLp(state, value) {
+    state.lp.sirius = { ...state.lp.sirius, ...value };
+  },
   updateLpLoading(state, value) {
     state.lp.loading = value;
   },

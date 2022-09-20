@@ -1,4 +1,5 @@
 import axios from "axios";
+import coingecko from "../../utils/coingecko";
 import homeWallet from "../../utils/home-wallet";
 import homeWalletStake from "../../utils/home-wallet-stake";
 import teztools from "../../utils/teztools";
@@ -142,13 +143,25 @@ export default {
         `https://staging.api.tzkt.io/v1/tokens/balances?account=${account}&balance.gt=0&limit=10000&select=token,balance`
       );
 
-      const [quipuswap, vortex] = await Promise.all([
-        homeWallet.getQuipuLp(balances),
-        homeWallet.getVortexyLp(balances, account),
+      const {
+        data: { contracts: priceFeed },
+      } = await axios.get("https://api.teztools.io/v1/prices");
+
+      const xtzUsd = await coingecko.getXtzUsdPrice();
+
+      const [quipuswap, vortex, plenty, spicyswap, sirius] = await Promise.all([
+        homeWallet.getQuipuLp(balances, xtzUsd, priceFeed),
+        homeWallet.getVortexyLp(balances, xtzUsd, account, priceFeed),
+        homeWallet.getPlentyLp(balances, xtzUsd, priceFeed),
+        homeWallet.getSpicySwapLp(balances, xtzUsd, priceFeed),
+        homeWallet.getBakersLp(balances, xtzUsd, priceFeed),
       ]);
 
       commit("updateQuipuswapLp", quipuswap);
       commit("updateVortexLp", vortex);
+      commit("updateSpicyLp", spicyswap);
+      commit("updatePlentyLp", plenty);
+      commit("updateSiriusLp", sirius);
     } catch (error) {
       console.log("Error", error);
     } finally {
@@ -162,16 +175,24 @@ export default {
       const { data: balances } = await axios.get(
         `https://staging.api.tzkt.io/v1/tokens/balances?account=${account}&balance.gt=0&limit=10000&select=token,balance`
       );
+      const {
+        data: { contracts: priceFeed },
+      } = await axios.get("https://api.teztools.io/v1/prices");
+      const xtzUsd = await coingecko.getXtzUsdPrice();
 
-      const [quipuswap, vortex] = await Promise.all([
-        homeWallet.getQuipuLp(balances),
-        homeWallet.getVortexyLp(balances, account),
+      const [quipuswap, vortex, plenty, spicyswap, sirius] = await Promise.all([
+        homeWallet.getQuipuLp(balances, xtzUsd, priceFeed),
+        homeWallet.getVortexyLp(balances, xtzUsd, account, priceFeed),
+        homeWallet.getPlentyLp(balances, xtzUsd, priceFeed),
+        homeWallet.getSpicySwapLp(balances, xtzUsd, priceFeed),
+        homeWallet.getBakersLp(balances, xtzUsd, priceFeed),
       ]);
 
       commit("updateQuipuswapLp", quipuswap);
       commit("updateVortexLp", vortex);
-
-      commit("updateQuipuswapLp", quipuswap);
+      commit("updateSpicyLp", spicyswap);
+      commit("updatePlentyLp", plenty);
+      commit("updateSiriusLp", sirius);
     } catch (error) {
       console.log("Error", error);
     }

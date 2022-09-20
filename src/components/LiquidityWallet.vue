@@ -168,7 +168,7 @@ export default {
 
   created() {
     setInterval(() => {
-      this.softLoadAllLiquidity();
+      this.softLoadAllLiquidity(this.$route.params.walletAddress);
     }, 1000 * 60 * 5);
   },
 
@@ -176,7 +176,7 @@ export default {
     this.paginationHandler();
   },
   methods: {
-    ...mapActions([" softLoadAllLiquidity"]),
+    ...mapActions(["softLoadAllLiquidity"]),
     paginationHandler() {
       this.pages = Math.ceil(this.getLp.length / this.displayCount);
       this.handleVisibleData();

@@ -134,12 +134,6 @@ export default {
   computed: {
     ...mapGetters(["getStatsValues"]),
   },
-
-  watch: {
-    getStatsValues(val) {
-      console.log(val);
-    },
-  },
 };
 </script>
 
