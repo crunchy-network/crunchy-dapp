@@ -34,7 +34,7 @@ module.exports = {
         }`;
 
     return Promise.all([
-      axios.post("https://api.smartlink.so/v1/graphql", { query }),
+      axios.post("https://api.vortex.network/v1/graphql", { query }),
       axios.post("https://api-dev.vortex.network/v1/graphql", { query }),
     ]).then((res) => {
       return [...res[0].data.data.data, ...res[1].data.data.data];
