@@ -473,13 +473,16 @@ export default {
       return amount;
     },
     async onSubmit() {
-      const fee = await buildRoutingFeeOperation(
-        this.getPkh,
-        this.getCurrentTrade,
-        this.getSwapForm.inputAmount,
-        Tezos,
-        this.getSwapPairs
-      );
+      var fee = [];
+      if (this.getCurrentTrade.trades.length > 1) {
+        fee = await buildRoutingFeeOperation(
+          this.getPkh,
+          this.getCurrentTrade,
+          this.getSwapForm.inputAmount,
+          Tezos,
+          this.getSwapPairs
+        );
+      }
       const op = await buildOperationParams(
         this.getCurrentTrade,
         Tezos,
