@@ -210,11 +210,12 @@ const findBestRoute = (
       ),
     };
     if (bestRoute.outputAmount === undefined) {
-      bestRoute = { ...bestRoute, outputAmount, trades };
+      bestRoute = { ...bestRoute, inputAmount, outputAmount, trades };
     }
     if (outputAmount > bestRoute.outputAmount) {
       bestRoute = {
         ...bestRoute,
+        inputAmount,
         outputAmount,
         trades: [...trades],
       };
