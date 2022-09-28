@@ -195,14 +195,15 @@ const findBestRoute = (
   for (var i = 0; i < routePairCombos.length; i++) {
     const slippagePerTrade =
       percentToDecimal(slippageTolerance) ** (1 / routePairCombos[i].length);
+    var tradeinput = inputAmount;
     if (routePairCombos[i].length > 1) {
       if (routePairCombos[i][0].a.decimals !== 0) {
-        inputAmount = parseFloat(inputAmount) * routingFee;
+        tradeinput = tradeinput * routingFee;
       }
     }
     const { trades, outputAmount } = {
       ...getOutputOfTrade(
-        inputAmount,
+        tradeinput,
         routePairCombos[i],
         0,
         [],
@@ -210,12 +211,17 @@ const findBestRoute = (
       ),
     };
     if (bestRoute.outputAmount === undefined) {
-      bestRoute = { ...bestRoute, inputAmount, outputAmount, trades };
+      bestRoute = {
+        ...bestRoute,
+        inputAmount: tradeinput,
+        outputAmount,
+        trades,
+      };
     }
     if (outputAmount > bestRoute.outputAmount) {
       bestRoute = {
         ...bestRoute,
-        inputAmount,
+        inputAmount: tradeinput,
         outputAmount,
         trades: [...trades],
       };
