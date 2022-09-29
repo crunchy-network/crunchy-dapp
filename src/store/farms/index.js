@@ -31,4 +31,18 @@ export default {
   },
   actions,
   mutations,
+  getters: {
+    getMyFarms(state) {
+      const newFarmState = Object.create(state.data);
+      const myFarm = {};
+
+      for (const key in newFarmState) {
+        if (newFarmState[key].depositAmount > 0) {
+          myFarm[key] = newFarmState[key];
+        }
+      }
+
+      return myFarm;
+    },
+  },
 };
