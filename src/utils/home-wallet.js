@@ -474,9 +474,10 @@ export default {
         );
 
         if (tokenMetaData) {
-          tokenMetaData.thumbnailUri = ipfs.transformUri(
-            tokenMetaData.thumbnailUri
-          );
+          if (tokenMetaData.thumbnailUri)
+            tokenMetaData.thumbnailUri = ipfs.transformUri(
+              tokenMetaData.thumbnailUri
+            );
 
           const xtzSide = new BigNumber(tokenObjkt.balance)
             .times(tokenObjkt.tezPool)
