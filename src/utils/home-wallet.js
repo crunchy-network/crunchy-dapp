@@ -302,8 +302,8 @@ export default {
         const balance = bal.div(
           new BigNumber(10).pow(
             balances[i]?.token?.metadata?.decimals ||
-            decimals ||
-            (balances[i]?.token?.standard !== "fa1.2" ? 6 : 3)
+              decimals ||
+              (balances[i]?.token?.standard !== "fa1.2" ? 6 : 3)
           )
         );
 
@@ -968,8 +968,8 @@ export default {
       (val) => val.contract === process.env.VUE_APP_CONTRACTS_CRUNCH
     ).length > 0
       ? arr.filter(
-        (val) => val.contract === process.env.VUE_APP_CONTRACTS_CRUNCH
-      )[0].balance
+          (val) => val.contract === process.env.VUE_APP_CONTRACTS_CRUNCH
+        )[0].balance
       : 0;
   },
 
@@ -978,8 +978,8 @@ export default {
       (val) => val.contract === process.env.VUE_APP_CONTRACTS_CRDAO
     ).length > 0
       ? arr.filter(
-        (val) => val.contract === process.env.VUE_APP_CONTRACTS_CRDAO
-      )[0].balance
+          (val) => val.contract === process.env.VUE_APP_CONTRACTS_CRDAO
+        )[0].balance
       : 0;
   },
 
