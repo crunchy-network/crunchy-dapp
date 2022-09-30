@@ -96,14 +96,14 @@ export default {
 
   updateDexApis({ dispatch, commit }) {
     commit("updateDexLoading", { dex: "tezTools", loading: true });
-    // commit("updateDexLoading", { dex: "vortex", loading: true });
+    commit("updateDexLoading", { dex: "vortex", loading: true });
     commit("updateDexLoading", { dex: "spicy", loading: true });
     commit("updateDexLoading", { dex: "WTZ", loading: true });
     commit("updateDexLoading", { dex: "Youves", loading: true });
     commit("updateDexLoading", { dex: "Plenty", loading: true });
     commit("updateDexLoading", { dex: "QuipuStable", loading: true });
     dispatch("loadTezToolsSwapPairs");
-    // dispatch("loadVortexSwapPairs");
+    dispatch("loadVortexSwapPairs");
     dispatch("loadSpicySwapPairs");
     dispatch("loadWtzSwapPairs");
     dispatch("loadYouvesSwapPairs");
