@@ -1102,6 +1102,7 @@ export default {
 
   filterFarmRow({ commit, state }, farmId) {
     const farm = state.data[farmId];
+    const userFarm = state.userData[farmId] || undefined;
 
     // keyword search
     let keywordsMatch = true;
@@ -1210,6 +1211,121 @@ export default {
       badgeMatches;
 
     commit("updateFarmVisible", { farmId, visible });
+
+    // Update userFarm
+    if (userFarm) {
+      // keyword search
+      let keywordsMatch = true;
+      if (state.searchInput.length) {
+        if (
+          userFarm.poolToken.symbol
+            .toLowerCase()
+            .includes(state.searchInput.toLowerCase()) ||
+          userFarm.poolToken.name
+            .toLowerCase()
+            .includes(state.searchInput.toLowerCase()) ||
+          userFarm.rewardToken.symbol
+            .toLowerCase()
+            .includes(state.searchInput.toLowerCase()) ||
+          userFarm.rewardToken.name
+            .toLowerCase()
+            .includes(state.searchInput.toLowerCase())
+        ) {
+          keywordsMatch = true;
+        } else {
+          keywordsMatch = false;
+        }
+      }
+
+      // farm type filter
+      let typeMatches = true;
+      if (
+        state.filters.includes("farm") ||
+        state.filters.includes("garden") ||
+        state.filters.includes("flash")
+      ) {
+        typeMatches = false;
+
+        if (!userFarm.flashFarm) {
+          if (
+            state.filters.includes("farm") &&
+            (userFarm.tvlTez >= 10000 || userFarm.badges.core === true)
+          ) {
+            typeMatches = true;
+          }
+
+          if (
+            state.filters.includes("garden") &&
+            (userFarm.tvlTez < 10000 || userFarm.badges.core === true)
+          ) {
+            typeMatches = true;
+          }
+        }
+
+        if (state.filters.includes("flash") && userFarm.flashFarm) {
+          typeMatches = true;
+        }
+      }
+
+      // staked filters
+      let stakedMatches = true;
+      if (state.filters.includes("staked") && userFarm.depositAmount <= 0) {
+        stakedMatches = false;
+      }
+
+      // status filters
+      let statusMatches = true;
+      if (
+        state.filters.includes("pending") ||
+        state.filters.includes("running") ||
+        state.filters.includes("ended")
+      ) {
+        statusMatches = false;
+
+        if (state.filters.includes("pending") && !userFarm.started) {
+          statusMatches = true;
+        }
+
+        if (
+          state.filters.includes("running") &&
+          userFarm.started &&
+          !userFarm.ended
+        ) {
+          statusMatches = true;
+        }
+
+        if (state.filters.includes("ended") && userFarm.ended) {
+          statusMatches = true;
+        }
+      }
+
+      // farm badges filter
+      let badgeMatches = true;
+      if (
+        state.filters.includes("verified") ||
+        state.filters.includes("core") ||
+        state.filters.includes("partner") ||
+        state.filters.includes("lpLocked")
+      ) {
+        badgeMatches = false;
+
+        for (const b of ["verified", "core", "partner", "lpLocked"]) {
+          if (state.filters.includes(b) && userFarm.badges[b] === true) {
+            badgeMatches = true;
+          }
+        }
+      }
+
+      // all groups must match
+      const visible =
+        keywordsMatch &&
+        typeMatches &&
+        stakedMatches &&
+        statusMatches &&
+        badgeMatches;
+
+      commit("updateUserFarmVisible", { farmId, visible });
+    }
   },
 
   filterAllFarmRows({ state, dispatch }) {

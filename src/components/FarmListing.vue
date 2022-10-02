@@ -463,30 +463,17 @@
                     </el-col>
                   </el-row>
 
-                  <template v-if="activeTab === 'allFarms'">
-                    <FarmListingRow
-                      v-for="farm in orderedFarms"
-                      v-show="farm.visible"
-                      :key="farm.id"
-                      :farm="farm"
-                      :show-usd="showUsd"
-                      @request-unstake-farm="showUnstakeDialog"
-                      @request-stake-farm="showStakeDialog"
-                    >
-                    </FarmListingRow>
-                  </template>
-                  <template v-if="activeTab === 'myFarms'">
-                    <FarmListingRow
-                      v-for="farm in getMyFarms"
-                      v-show="farm.visible"
-                      :key="farm.id"
-                      :farm="farm"
-                      :show-usd="showUsd"
-                      @request-unstake-farm="showUnstakeDialog"
-                      @request-stake-farm="showStakeDialog"
-                    >
-                    </FarmListingRow>
-                  </template>
+                  <FarmListingRow
+                    v-for="farm in orderedFarms"
+                    v-show="farm.visible"
+                    :key="farm.id"
+                    :farm-tab="activeTab"
+                    :farm="farm"
+                    :show-usd="showUsd"
+                    @request-unstake-farm="showUnstakeDialog"
+                    @request-stake-farm="showStakeDialog"
+                  >
+                  </FarmListingRow>
                 </div>
               </div>
             </el-card>
@@ -502,7 +489,7 @@
 
 <script>
 import _ from "lodash";
-import { mapState, mapActions, mapGetters } from "vuex";
+import { mapState, mapActions } from "vuex";
 // import NavWallet from "./NavWallet.vue";
 import DaasCard from "./DaasCard.vue";
 import FarmListingRow from "./FarmListingRow.vue";
@@ -576,11 +563,11 @@ export default {
   // },
   computed: {
     ...mapState(["wallet", "farms"]),
-    ...mapGetters(["getMyFarms"]),
-
     orderedFarms: function () {
+      const farms =
+        this.activeTab === "myFarms" ? this.farms.userData : this.farms.data;
       return _.orderBy(
-        this.farms.data,
+        farms,
         ["ended", "badges.core", "tvlTez"],
         ["asc", "desc", "desc"]
       );
@@ -591,15 +578,14 @@ export default {
     },
   },
 
-  watch: {
-    getMyFarms(newVal, oldVal) {
-      console.log(oldVal);
-      console.log(newVal);
-    },
-  },
+  // watch: {
+  //   activeTab() {
+  //     console.log("++++++++");
+  //     console.log(this.farms.userData);
+  //   },
+  // },
 
   created() {
-    console.log(this.getMyFarms);
     if (this.$route.query.q) {
       this.$store.commit("updateFarmsSearchInput", this.$route.query.q);
     }
@@ -630,10 +616,10 @@ export default {
       if (["allFarms", "myFarms"].includes(val)) {
         this.activeTab = val;
 
-        this.$store.commit("updateFarmsFilters", []);
-        if (val === "myFarms") {
-          this.$store.commit("updateFarmsFilters", ["staked"]);
-        }
+        // this.$store.commit("updateFarmsFilters", []);
+        // if (val === "myFarms") {
+        //   this.$store.commit("updateFarmsFilters", ["staked"]);
+        // }
       }
     },
 
