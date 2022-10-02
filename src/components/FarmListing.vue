@@ -51,13 +51,13 @@
         type="flex"
         style="margin-bottom: 50px; flex-wrap: wrap-reverse; row-gap: 20px"
       >
-        <el-col :lg="16">
+        <el-col :span="24">
           <el-row
             :gutter="20"
             type="flex"
             style="flex-wrap: wrap; row-gap: 20px"
           >
-            <el-col :md="12" :lg="8">
+            <el-col :sm="12" :md="8" :lg="4">
               <div class="grid-content" style="height: 100%">
                 <el-card
                   v-loading="farms.loading"
@@ -81,7 +81,7 @@
                   </el-avatar>
                   <div
                     style="
-                      font-size: 24px;
+                      font-size: 20px;
                       font-weight: 600;
                       margin-top: 14px;
                       margin-bottom: 8px;
@@ -101,7 +101,7 @@
                     style="
                       color: #191b1f;
                       opacity: 0.4;
-                      font-size: 14px;
+                      font-size: 12px;
                       margin-bottom: 0px;
                     "
                   >
@@ -110,7 +110,7 @@
                 </el-card>
               </div>
             </el-col>
-            <el-col :md="12" :lg="8">
+            <el-col :sm="12" :md="8" :lg="4">
               <div class="grid-content" style="height: 100%">
                 <el-card
                   v-loading="farms.loading"
@@ -130,7 +130,7 @@
                   </el-avatar>
                   <div
                     style="
-                      font-size: 24px;
+                      font-size: 20px;
                       font-weight: 600;
                       margin-top: 14px;
                       margin-bottom: 8px;
@@ -142,7 +142,7 @@
                     style="
                       color: #191b1f;
                       opacity: 0.4;
-                      font-size: 14px;
+                      font-size: 12px;
                       margin-bottom: 0px;
                     "
                   >
@@ -151,7 +151,7 @@
                 </el-card>
               </div>
             </el-col>
-            <el-col :md="12" :lg="8">
+            <el-col :sm="12" :md="8" :lg="4">
               <div class="grid-content" style="height: 100%">
                 <el-card
                   v-loading="farms.loading"
@@ -171,7 +171,7 @@
                   </el-avatar>
                   <div
                     style="
-                      font-size: 24px;
+                      font-size: 20px;
                       font-weight: 600;
                       margin-top: 14px;
                       margin-bottom: 8px;
@@ -190,7 +190,7 @@
                     style="
                       color: #191b1f;
                       opacity: 0.4;
-                      font-size: 14px;
+                      font-size: 12px;
                       margin-bottom: 0px;
                     "
                   >
@@ -200,7 +200,7 @@
               </div>
             </el-col>
 
-            <el-col :md="12" :lg="8">
+            <el-col :sm="12" :md="8" :lg="4">
               <div class="grid-content" style="height: 100%">
                 <el-card
                   v-loading="farms.loading"
@@ -229,7 +229,7 @@
                 </el-card>
               </div>
             </el-col>
-            <el-col :md="12" :lg="8">
+            <el-col :sm="12" :md="8" :lg="4">
               <div class="grid-content" style="height: 100%">
                 <el-card
                   v-loading="farms.loading"
@@ -259,7 +259,7 @@
                 </el-card>
               </div>
             </el-col>
-            <el-col :md="12" :lg="8">
+            <el-col :sm="12" :md="8" :lg="4">
               <div class="grid-content" style="height: 100%">
                 <el-card
                   v-loading="farms.loading"
@@ -291,11 +291,11 @@
             </el-col>
           </el-row>
         </el-col>
-        <el-col :lg="8">
+        <!-- <el-col :lg="8">
           <div class="grid-content">
             <DaasCard />
           </div>
-        </el-col>
+        </el-col> -->
       </el-row>
       <el-row
         :gutter="20"
@@ -491,7 +491,7 @@
 import _ from "lodash";
 import { mapState, mapActions } from "vuex";
 // import NavWallet from "./NavWallet.vue";
-import DaasCard from "./DaasCard.vue";
+// import DaasCard from "./DaasCard.vue";
 import FarmListingRow from "./FarmListingRow.vue";
 import FarmStakeDialog from "./FarmStakeDialog.vue";
 import FarmUnstakeDialog from "./FarmUnstakeDialog.vue";
@@ -501,7 +501,7 @@ export default {
   name: "FarmListing",
   components: {
     // NavWallet,
-    DaasCard,
+    // DaasCard,
     FarmListingRow,
     FarmStakeDialog,
     FarmUnstakeDialog,
