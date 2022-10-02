@@ -530,10 +530,6 @@ export default {
           ],
         },
         {
-          label: "Staking",
-          options: [{ value: "staked", label: "Staked" }],
-        },
-        {
           label: "Status",
           options: [
             { value: "pending", label: "Pending" },
