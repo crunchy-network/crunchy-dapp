@@ -26,7 +26,7 @@ export default {
     crdaoTez: 0,
     totalTvlTez: 0,
     searchInput: "",
-    filters: ["farm"],
+    filters: [],
     data: {},
     userData: {},
   },

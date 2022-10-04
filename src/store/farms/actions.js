@@ -1158,10 +1158,10 @@ export default {
     }
 
     // staked filters
-    let stakedMatches = true;
-    if (state.filters.includes("staked") && farm.depositAmount <= 0) {
-      stakedMatches = false;
-    }
+    // let stakedMatches = true;
+    // if (state.filters.includes("staked") && farm.depositAmount <= 0) {
+    //   stakedMatches = false;
+    // }
 
     // status filters
     let statusMatches = true;
@@ -1206,7 +1206,7 @@ export default {
     const visible =
       keywordsMatch &&
       typeMatches &&
-      stakedMatches &&
+      // stakedMatches &&
       statusMatches &&
       badgeMatches;
 
