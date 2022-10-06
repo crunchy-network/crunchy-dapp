@@ -21,6 +21,10 @@ export default {
 
   updateFarm(state, farm) {
     state.data[farm.id] = farm;
+
+    if (farm.depositAmount > 0) {
+      state.userData[farm.id] = farm;
+    }
   },
 
   updateFarmRowExpanded(state, { farmId, rowExpanded }) {
@@ -29,6 +33,10 @@ export default {
 
   updateFarmVisible(state, { farmId, visible }) {
     state.data[farmId].visible = visible;
+  },
+
+  updateUserFarmVisible(state, { farmId, visible }) {
+    state.userData[farmId].visible = visible;
   },
 
   updateFarmLoading(state, { farmId, loading }) {
