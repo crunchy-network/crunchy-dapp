@@ -183,16 +183,27 @@ const addSlippageToleranceToWeightedRoute = (route, slippageTolerance) => {
   });
 };
 
-const findBestRoute = (inputAmount, routePairCombos, slippageTolerance) => {
+const findBestRoute = (
+  inputAmount,
+  routePairCombos,
+  slippageTolerance,
+  routingFee
+) => {
   inputAmount = parseFloat(inputAmount);
   validateFindBestRouteInput(inputAmount, routePairCombos);
   let bestRoute = { inputAmount, type: "linear" };
   for (var i = 0; i < routePairCombos.length; i++) {
     const slippagePerTrade =
       percentToDecimal(slippageTolerance) ** (1 / routePairCombos[i].length);
+    var tradeinput = inputAmount;
+    if (routePairCombos[i].length > 1) {
+      if (routePairCombos[i][0].a.decimals !== 0) {
+        tradeinput = tradeinput * routingFee;
+      }
+    }
     const { trades, outputAmount } = {
       ...getOutputOfTrade(
-        inputAmount,
+        tradeinput,
         routePairCombos[i],
         0,
         [],
@@ -200,11 +211,17 @@ const findBestRoute = (inputAmount, routePairCombos, slippageTolerance) => {
       ),
     };
     if (bestRoute.outputAmount === undefined) {
-      bestRoute = { ...bestRoute, outputAmount, trades };
+      bestRoute = {
+        ...bestRoute,
+        inputAmount: tradeinput,
+        outputAmount,
+        trades,
+      };
     }
     if (outputAmount > bestRoute.outputAmount) {
       bestRoute = {
         ...bestRoute,
+        inputAmount: tradeinput,
         outputAmount,
         trades: [...trades],
       };

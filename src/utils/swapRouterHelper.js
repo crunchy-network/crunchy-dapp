@@ -81,17 +81,24 @@ const getBestTrade = (form, routePairs) => {
     console.log("no combos");
     return undefined;
   }
-  var inputAfterRatio = inputAmount * ROUTING_FEE_RATIO;
-  if (inputToken.decimals === 0) {
-    inputAfterRatio = inputAmount;
-  }
-  const bestRoute = findBestRoute(inputAfterRatio, combos, slippageTolerance);
+
+  const bestRoute = findBestRoute(
+    inputAmount,
+    combos,
+    slippageTolerance,
+    ROUTING_FEE_RATIO
+  );
   const weightedCombos = routePairs.filter(
     (p) =>
       p.a.assetSlug === inputToken.assetSlug &&
       p.b.assetSlug === outputToken.assetSlug
   );
+
   if (weightedCombos.length > 1) {
+    var inputAfterRatio = inputAmount;
+    if (inputToken.decimals !== 0) {
+      inputAfterRatio = inputAmount * ROUTING_FEE_RATIO;
+    }
     const bestWeightedRoute = findBestWeightedRoute(
       inputAfterRatio,
       weightedCombos
