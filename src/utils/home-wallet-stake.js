@@ -229,13 +229,23 @@ export default {
       process.env.VUE_APP_DOGAMI_STAKE
     );
 
-    const [{ data: tokenMetaData }, { data: dataObjs }] = await Promise.all([
+    const [
+      { data: tokenMetaData },
+      { data: dataObjs },
+      { data: stakeLockPack },
+    ] = await Promise.all([
       await axios.get(
         `https://api.teztools.io/v1/${dogami.FA12TokenContract}/price`
       ),
+
       await tzkt.getContractBigMapKeys(
         process.env.VUE_APP_DOGAMI_STAKE,
         "addressId",
+        { key: pkh }
+      ),
+      await tzkt.getContractBigMapKeys(
+        process.env.VUE_APP_DOGAMI_STAKE_2,
+        "userStakeLockPack",
         { key: pkh }
       ),
     ]);
@@ -272,6 +282,42 @@ export default {
           rewardToken: tokenMetaData,
           depositAmount,
           rewardsEarned,
+          depositValue: 0,
+          depositValueUsd: 0,
+          rewardValue: 0,
+          rewardValueUsd: 0,
+          totalValue: 0,
+          totalValueUsd: 0,
+        });
+      }
+    }
+
+    if (stakeLockPack.length > 0) {
+      const [{ value: userStakeLock }] = stakeLockPack;
+
+      if (tokenMetaData.thumbnailUri) {
+        tokenMetaData.thumbnailUri = ipfs.transformUri(
+          tokenMetaData.thumbnailUri
+        );
+      }
+
+      for (const key in userStakeLock[1]) {
+        const stake = userStakeLock[1][key];
+
+
+        const depositAmount = new BigNumber(stake?.value)
+          .div(new BigNumber(10).pow(tokenMetaData.decimals))
+          .toNumber();
+        // const rewardsEarned = new BigNumber(userStake.reward)
+        //   .div(new BigNumber(10).pow(tokenMetaData.decimals))
+        //   .toNumber();
+
+        userStakes.push({
+          ...dogami,
+          poolToken: tokenMetaData,
+          rewardToken: tokenMetaData,
+          depositAmount,
+          rewardsEarned: 0,
           depositValue: 0,
           depositValueUsd: 0,
           rewardValue: 0,
