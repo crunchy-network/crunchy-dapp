@@ -288,6 +288,7 @@ export default {
           rewardValueUsd: 0,
           totalValue: 0,
           totalValueUsd: 0,
+          apr: 8,
         });
       }
     }
@@ -303,7 +304,6 @@ export default {
 
       for (const key in userStakeLock[1]) {
         const stake = userStakeLock[1][key];
-
 
         const depositAmount = new BigNumber(stake?.value)
           .div(new BigNumber(10).pow(tokenMetaData.decimals))
@@ -324,6 +324,7 @@ export default {
           rewardValueUsd: 0,
           totalValue: 0,
           totalValueUsd: 0,
+          apr: 33,
         });
       }
     }

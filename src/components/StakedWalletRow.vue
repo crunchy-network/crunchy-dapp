@@ -180,7 +180,15 @@
               <el-col :span="4"> Staked</el-col>
               <el-col style="text-align: right" :span="4">Amount Staked</el-col>
               <el-col style="text-align: right" :span="4">Staked Value</el-col>
-              <el-col style="text-align: right" :span="4">Claimable</el-col>
+              <el-col
+                v-if="farm.protocol === 'Dogami'"
+                style="text-align: right"
+                :span="4"
+                >APR</el-col
+              >
+              <el-col v-else style="text-align: right" :span="4"
+                >Claimable</el-col
+              >
               <el-col style="text-align: right" :span="4">Total Value</el-col>
               <el-col style="text-align: right" :span="4"></el-col>
             </el-row>
@@ -365,7 +373,13 @@
                   >
                     {{
                       farm.protocol === "Dogami"
-                        ? "N/A"
+                        ? vueNumberFormat(stake.apr || 0, {
+                            prefix: "",
+                            suffix: "%",
+                            decimal: ".",
+                            thousand: ",",
+                            precision: 0,
+                          })
                         : vueNumberFormat(stake.rewardsEarned, {
                             prefix: "",
                             suffix: "",
