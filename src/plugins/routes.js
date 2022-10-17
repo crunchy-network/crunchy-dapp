@@ -12,6 +12,8 @@ import IfoPixelPriv from "./../components/IfoPixelPriv.vue";
 import HomeWalletPage from "./../components/HomeWalletPage.vue";
 import IFOList from "./../components/IFOList.vue";
 import Swap from "./../components/Swap.vue";
+import TokenTracker from "./../components/TokenTracker.vue";
+import TokenTrackerItem from "./../components/TokenTrackerItem.vue";
 // import Bakery from './../components/Bakery.vue'
 
 Vue.use(VueRouter);
@@ -29,6 +31,16 @@ const routes = [
     name: "wtz",
     path: "/wtz",
     component: WtzMain,
+  },
+  {
+    name: "token-tracker",
+    path: "/token-tracker",
+    component: TokenTracker,
+  },
+  {
+    name: "token-tracker-item",
+    path: "/token-tracker/:tokenId",
+    component: TokenTrackerItem,
   },
 
   {
