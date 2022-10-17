@@ -5,7 +5,6 @@ import ipfs from "./ipfs";
 import teztools from "./teztools";
 import knownContracts from "../knownContracts.json";
 import tzkt from "./tzkt";
-import { merge } from "lodash";
 
 const getTokenId = (priceObj, token) => {
   if (priceObj) {
@@ -454,9 +453,10 @@ export default {
         const {
           data: { storage: tokenStorage },
         } = await tzkt.getContractStorage(address);
+        // console.log(address, "Address", lpBal[i]);
 
         const tokenObjkt = {
-          address: address,
+          address,
           balance: lpBal[i].balance,
           lpBalance: new BigNumber(lpBal[i].balance).div(1e6).toNumber(),
           tokenAddress: tokenStorage.token_address,
@@ -473,10 +473,17 @@ export default {
           priceFeed
         );
 
+        if (address === "KT1K4EwTpbvYN9agJdjpyJm4ZZdhpUNKB3F6") {
+          console.log(tokenMetaData);
+          console.log("HEre !!!");
+          console.log(new BigNumber(lpBal[i].balance).div(1e6).toNumber());
+        }
+
         if (tokenMetaData) {
-          tokenMetaData.thumbnailUri = ipfs.transformUri(
-            tokenMetaData.thumbnailUri
-          );
+          if (tokenMetaData.thumbnailUri)
+            tokenMetaData.thumbnailUri = ipfs.transformUri(
+              tokenMetaData.thumbnailUri
+            );
 
           const xtzSide = new BigNumber(tokenObjkt.balance)
             .times(tokenObjkt.tezPool)
@@ -498,7 +505,7 @@ export default {
 
           tokenObjkt.totalValueUsd = tokenObjkt.totalValue * xtzUsd;
 
-          lp.push(merge(tokenMetaData, tokenObjkt));
+          lp.push({ ...tokenMetaData, ...tokenObjkt });
 
           quipu.totalValue += tokenObjkt.totalValue;
           quipu.totalValueUsd += tokenObjkt.totalValueUsd;
@@ -636,7 +643,7 @@ export default {
 
           tokenObjkt.totalValueUsd = tokenObjkt.totalValue * xtzUsd;
 
-          lp.push(merge(tokenMetaData, tokenObjkt));
+          lp.push({ ...tokenMetaData, ...tokenObjkt });
 
           vortex.totalValue += tokenObjkt.totalValue;
           vortex.totalValueUsd += tokenObjkt.totalValueUsd;
@@ -745,12 +752,10 @@ export default {
 
           tokenObjkt.totalValueUsd = tokenObjkt.totalValue * xtzUsd;
 
-          lp.push(
-            merge(
-              { token0: token0MetaData, token1: token1MetaData },
-              tokenObjkt
-            )
-          );
+          lp.push({
+            ...{ token0: token0MetaData, token1: token1MetaData },
+            ...tokenObjkt,
+          });
 
           spicy.totalValue += tokenObjkt.totalValue;
           spicy.totalValueUsd += tokenObjkt.totalValueUsd;
@@ -760,7 +765,6 @@ export default {
       spicy.positions = lp;
       spicy.positionsCount = lp.length;
 
-      console.log(`SPICY: ${spicy}`);
       return spicy;
     } catch (error) {
       console.log(error);
@@ -858,12 +862,10 @@ export default {
 
           tokenObjkt.totalValueUsd = tokenObjkt.totalValue * xtzUsd;
 
-          lp.push(
-            merge(
-              { token0: token0MetaData, token1: token1MetaData },
-              tokenObjkt
-            )
-          );
+          lp.push({
+            ...{ token0: token0MetaData, token1: token1MetaData },
+            ...tokenObjkt,
+          });
 
           plenty.totalValue += tokenObjkt.totalValue;
           plenty.totalValueUsd += tokenObjkt.totalValueUsd;
@@ -913,8 +915,6 @@ export default {
           totalSupply: tokenStorage.lqtTotal,
         };
 
-        console.log(tokenObjkt);
-
         const tokenMetaData = getPrice(
           tokenObjkt.tokenAddress,
           undefined,
@@ -946,7 +946,7 @@ export default {
 
           tokenObjkt.totalValueUsd = tokenObjkt.totalValue * xtzUsd;
 
-          lp.push(merge(tokenMetaData, tokenObjkt));
+          lp.push({ ...tokenMetaData, ...tokenObjkt });
 
           sirius.totalValue += tokenObjkt.totalValue;
           sirius.totalValueUsd += tokenObjkt.totalValueUsd;
@@ -955,7 +955,6 @@ export default {
 
       sirius.positions = lp;
       sirius.positionsCount = lp.length;
-      console.log("SIRIUS", sirius);
       return sirius;
     } catch (error) {
       console.log(error);
