@@ -18,7 +18,7 @@
             <el-col style="text-align: left" :span="4">
               <el-row type="flex" style="align-items: center">
                 <el-avatar
-                  :src="asset.thumbnail"
+                  :src="asset.thumbnailUri"
                   fit="cover"
                   shape="circle"
                   :size="40"
@@ -34,16 +34,16 @@
                   target="_blank"
                   :href="`https://tzkt.io/${asset.contract}/operations/`"
                 >
-                  {{ asset.token }}
+                  {{ asset.symbol || asset.name }}
                 </a>
               </el-row>
             </el-col>
 
             <el-col style="text-align: right" :span="4">
               {{
-                vueNumberFormat(formatNumShorthand(asset.price).value, {
+                vueNumberFormat(formatNumShorthand(asset.usdValue).value, {
                   prefix: "$",
-                  suffix: formatNumShorthand(asset.price).suffix,
+                  suffix: formatNumShorthand(asset.usdValue).suffix,
                   decimal: ".",
                   thousand: ",",
                   precision: 2,
@@ -76,11 +76,11 @@
             <el-col
               style="text-align: right"
               :span="2"
-              :class="asset.change1d < 0 ? 'n-change' : 'p-change'"
+              :class="asset.change1Day < 0 ? 'n-change' : 'p-change'"
             >
               {{
                 asset.contract !== "tez"
-                  ? vueNumberFormat(asset.change1d, {
+                  ? vueNumberFormat(asset.change1Day, {
                       prefix: "",
                       suffix: "%",
                       decimal: ".",
@@ -93,11 +93,11 @@
             <el-col
               style="text-align: right"
               :span="2"
-              :class="asset.change7d < 0 ? 'n-change' : 'p-change'"
+              :class="asset.change7Day < 0 ? 'n-change' : 'p-change'"
             >
               {{
                 asset.contract !== "tez"
-                  ? vueNumberFormat(asset.change7d, {
+                  ? vueNumberFormat(asset.change7Day, {
                       prefix: "",
                       suffix: "%",
                       decimal: ".",
@@ -110,11 +110,11 @@
             <el-col
               style="text-align: right"
               :span="2"
-              :class="asset.change30d < 0 ? 'n-change' : 'p-change'"
+              :class="asset.change30Day < 0 ? 'n-change' : 'p-change'"
             >
               {{
                 asset.contract !== "tez"
-                  ? vueNumberFormat(asset.change30d, {
+                  ? vueNumberFormat(asset.change30Day, {
                       prefix: "",
                       suffix: "%",
                       decimal: ".",
@@ -138,8 +138,7 @@ export default {
   name: "PortfolioWalletRow",
   props: {
     asset: { type: Object, required: true },
-    showUsd: { type: Boolean, required: true },
-    id: { type: Number, required: true },
+    id: { type: String, required: true },
   },
   methods: {
     getToParams(asset) {

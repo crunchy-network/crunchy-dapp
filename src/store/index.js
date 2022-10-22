@@ -10,6 +10,7 @@ import ifo from "./ifo";
 import ifoPixelPriv from "./ifoPixelPriv";
 import homeWallet from "./homeWallet";
 import swap from "./swap";
+import tokenTracker from "./tokenTracker";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -24,5 +25,6 @@ export default new Vuex.Store({
     ifoPixelPriv: ifoPixelPriv,
     homeWallet: homeWallet,
     swap: swap,
+    tokenTracker: tokenTracker,
   },
 });

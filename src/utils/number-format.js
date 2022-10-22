@@ -1,5 +1,7 @@
 export default {
   shorthand(number, decimals = 2) {
+    if (isNaN(number)) return { value: 0, suffix: "" };
+
     if (number < 1000) {
       return { value: number, suffix: "" };
     }

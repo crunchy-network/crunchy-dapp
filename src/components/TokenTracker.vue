@@ -257,7 +257,7 @@
         </el-col>
       </el-row>
       <div>
-        <el-card shadow="always">
+        <el-card v-loading="tokenTracker.loading" shadow="always">
           <div class="responsive-table">
             <div>
               <el-row
@@ -325,10 +325,10 @@
               </el-row>
 
               <TokenTrakerRow
-                v-for="(asset, index) in tokens"
-                :id="index + 1"
+                v-for="(token, index) in tabledata"
+                :id="token.id"
                 :key="index"
-                :asset="asset"
+                :asset="token"
               />
               <div id="pagination">
                 <el-button
@@ -400,6 +400,8 @@
 <script>
 import TokenTrakerRow from "./TokenTrakerRow.vue";
 import NavMenu from "./NavMenu.vue";
+import { mapActions, mapState } from "vuex";
+import _ from "lodash";
 
 export default {
   name: "TokenTracker",
@@ -410,7 +412,7 @@ export default {
   data() {
     return {
       activeTab: "wallet",
-      tabledata: [],
+      tabledata: {},
       tokens: [
         {
           id: "1",
@@ -578,33 +580,41 @@ export default {
     };
   },
 
-  watch: {
-    tokens() {
-      this.paginationHandler();
-    },
-    tableData(newVal) {
-      console.log(newVal);
+  computed: {
+    ...mapState(["tokenTracker"]),
+    orderedTokens: function () {
+      return _.orderBy(this.tokenTracker.tokensTracked, ["mktCap"], ["desc"]);
     },
   },
 
-  mounted() {
-    console.log(this.tokens);
-    this.paginationHandler();
-    console.log(this.tableData);
+  watch: {
+    "$store.state.tokenTracker.tokensTracked": {
+      immediate: true,
+      deep: true,
+      handler() {
+        this.paginationHandler();
+      },
+    },
+  },
+
+  created() {
+    this.fetchTokensTracked();
   },
 
   methods: {
+    ...mapActions(["fetchTokensTracked"]),
     paginationHandler() {
-      this.pages = Math.ceil(this.tokens.length / this.displayCount);
+      this.pages = Math.ceil(this.orderedTokens.length / this.displayCount);
+
       this.handleVisibleData();
     },
 
     handleVisibleData() {
       const next = this.nextPage > this.pages ? this.pages : this.nextPage;
-      this.tableData = this.tokens.slice(
+      this.tabledata = this.orderedTokens.slice(
         (next - 1) * this.displayCount,
-        this.nextPage * this.displayCount > this.tokens.length
-          ? this.tokens.length
+        this.nextPage * this.displayCount > this.orderedTokens.length
+          ? this.orderedTokens.length
           : next * this.displayCount
       );
     },

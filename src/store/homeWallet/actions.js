@@ -29,6 +29,7 @@ export default {
       });
     }
   },
+
   async fetchNftCollection({ state, commit }, address) {
     let collection = {};
     if (state.nfts.length > 1) {
@@ -37,6 +38,7 @@ export default {
 
     commit("updateNftCollection", collection);
   },
+
   async softFetchNFTs({ rootState, commit }, pkh) {
     if (!pkh && !rootState.wallet.pkh) {
       // @todo
@@ -168,6 +170,7 @@ export default {
       commit("updateLpLoading", false);
     }
   },
+
   async softLoadAllLiquidity({ rootState, commit }, pkh) {
     const account = pkh || rootState.wallet.pkh;
 
