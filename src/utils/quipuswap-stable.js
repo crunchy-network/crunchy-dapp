@@ -104,8 +104,8 @@ const dexes = [
     address: "KT1M2b4XCUq5zqMNqQAotUar7BSUiNDE4Dgh",
     poolIndex: "322555",
     tokens: [
-      { ...stableTokens.apUSDC },
       { ...stableTokens.abBUSD },
+      { ...stableTokens.apUSDC },
       { ...stableTokens.USDt },
     ],
   },
