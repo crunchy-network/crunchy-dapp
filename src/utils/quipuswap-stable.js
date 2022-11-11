@@ -55,6 +55,20 @@ const stableTokens = {
     decimals: 6,
     type: "fa2",
   },
+  apUSDC: {
+    tokenSymbol: "apUSDC",
+    address: "KT1UG6PdaKoJcc3yD6mkFVfxnS1uJeW3cGeX",
+    tokenId: 2,
+    decimals: 6,
+    type: "fa2",
+  },
+  abBUSD: {
+    tokenSymbol: "abBUSD",
+    address: "KT1UG6PdaKoJcc3yD6mkFVfxnS1uJeW3cGeX",
+    tokenId: 1,
+    decimals: 6,
+    type: "fa2",
+  },
 };
 
 const dexes = [
@@ -83,6 +97,15 @@ const dexes = [
     tokens: [
       { ...stableTokens.kUSD },
       { ...stableTokens.uUSD },
+      { ...stableTokens.USDt },
+    ],
+  },
+  {
+    address: "KT1M2b4XCUq5zqMNqQAotUar7BSUiNDE4Dgh",
+    poolIndex: "322555",
+    tokens: [
+      { ...stableTokens.abBUSD },
+      { ...stableTokens.apUSDC },
       { ...stableTokens.USDt },
     ],
   },
