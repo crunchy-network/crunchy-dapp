@@ -58,7 +58,20 @@ export default {
       return res.data;
     });
   },
-
+  async getPriceHistory(tokenAddress, tokenId) {
+    if(typeof(tokenId) === 'number') {
+      return makeReqest(
+        `/v1/${tokenAddress}${"_" + tokenId}/price-history`
+      ).then((res) => {
+        return res.data.reverse();
+      });
+    }
+    return makeReqest(
+      `/v1/${tokenAddress}/price-history`
+    ).then((res) => {
+      return res.data.reverse();
+    });
+  },
   findTokenInPriceFeed(token, feed) {
     if (farmUtils.isFa1(token)) {
       return feed.find((el) => {
