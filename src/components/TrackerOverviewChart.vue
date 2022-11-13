@@ -38,7 +38,7 @@ export default {
           color: randomlyChooseColor(),
         };
       });
-      console.log(volumeSeriesData);
+
       var chart = createChart(document.getElementById("chart"), {
         rightPriceScale: {
           visible: false,

@@ -34,23 +34,24 @@ export default {
         }
       }
 
-      contracts.push({
-        symbol: "MTTR",
-        name: "Matter",
-        tokenAddress: "KT1K4jn23GonEmZot3pMGth7unnzZ6EaMVjY",
-        tokenId: 0,
-        decimals: 12,
-        type: "fa2",
-        thumbnailUri: "ipfs://QmZ3BWTnxAp87yfKnUGka9UeQLhHjMkDAB3KTo1UChhQas",
-        shouldPreferSymbol: false,
-        usdValue: 0,
-        pairs: [],
-      });
+      // contracts.push({
+      //   symbol: "MTTR",
+      //   name: "Matter",
+      //   tokenAddress: "KT1K4jn23GonEmZot3pMGth7unnzZ6EaMVjY",
+      //   tokenId: 0,
+      //   decimals: 12,
+      //   type: "fa2",
+      //   thumbnailUri: "ipfs://QmZ3BWTnxAp87yfKnUGka9UeQLhHjMkDAB3KTo1UChhQas",
+      //   shouldPreferSymbol: false,
+      //   usdValue: 0,
+      //   pairs: [],
+      // });
 
       ret.contracts = contracts;
       return ret;
     });
   },
+
   async getTokenPrice(tokenAddress, tokenId) {
     return makeReqest(
       `/v1/${tokenAddress}${tokenId ? "_" + tokenId : ""}/price`

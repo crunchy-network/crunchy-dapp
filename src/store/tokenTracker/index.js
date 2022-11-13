@@ -5,18 +5,25 @@ export default {
   state: {
     loading: false,
     searchInput: "",
-    tokenList: {},
-    tokensTracked: [],
+    tokenList: [],
+    tokensTracked: {},
+    tokenOverview: {},
+    tokensOrder: [],
   },
   mutations,
   actions,
   getters: {
     getTrackerData(state) {
       return {
-        tokensTracked: state.tokensTracked.length,
-        dexCovered: 0,
+        tokensTracked: Object.keys(state.tokensTracked).length,
+        dexCovered: 3,
         total24hVolume: 0,
-        estimatedMktCap: 0,
+        estimatedMktCap: Object.keys(state.tokensTracked).reduce(
+          (prev, current) => {
+            return prev + state.tokensTracked[current].mktCap;
+          },
+          0
+        ),
       };
     },
   },

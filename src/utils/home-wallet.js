@@ -23,7 +23,7 @@ const getTokenId = (priceObj, token) => {
   return undefined;
 };
 
-const getPrice = (address, tokenId, priceFeed) => {
+export const getPrice = (address, tokenId, priceFeed) => {
   const price = priceFeed.find(
     (val) =>
       val.tokenAddress === address &&

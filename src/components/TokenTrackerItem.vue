@@ -33,7 +33,7 @@
             line-height: 24px;
           "
         >
-          Cryptoeasy
+          {{ tokenData.name || tokenData.symbol }}
         </span>
       </el-row>
 
@@ -47,7 +47,7 @@
         <div>
           <el-row type="flex" style="align-items: end">
             <el-avatar
-              :src="'../assets/easy-icon.png'"
+              :src="tokenData.thumbnailUri"
               fit="cover"
               shape="circle"
               :size="40"
@@ -62,13 +62,32 @@
               style="color: #555cff; text-decoration: none; font-weight: 600"
               target="_blank"
             >
-              Cryptoeasy ($EASY)
+              {{ tokenData.name }} (${{ tokenData.symbol }})
             </a>
           </el-row>
           <h2 style="font-weight: 600; font-size: 40px; line-height: 19px">
-            $1.32
-            <span style="color: #1ec37f; font-weight: 600; font-size: 24px">
-              +2.13%
+            {{
+              vueNumberFormat(formatNumShorthand(tokenData.usdValue).value, {
+                prefix: "$",
+                suffix: formatNumShorthand(tokenData.usdValue).suffix,
+                decimal: ".",
+                thousand: ",",
+                precision: 2,
+              })
+            }}
+            <span
+              style="color: #1ec37f; font-weight: 600; font-size: 24px"
+              :class="tokenData.change1Day < 0 ? 'n-change' : 'p-change'"
+            >
+              {{
+                vueNumberFormat(tokenData.change1Day, {
+                  prefix: "",
+                  suffix: "%",
+                  decimal: ".",
+                  thousand: ",",
+                  precision: 2,
+                })
+              }}
             </span>
           </h2>
         </div>
@@ -95,7 +114,12 @@
         </button>
       </div>
 
-      <TrackerOverview v-if="activeTab === 'overview'" />
+      <TrackerOverview
+        v-if="activeTab === 'overview'"
+        :duration="duration"
+        :set-duration-tab="setDurationTab"
+        :token-tracked="tokenData"
+      />
       <TrackerMarkets v-if="activeTab === 'markets'" />
     </el-main>
   </div>
@@ -105,18 +129,40 @@
 import NavMenu from "./NavMenu.vue";
 import TrackerOverview from "./TrackerOverview.vue";
 import TrackerMarkets from "./TrackerMarkets.vue";
+import { mapActions, mapState } from "vuex";
+import numberFormat from "../utils/number-format";
 export default {
   components: { NavMenu, TrackerOverview, TrackerMarkets },
   data() {
     return {
       activeTab: "overview",
-      token: {},
+      duration: "1d",
     };
+  },
+  computed: {
+    ...mapState(["tokenTracker"]),
+    tokenData() {
+      return this.tokenTracker.tokenOverview;
+    },
   },
 
   watch: {
     "$router.query.tab": function (val) {
       this.activeTab = val;
+    },
+    "$store.state.tokenTracker.tokenList": {
+      immediate: true,
+      deep: true,
+      handler: () => {
+        // this.refresh();
+      },
+    },
+    "$store.state.tokenTracker.tokenOverview": {
+      immediate: true,
+      deep: true,
+      handler: (newVal) => {
+        console.log(newVal, "Value");
+      },
     },
   },
 
@@ -133,7 +179,15 @@ export default {
     }
   },
 
+  mounted() {
+    this.refresh();
+  },
+
   methods: {
+    ...mapActions(["fetchTokenTrackedWithId"]),
+    refresh() {
+      this.fetchTokenTrackedWithId(this.$route.params.tokenId);
+    },
     isActiveTab(tab) {
       return (
         this.activeTab === tab &&
@@ -152,11 +206,35 @@ export default {
         });
       }
     },
+
+    setDurationTab(tab = "") {
+      if (["1d", "7d", "30d"].includes(tab)) {
+        this.duration = tab;
+      }
+    },
+    handleChangeProp() {
+      if (this.duration === "1d") {
+        return this.tokenData.change1Day;
+      }
+      if (this.duration === "7d") {
+        return this.tokenData.change7Day;
+      }
+      if (this.duration === "30d") {
+        return this.tokenData.change30Day;
+      }
+    },
+
+    formatNumShorthand(val) {
+      return numberFormat.shorthand(val);
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
+@import "../crunchy-variables.scss";
+@import "~element-ui/packages/theme-chalk/src/common/var";
+
 .tab-wrapper {
   display: flex;
   align-items: flex-start;
@@ -189,5 +267,13 @@ export default {
     color: #191b1f66;
     cursor: not-allowed;
   }
+}
+
+.n-change {
+  color: $--color-danger;
+}
+
+.p-change {
+  color: $--color-success;
 }
 </style>
