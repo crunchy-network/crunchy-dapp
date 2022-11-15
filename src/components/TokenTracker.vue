@@ -82,33 +82,19 @@
                     "
                   >
                     {{
-                      vueNumberFormat(120.21, {
-                        decimal: ".",
-                        thousand: ",",
-                        precision: 2,
-                        prefix: "$",
-                        suffix: "M",
-                      })
+                      vueNumberFormat(
+                        fmtNumber(getTrackerData.estimatedMktCap).value,
+                        {
+                          decimal: ".",
+                          thousand: ",",
+                          precision: 2,
+                          prefix: "$",
+                          suffix: fmtNumber(getTrackerData.estimatedMktCap)
+                            .suffix,
+                        }
+                      )
                     }}
                   </div>
-                  <h2
-                    style="
-                      color: #191b1f;
-                      opacity: 0.4;
-                      font-size: 16px;
-                      margin: 0px;
-                    "
-                  >
-                    {{
-                      vueNumberFormat(82.2, {
-                        decimal: ".",
-                        thousand: ",",
-                        precision: 2,
-                        prefix: "$",
-                        suffix: "M",
-                      })
-                    }}
-                  </h2>
                 </el-card>
               </div>
             </el-col>
@@ -135,33 +121,19 @@
                     "
                   >
                     {{
-                      vueNumberFormat(1.2, {
-                        decimal: ".",
-                        thousand: ",",
-                        precision: 2,
-                        prefix: "$",
-                        suffix: "M",
-                      })
+                      vueNumberFormat(
+                        fmtNumber(getTrackerData.total24hVolume).value,
+                        {
+                          decimal: ".",
+                          thousand: ",",
+                          precision: 2,
+                          prefix: "$",
+                          suffix: fmtNumber(getTrackerData.total24hVolume)
+                            .suffix,
+                        }
+                      )
                     }}
                   </div>
-                  <h2
-                    style="
-                      color: #191b1f;
-                      opacity: 0.4;
-                      font-size: 16px;
-                      margin: 0px;
-                    "
-                  >
-                    {{
-                      vueNumberFormat(500, {
-                        decimal: ".",
-                        thousand: ",",
-                        precision: 0,
-                        prefix: "$",
-                        suffix: "K",
-                      })
-                    }}
-                  </h2>
                 </el-card>
               </div>
             </el-col>
@@ -187,7 +159,7 @@
                       margin-top: 4px;
                     "
                   >
-                    {{ 524 }}
+                    {{ getTrackerData.tokensTracked }}
                   </div>
                 </el-card>
               </div>
@@ -214,7 +186,7 @@
                       margin-top: 4px;
                     "
                   >
-                    {{ 4 }}
+                    {{ getTrackerData.dexCovered }}
                   </div>
                 </el-card>
               </div>
@@ -326,7 +298,6 @@
 
               <TokenTrakerRow
                 v-for="(token, index) in tabledata"
-                :id="token.id"
                 :key="index"
                 :asset="token"
               />
@@ -400,8 +371,8 @@
 <script>
 import TokenTrakerRow from "./TokenTrakerRow.vue";
 import NavMenu from "./NavMenu.vue";
-import { mapActions, mapState } from "vuex";
-import _ from "lodash";
+import { mapActions, mapGetters, mapState } from "vuex";
+import numberFormat from "../utils/number-format";
 
 export default {
   name: "TokenTracker",
@@ -412,165 +383,7 @@ export default {
   data() {
     return {
       activeTab: "wallet",
-      tabledata: {},
-      tokens: [
-        {
-          id: "1",
-          token: "CRUNCH",
-          price: 8.11,
-          thumbnail:
-            "https://img.templewallet.com/insecure/fill/50/50/ce/0/plain/https://img.templewallet.com/insecure/fill/50/50/ce/0/plain/https://cloudflare-ipfs.com/ipfs/bafybeienhhbxz53n3gtg7stjou2zs3lmhupahwovv2kxwh5uass3bc5xzq",
-          volume24: 3480,
-          mktCap: 98940000,
-          change1d: -1.3,
-          change7d: 1.9,
-          change30d: 3.2,
-        },
-        {
-          id: "1",
-          token: "crDAO",
-          price: 70.31,
-          thumbnail:
-            "https://img.templewallet.com/insecure/fill/50/50/ce/0/plain/https://img.templewallet.com/insecure/fill/50/50/ce/0/plain/https://cloudflare-ipfs.com/ipfs/bafybeigulbzm5x72qtmckxqvd3ksk6q3vlklxjgpnvvnbcofgdp6qwu43u",
-          volume24: 99870000,
-          mktCap: 843000,
-          change1d: 10,
-          change7d: 11.9,
-          change30d: 13.2,
-        },
-        {
-          id: "1",
-          token: "kUSD",
-          price: 1.1,
-          thumbnail:
-            "https://img.templewallet.com/insecure/fill/50/50/ce/0/plain/https://img.templewallet.com/insecure/fill/50/50/ce/0/plain/https://kolibri-data.s3.amazonaws.com/logo.png",
-          volume24: 19210000,
-          mktCap: 1330000,
-          change1d: -1.3,
-          change7d: -1,
-          change30d: -4.2,
-        },
-        {
-          id: "1",
-          token: "USDT",
-          price: 1.01,
-          thumbnail:
-            "https://img.templewallet.com/insecure/fill/50/50/ce/0/plain/https://img.templewallet.com/insecure/fill/50/50/ce/0/plain/https://cloudflare-ipfs.com/ipfs/bafybeibi45na6dimqwdznpj6m254vos6hez7232mqrrbj27xzwsh36gz4i",
-          volume24: 10400000,
-          mktCap: 2140000,
-          change1d: -13,
-          change7d: 129,
-          change30d: 32,
-        },
-        {
-          id: "1",
-          token: "GIF",
-          price: 8.11,
-          thumbnail:
-            "https://img.templewallet.com/insecure/fill/50/50/ce/0/plain/https://img.templewallet.com/insecure/fill/50/50/ce/0/plain/https://cloudflare-ipfs.com/ipfs/QmQxoTVVuFS677TQJFdVh1PNRoBmVbvkwJSxe1xvf9cSqU",
-          volume24: 348000,
-          mktCap: 98940000,
-          change1d: -1.3,
-          change7d: 1.9,
-          change30d: 3.2,
-        },
-        {
-          id: "1",
-          token: "crDAO",
-          price: 70.31,
-          thumbnail:
-            "https://img.templewallet.com/insecure/fill/50/50/ce/0/plain/https://img.templewallet.com/insecure/fill/50/50/ce/0/plain/https://cloudflare-ipfs.com/ipfs/bafybeigulbzm5x72qtmckxqvd3ksk6q3vlklxjgpnvvnbcofgdp6qwu43u",
-          volume24: 99870000,
-          mktCap: 843000,
-          change1d: 10,
-          change7d: 11.9,
-          change30d: 13.2,
-        },
-        {
-          id: "1",
-          token: "kUSD",
-          price: 1.1,
-          thumbnail:
-            "https://img.templewallet.com/insecure/fill/50/50/ce/0/plain/https://img.templewallet.com/insecure/fill/50/50/ce/0/plain/https://kolibri-data.s3.amazonaws.com/logo.png",
-          volume24: 19210000,
-          mktCap: 1330000,
-          change1d: -1.3,
-          change7d: -1,
-          change30d: -4.2,
-        },
-        {
-          id: "1",
-          token: "USDT",
-          price: 1.01,
-          thumbnail:
-            "https://img.templewallet.com/insecure/fill/50/50/ce/0/plain/https://img.templewallet.com/insecure/fill/50/50/ce/0/plain/https://cloudflare-ipfs.com/ipfs/bafybeibi45na6dimqwdznpj6m254vos6hez7232mqrrbj27xzwsh36gz4i",
-          volume24: 10400000,
-          mktCap: 2140000,
-          change1d: -13,
-          change7d: 129,
-          change30d: 32,
-        },
-        {
-          id: "1",
-          token: "GIF",
-          price: 8.11,
-          thumbnail:
-            "https://img.templewallet.com/insecure/fill/50/50/ce/0/plain/https://img.templewallet.com/insecure/fill/50/50/ce/0/plain/https://cloudflare-ipfs.com/ipfs/QmQxoTVVuFS677TQJFdVh1PNRoBmVbvkwJSxe1xvf9cSqU",
-          volume24: 348000,
-          mktCap: 98940000,
-          change1d: -1.3,
-          change7d: 1.9,
-          change30d: 3.2,
-        },
-        {
-          id: "1",
-          token: "GIF",
-          price: 8.11,
-          thumbnail:
-            "https://img.templewallet.com/insecure/fill/50/50/ce/0/plain/https://img.templewallet.com/insecure/fill/50/50/ce/0/plain/https://cloudflare-ipfs.com/ipfs/QmQxoTVVuFS677TQJFdVh1PNRoBmVbvkwJSxe1xvf9cSqU",
-          volume24: 348000,
-          mktCap: 98940000,
-          change1d: -1.3,
-          change7d: 1.9,
-          change30d: 3.2,
-        },
-        {
-          id: "1",
-          token: "crDAO",
-          price: 70.31,
-          thumbnail:
-            "https://img.templewallet.com/insecure/fill/50/50/ce/0/plain/https://img.templewallet.com/insecure/fill/50/50/ce/0/plain/https://cloudflare-ipfs.com/ipfs/bafybeigulbzm5x72qtmckxqvd3ksk6q3vlklxjgpnvvnbcofgdp6qwu43u",
-          volume24: 99870000,
-          mktCap: 843000,
-          change1d: 10,
-          change7d: 11.9,
-          change30d: 13.2,
-        },
-        {
-          id: "1",
-          token: "kUSD",
-          price: 1.1,
-          thumbnail:
-            "https://img.templewallet.com/insecure/fill/50/50/ce/0/plain/https://img.templewallet.com/insecure/fill/50/50/ce/0/plain/https://kolibri-data.s3.amazonaws.com/logo.png",
-          volume24: 19210000,
-          mktCap: 1330000,
-          change1d: -1.3,
-          change7d: -1,
-          change30d: -4.2,
-        },
-        {
-          id: "1",
-          token: "USDT",
-          price: 1.01,
-          thumbnail:
-            "https://img.templewallet.com/insecure/fill/50/50/ce/0/plain/https://img.templewallet.com/insecure/fill/50/50/ce/0/plain/https://cloudflare-ipfs.com/ipfs/bafybeibi45na6dimqwdznpj6m254vos6hez7232mqrrbj27xzwsh36gz4i",
-          volume24: 10400000,
-          mktCap: 2140000,
-          change1d: -13,
-          change7d: 129,
-          change30d: 32,
-        },
-      ],
+      tabledata: [],
       showUsd: false,
       currentPage: 0,
       pages: 0,
@@ -582,16 +395,14 @@ export default {
 
   computed: {
     ...mapState(["tokenTracker"]),
-    orderedTokens: function () {
-      return _.orderBy(this.tokenTracker.tokensTracked, ["mktCap"], ["desc"]);
-    },
+    ...mapGetters(["getTrackerData"]),
   },
 
   watch: {
-    "$store.state.tokenTracker.tokensTracked": {
+    "$store.state.tokenTracker.tokenList": {
       immediate: true,
       deep: true,
-      handler() {
+      handler(newVal) {
         this.paginationHandler();
       },
     },
@@ -603,18 +414,23 @@ export default {
 
   methods: {
     ...mapActions(["fetchTokensTracked"]),
+    fmtNumber(val) {
+      return numberFormat.shorthand(val);
+    },
     paginationHandler() {
-      this.pages = Math.ceil(this.orderedTokens.length / this.displayCount);
+      this.pages = Math.ceil(
+        this.tokenTracker.tokenList.length / this.displayCount
+      );
 
       this.handleVisibleData();
     },
 
     handleVisibleData() {
       const next = this.nextPage > this.pages ? this.pages : this.nextPage;
-      this.tabledata = this.orderedTokens.slice(
+      this.tabledata = this.tokenTracker.tokenList.slice(
         (next - 1) * this.displayCount,
-        this.nextPage * this.displayCount > this.orderedTokens.length
-          ? this.orderedTokens.length
+        this.nextPage * this.displayCount > this.tokenTracker.tokenList.length
+          ? this.tokenTracker.tokenList.length
           : next * this.displayCount
       );
     },

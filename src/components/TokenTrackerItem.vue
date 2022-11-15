@@ -33,7 +33,7 @@
             line-height: 24px;
           "
         >
-          Cryptoeasy
+          {{ getTokenOverview.name || getTokenOverview.symbol }}
         </span>
       </el-row>
 
@@ -47,7 +47,7 @@
         <div>
           <el-row type="flex" style="align-items: end">
             <el-avatar
-              :src="'../assets/easy-icon.png'"
+              :src="getTokenOverview.thumbnailUri"
               fit="cover"
               shape="circle"
               :size="40"
@@ -62,19 +62,47 @@
               style="color: #555cff; text-decoration: none; font-weight: 600"
               target="_blank"
             >
-              Cryptoeasy ($EASY)
+              {{ getTokenOverview.name }} (${{ getTokenOverview.symbol }})
             </a>
           </el-row>
           <h2 style="font-weight: 600; font-size: 40px; line-height: 19px">
-            $1.32
-            <span style="color: #1ec37f; font-weight: 600; font-size: 24px">
-              +2.13%
+            {{
+              vueNumberFormat(
+                formatNumShorthand(getTokenOverview.usdValue).value,
+                {
+                  prefix: "$",
+                  suffix: formatNumShorthand(getTokenOverview.usdValue).suffix,
+                  decimal: ".",
+                  thousand: ",",
+                  precision: 2,
+                }
+              )
+            }}<number-tooltip :number="getTokenOverview.usdValue" />
+            <span
+              style="font-weight: 600; font-size: 24px"
+              :class="getTokenOverview.change1Day < 0 ? 'n-change' : 'p-change'"
+            >
+              {{
+                vueNumberFormat(getTokenOverview.change1Day, {
+                  prefix: "",
+                  suffix: "%",
+                  decimal: ".",
+                  thousand: ",",
+                  precision: 2,
+                })
+              }}
             </span>
           </h2>
         </div>
 
         <div>
-          <el-button round type="primary"> Swap </el-button>
+          <router-link
+            :to="`/swap?from=tez&to=${getTokenOverview.tokenAddress}_${
+              getTokenOverview.tokenId || 0
+            }`"
+          >
+            <el-button round type="primary"> Swap </el-button>
+          </router-link>
         </div>
       </el-row>
 
@@ -95,8 +123,16 @@
         </button>
       </div>
 
-      <TrackerOverview v-if="activeTab === 'overview'" />
-      <TrackerMarkets v-if="activeTab === 'markets'" />
+      <TrackerOverview
+        v-if="activeTab === 'overview'"
+        :duration="duration"
+        :set-duration-tab="setDurationTab"
+        :token-tracked="getTokenOverview"
+      />
+      <TrackerMarkets
+        v-if="activeTab === 'markets'"
+        :markets="getTokenOverview.pairs"
+      />
     </el-main>
   </div>
 </template>
@@ -105,13 +141,19 @@
 import NavMenu from "./NavMenu.vue";
 import TrackerOverview from "./TrackerOverview.vue";
 import TrackerMarkets from "./TrackerMarkets.vue";
+import { mapActions, mapGetters } from "vuex";
+import numberFormat from "../utils/number-format";
+import NumberTooltip from "./NumberTooltip.vue";
 export default {
-  components: { NavMenu, TrackerOverview, TrackerMarkets },
+  components: { NavMenu, TrackerOverview, TrackerMarkets, NumberTooltip },
   data() {
     return {
       activeTab: "overview",
-      token: {},
+      duration: "1d",
     };
+  },
+  computed: {
+    ...mapGetters(["getTokenOverview"]),
   },
 
   watch: {
@@ -133,7 +175,15 @@ export default {
     }
   },
 
+  mounted() {
+    this.refresh();
+  },
+
   methods: {
+    ...mapActions(["fetchTokenTrackedWithId"]),
+    refresh() {
+      this.fetchTokenTrackedWithId(this.$route.params.tokenId);
+    },
     isActiveTab(tab) {
       return (
         this.activeTab === tab &&
@@ -152,11 +202,42 @@ export default {
         });
       }
     },
+
+    setDurationTab(tab = "") {
+      if (["1d", "7d", "30d"].includes(tab)) {
+        this.duration = tab;
+      }
+    },
+    handleChangeProp() {
+      if (this.duration === "1d") {
+        return this.getTokenOverview.change1Day;
+      }
+      if (this.duration === "7d") {
+        return this.getTokenOverview.change7Day;
+      }
+      if (this.duration === "30d") {
+        return this.getTokenOverview.change30Day;
+      }
+    },
+
+    formatNumShorthand(val) {
+      return numberFormat.shorthand(val);
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
+@import "../crunchy-variables.scss";
+@import "~element-ui/packages/theme-chalk/src/common/var";
+
+.n-change {
+  color: $--color-danger;
+}
+
+.p-change {
+  color: $--color-success;
+}
 .tab-wrapper {
   display: flex;
   align-items: flex-start;

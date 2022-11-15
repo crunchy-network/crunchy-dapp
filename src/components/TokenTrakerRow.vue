@@ -1,5 +1,5 @@
 <template>
-  <router-link :to="'/token-tracker/' + id" exact>
+  <router-link :to="'/token-tracker/' + asset.id" exact>
     <el-row
       style="padding-bottom: 14px; font-size: 14px; font-weight: 600"
       type="flex"
@@ -14,7 +14,7 @@
             type="flex"
             align="middle"
           >
-            <el-col :span="2"> {{ id }} </el-col>
+            <el-col :span="2"> {{ asset.order }} </el-col>
             <el-col style="text-align: left" :span="4">
               <el-row type="flex" style="align-items: center">
                 <el-avatar
@@ -48,7 +48,7 @@
                   thousand: ",",
                   precision: 2,
                 })
-              }}
+              }}<number-tooltip :number="asset.usdValue" />
             </el-col>
             <el-col style="text-align: right" :span="4">
               {{
@@ -133,12 +133,13 @@
 
 <script>
 import numberFormat from "../utils/number-format";
+import NumberTooltip from "./NumberTooltip.vue";
 
 export default {
   name: "PortfolioWalletRow",
+  components: { NumberTooltip },
   props: {
     asset: { type: Object, required: true },
-    id: { type: String, required: true },
   },
   methods: {
     getToParams(asset) {

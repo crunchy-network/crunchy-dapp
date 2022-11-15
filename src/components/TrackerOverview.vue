@@ -23,10 +23,10 @@
               >
                 <el-col :span="5">Market Cap</el-col>
                 <el-col :span="5">Total Supply</el-col>
-                <el-col :span="3">#</el-col>
+                <el-col :span="5">#</el-col>
                 <el-col :span="5">24h Trading Vol</el-col>
-                <el-col :span="3">All Time High</el-col>
-                <el-col :span="3">All Time Low</el-col>
+                <el-col :span="5">All Time High</el-col>
+                <el-col :span="5">All Time Low</el-col>
               </el-row>
             </el-col>
           </el-row>
@@ -43,17 +43,46 @@
                   type="flex"
                   align="middle"
                 >
-                  <el-col :span="5">$230.1M</el-col>
-                  <el-col :span="5">20.2M</el-col>
-                  <el-col style="" :span="3">31</el-col>
-                  <el-col :span="5"
-                    >$200k
-                    <span style="font-size: 12px; color: #1ec37f"
-                      >+1.13%</span
-                    ></el-col
+                  <el-col :span="5">
+                    {{
+                      vueNumberFormat(
+                        formatNumShorthand(tokenTracked.mktCap).value,
+                        {
+                          prefix: "$",
+                          suffix: formatNumShorthand(tokenTracked.mktCap)
+                            .suffix,
+                          decimal: ".",
+                          thousand: ",",
+                          precision: 2,
+                        }
+                      )
+                    }}
+                  </el-col>
+                  <el-col :span="5">
+                    {{
+                      vueNumberFormat(
+                        formatNumShorthand(tokenTracked.calcSupply).value,
+                        {
+                          prefix: "",
+                          suffix: formatNumShorthand(tokenTracked.calcSupply)
+                            .suffix,
+                          decimal: ".",
+                          thousand: ",",
+                          precision: 2,
+                        }
+                      )
+                    }}</el-col
                   >
-                  <el-col :span="3">$12.32</el-col>
-                  <el-col :span="3">$2.12</el-col>
+                  <el-col style="" :span="5">{{ tokenTracked.order }}</el-col>
+                  <el-col :span="5">
+                    <!-- $200k -->
+                    <!-- <span style="font-size: 12px; color: #1ec37f" -->
+                    <!-- >+1.13%</span -->
+                    <!-- > -->
+                    _
+                  </el-col>
+                  <el-col :span="5">-</el-col>
+                  <el-col :span="5">-</el-col>
                 </el-row>
               </div>
             </el-col>
@@ -124,28 +153,51 @@
 </template>
 
 <script>
+import numberFormat from "../utils/number-format";
 import TrackerOverviewChart from "./TrackerOverviewChart.vue";
 export default {
   components: { TrackerOverviewChart },
+
+  props: {
+    duration: {
+      type: String,
+      default: "1d",
+    },
+    setDurationTab: {
+      type: Function,
+      default: () => {},
+    },
+    tokenTracked: {
+      type: Object,
+      default: () => {},
+    },
+  },
+
   data() {
     return {
-      duration: "1d",
       legendTab: "volume",
     };
   },
+
+  watch: {
+    tokenTracked() {
+      console.log(this.tokenTracked);
+    },
+  },
+
   methods: {
     isActiveTab(tabValue, tab) {
       return tabValue === tab && "color: #FF4D4B; font-weight: 700";
     },
-    setDurationTab(tab = "") {
-      if (["1d", "7d", "30d"].includes(tab)) {
-        this.duration = tab;
-      }
-    },
+
     setLegendTab(tab = "") {
       if (["volume", "tvl", "price"].includes(tab)) {
         this.legendTab = tab;
       }
+    },
+
+    formatNumShorthand(val) {
+      return numberFormat.shorthand(val);
     },
   },
 };

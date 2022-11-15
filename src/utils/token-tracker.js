@@ -1,5 +1,5 @@
-import axios from "axios";
 import BigNumber from "bignumber.js";
+import { getPrice } from "./home-wallet";
 import ipfs from "./ipfs";
 import teztools from "./teztools";
 
@@ -36,7 +36,11 @@ const getTokenPriceInterval = async(historyPrice, timeInterval) => {
       }
       tokenPriceInterval.push(priceObj);
     }
-    historyTimestamp = new Date(historyPrice[++index].timestamp);
+    index += 1
+    if(!historyPrice[index].hasOwnProperty('timestamp') ) {
+      break;
+    }
+    historyTimestamp = new Date(historyPrice[index].timestamp);
   }
   return tokenPriceInterval;
 }
@@ -63,19 +67,18 @@ export default {
     return { ...tokens };
   },
 
-  async calculateTokenData(token) {
-    const element = token;
-
-    if (element.thumbnailUri)
-      element.thumbnailUri = ipfs.transformUri(element.thumbnailUri);
-
-    const {
-      data: [tokenInfo],
-    } = await axios(
-      `https://api.tzkt.io/v1/tokens?contract=${element.tokenAddress}`
+  async calculateTokenData(token, priceFeed, xtzUsd) {
+    const tokenPrice = await getPrice(
+      token.tokenAddress,
+      token.tokenId?.toString(),
+      priceFeed
     );
+    const element = tokenPrice;
     const historyPrice = await teztools.getPriceHistory(element.tokenAddress, element.tokenId);
-    if (tokenInfo) {
+    if (element) {
+      if (element.thumbnailUri)
+        element.thumbnailUri = ipfs.transformUri(element.thumbnailUri);
+
       const currentPrice = element?.currentPrice || false;
       const price = new BigNumber(currentPrice);
 
@@ -83,25 +86,32 @@ export default {
         (el) => el.dex === "Quipuswap" && el.sides[1].symbol === "XTZ"
       );
 
-      const mktCap = new BigNumber(tokenInfo.totalSupply)
+      const mktCap = new BigNumber(element.totalSupply)
         .div(new BigNumber(10).pow(element.decimals))
         .times(element.usdValue);
 
-      const change1Day = price
-        .minus(pricePair?.sides[0]?.dayClose)
-        .div(pricePair?.sides[0]?.dayClose)
-        .times(100)
-        .toNumber();
-      const change7Day = price
-        .minus(pricePair?.sides[0]?.weekClose)
-        .div(pricePair?.sides[0]?.weekClose)
-        .times(100)
-        .toNumber();
-      const change30Day = price
-        .minus(pricePair?.sides[0]?.monthClose)
-        .div(pricePair?.sides[0]?.monthClose)
-        .times(100)
-        .toNumber();
+      const calcSupply = new BigNumber(element.totalSupply).div(
+        new BigNumber(10).pow(element.decimals)
+      );
+
+      const change1Day =
+        price
+          .minus(pricePair?.sides[0]?.dayClose)
+          .div(pricePair?.sides[0]?.dayClose)
+          .times(100)
+          .toNumber() || 0;
+      const change7Day =
+        price
+          .minus(pricePair?.sides[0]?.weekClose)
+          .div(pricePair?.sides[0]?.weekClose)
+          .times(100)
+          .toNumber() || 0;
+      const change30Day =
+        price
+          .minus(pricePair?.sides[0]?.monthClose)
+          .div(pricePair?.sides[0]?.monthClose)
+          .times(100)
+          .toNumber() || 0;
       
       element.mktCap = isNaN(mktCap.toNumber()) ? 0 : mktCap.toNumber();
       element.change1Day = change1Day;
@@ -113,9 +123,15 @@ export default {
       element.price1Day = await getTokenPriceInterval(historyPrice, TIME_INTERVAL.ONE_DAY);
       element.price7Day = await getTokenPriceInterval(historyPrice , TIME_INTERVAL.SEVEN_DAY);
       element.price30Day = await getTokenPriceInterval(historyPrice , TIME_INTERVAL.THIRY_DAY);
-      return element;
-    } else {
-      return false;
+      element.calcSupply = calcSupply;
+
+      for (let index = 0; index < element?.pairs?.length; index++) {
+        const market = element?.pairs[index];
+        element.pairs[index].lpPrice =
+          (market.tvl / market.lptSupply) * xtzUsd || 0;
+      }
+
+      if (mktCap < 200000000) return element;
     }
   },
 };
