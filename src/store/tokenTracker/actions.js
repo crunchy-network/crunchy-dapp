@@ -2,6 +2,7 @@ import tokenTracker from "../../utils/token-tracker";
 import tokensToTrack from "../../tokensTracked.json";
 import teztools from "../../utils/teztools";
 import _ from "lodash";
+import coingecko from "../../utils/coingecko";
 
 export default {
   async fetchTokensTracked({ commit, dispatch, state }) {
@@ -11,24 +12,40 @@ export default {
     }
   },
 
-  async _setTokenTracked({ commit, state, dispatch }) {
-    const { contracts: priceFeed } = await teztools.getPricefeed();
-    // commit("updateLoading", true);
-    for (let i = 0; i < tokensToTrack.length; i++) {
-      const value = tokensToTrack[i];
-      const tokenData = value;
-      const token = await tokenTracker.calculateTokenData(tokenData, priceFeed);
+  async _setTokenTracked({ commit, state, dispatch }, id) {
+    commit("updateLoading", true);
+    try {
+      const { contracts: priceFeed } = await teztools.getPricefeed();
+      const xtzUsd = await coingecko.getXtzUsdPrice();
 
-      if (token) {
-        commit("updateTokenList", {
-          id: `${value.tokenAddress}${
-            value.tokenId ? "_" + value.tokenId : ""
-          }`,
-          ...token,
-        });
+      for (let i = 0; i < tokensToTrack.length; i++) {
+        const value = tokensToTrack[i];
+        const tokenData = value;
+        const token = await tokenTracker.calculateTokenData(
+          tokenData,
+          priceFeed,
+          xtzUsd
+        );
+
+        if (token) {
+          commit("updateTokenList", {
+            id: `${value.tokenAddress}${
+              value.tokenId ? "_" + value.tokenId : ""
+            }`,
+            ...token,
+          });
+        }
       }
+      await dispatch("sortTokensTracked");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      if (id) {
+        const token = state.tokensTracked[id];
+        commit("updateTokenOverview", token || {});
+      }
+      commit("updateLoading", false);
     }
-    dispatch("sortTokensTracked");
   },
 
   async sortTokensTracked({ commit, state }) {
@@ -37,16 +54,25 @@ export default {
       const token = orderedTokens[index];
       token.order = index + 1;
       // orderedTokens[index].order = index + 1;
-      commit("updateTokenList", token);
+      commit("updateTokenTracked", token);
     }
     commit("setTokenList", orderedTokens);
   },
 
   async fetchTokenTrackedWithId({ state, commit, dispatch }, id) {
-    if (state.tokenList.length < 1) {
-      await dispatch("fetchTokensTracked");
-    }
+    commit("updateLoadingOverview", false);
 
-    commit("updateTokenOverview", state.tokensTracked[id] || {});
+    try {
+      if (state.tokenList.length < 1) {
+        dispatch("_setTokenTracked", id);
+      } else {
+        const token = state.tokensTracked[id];
+        commit("updateTokenOverview", token || {});
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      commit("updateLoadingOverview", false);
+    }
   },
 };

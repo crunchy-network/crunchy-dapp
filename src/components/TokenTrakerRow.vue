@@ -48,7 +48,7 @@
                   thousand: ",",
                   precision: 2,
                 })
-              }}
+              }}<number-tooltip :number="asset.usdValue" />
             </el-col>
             <el-col style="text-align: right" :span="4">
               {{
@@ -133,8 +133,10 @@
 
 <script>
 import numberFormat from "../utils/number-format";
+import NumberTooltip from "./NumberTooltip.vue";
 
 export default {
+  components: { NumberTooltip },
   name: "PortfolioWalletRow",
   props: {
     asset: { type: Object, required: true },

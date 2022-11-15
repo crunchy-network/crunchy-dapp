@@ -29,7 +29,7 @@
               </el-row>
             </el-col>
           </el-row>
-          <div v-for="item in markets" :key="item.id">
+          <div v-for="(item, index) in markets" :key="index">
             <el-row
               style="font-size: 14px; font-weight: 600"
               type="flex"
@@ -43,11 +43,11 @@
                     type="flex"
                     align="middle"
                   >
-                    <el-col :span="2">{{ item.id }}</el-col>
+                    <el-col :span="2">{{ index + 1 }}</el-col>
                     <el-col :span="7">
                       <el-row type="flex" style="align-items: center">
                         <img
-                          :src="item.thumbnailUri"
+                          :src="handleDexUri(item.dex)"
                           style="
                             position: relative;
                             margin-right: 10px;
@@ -56,7 +56,7 @@
                         />
 
                         <a
-                          :href="item.url"
+                          :href="`https://tzkt.io/${item.address}`"
                           target="_blank"
                           style="
                             font-weight: 600;
@@ -67,21 +67,23 @@
                             text-decoration: none;
                           "
                         >
-                          {{ item.exchange }}
+                          {{ item.dex }}
                         </a>
                       </el-row></el-col
                     >
                     <el-col style="text-align: right" :span="5">{{
-                      item.market
+                      item.symbols
                     }}</el-col>
-                    <el-col style="text-align: right" :span="5">{{
-                      vueNumberFormat(item.price, {
-                        prefix: "$",
-                        decimal: ".",
-                        thousand: ",",
-                        precision: 2,
-                      })
-                    }}</el-col>
+                    <el-col style="text-align: right" :span="5"
+                      >{{
+                        vueNumberFormat(item.lpPrice, {
+                          prefix: "$",
+                          decimal: ".",
+                          thousand: ",",
+                          precision: 2,
+                        })
+                      }}<number-tooltip :number="item.lpPrice" />
+                    </el-col>
                     <el-col style="text-align: right" :span="5">{{
                       vueNumberFormat(item.volume, {
                         prefix: "$",
@@ -102,51 +104,90 @@
 </template>
 
 <script>
+import NumberTooltip from "./NumberTooltip.vue";
+
 export default {
+  name: "TrackerMarkets",
+  components: { NumberTooltip },
+  props: {
+    markets: {
+      type: Array,
+      default: () => [],
+    },
+  },
   data() {
     return {
-      markets: [
-        {
-          id: "1",
-          exchange: "Quipuswap",
-          url: "https://quipuswap.com/liquidity/add/tez-KT193D4vozYnhGJQVtw7CoxxqphqUEEwK6Vb_0",
-          thumbnailUri:
-            "https://res.cloudinary.com/melvin-manni/image/upload/v1645292809/c1rutxlzllilmtuibcdo.png",
-          market: "EASY/XTZ",
-          price: 1.32,
-          volume: 12123,
-        },
-        {
-          id: "2",
-          exchange: "Spicyswap",
-          url: "https://spicyswap.xyz/#/app",
-          thumbnailUri: "https://docs.spicyswap.xyz/img/spicy.png",
-          market: "EASY/XTZ",
-          price: 1.32,
-          volume: 1123,
-        },
-        {
-          id: "3",
-          exchange: "Vortex",
-          url: "https://app.vortex.network/vortex/liquidity",
-          thumbnailUri:
-            "https://www.gitbook.com/cdn-cgi/image/width=40,height=40,fit=contain,dpr=1,format=auto/https%3A%2F%2F3533877337-files.gitbook.io%2F~%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FyX7WTYr0YMeQcemP26Of%252Ficon%252F76rbNGaJiDxSJwFIjsLQ%252FGroup%25201494.png%3Falt%3Dmedia%26token%3D829a380f-2d70-4ceb-ac23-8c2aaddf8fe5",
-          market: "EASY/XTZ",
-          price: 1.31,
-          volume: 1.23,
-        },
-        {
-          id: "4",
-          exchange: "Youves",
-          url: "https://app.youves.com/dashboard",
-          thumbnailUri:
-            "https://pbs.twimg.com/profile_images/1397080302196039680/teEliSzA_400x400.png",
-          market: "EASY/XTZ",
-          price: 1.1,
-          volume: 1,
-        },
-      ],
+      // markets: [
+      //   {
+      //     id: "1",
+      //     exchange: "Quipuswap",
+      //     url: "https://quipuswap.com/liquidity/add/tez-KT193D4vozYnhGJQVtw7CoxxqphqUEEwK6Vb_0",
+      //     thumbnailUri:
+      //       "https://res.cloudinary.com/melvin-manni/image/upload/v1645292809/c1rutxlzllilmtuibcdo.png",
+      //     market: "EASY/XTZ",
+      //     price: 1.32,
+      //     volume: 12123,
+      //   },
+      //   {
+      //     id: "2",
+      //     exchange: "Spicyswap",
+      //     url: "https://spicyswap.xyz/#/app",
+      //     thumbnailUri: "https://docs.spicyswap.xyz/img/spicy.png",
+      //     market: "EASY/XTZ",
+      //     price: 1.32,
+      //     volume: 1123,
+      //   },
+      //   {
+      //     id: "3",
+      //     exchange: "Vortex",
+      //     url: "https://app.vortex.network/vortex/liquidity",
+      //     thumbnailUri:
+      //       "https://www.gitbook.com/cdn-cgi/image/width=40,height=40,fit=contain,dpr=1,format=auto/https%3A%2F%2F3533877337-files.gitbook.io%2F~%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FyX7WTYr0YMeQcemP26Of%252Ficon%252F76rbNGaJiDxSJwFIjsLQ%252FGroup%25201494.png%3Falt%3Dmedia%26token%3D829a380f-2d70-4ceb-ac23-8c2aaddf8fe5",
+      //     market: "EASY/XTZ",
+      //     price: 1.31,
+      //     volume: 1.23,
+      //   },
+      //   {
+      //     id: "4",
+      //     exchange: "Youves",
+      //     url: "https://app.youves.com/dashboard",
+      //     thumbnailUri:
+      //       "https://pbs.twimg.com/profile_images/1397080302196039680/teEliSzA_400x400.png",
+      //     market: "EASY/XTZ",
+      //     price: 1.1,
+      //     volume: 1,
+      //   },
+      // ],
     };
+  },
+  watch: {
+    markets() {
+      console.log(this.markets);
+    },
+  },
+
+  methods: {
+    handleDexUri(dex = "") {
+      switch (dex?.toLowerCase()) {
+        case "plenty":
+          return "https://res.cloudinary.com/melvin-manni/image/upload/v1645292809/nstgjnest4jrhcsgwymf.png";
+
+        case "quipuswap":
+          return "https://res.cloudinary.com/melvin-manni/image/upload/v1645292809/c1rutxlzllilmtuibcdo.png";
+
+        case "youves":
+          return "https://pbs.twimg.com/profile_images/1397080302196039680/teEliSzA_400x400.png";
+
+        case "vortex":
+          return "https://www.gitbook.com/cdn-cgi/image/width=40,height=40,fit=contain,dpr=1,format=auto/https%3A%2F%2F3533877337-files.gitbook.io%2F~%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FyX7WTYr0YMeQcemP26Of%252Ficon%252F76rbNGaJiDxSJwFIjsLQ%252FGroup%25201494.png%3Falt%3Dmedia%26token%3D829a380f-2d70-4ceb-ac23-8c2aaddf8fe5";
+
+        case "spicyswap":
+          return "https://docs.spicyswap.xyz/img/spicy.png";
+
+        default:
+          return "";
+      }
+    },
   },
 };
 </script>

@@ -33,7 +33,7 @@
             line-height: 24px;
           "
         >
-          {{ tokenData.name || tokenData.symbol }}
+          {{ getTokenOverview.name || getTokenOverview.symbol }}
         </span>
       </el-row>
 
@@ -47,7 +47,7 @@
         <div>
           <el-row type="flex" style="align-items: end">
             <el-avatar
-              :src="tokenData.thumbnailUri"
+              :src="getTokenOverview.thumbnailUri"
               fit="cover"
               shape="circle"
               :size="40"
@@ -62,25 +62,28 @@
               style="color: #555cff; text-decoration: none; font-weight: 600"
               target="_blank"
             >
-              {{ tokenData.name }} (${{ tokenData.symbol }})
+              {{ getTokenOverview.name }} (${{ getTokenOverview.symbol }})
             </a>
           </el-row>
           <h2 style="font-weight: 600; font-size: 40px; line-height: 19px">
             {{
-              vueNumberFormat(formatNumShorthand(tokenData.usdValue).value, {
-                prefix: "$",
-                suffix: formatNumShorthand(tokenData.usdValue).suffix,
-                decimal: ".",
-                thousand: ",",
-                precision: 2,
-              })
-            }}
+              vueNumberFormat(
+                formatNumShorthand(getTokenOverview.usdValue).value,
+                {
+                  prefix: "$",
+                  suffix: formatNumShorthand(getTokenOverview.usdValue).suffix,
+                  decimal: ".",
+                  thousand: ",",
+                  precision: 2,
+                }
+              )
+            }}<number-tooltip :number="getTokenOverview.usdValue" />
             <span
-              style="color: #1ec37f; font-weight: 600; font-size: 24px"
-              :class="tokenData.change1Day < 0 ? 'n-change' : 'p-change'"
+              style="font-weight: 600; font-size: 24px"
+              :class="getTokenOverview.change1Day < 0 ? 'n-change' : 'p-change'"
             >
               {{
-                vueNumberFormat(tokenData.change1Day, {
+                vueNumberFormat(getTokenOverview.change1Day, {
                   prefix: "",
                   suffix: "%",
                   decimal: ".",
@@ -93,7 +96,13 @@
         </div>
 
         <div>
-          <el-button round type="primary"> Swap </el-button>
+          <router-link
+            :to="`/swap?from=tez&to=${getTokenOverview.tokenAddress}_${
+              getTokenOverview.tokenId || 0
+            }`"
+          >
+            <el-button round type="primary"> Swap </el-button>
+          </router-link>
         </div>
       </el-row>
 
@@ -118,9 +127,12 @@
         v-if="activeTab === 'overview'"
         :duration="duration"
         :set-duration-tab="setDurationTab"
-        :token-tracked="tokenData"
+        :token-tracked="getTokenOverview"
       />
-      <TrackerMarkets v-if="activeTab === 'markets'" />
+      <TrackerMarkets
+        v-if="activeTab === 'markets'"
+        :markets="getTokenOverview.pairs"
+      />
     </el-main>
   </div>
 </template>
@@ -129,10 +141,11 @@
 import NavMenu from "./NavMenu.vue";
 import TrackerOverview from "./TrackerOverview.vue";
 import TrackerMarkets from "./TrackerMarkets.vue";
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import numberFormat from "../utils/number-format";
+import NumberTooltip from "./NumberTooltip.vue";
 export default {
-  components: { NavMenu, TrackerOverview, TrackerMarkets },
+  components: { NavMenu, TrackerOverview, TrackerMarkets, NumberTooltip },
   data() {
     return {
       activeTab: "overview",
@@ -140,29 +153,12 @@ export default {
     };
   },
   computed: {
-    ...mapState(["tokenTracker"]),
-    tokenData() {
-      return this.tokenTracker.tokenOverview;
-    },
+    ...mapGetters(["getTokenOverview"]),
   },
 
   watch: {
     "$router.query.tab": function (val) {
       this.activeTab = val;
-    },
-    "$store.state.tokenTracker.tokenList": {
-      immediate: true,
-      deep: true,
-      handler: () => {
-        // this.refresh();
-      },
-    },
-    "$store.state.tokenTracker.tokenOverview": {
-      immediate: true,
-      deep: true,
-      handler: (newVal) => {
-        console.log(newVal, "Value");
-      },
     },
   },
 
@@ -214,13 +210,13 @@ export default {
     },
     handleChangeProp() {
       if (this.duration === "1d") {
-        return this.tokenData.change1Day;
+        return this.getTokenOverview.change1Day;
       }
       if (this.duration === "7d") {
-        return this.tokenData.change7Day;
+        return this.getTokenOverview.change7Day;
       }
       if (this.duration === "30d") {
-        return this.tokenData.change30Day;
+        return this.getTokenOverview.change30Day;
       }
     },
 
@@ -235,6 +231,13 @@ export default {
 @import "../crunchy-variables.scss";
 @import "~element-ui/packages/theme-chalk/src/common/var";
 
+.n-change {
+  color: $--color-danger;
+}
+
+.p-change {
+  color: $--color-success;
+}
 .tab-wrapper {
   display: flex;
   align-items: flex-start;
@@ -267,13 +270,5 @@ export default {
     color: #191b1f66;
     cursor: not-allowed;
   }
-}
-
-.n-change {
-  color: $--color-danger;
-}
-
-.p-change {
-  color: $--color-success;
 }
 </style>

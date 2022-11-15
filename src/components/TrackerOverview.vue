@@ -58,16 +58,30 @@
                       )
                     }}
                   </el-col>
-                  <el-col :span="5">20.2M</el-col>
-                  <el-col style="" :span="3">31</el-col>
+                  <el-col :span="5">
+                    {{
+                      vueNumberFormat(
+                        formatNumShorthand(tokenTracked.calcSupply).value,
+                        {
+                          prefix: "",
+                          suffix: formatNumShorthand(tokenTracked.calcSupply)
+                            .suffix,
+                          decimal: ".",
+                          thousand: ",",
+                          precision: 2,
+                        }
+                      )
+                    }}</el-col
+                  >
+                  <el-col style="" :span="3">{{ tokenTracked.order }}</el-col>
                   <el-col :span="5"
                     >$200k
                     <span style="font-size: 12px; color: #1ec37f"
                       >+1.13%</span
                     ></el-col
                   >
-                  <el-col :span="3">$12.32</el-col>
-                  <el-col :span="3">$2.12</el-col>
+                  <el-col :span="3">-</el-col>
+                  <el-col :span="3">-</el-col>
                 </el-row>
               </div>
             </el-col>
@@ -162,6 +176,12 @@ export default {
     return {
       legendTab: "volume",
     };
+  },
+
+  watch: {
+    tokenTracked() {
+      console.log(this.tokenTracked);
+    },
   },
 
   methods: {

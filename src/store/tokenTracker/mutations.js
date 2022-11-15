@@ -2,6 +2,9 @@ export default {
   updateLoading(state, payload) {
     state.loading = payload;
   },
+  updateLoadingOverview(state, payload) {
+    state.loadingOverview = payload;
+  },
 
   updateSearchInput(state, payload) {
     state.searchInput = payload;

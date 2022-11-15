@@ -10,7 +10,7 @@ export default {
     return { ...tokens };
   },
 
-  async calculateTokenData(token, priceFeed) {
+  async calculateTokenData(token, priceFeed, xtzUsd) {
     const tokenPrice = await getPrice(
       token.tokenAddress,
       token.tokenId?.toString(),
@@ -32,6 +32,10 @@ export default {
       const mktCap = new BigNumber(element.totalSupply)
         .div(new BigNumber(10).pow(element.decimals))
         .times(element.usdValue);
+
+      const calcSupply = new BigNumber(element.totalSupply).div(
+        new BigNumber(10).pow(element.decimals)
+      );
 
       const change1Day =
         price
@@ -57,6 +61,13 @@ export default {
       element.change7Day = change7Day;
       element.change30Day = change30Day;
       element.volume24 = 0;
+      element.calcSupply = calcSupply;
+
+      for (let index = 0; index < element?.pairs?.length; index++) {
+        const market = element?.pairs[index];
+        element.pairs[index].lpPrice =
+          (market.tvl / market.lptSupply) * xtzUsd || 0;
+      }
 
       if (mktCap < 200000000) return element;
     }
