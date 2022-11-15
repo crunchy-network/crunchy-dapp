@@ -23,10 +23,10 @@
               >
                 <el-col :span="5">Market Cap</el-col>
                 <el-col :span="5">Total Supply</el-col>
-                <el-col :span="3">#</el-col>
+                <el-col :span="5">#</el-col>
                 <el-col :span="5">24h Trading Vol</el-col>
-                <el-col :span="3">All Time High</el-col>
-                <el-col :span="3">All Time Low</el-col>
+                <el-col :span="5">All Time High</el-col>
+                <el-col :span="5">All Time Low</el-col>
               </el-row>
             </el-col>
           </el-row>
@@ -73,15 +73,16 @@
                       )
                     }}</el-col
                   >
-                  <el-col style="" :span="3">{{ tokenTracked.order }}</el-col>
-                  <el-col :span="5"
-                    >$200k
-                    <span style="font-size: 12px; color: #1ec37f"
-                      >+1.13%</span
-                    ></el-col
-                  >
-                  <el-col :span="3">-</el-col>
-                  <el-col :span="3">-</el-col>
+                  <el-col style="" :span="5">{{ tokenTracked.order }}</el-col>
+                  <el-col :span="5">
+                    <!-- $200k -->
+                    <!-- <span style="font-size: 12px; color: #1ec37f" -->
+                    <!-- >+1.13%</span -->
+                    <!-- > -->
+                    _
+                  </el-col>
+                  <el-col :span="5">-</el-col>
+                  <el-col :span="5">-</el-col>
                 </el-row>
               </div>
             </el-col>

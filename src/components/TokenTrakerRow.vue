@@ -136,8 +136,8 @@ import numberFormat from "../utils/number-format";
 import NumberTooltip from "./NumberTooltip.vue";
 
 export default {
-  components: { NumberTooltip },
   name: "PortfolioWalletRow",
+  components: { NumberTooltip },
   props: {
     asset: { type: Object, required: true },
   },
