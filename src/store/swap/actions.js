@@ -8,6 +8,7 @@ import {
   buildYouvesPairs,
   buildPlentyStablePairs,
   buildQuipuStablePairs,
+  buildDipdupPairs
 } from "../../lib/SwapRouter";
 import teztools from "./../../utils/teztools";
 import vortex from "./../../utils/vortex";
@@ -15,6 +16,7 @@ import spicy from "./../../utils/spicy";
 import youves from "../../utils/youves";
 import plenty from "../../utils/plenty";
 import quipuStable from "../../utils/quipuswap-stable"
+import dipdup from "../../utils/dipdup"
 export default {
   updateForm(state, payload) {
     state.commit("updateSwapForm", payload);
@@ -93,7 +95,15 @@ export default {
     });
     state.commit("updateDexLoading", { dex, loading: false });
   },
-
+  async loadDipDupPairs(state){
+    const api = "DipDup";
+    const dexes = await dipdup.getDipdupData();
+    state.commit("updateDexPairs", {
+      dex: api,
+      pairs: buildDipdupPairs(dexes)
+    });
+    state.commit("updateDexLoading", {dex: api, loading: false})
+  },
   updateDexApis({ dispatch, commit }) {
     commit("updateDexLoading", { dex: "tezTools", loading: true });
     commit("updateDexLoading", { dex: "vortex", loading: true });
@@ -102,6 +112,7 @@ export default {
     commit("updateDexLoading", { dex: "Youves", loading: true });
     commit("updateDexLoading", { dex: "Plenty", loading: true });
     commit("updateDexLoading", { dex: "QuipuStable", loading: true });
+    commit("updateDexLoading", { dex: "DipDup", loading: true });
     dispatch("loadTezToolsSwapPairs");
     dispatch("loadVortexSwapPairs");
     dispatch("loadSpicySwapPairs");
@@ -109,13 +120,9 @@ export default {
     dispatch("loadYouvesSwapPairs");
     dispatch("loadPlentyStablePairs");
     dispatch("loadQuipuStablePairs");
+    dispatch("loadDipDupPairs");
   },
   walletConnected({ dispatch }) {
     dispatch("updateDexApis");
   },
 };
-// get price data
-// convert to route pairs
-// store route pairs in state
-// get route pairs from state
-// use in swap form.

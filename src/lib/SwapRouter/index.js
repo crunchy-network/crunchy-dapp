@@ -1,4 +1,5 @@
 import { buildSwapPairsFromPriceData } from "./DataParsers/teztools-data-parser";
+import { buildSwapPairsFromPriceData as buildDipdupPairs } from "./DataParsers/dipdup-data-parser";
 import { buildSwapPairsFromPoolData as buildVortexPairs } from "./DataParsers/vortex-data-parser";
 import { buildSwapPairsFromData as buildSpicyPairs } from "./DataParsers/spicy-data-parser";
 import { buildSwapPairsFromData as buildWtzPairs } from "./DataParsers/wtz-data-parser";
@@ -29,4 +30,5 @@ export {
   buildYouvesPairs,
   buildPlentyStablePairs,
   buildQuipuStablePairs,
+  buildDipdupPairs,
 };

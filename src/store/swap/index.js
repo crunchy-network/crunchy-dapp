@@ -42,6 +42,10 @@ export default {
         loading: false,
         pairs: [],
       },
+      DipDup: {
+        loading: false,
+        pairs: [],
+      },
     },
     swapPairsNew: [],
   },
@@ -60,6 +64,7 @@ export default {
         ...apis.Youves.pairs,
         ...apis.Plenty.pairs,
         ...apis.QuipuStable.pairs,
+        ...apis.DipDup.pairs,
       ];
     },
     getApiLoadingStatus: (state) => {

@@ -26,7 +26,7 @@ const getTokenPair = (tokens, tokenIndex, pairIndex) => {
 };
 
 const isKnownDex = (dexName) => {
-  const knownDexes = ["Quipuswap", "Plenty", "Liquidity Baking"];
+  const knownDexes = ["Plenty", "Liquidity Baking"];
   return knownDexes.includes(dexName);
 };
 
