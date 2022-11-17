@@ -52,9 +52,9 @@
             </el-col>
             <el-col style="text-align: right" :span="4">
               {{
-                vueNumberFormat(formatNumShorthand(asset.volume24).value, {
+                vueNumberFormat(formatNumShorthand(asset.volume1Day).value, {
                   prefix: "$",
-                  suffix: formatNumShorthand(asset.volume24).suffix,
+                  suffix: formatNumShorthand(asset.volume1Day).suffix,
                   decimal: ".",
                   thousand: ",",
                   precision: 2,

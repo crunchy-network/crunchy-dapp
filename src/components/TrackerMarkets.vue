@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-card shadow="always">
+    <el-card v-loading="loading" shadow="always">
       <div class="responsive-table">
         <div>
           <el-row
@@ -113,6 +113,10 @@ export default {
     markets: {
       type: Array,
       default: () => [],
+    },
+    loading: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {

@@ -1,69 +1,105 @@
 import BigNumber from "bignumber.js";
+import _ from "lodash";
 import { getPrice } from "./home-wallet";
 import ipfs from "./ipfs";
 import teztools from "./teztools";
 
 const TIME_INTERVAL = {
-  ONE_DAY : 1,
-  SEVEN_DAY : 7,
-  THIRY_DAY : 30,
-}
+  ONE_DAY: 1,
+  SEVEN_DAY: 7,
+  THIRTY_DAY: 30,
+};
 
 const MILISECOND_ONE_DAY = 86400000;
 
-const diffInDay = (timestamp_1, timestamp_2) => {
-  return (timestamp_1 - timestamp_2) / MILISECOND_ONE_DAY;
-}
-const getTokenPriceInterval = async(historyPrice, timeInterval) => {
+const diffInDay = (timestamp1, timestamp2) => {
+  return (timestamp1 - timestamp2) / MILISECOND_ONE_DAY;
+};
+
+const getTokenPriceInterval = async (historyPrice, timeInterval) => {
   const tokenPriceInterval = [];
 
   let index = 0;
   let historyTimestamp = new Date(historyPrice[index].timestamp);
-  let currentTimestamp = new Date();
+  const currentTimestamp = new Date();
 
   // Get the index which satify time interval
-  while( diffInDay(currentTimestamp, historyTimestamp) <= timeInterval) {
-    if( historyPrice[index].t1price && 
-        historyPrice[index].t1volume && 
-        historyPrice[index].t1pool && 
-        historyPrice[index].lptsupply) {
+  while (diffInDay(currentTimestamp, historyTimestamp) <= timeInterval) {
+    if (
+      historyPrice[index].t1price &&
+      historyPrice[index].t1volume &&
+      historyPrice[index].t1pool &&
+      historyPrice[index].lptsupply
+    ) {
       const priceObj = {
-        "price": historyPrice[index]?.t1price,
-        "timestamp": historyPrice[index]?.timestamp,
-        "volume": historyPrice[index]?.t1volume,
-        "pool": historyPrice[index]?.t1pool,
-        "lptsupply": historyPrice[index]?.lptsupply,
-      }
+        price: historyPrice[index]?.t1price,
+        timestamp: historyPrice[index]?.timestamp,
+        volume: historyPrice[index]?.t1volume,
+        pool: historyPrice[index]?.t1pool,
+        lptsupply: historyPrice[index]?.lptsupply,
+      };
       tokenPriceInterval.push(priceObj);
     }
-    index += 1
-    if(!historyPrice[index].hasOwnProperty('timestamp') ) {
+    index += 1;
+    // eslint-disable-next-line no-prototype-builtins
+    if (!historyPrice[index].hasOwnProperty("timestamp")) {
       break;
     }
     historyTimestamp = new Date(historyPrice[index].timestamp);
   }
   return tokenPriceInterval;
-}
-const getVolume = async(historyPrice, timeInterval) => {
+};
+
+const getVolume = async (historyPrice, timeInterval) => {
   let totalVolume = 0;
 
   let index = 0;
   let historyTimestamp = new Date(historyPrice[index].timestamp);
-  let currentTimestamp = new Date();
+  const currentTimestamp = new Date();
 
   // Get the index which satify time interval
-  while( diffInDay(currentTimestamp, historyTimestamp) <= timeInterval) {
-    const volume = historyPrice[index].t1volume ? historyPrice[index].t1volume : 0;
-    const volume_in_usd = (volume !== 0) ? volume * historyPrice[index].t1price : 0;
-    totalVolume += volume_in_usd
-    historyTimestamp = new Date(historyPrice[++index].timestamp)
+  while (diffInDay(currentTimestamp, historyTimestamp) <= timeInterval) {
+    const volume = historyPrice[index].t1volume
+      ? historyPrice[index].t1volume
+      : 0;
+    const volumeInUsd = volume !== 0 ? volume * historyPrice[index].t1price : 0;
+    totalVolume += volumeInUsd;
+    historyTimestamp = new Date(historyPrice[++index].timestamp);
   }
   return totalVolume;
-}
+};
+
+const getVolumeChange = async (historyPrice) => {
+  let todayVolume = 0;
+  let yesterdayVolume = 0;
+  const todayTimestamp = new Date().now - 24 * 60 * 60 * 1000;
+  const yesterdayTimestamp = new Date().now - 48 * 60 * 60 * 1000;
+
+  for (let index = 0; index < historyPrice.length; index++) {
+    const element = historyPrice[index];
+    if (new Date(element.timestamp) >= new Date(todayTimestamp)) {
+      todayVolume += element.t1volume;
+    }
+
+    if (
+      new Date(element.timestamp) >= new Date(yesterdayTimestamp) &&
+      new Date(element.timestamp) < new Date(todayTimestamp)
+    ) {
+      yesterdayVolume += element.t1volume;
+    }
+  }
+
+  console.log("\n\n------ begin:  ------");
+  console.log("todayVolume: ", todayVolume);
+  console.log("yesterdayVolume", yesterdayVolume);
+  console.log("------ end:  ------\n\n");
+  return todayVolume / yesterdayVolume - 1;
+};
+
 export default {
   async getTokens() {
     const { contracts: tokens } = await teztools.getPricefeed();
-    
+
     return { ...tokens };
   },
 
@@ -73,8 +109,19 @@ export default {
       token.tokenId?.toString(),
       priceFeed
     );
+
     const element = tokenPrice;
-    const historyPrice = await teztools.getPriceHistory(element.tokenAddress, element.tokenId);
+    const historyPrice = await teztools.getPriceHistory(
+      element.tokenAddress,
+      element.tokenId
+    );
+    const sortedHistoryPrice = _.orderBy(
+      historyPrice,
+      ["price", "t1price"],
+      ["desc", "desc"]
+    );
+    console.log(sortedHistoryPrice);
+
     if (element) {
       if (element.thumbnailUri)
         element.thumbnailUri = ipfs.transformUri(element.thumbnailUri);
@@ -112,18 +159,39 @@ export default {
           .div(pricePair?.sides[0]?.monthClose)
           .times(100)
           .toNumber() || 0;
-      
+
       element.mktCap = isNaN(mktCap.toNumber()) ? 0 : mktCap.toNumber();
       element.change1Day = change1Day;
       element.change7Day = change7Day;
       element.change30Day = change30Day;
-      element.volume24 = await getVolume(historyPrice, TIME_INTERVAL.ONE_DAY);
-      element.volume7Day = await getVolume(historyPrice, TIME_INTERVAL.SEVEN_DAY);
-      element.volume30Day = await getVolume(historyPrice, TIME_INTERVAL.THIRY_DAY);
-      element.price1Day = await getTokenPriceInterval(historyPrice, TIME_INTERVAL.ONE_DAY);
-      element.price7Day = await getTokenPriceInterval(historyPrice , TIME_INTERVAL.SEVEN_DAY);
-      element.price30Day = await getTokenPriceInterval(historyPrice , TIME_INTERVAL.THIRY_DAY);
+      element.volume1Day = await getVolume(historyPrice, TIME_INTERVAL.ONE_DAY);
+      element.volume1DayChange = await getVolumeChange(historyPrice);
+      element.volume7Day = await getVolume(
+        historyPrice,
+        TIME_INTERVAL.SEVEN_DAY
+      );
+      element.volume30Day = await getVolume(
+        historyPrice,
+        TIME_INTERVAL.THIRTY_DAY
+      );
+      element.price1Day = await getTokenPriceInterval(
+        historyPrice,
+        TIME_INTERVAL.ONE_DAY
+      );
+      element.price7Day = await getTokenPriceInterval(
+        historyPrice,
+        TIME_INTERVAL.SEVEN_DAY
+      );
+      element.price30Day = await getTokenPriceInterval(
+        historyPrice,
+        TIME_INTERVAL.THIRTY_DAY
+      );
       element.calcSupply = calcSupply;
+      element.allTimeHigh =
+        sortedHistoryPrice[0].t1price || sortedHistoryPrice[0].price;
+      element.allTimeLow =
+        sortedHistoryPrice[sortedHistoryPrice.length - 1].t1price ||
+        sortedHistoryPrice[sortedHistoryPrice.length - 1].price;
 
       for (let index = 0; index < element?.pairs?.length; index++) {
         const market = element?.pairs[index];

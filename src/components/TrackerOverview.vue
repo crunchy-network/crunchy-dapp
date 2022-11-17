@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-card shadow="always">
+    <el-card v-loading="loading" shadow="always">
       <div class="responsive-table">
         <div>
           <el-row
@@ -75,14 +75,72 @@
                   >
                   <el-col style="" :span="5">{{ tokenTracked.order }}</el-col>
                   <el-col :span="5">
-                    <!-- $200k -->
-                    <!-- <span style="font-size: 12px; color: #1ec37f" -->
-                    <!-- >+1.13%</span -->
-                    <!-- > -->
-                    _
+                    {{
+                      vueNumberFormat(
+                        formatNumShorthand(tokenTracked.volume1Day).value,
+                        {
+                          prefix: "$",
+                          suffix: formatNumShorthand(tokenTracked.volume1Day)
+                            .suffix,
+                          decimal: ".",
+                          thousand: ",",
+                          precision: 2,
+                        }
+                      )
+                    }}
+
+                    <span
+                      style="font-size: 12px"
+                      :class="
+                        tokenTracked.volume1DayChange < 0
+                          ? 'n-change'
+                          : 'p-change'
+                      "
+                      >{{
+                        vueNumberFormat(tokenTracked.volume1DayChange, {
+                          prefix: "",
+                          suffix: "%",
+                          decimal: ".",
+                          thousand: ",",
+                          precision: 2,
+                        })
+                      }}</span
+                    >
                   </el-col>
-                  <el-col :span="5">-</el-col>
-                  <el-col :span="5">-</el-col>
+                  <el-col :span="5">
+                    {{
+                      vueNumberFormat(
+                        formatNumShorthand(tokenTracked.allTimeHigh).value,
+                        {
+                          prefix: "$",
+                          suffix: formatNumShorthand(tokenTracked.allTimeHigh)
+                            .suffix,
+                          decimal: ".",
+                          thousand: ",",
+                          precision: 2,
+                        }
+                      )
+                    }}<number-tooltip
+                      :number="tokenTracked.allTimeHigh"
+                    ></number-tooltip>
+                  </el-col>
+                  <el-col :span="5">
+                    {{
+                      vueNumberFormat(
+                        formatNumShorthand(tokenTracked.allTimeLow).value,
+                        {
+                          prefix: "$",
+                          suffix: formatNumShorthand(tokenTracked.allTimeLow)
+                            .suffix,
+                          decimal: ".",
+                          thousand: ",",
+                          precision: 2,
+                        }
+                      )
+                    }}<number-tooltip
+                      :number="tokenTracked.allTimeLow"
+                    ></number-tooltip>
+                  </el-col>
                 </el-row>
               </div>
             </el-col>
@@ -90,7 +148,7 @@
         </div>
       </div>
     </el-card>
-    <el-card style="margin-top: 24px" shadow="always">
+    <el-card v-loading="loading" style="margin-top: 24px" shadow="always">
       <el-row
         class="tab-flex"
         :gutter="10"
@@ -154,9 +212,11 @@
 
 <script>
 import numberFormat from "../utils/number-format";
+import NumberTooltip from "./NumberTooltip.vue";
 import TrackerOverviewChart from "./TrackerOverviewChart.vue";
+
 export default {
-  components: { TrackerOverviewChart },
+  components: { TrackerOverviewChart, NumberTooltip },
 
   props: {
     duration: {
@@ -170,6 +230,10 @@ export default {
     tokenTracked: {
       type: Object,
       default: () => {},
+    },
+    loading: {
+      type: Boolean,
+      default: false,
     },
   },
 
@@ -204,6 +268,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "../crunchy-variables.scss";
+@import "~element-ui/packages/theme-chalk/src/common/var";
+
 .tab-wrapper {
   display: flex;
   align-items: flex-start;
@@ -236,5 +303,12 @@ export default {
   .tab-custom-element {
     margin-bottom: 0px;
   }
+}
+.n-change {
+  color: $--color-danger;
+}
+
+.p-change {
+  color: $--color-success;
 }
 </style>

@@ -60,16 +60,14 @@ export default {
     });
   },
   async getPriceHistory(tokenAddress, tokenId) {
-    if(typeof(tokenId) === 'number') {
+    if (typeof tokenId === "number") {
       return makeReqest(
         `/v1/${tokenAddress}${"_" + tokenId}/price-history`
       ).then((res) => {
         return res.data.reverse();
       });
     }
-    return makeReqest(
-      `/v1/${tokenAddress}/price-history`
-    ).then((res) => {
+    return makeReqest(`/v1/${tokenAddress}/price-history`).then((res) => {
       return res.data.reverse();
     });
   },

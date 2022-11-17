@@ -67,29 +67,34 @@
           </el-row>
           <h2 style="font-weight: 600; font-size: 40px; line-height: 19px">
             {{
-              vueNumberFormat(
-                formatNumShorthand(getTokenOverview.usdValue).value,
-                {
-                  prefix: "$",
-                  suffix: formatNumShorthand(getTokenOverview.usdValue).suffix,
-                  decimal: ".",
-                  thousand: ",",
-                  precision: 2,
-                }
-              )
+              getLoading
+                ? "-"
+                : vueNumberFormat(
+                    formatNumShorthand(getTokenOverview.usdValue).value,
+                    {
+                      prefix: "$",
+                      suffix: formatNumShorthand(getTokenOverview.usdValue)
+                        .suffix,
+                      decimal: ".",
+                      thousand: ",",
+                      precision: 2,
+                    }
+                  )
             }}<number-tooltip :number="getTokenOverview.usdValue" />
             <span
               style="font-weight: 600; font-size: 24px"
               :class="getTokenOverview.change1Day < 0 ? 'n-change' : 'p-change'"
             >
               {{
-                vueNumberFormat(getTokenOverview.change1Day, {
-                  prefix: "",
-                  suffix: "%",
-                  decimal: ".",
-                  thousand: ",",
-                  precision: 2,
-                })
+                getLoading
+                  ? "-"
+                  : vueNumberFormat(getTokenOverview.change1Day, {
+                      prefix: "",
+                      suffix: "%",
+                      decimal: ".",
+                      thousand: ",",
+                      precision: 2,
+                    })
               }}
             </span>
           </h2>
@@ -128,10 +133,12 @@
         :duration="duration"
         :set-duration-tab="setDurationTab"
         :token-tracked="getTokenOverview"
+        :loading="getLoading"
       />
       <TrackerMarkets
         v-if="activeTab === 'markets'"
         :markets="getTokenOverview.pairs"
+        :loading="getLoading"
       />
     </el-main>
   </div>
@@ -141,7 +148,7 @@
 import NavMenu from "./NavMenu.vue";
 import TrackerOverview from "./TrackerOverview.vue";
 import TrackerMarkets from "./TrackerMarkets.vue";
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters, mapState } from "vuex";
 import numberFormat from "../utils/number-format";
 import NumberTooltip from "./NumberTooltip.vue";
 export default {
@@ -152,8 +159,13 @@ export default {
       duration: "1d",
     };
   },
+
   computed: {
     ...mapGetters(["getTokenOverview"]),
+    ...mapState(["tokenTracker"]),
+    getLoading() {
+      return this.tokenTracker.loading;
+    },
   },
 
   watch: {
