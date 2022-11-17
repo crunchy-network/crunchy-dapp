@@ -6,6 +6,7 @@ const tez = {
   type: "tez",
   tokenAddress: "tez",
   decimals: 6,
+  assetSlug: "tez",
 };
 
 const createPairSide = (dex) => {
@@ -30,7 +31,7 @@ const isKnownDex = (dexName) => {
 };
 
 const buildPair = (dex, inverse = false) => {
-  const tezSide = tez;
+  const tezSide = { ...tez, pool: dex.tezPool };
   const tokenSide = createPairSide(dex);
   const direction = inverse ? "Inverted" : "Direct";
   const dexName = dex.name === "lb" ? "LiquidityBaking" : "Quipuswap";
