@@ -20,10 +20,6 @@ export default {
       default: 0,
     },
   },
-
-  mounted() {
-    console.log(this.number);
-  },
 };
 </script>
 

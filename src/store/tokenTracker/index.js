@@ -28,5 +28,21 @@ export default {
     getTokenOverview(state) {
       return state.tokenOverview;
     },
+
+    getTokens(state) {
+      const filteredTokens = state.tokenList.filter((token) => {
+        return (
+          token.name?.toLowerCase().includes(state.searchInput.toLowerCase()) ||
+          token.symbol
+            ?.toLowerCase()
+            .includes(state.searchInput.toLowerCase()) ||
+          token.tokenAddress
+            ?.toLowerCase()
+            .includes(state.searchInput.toLowerCase()) ||
+          token.address?.toString().includes(state.searchInput.toLowerCase())
+        );
+      });
+      return state.searchInput ? filteredTokens : state.tokenList;
+    },
   },
 };

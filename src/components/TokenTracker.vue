@@ -197,8 +197,10 @@
             <el-col :xs="12" :span="10">
               <div class="grid-content search-input">
                 <el-input
+                  :value="tokenTracker.searchInput"
                   placeholder="Search tokens"
                   prefix-icon="fad fa-search"
+                  @input="updateSearchInput"
                 >
                 </el-input></div
             ></el-col>
@@ -395,16 +397,18 @@ export default {
 
   computed: {
     ...mapState(["tokenTracker"]),
-    ...mapGetters(["getTrackerData"]),
+    ...mapGetters(["getTrackerData", "getTokens"]),
   },
 
   watch: {
-    "$store.state.tokenTracker.tokenList": {
-      immediate: true,
-      deep: true,
-      handler(newVal) {
-        this.paginationHandler();
-      },
+    // "$store.state.tokenTracker.tokenList": {
+    //   immediate: true,
+    //   deep: true,
+    //   handler(newVal) {
+    //   },
+    // },
+    getTokens() {
+      this.paginationHandler();
     },
   },
 
@@ -417,20 +421,23 @@ export default {
     fmtNumber(val) {
       return numberFormat.shorthand(val);
     },
+
+    updateSearchInput(input) {
+      this.$store.commit("updateTokenTrackerSearchInput", input);
+    },
+
     paginationHandler() {
-      this.pages = Math.ceil(
-        this.tokenTracker.tokenList.length / this.displayCount
-      );
+      this.pages = Math.ceil(this.getTokens.length / this.displayCount);
 
       this.handleVisibleData();
     },
 
     handleVisibleData() {
       const next = this.nextPage > this.pages ? this.pages : this.nextPage;
-      this.tabledata = this.tokenTracker.tokenList.slice(
+      this.tabledata = this.getTokens.slice(
         (next - 1) * this.displayCount,
-        this.nextPage * this.displayCount > this.tokenTracker.tokenList.length
-          ? this.tokenTracker.tokenList.length
+        this.nextPage * this.displayCount > this.getTokens.length
+          ? this.getTokens.length
           : next * this.displayCount
       );
     },

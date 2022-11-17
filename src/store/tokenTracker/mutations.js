@@ -6,7 +6,7 @@ export default {
     state.loadingOverview = payload;
   },
 
-  updateSearchInput(state, payload) {
+  updateTokenTrackerSearchInput(state, payload) {
     state.searchInput = payload;
   },
 
