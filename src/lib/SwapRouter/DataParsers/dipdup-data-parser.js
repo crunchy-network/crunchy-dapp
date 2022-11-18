@@ -9,6 +9,13 @@ const tez = {
   assetSlug: "tez",
 };
 
+const getType = (typeStr) => {
+  if (typeStr === "fa12") {
+    return "fa1.2";
+  }
+  return typeStr;
+};
+
 const createPairSide = (dex) => {
   const { token, tokenPool } = dex;
   const tokenId = token.tokenId !== undefined ? token.tokenId : 0;
@@ -18,8 +25,8 @@ const createPairSide = (dex) => {
     tokenId,
     tokenAddress: token.address,
     decimals: token.decimals,
-    contractType: token.standard,
-    pool: tokenPool,
+    contractType: getType(token.standard),
+    pool: parseFloat(tokenPool),
     assetSlug: `${token.address}_${tokenId}`,
   };
 
@@ -31,7 +38,7 @@ const isKnownDex = (dexName) => {
 };
 
 const buildPair = (dex, inverse = false) => {
-  const tezSide = { ...tez, pool: dex.tezPool };
+  const tezSide = { ...tez, pool: parseFloat(dex.tezPool) };
   const tokenSide = createPairSide(dex);
   const direction = inverse ? "Inverted" : "Direct";
   const dexName = dex.name === "lb" ? "LiquidityBaking" : "Quipuswap";
