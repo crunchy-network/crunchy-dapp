@@ -1,5 +1,5 @@
+import axios from "axios";
 import BigNumber from "bignumber.js";
-import _ from "lodash";
 import { getPrice } from "./home-wallet";
 import ipfs from "./ipfs";
 import teztools from "./teztools";
@@ -89,11 +89,38 @@ const getVolumeChange = async (historyPrice) => {
     }
   }
 
-  console.log("\n\n------ begin:  ------");
-  console.log("todayVolume: ", todayVolume);
-  console.log("yesterdayVolume", yesterdayVolume);
-  console.log("------ end:  ------\n\n");
+  // console.log("\n\n------ begin:  ------");
+  // console.log("todayVolume: ", todayVolume);
+  // console.log("yesterdayVolume", yesterdayVolume);
+  // console.log("------ end:  ------\n\n");
   return todayVolume / yesterdayVolume - 1;
+};
+
+const getTokenHighAndLow = async (tokenAddress, tokenId) => {
+  const query = `
+  query MyQuery {
+    quotesTotal(distinct_on: tokenId, where: {tokenId: {_eq: "${tokenAddress}_${
+    tokenId || 0
+  }"}}) {
+      high
+      low
+    }
+  }
+  
+  `;
+  const {
+    data: {
+      data: {
+        quotesTotal: [res],
+      },
+    },
+  } = await axios.post("https://dex.dipdup.net/v1/graphql", { query });
+
+  console.log("\n\n------ begin:  ------");
+  console.log(res);
+  console.log("------ end:  ------\n\n");
+
+  return res;
 };
 
 export default {
@@ -109,18 +136,16 @@ export default {
       token.tokenId?.toString(),
       priceFeed
     );
+    const tokenPriceRange = await getTokenHighAndLow(
+      token.tokenAddress,
+      token.tokenId?.toString()
+    );
 
     const element = tokenPrice;
     const historyPrice = await teztools.getPriceHistory(
       element.tokenAddress,
       element.tokenId
     );
-    const sortedHistoryPrice = _.orderBy(
-      historyPrice,
-      ["price", "t1price"],
-      ["desc", "desc"]
-    );
-    console.log(sortedHistoryPrice);
 
     if (element) {
       if (element.thumbnailUri)
@@ -187,11 +212,9 @@ export default {
         TIME_INTERVAL.THIRTY_DAY
       );
       element.calcSupply = calcSupply;
-      element.allTimeHigh =
-        sortedHistoryPrice[0].t1price || sortedHistoryPrice[0].price;
-      element.allTimeLow =
-        sortedHistoryPrice[sortedHistoryPrice.length - 1].t1price ||
-        sortedHistoryPrice[sortedHistoryPrice.length - 1].price;
+      console.log(element);
+      element.allTimeHigh = Number(tokenPriceRange?.high) || 0;
+      element.allTimeLow = Number(tokenPriceRange?.low) || 0;
 
       for (let index = 0; index < element?.pairs?.length; index++) {
         const market = element?.pairs[index];

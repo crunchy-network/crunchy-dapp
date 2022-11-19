@@ -401,12 +401,14 @@ export default {
   },
 
   watch: {
-    // "$store.state.tokenTracker.tokenList": {
-    //   immediate: true,
-    //   deep: true,
-    //   handler(newVal) {
-    //   },
-    // },
+    "$store.state.tokenTracker.tokenList": {
+      immediate: true,
+      deep: true,
+      handler() {
+        this.paginationHandler();
+      },
+    },
+
     getTokens() {
       this.paginationHandler();
     },

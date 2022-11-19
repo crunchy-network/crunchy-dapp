@@ -42,7 +42,9 @@ export default {
           token.address?.toString().includes(state.searchInput.toLowerCase())
         );
       });
-      return state.searchInput ? filteredTokens : state.tokenList;
+      return state.searchInput?.trim().length > 1
+        ? filteredTokens
+        : state.tokenList;
     },
   },
 };
