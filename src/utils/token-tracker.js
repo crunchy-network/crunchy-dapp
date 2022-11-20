@@ -89,59 +89,58 @@ const getVolumeChange = async (historyPrice) => {
     }
   }
 
-  // console.log("\n\n------ begin:  ------");
-  // console.log("todayVolume: ", todayVolume);
-  // console.log("yesterdayVolume", yesterdayVolume);
-  // console.log("------ end:  ------\n\n");
   return todayVolume / yesterdayVolume - 1;
 };
 
-const getTokenHighAndLow = async (tokenAddress, tokenId) => {
-  const query = `
-  query MyQuery {
-    quotesTotal(distinct_on: tokenId, where: {tokenId: {_eq: "${tokenAddress}_${
-    tokenId || 0
-  }"}}) {
-      high
-      low
-    }
-  }
-  
-  `;
-  const {
-    data: {
-      data: {
-        quotesTotal: [res],
-      },
-    },
-  } = await axios.post("https://dex.dipdup.net/v1/graphql", { query });
+const filterTokenHighAndLow = (tokenPriceRange, tokenAddress, tokenId) => {
+  const value = tokenPriceRange?.filter(
+    (val) => val.tokenId === `${tokenAddress}_${tokenId || 0}`
+  );
 
-  console.log("\n\n------ begin:  ------");
-  console.log(res);
-  console.log("------ end:  ------\n\n");
-
-  return res;
+  return value.length > 0 ? value[0] : { high: 0, low: 0 };
 };
 
 export default {
+  async getTokenHighAndLow() {
+    const query = `
+    query MyQuery {
+      quotesTotal(distinct_on: tokenId) {
+        high
+        low
+        tokenId
+      }
+    }
+
+    `;
+    const {
+      data: {
+        data: { quotesTotal },
+      },
+    } = await axios.post("https://dex.dipdup.net/v1/graphql", { query });
+
+    return quotesTotal;
+  },
+
   async getTokens() {
     const { contracts: tokens } = await teztools.getPricefeed();
 
     return { ...tokens };
   },
 
-  async calculateTokenData(token, priceFeed, xtzUsd) {
+  async calculateTokenData(token, priceFeed, xtzUsd, tokenHighAndLow) {
     const tokenPrice = await getPrice(
       token.tokenAddress,
       token.tokenId?.toString(),
       priceFeed
     );
-    const tokenPriceRange = await getTokenHighAndLow(
+    const tokenPriceRange = filterTokenHighAndLow(
+      tokenHighAndLow,
       token.tokenAddress,
       token.tokenId?.toString()
     );
 
     const element = tokenPrice;
+
     const historyPrice = await teztools.getPriceHistory(
       element.tokenAddress,
       element.tokenId
@@ -212,7 +211,7 @@ export default {
         TIME_INTERVAL.THIRTY_DAY
       );
       element.calcSupply = calcSupply;
-      console.log(element);
+
       element.allTimeHigh = Number(tokenPriceRange?.high) || 0;
       element.allTimeLow = Number(tokenPriceRange?.low) || 0;
 

@@ -15,8 +15,12 @@ export default {
   async _setTokenTracked({ commit, state, dispatch }, id) {
     commit("updateLoading", true);
     try {
-      const { contracts: priceFeed } = await teztools.getPricefeed();
-      const xtzUsd = await coingecko.getXtzUsdPrice();
+      const [{ contracts: priceFeed }, xtzUsd, tokenHighAndLow] =
+        await Promise.all([
+          teztools.getPricefeed(),
+          coingecko.getXtzUsdPrice(),
+          tokenTracker.getTokenHighAndLow(),
+        ]);
 
       for (let i = 0; i < tokensToTrack.length; i++) {
         const value = tokensToTrack[i];
@@ -24,7 +28,8 @@ export default {
         const token = await tokenTracker.calculateTokenData(
           tokenData,
           priceFeed,
-          xtzUsd
+          xtzUsd,
+          tokenHighAndLow
         );
 
         if (token) {
