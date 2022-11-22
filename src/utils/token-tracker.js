@@ -120,6 +120,77 @@ export default {
 
     return quotesTotal;
   },
+  async getQuotes15mNogaps(tokenId, startTime) {
+    const query = `
+    query MyQuery($tokenId: String, $startTime: timestamptz) {
+      quotes15mNogaps(
+        order_by: {bucket: asc},
+        where: {bucket: {_gt: ${startTime}}, 
+                tokenId: {_eq: ${tokenId}}}
+        distinct_on: bucket
+      ) {
+          bucket
+          volume
+          xtzVolume
+          close
+        }
+      }
+    `;
+    const {
+      data: {
+        data: { quotes15mNogaps },
+      },
+    } = await axios.post("https://dex.dipdup.net/v1/graphql", { query });
+
+    return quotes15mNogaps;
+  },
+  async getQuotes1dNogaps(tokenId, startTime) {
+    const query = `
+    query MyQuery($tokenId: String, $startTime: timestamptz) {
+      quotes1dNogaps(
+        order_by: {bucket: asc}
+        where: {bucket: {_gt: ${startTime}}, 
+                tokenId: {_eq: ${tokenId}}}
+        distinct_on: bucket
+      ) {
+          bucket
+          volume
+          xtzVolume
+          close
+        }
+      }
+    `;
+    const {
+      data: {
+        data: { quotes1dNogaps },
+      },
+    } = await axios.post("https://dex.dipdup.net/v1/graphql", { query });
+
+    return quotes1dNogaps;
+  },
+  async getActivity(tokenId, startTime) {
+    const query = `
+    query MyQuery($tokenId: String, $startTime: timestamptz) {
+      activity(
+          order_by: {timestamp: asc}
+          where: {bucket: {_gt: ${startTime}}, 
+                tokenId: {_eq: ${tokenId}}}
+          distinct_on: timestamp
+      ) {
+        tvl
+        tvlUsd
+        timestamp
+      }
+    }
+  `;
+    const {
+      data: {
+        data: { activity },
+      },
+    } = await axios.post("https://dex.dipdup.net/v1/graphql", { query });
+
+    return activity;
+  },
 
   async getTokens() {
     const { contracts: tokens } = await teztools.getPricefeed();
