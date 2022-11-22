@@ -16,40 +16,6 @@ const diffInDay = (timestamp1, timestamp2) => {
   return (timestamp1 - timestamp2) / MILISECOND_ONE_DAY;
 };
 
-const getTokenPriceInterval = async (historyPrice, timeInterval) => {
-  const tokenPriceInterval = [];
-
-  let index = 0;
-  let historyTimestamp = new Date(historyPrice[index].timestamp);
-  const currentTimestamp = new Date();
-
-  // Get the index which satify time interval
-  while (diffInDay(currentTimestamp, historyTimestamp) <= timeInterval) {
-    if (
-      historyPrice[index].t1price &&
-      historyPrice[index].t1volume &&
-      historyPrice[index].t1pool &&
-      historyPrice[index].lptsupply
-    ) {
-      const priceObj = {
-        price: historyPrice[index]?.t1price,
-        timestamp: historyPrice[index]?.timestamp,
-        volume: historyPrice[index]?.t1volume,
-        pool: historyPrice[index]?.t1pool,
-        lptsupply: historyPrice[index]?.lptsupply,
-      };
-      tokenPriceInterval.push(priceObj);
-    }
-    index += 1;
-    // eslint-disable-next-line no-prototype-builtins
-    if (!historyPrice[index].hasOwnProperty("timestamp")) {
-      break;
-    }
-    historyTimestamp = new Date(historyPrice[index].timestamp);
-  }
-  return tokenPriceInterval;
-};
-
 const getVolume = async (historyPrice, timeInterval) => {
   let totalVolume = 0;
 
@@ -124,9 +90,9 @@ export default {
     const query = `
     query MyQuery($tokenId: String, $startTime: timestamptz) {
       quotes15mNogaps(
-        order_by: {bucket: asc},
-        where: {bucket: {_gt: ${startTime}}, 
-                tokenId: {_eq: ${tokenId}}}
+        order_by: {bucket: asc}
+        where: {tokenId: {_eq: $tokenId},
+                bucket: {_gt: $startTime}}
         distinct_on: bucket
       ) {
           bucket
@@ -140,8 +106,7 @@ export default {
       data: {
         data: { quotes15mNogaps },
       },
-    } = await axios.post("https://dex.dipdup.net/v1/graphql", { query });
-
+    } = await axios.post("https://dex.dipdup.net/v1/graphql", { query, variables: {tokenId: tokenId, startTime: startTime}});
     return quotes15mNogaps;
   },
   async getQuotes1dNogaps(tokenId, startTime) {
@@ -149,8 +114,8 @@ export default {
     query MyQuery($tokenId: String, $startTime: timestamptz) {
       quotes1dNogaps(
         order_by: {bucket: asc}
-        where: {bucket: {_gt: ${startTime}}, 
-                tokenId: {_eq: ${tokenId}}}
+        where: {tokenId: {_eq: $tokenId},
+                bucket: {_gt: $startTime}}
         distinct_on: bucket
       ) {
           bucket
@@ -164,31 +129,30 @@ export default {
       data: {
         data: { quotes1dNogaps },
       },
-    } = await axios.post("https://dex.dipdup.net/v1/graphql", { query });
-
+    } = await axios.post("https://dex.dipdup.net/v1/graphql", { query, variables: {tokenId: tokenId, startTime: startTime}});
     return quotes1dNogaps;
   },
   async getActivity(tokenId, startTime) {
     const query = `
     query MyQuery($tokenId: String, $startTime: timestamptz) {
       activity(
-          order_by: {timestamp: asc}
-          where: {bucket: {_gt: ${startTime}}, 
-                tokenId: {_eq: ${tokenId}}}
-          distinct_on: timestamp
+        order_by: {timestamp: asc}
+        where: {tokenId: {_eq: $tokenId},
+                timestamp: {_gt: $startTime}}
+        distinct_on: timestamp
+        limit: 300
       ) {
-        tvl
-        tvlUsd
-        timestamp
+          tvl
+          tvlUsd
+          timestamp
+        }
       }
-    }
-  `;
+    `;
     const {
       data: {
         data: { activity },
       },
-    } = await axios.post("https://dex.dipdup.net/v1/graphql", { query });
-
+    } = await axios.post("https://dex.dipdup.net/v1/graphql", { query, variables: {tokenId: tokenId, startTime: startTime}});
     return activity;
   },
 
@@ -204,6 +168,7 @@ export default {
       token.tokenId?.toString(),
       priceFeed
     );
+
     const tokenPriceRange = filterTokenHighAndLow(
       tokenHighAndLow,
       token.tokenAddress,
@@ -261,26 +226,6 @@ export default {
       element.change30Day = change30Day;
       element.volume1Day = await getVolume(historyPrice, TIME_INTERVAL.ONE_DAY);
       element.volume1DayChange = await getVolumeChange(historyPrice);
-      element.volume7Day = await getVolume(
-        historyPrice,
-        TIME_INTERVAL.SEVEN_DAY
-      );
-      element.volume30Day = await getVolume(
-        historyPrice,
-        TIME_INTERVAL.THIRTY_DAY
-      );
-      element.price1Day = await getTokenPriceInterval(
-        historyPrice,
-        TIME_INTERVAL.ONE_DAY
-      );
-      element.price7Day = await getTokenPriceInterval(
-        historyPrice,
-        TIME_INTERVAL.SEVEN_DAY
-      );
-      element.price30Day = await getTokenPriceInterval(
-        historyPrice,
-        TIME_INTERVAL.THIRTY_DAY
-      );
       element.calcSupply = calcSupply;
 
       element.allTimeHigh = Number(tokenPriceRange?.high) || 0;

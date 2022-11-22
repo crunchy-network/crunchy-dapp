@@ -7,20 +7,60 @@ import axios from "axios";
 import { createChart } from "lightweight-charts";
 
 export default {
+  props: {
+    tokenTracked: {
+      type: Object,
+      default: () => {},
+    },
+    duration: {
+      type: String,
+      default: "1d",
+    },
+    legendTab: {
+      type: String,
+      default: "volume",
+    },
+  },
+  data() {
+    return {
+      tokenData: this.tokenTracked.volumeAndPrice1Day,
+    };
+  },
   mounted() {
     this.getPrices();
   },
+  watch: {
+    legendTab() {
+      this.getPrices()
+    },
+    duration() {
+      this.getPrices()
+    },
+    tokenTracked() {
+      this.getPrices()
+    }
+  },
   methods: {
     async getPrices() {
-      const prices = (
-        await axios.get(
-          `https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d&limit=10000`
-        )
-      ).data;
-      const areaSeriesData = prices.map((price) => {
+      if(this.legendTab == "tvl") {
+        this.tokenData =  this.duration == "1d" ? this.tokenTracked.tvl1Day :
+                          this.duration == "7d" ? this.tokenTracked.tvl7Day :
+                          this.duration == "30d" ? this.tokenTracked.tvl30Day :
+                          null
+      } else {
+        this.tokenData =  this.duration == "1d" ? this.tokenTracked.volumeAndPrice1Day :
+                          this.duration == "7d" ? this.tokenTracked.volumeAndPrice7Day :
+                          this.duration == "30d" ? this.tokenTracked.volumeAndPrice30Day :
+                          null
+      }
+      console.log(this.tokenData,this.duration,this.legendTab)
+      const areaSeriesData = this.tokenData.map((element) => {
         return {
-          time: price[0],
-          value: price[1],
+          time: this.legendTab == "tvl" ? Math.floor(new Date(element.timestamp).getTime()) : Math.floor(new Date(element.bucket).getTime()),
+          value: this.legendTab == "price" ? element.close :
+                  this.legendTab == "volume" ? element.volume :
+                  this.legendTab == "tvl" ? element.tvl :
+                  null,
         };
       });
       const colors = {
@@ -31,14 +71,7 @@ export default {
         const colorValues = Object.values(colors);
         return colorValues[Math.floor(Math.random() * colorValues.length)];
       };
-      const volumeSeriesData = prices.map((price) => {
-        return {
-          time: price[0],
-          value: price[1],
-          color: randomlyChooseColor(),
-        };
-      });
-
+      document.getElementById("chart").innerHTML = "";
       var chart = createChart(document.getElementById("chart"), {
         rightPriceScale: {
           visible: false,
@@ -79,21 +112,7 @@ export default {
         lineWidth: 2,
       });
 
-      var volumeSeries = chart.addHistogramSeries({
-        color: "#26a69a",
-        lineWidth: 2,
-        priceFormat: {
-          type: "volume",
-        },
-        overlay: true,
-        scaleMargins: {
-          top: 0.8,
-          bottom: 0,
-        },
-      });
-
       areaSeries.setData(areaSeriesData);
-      volumeSeries.setData(volumeSeriesData);
     },
 
     formatDate(date) {

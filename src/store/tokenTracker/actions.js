@@ -21,7 +21,7 @@ export default {
           coingecko.getXtzUsdPrice(),
           tokenTracker.getTokenHighAndLow(),
         ]);
-
+          
       for (let i = 0; i < tokensToTrack.length; i++) {
         const value = tokensToTrack[i];
         const tokenData = value;
@@ -29,7 +29,7 @@ export default {
           tokenData,
           priceFeed,
           xtzUsd,
-          tokenHighAndLow
+          tokenHighAndLow,
         );
 
         if (token) {
@@ -65,8 +65,7 @@ export default {
   },
 
   async fetchTokenTrackedWithId({ state, commit, dispatch }, id) {
-    commit("updateLoadingOverview", false);
-
+    commit("updateLoadingOverview", true);
     try {
       if (state.tokenList.length < 1) {
         dispatch("_setTokenTracked", id);
