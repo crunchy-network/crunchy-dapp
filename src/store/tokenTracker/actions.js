@@ -22,6 +22,7 @@ export default {
           tokenTracker.getTokenHighAndLow(),
         ]);
 
+      const tokens = [];
       for (let i = 0; i < tokensToTrack.length; i++) {
         const value = tokensToTrack[i];
         const tokenData = value;
@@ -33,15 +34,13 @@ export default {
         );
 
         if (token) {
-          commit("updateTokenList", {
-            id: `${value.tokenAddress}${
-              value.tokenId ? "_" + value.tokenId : ""
-            }`,
+          tokens.push({
+            id: `${value.tokenAddress}_${value.tokenId || 0}`,
             ...token,
           });
         }
       }
-      await dispatch("sortTokensTracked");
+      await dispatch("sortTokensTracked", tokens);
     } catch (error) {
       console.log(error);
     } finally {
@@ -53,15 +52,15 @@ export default {
     }
   },
 
-  async sortTokensTracked({ commit, state }) {
-    const orderedTokens = _.orderBy(state.tokenList, ["mktCap"], ["desc"]);
+  async sortTokensTracked({ commit, state }, tokens) {
+    const orderedTokens = _.orderBy(tokens, ["mktCap"], ["desc"]);
     for (let index = 0; index < orderedTokens.length; index++) {
       const token = orderedTokens[index];
       token.order = index + 1;
       // orderedTokens[index].order = index + 1;
       commit("updateTokenTracked", token);
+      commit("updateTokenList", token);
     }
-    commit("setTokenList", orderedTokens);
   },
 
   async fetchTokenTrackedWithId({ state, commit, dispatch }, id) {
