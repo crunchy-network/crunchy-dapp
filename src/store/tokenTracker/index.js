@@ -7,7 +7,15 @@ export default {
     searchInput: "",
     tokenList: [],
     tokensTracked: {},
-    tokenOverview: {},
+    tokenOverview: {
+      volumeAndPrice1Day: [],
+      volumeAndPrice7Day: [],
+      volumeAndPrice30Day: [],
+      tvl1Day: [],
+      tvl7Day: [],
+      tvl30Day: [],
+    },
+    loadingChart: false,
   },
   mutations,
   actions,
@@ -45,6 +53,21 @@ export default {
       return state.searchInput?.trim().length > 1
         ? filteredTokens
         : state.tokenList;
+    },
+
+    getLoadingChart(state) {
+      return state.loadingChart;
+    },
+
+    getChartData(state) {
+      return {
+        volumeAndPrice1Day: state.tokenOverview.volumeAndPrice1Day,
+        volumeAndPrice7Day: state.tokenOverview.volumeAndPrice7Day,
+        volumeAndPrice30Day: state.tokenOverview.volumeAndPrice30Day,
+        tvl1Day: state.tokenOverview.tvl1Day,
+        tvl7Day: state.tokenOverview.tvl7Day,
+        tvl30Day: state.tokenOverview.tvl30Day,
+      };
     },
   },
 };

@@ -3,8 +3,8 @@
 </template>
 
 <script>
-import axios from "axios";
 import { createChart } from "lightweight-charts";
+import { mapGetters } from "vuex";
 
 export default {
   props: {
@@ -21,56 +21,67 @@ export default {
       default: "volume",
     },
   },
-  data() {
-    return {
-      tokenData: this.tokenTracked.volumeAndPrice1Day,
-    };
+  computed: {
+    ...mapGetters(["getChartData"]),
+  },
+  watch: {
+    legendTab() {
+      this.getPrices();
+    },
+    duration() {
+      this.getPrices();
+    },
+    tokenTracked() {
+      this.getPrices();
+    },
+    getChartData(newVal) {
+      console.log("\n\n------ begin:  ------");
+      console.log(newVal);
+      console.log("------ end:  ------\n\n");
+    },
   },
   mounted() {
     this.getPrices();
   },
-  watch: {
-    legendTab() {
-      this.getPrices()
-    },
-    duration() {
-      this.getPrices()
-    },
-    tokenTracked() {
-      this.getPrices()
-    }
-  },
   methods: {
     async getPrices() {
-      if(this.legendTab == "tvl") {
-        this.tokenData =  this.duration == "1d" ? this.tokenTracked.tvl1Day :
-                          this.duration == "7d" ? this.tokenTracked.tvl7Day :
-                          this.duration == "30d" ? this.tokenTracked.tvl30Day :
-                          null
+      if (this.legendTab === "tvl") {
+        this.tokenData =
+          this.duration === "1d"
+            ? this.getChartData.tvl1Day
+            : this.duration === "7d"
+            ? this.getChartData.tvl7Day
+            : this.duration === "30d"
+            ? this.getChartData.tvl30Day
+            : null;
       } else {
-        this.tokenData =  this.duration == "1d" ? this.tokenTracked.volumeAndPrice1Day :
-                          this.duration == "7d" ? this.tokenTracked.volumeAndPrice7Day :
-                          this.duration == "30d" ? this.tokenTracked.volumeAndPrice30Day :
-                          null
+        this.tokenData =
+          this.duration === "1d"
+            ? this.getChartData.volumeAndPrice1Day
+            : this.duration === "7d"
+            ? this.getChartData.volumeAndPrice7Day
+            : this.duration === "30d"
+            ? this.getChartData.volumeAndPrice30Day
+            : null;
       }
-      console.log(this.tokenData,this.duration,this.legendTab)
+      console.log(this.getChartData, this.duration, this.legendTab);
       const areaSeriesData = this.tokenData.map((element) => {
         return {
-          time: this.legendTab == "tvl" ? Math.floor(new Date(element.timestamp).getTime()) : Math.floor(new Date(element.bucket).getTime()),
-          value: this.legendTab == "price" ? element.close :
-                  this.legendTab == "volume" ? element.volume :
-                  this.legendTab == "tvl" ? element.tvl :
-                  null,
+          time:
+            this.legendTab === "tvl"
+              ? Math.floor(new Date(element.timestamp).getTime())
+              : Math.floor(new Date(element.bucket).getTime()),
+          value:
+            this.legendTab === "price"
+              ? element.close
+              : this.legendTab === "volume"
+              ? element.volume
+              : this.legendTab === "tvl"
+              ? element.tvl
+              : null,
         };
       });
-      const colors = {
-        red: "rgba(255,82,82, 0.4)",
-        green: "rgba(0, 150, 136, 0.6)",
-      };
-      const randomlyChooseColor = () => {
-        const colorValues = Object.values(colors);
-        return colorValues[Math.floor(Math.random() * colorValues.length)];
-      };
+
       document.getElementById("chart").innerHTML = "";
       var chart = createChart(document.getElementById("chart"), {
         rightPriceScale: {

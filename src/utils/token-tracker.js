@@ -4,61 +4,7 @@ import { getPrice } from "./home-wallet";
 import ipfs from "./ipfs";
 import teztools from "./teztools";
 
-const TIME_INTERVAL = {
-  ONE_DAY: 1,
-  SEVEN_DAY: 7,
-  THIRTY_DAY: 30,
-};
-
-const MILISECOND_ONE_DAY = 86400000;
-
-const diffInDay = (timestamp1, timestamp2) => {
-  return (timestamp1 - timestamp2) / MILISECOND_ONE_DAY;
-};
-
-const getVolume = async (historyPrice, timeInterval) => {
-  let totalVolume = 0;
-
-  let index = 0;
-  let historyTimestamp = new Date(historyPrice[index].timestamp);
-  const currentTimestamp = new Date();
-
-  // Get the index which satify time interval
-  while (diffInDay(currentTimestamp, historyTimestamp) <= timeInterval) {
-    const volume = historyPrice[index].t1volume
-      ? historyPrice[index].t1volume
-      : 0;
-    const volumeInUsd = volume !== 0 ? volume * historyPrice[index].t1price : 0;
-    totalVolume += volumeInUsd;
-    historyTimestamp = new Date(historyPrice[++index].timestamp);
-  }
-  return totalVolume;
-};
-
-const getVolumeChange = async (historyPrice) => {
-  let todayVolume = 0;
-  let yesterdayVolume = 0;
-  const todayTimestamp = new Date().now - 24 * 60 * 60 * 1000;
-  const yesterdayTimestamp = new Date().now - 48 * 60 * 60 * 1000;
-
-  for (let index = 0; index < historyPrice.length; index++) {
-    const element = historyPrice[index];
-    if (new Date(element.timestamp) >= new Date(todayTimestamp)) {
-      todayVolume += element.t1volume;
-    }
-
-    if (
-      new Date(element.timestamp) >= new Date(yesterdayTimestamp) &&
-      new Date(element.timestamp) < new Date(todayTimestamp)
-    ) {
-      yesterdayVolume += element.t1volume;
-    }
-  }
-
-  return todayVolume / yesterdayVolume - 1;
-};
-
-const filterTokenHighAndLow = (tokenPriceRange, tokenAddress, tokenId) => {
+const filterQueryBytokenId = (tokenPriceRange, tokenAddress, tokenId) => {
   const value = tokenPriceRange?.filter(
     (val) => val.tokenId === `${tokenAddress}_${tokenId || 0}`
   );
@@ -67,7 +13,7 @@ const filterTokenHighAndLow = (tokenPriceRange, tokenAddress, tokenId) => {
 };
 
 export default {
-  async getTokenHighAndLow() {
+  async getQuotes() {
     const query = `
     query MyQuery {
       quotesTotal(distinct_on: tokenId) {
@@ -75,16 +21,20 @@ export default {
         low
         tokenId
       }
+      quotes1dNogaps(distinct_on: tokenId) {
+        volume
+        tokenId
+      }
     }
 
     `;
     const {
       data: {
-        data: { quotesTotal },
+        data: { quotesTotal, quotes1dNogaps },
       },
     } = await axios.post("https://dex.dipdup.net/v1/graphql", { query });
 
-    return quotesTotal;
+    return { quotesTotal, quotes1dNogaps };
   },
   async getQuotes15mNogaps(tokenId, startTime) {
     const query = `
@@ -106,7 +56,10 @@ export default {
       data: {
         data: { quotes15mNogaps },
       },
-    } = await axios.post("https://dex.dipdup.net/v1/graphql", { query, variables: {tokenId: tokenId, startTime: startTime}});
+    } = await axios.post("https://dex.dipdup.net/v1/graphql", {
+      query,
+      variables: { tokenId: tokenId, startTime: startTime },
+    });
     return quotes15mNogaps;
   },
   async getQuotes1dNogaps(tokenId, startTime) {
@@ -129,7 +82,10 @@ export default {
       data: {
         data: { quotes1dNogaps },
       },
-    } = await axios.post("https://dex.dipdup.net/v1/graphql", { query, variables: {tokenId: tokenId, startTime: startTime}});
+    } = await axios.post("https://dex.dipdup.net/v1/graphql", {
+      query,
+      variables: { tokenId: tokenId, startTime: startTime },
+    });
     return quotes1dNogaps;
   },
   async getActivity(tokenId, startTime) {
@@ -152,7 +108,10 @@ export default {
       data: {
         data: { activity },
       },
-    } = await axios.post("https://dex.dipdup.net/v1/graphql", { query, variables: {tokenId: tokenId, startTime: startTime}});
+    } = await axios.post("https://dex.dipdup.net/v1/graphql", {
+      query,
+      variables: { tokenId: tokenId, startTime: startTime },
+    });
     return activity;
   },
 
@@ -162,25 +121,31 @@ export default {
     return { ...tokens };
   },
 
-  async calculateTokenData(token, priceFeed, xtzUsd, tokenHighAndLow) {
+  async calculateTokenData(
+    token,
+    priceFeed,
+    xtzUsd,
+    tokenHighAndLow,
+    tokenVolumes
+  ) {
     const tokenPrice = await getPrice(
       token.tokenAddress,
       token.tokenId?.toString(),
       priceFeed
     );
 
-    const tokenPriceRange = filterTokenHighAndLow(
+    const tokenPriceRange = filterQueryBytokenId(
       tokenHighAndLow,
       token.tokenAddress,
       token.tokenId?.toString()
     );
 
-    const element = tokenPrice;
-
-    const historyPrice = await teztools.getPriceHistory(
-      element.tokenAddress,
-      element.tokenId
+    const tokenVolume = filterQueryBytokenId(
+      tokenVolumes,
+      token.tokenAddress,
+      token.tokenId?.toString()
     );
+    const element = tokenPrice;
 
     if (element) {
       if (element.thumbnailUri)
@@ -224,8 +189,8 @@ export default {
       element.change1Day = change1Day;
       element.change7Day = change7Day;
       element.change30Day = change30Day;
-      element.volume1Day = await getVolume(historyPrice, TIME_INTERVAL.ONE_DAY);
-      element.volume1DayChange = await getVolumeChange(historyPrice);
+      element.volume1Day = Number(tokenVolume.volume) || 0;
+      // element.volume1DayChange = await getVolumeChange(historyPrice);
       element.calcSupply = calcSupply;
 
       element.allTimeHigh = Number(tokenPriceRange?.high) || 0;
