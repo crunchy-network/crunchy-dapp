@@ -64,8 +64,7 @@ export default {
   },
 
   async fetchTokenTrackedWithId({ state, commit, dispatch }, id) {
-    commit("updateLoadingOverview", false);
-
+    commit("updateLoadingOverview", true);
     try {
       if (state.tokenList.length < 1) {
         dispatch("_setTokenTracked", id);
