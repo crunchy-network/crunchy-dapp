@@ -204,7 +204,10 @@
         </div>
       </el-row>
       <div ref="chartContainer">
-        <TrackerOverviewChart />
+          <TrackerOverviewChart 
+          :tokenTracked="tokenTracked"
+          :duration="duration"
+          :legendTab="legendTab"/>
       </div>
     </el-card>
   </div>
@@ -214,7 +217,7 @@
 import numberFormat from "../utils/number-format";
 import NumberTooltip from "./NumberTooltip.vue";
 import TrackerOverviewChart from "./TrackerOverviewChart.vue";
-
+import { mapActions, mapGetters, mapState } from "vuex";
 export default {
   components: { TrackerOverviewChart, NumberTooltip },
 
