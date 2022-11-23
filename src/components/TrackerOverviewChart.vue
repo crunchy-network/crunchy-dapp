@@ -34,11 +34,6 @@ export default {
     tokenTracked() {
       this.getPrices();
     },
-    getChartData(newVal) {
-      console.log("\n\n------ begin:  ------");
-      console.log(newVal);
-      console.log("------ end:  ------\n\n");
-    },
   },
   mounted() {
     this.getPrices();
@@ -85,7 +80,7 @@ export default {
       document.getElementById("chart").innerHTML = "";
       var chart = createChart(document.getElementById("chart"), {
         rightPriceScale: {
-          visible: false,
+          visible: true,
           scaleMargins: {
             top: 0.2,
             bottom: 0.2,
