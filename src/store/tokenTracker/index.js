@@ -8,12 +8,16 @@ export default {
     tokenList: [],
     tokensTracked: {},
     tokenOverview: {
-      volumeAndPrice1Day: [],
-      volumeAndPrice7Day: [],
-      volumeAndPrice30Day: [],
-      tvl1Day: [],
-      tvl7Day: [],
-      tvl30Day: [],
+      chartData: {
+        volumeAndPrice1Day: [],
+        volumeAndPrice7Day: [],
+        volumeAndPrice30Day: [],
+        allVolumeAndPrice: [],
+        tvl1Day: [],
+        tvl7Day: [],
+        tvl30Day: [],
+        tvlAll: [],
+      },
     },
     loadingChart: false,
   },
@@ -60,14 +64,7 @@ export default {
     },
 
     getChartData(state) {
-      return {
-        volumeAndPrice1Day: state.tokenOverview.volumeAndPrice1Day,
-        volumeAndPrice7Day: state.tokenOverview.volumeAndPrice7Day,
-        volumeAndPrice30Day: state.tokenOverview.volumeAndPrice30Day,
-        tvl1Day: state.tokenOverview.tvl1Day,
-        tvl7Day: state.tokenOverview.tvl7Day,
-        tvl30Day: state.tokenOverview.tvl30Day,
-      };
+      return state.tokenOverview.chartData;
     },
   },
 };

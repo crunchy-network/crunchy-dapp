@@ -178,8 +178,22 @@
           >
             30d
           </button>
+          <button
+            class="tab-text"
+            :style="isActiveTab('all', duration)"
+            @click="setDurationTab('all')"
+          >
+            All
+          </button>
         </div>
         <div class="tab-wrapper tab-custom-element">
+          <button
+            class="tab-text"
+            :style="isActiveTab('price', legendTab)"
+            @click="setLegendTab('price')"
+          >
+            Price
+          </button>
           <button
             class="tab-text"
             :style="isActiveTab('volume', legendTab)"
@@ -193,13 +207,6 @@
             @click="setLegendTab('tvl')"
           >
             TVL
-          </button>
-          <button
-            class="tab-text"
-            :style="isActiveTab('price', legendTab)"
-            @click="setLegendTab('price')"
-          >
-            Price
           </button>
         </div>
       </el-row>
@@ -225,7 +232,7 @@ export default {
   props: {
     duration: {
       type: String,
-      default: "1d",
+      default: "all",
     },
     setDurationTab: {
       type: Function,
@@ -243,7 +250,7 @@ export default {
 
   data() {
     return {
-      legendTab: "volume",
+      legendTab: "price",
     };
   },
 
@@ -254,6 +261,23 @@ export default {
     tokenTracked() {
       console.log(this.tokenTracked);
     },
+
+    "$router.query.legendTab": function (val) {
+      this.legendTab = val;
+    },
+  },
+
+  created() {
+    if (this.$route.query.legend) {
+      this.legendTab = this.$route.query.legend;
+    } else {
+      this.$router.replace({
+        query: {
+          ...this.$route.query,
+          legend: this.legendTab,
+        },
+      });
+    }
   },
 
   methods: {
@@ -265,6 +289,12 @@ export default {
       if (["volume", "tvl", "price"].includes(tab)) {
         this.legendTab = tab;
       }
+      this.$router.replace({
+        query: {
+          ...this.$route.query,
+          legend: tab,
+        },
+      });
     },
 
     formatNumShorthand(val) {

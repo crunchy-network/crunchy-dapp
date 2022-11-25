@@ -88,6 +88,31 @@ export default {
     });
     return quotes1dNogaps;
   },
+  async getAllQuotes1d(tokenId) {
+    const query = `
+    query MyQuery($tokenId: String) {
+      quotes1dNogaps(
+        order_by: {bucket: asc}
+        where: {tokenId: {_eq: $tokenId}}
+        distinct_on: bucket
+      ) {
+          bucket
+          volume
+          xtzVolume
+          close
+        }
+      }
+    `;
+    const {
+      data: {
+        data: { quotes1dNogaps },
+      },
+    } = await axios.post("https://dex.dipdup.net/v1/graphql", {
+      query,
+      variables: { tokenId: tokenId },
+    });
+    return quotes1dNogaps;
+  },
   async getActivity(tokenId, startTime) {
     const query = `
     query MyQuery($tokenId: String, $startTime: timestamptz) {
@@ -111,6 +136,32 @@ export default {
     } = await axios.post("https://dex.dipdup.net/v1/graphql", {
       query,
       variables: { tokenId: tokenId, startTime: startTime },
+    });
+    return activity;
+  },
+
+  async getAllActivity(tokenId) {
+    const query = `
+    query MyQuery($tokenId: String) {
+      activity(
+        order_by: {timestamp: asc}
+        where: {tokenId: {_eq: $tokenId},}
+        distinct_on: timestamp
+        limit: 300
+      ) {
+          tvl
+          tvlUsd
+          timestamp
+        }
+      }
+    `;
+    const {
+      data: {
+        data: { activity },
+      },
+    } = await axios.post("https://dex.dipdup.net/v1/graphql", {
+      query,
+      variables: { tokenId: tokenId },
     });
     return activity;
   },

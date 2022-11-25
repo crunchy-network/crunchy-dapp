@@ -75,6 +75,7 @@ export default {
   },
 
   async fetchTokenTrackedWithId({ state, commit, dispatch }, id) {
+    commit("cleanTokenOverview");
     commit("updateLoadingOverview", true);
     try {
       if (state.tokenList.length < 1) {
@@ -98,28 +99,34 @@ export default {
     const chartData = {};
     try {
       const [
+        allVolumeAndPrice1d,
         volumeAndPrice1Day,
         volumeAndPrice7Day,
         volumeAndPrice30Day,
         tvl1Day,
         tvl7Day,
         tvl30Day,
+        tvlAll,
       ] = await Promise.all([
+        tokenTracker.getAllQuotes1d(tokenId),
         tokenTracker.getQuotes15mNogaps(tokenId, YESTERDAY),
         tokenTracker.getQuotes1dNogaps(tokenId, WEEK_AGO),
         tokenTracker.getQuotes1dNogaps(tokenId, MONTH_AGO),
         tokenTracker.getActivity(tokenId, YESTERDAY),
         tokenTracker.getActivity(tokenId, WEEK_AGO),
         tokenTracker.getActivity(tokenId, MONTH_AGO),
+        tokenTracker.getAllActivity(tokenId),
       ]);
 
+      chartData.allVolumeAndPrice = allVolumeAndPrice1d;
       chartData.volumeAndPrice1Day = volumeAndPrice1Day;
       chartData.volumeAndPrice7Day = volumeAndPrice7Day;
       chartData.volumeAndPrice30Day = volumeAndPrice30Day;
       chartData.tvl1Day = tvl1Day;
       chartData.tvl7Day = tvl7Day;
       chartData.tvl30Day = tvl30Day;
-      console.log("========== \n =========", chartData);
+      chartData.tvlAll = tvlAll;
+
       commit("updateChartData", chartData);
     } catch (error) {
       console.log(error);

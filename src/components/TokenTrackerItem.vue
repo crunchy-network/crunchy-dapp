@@ -62,7 +62,9 @@
               style="color: #555cff; text-decoration: none; font-weight: 600"
               target="_blank"
             >
-              {{ getTokenOverview.name }} (${{ getTokenOverview.symbol }})
+              {{ getTokenOverview.name || getTokenOverview.symbol }} (${{
+                getTokenOverview.symbol
+              }})
             </a>
           </el-row>
           <h2 style="font-weight: 600; font-size: 40px; line-height: 19px">
@@ -156,7 +158,7 @@ export default {
   data() {
     return {
       activeTab: "overview",
-      duration: "1d",
+      duration: "all",
     };
   },
 
@@ -172,6 +174,9 @@ export default {
     "$router.query.tab": function (val) {
       this.activeTab = val;
     },
+    "$router.query.duration": function (val) {
+      this.activeTab = val;
+    },
   },
 
   created() {
@@ -182,6 +187,16 @@ export default {
         query: {
           ...this.$route.query,
           tab: this.activeTab,
+        },
+      });
+    }
+    if (this.$route.query.duration) {
+      this.duration = this.$route.query.duration;
+    } else {
+      this.$router.replace({
+        query: {
+          ...this.$route.query,
+          duration: this.duration,
         },
       });
     }
@@ -216,19 +231,14 @@ export default {
     },
 
     setDurationTab(tab = "") {
-      if (["1d", "7d", "30d"].includes(tab)) {
+      if (["1d", "7d", "30d", "all"].includes(tab)) {
         this.duration = tab;
-      }
-    },
-    handleChangeProp() {
-      if (this.duration === "1d") {
-        return this.getTokenOverview.change1Day;
-      }
-      if (this.duration === "7d") {
-        return this.getTokenOverview.change7Day;
-      }
-      if (this.duration === "30d") {
-        return this.getTokenOverview.change30Day;
+        this.$router.replace({
+          query: {
+            ...this.$route.query,
+            duration: tab,
+          },
+        });
       }
     },
 

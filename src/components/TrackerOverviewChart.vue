@@ -31,7 +31,7 @@ export default {
     duration() {
       this.getPrices();
     },
-    tokenTracked() {
+    getChartData: function (val) {
       this.getPrices();
     },
   },
@@ -48,6 +48,8 @@ export default {
             ? this.getChartData.tvl7Day
             : this.duration === "30d"
             ? this.getChartData.tvl30Day
+            : this.duration === "all"
+            ? this.getChartData.tvlAll
             : null;
       } else {
         this.tokenData =
@@ -57,9 +59,11 @@ export default {
             ? this.getChartData.volumeAndPrice7Day
             : this.duration === "30d"
             ? this.getChartData.volumeAndPrice30Day
+            : this.duration === "all"
+            ? this.getChartData.allVolumeAndPrice
             : null;
       }
-      console.log(this.getChartData, this.duration, this.legendTab);
+
       const areaSeriesData = this.tokenData.map((element) => {
         return {
           time:
@@ -68,16 +72,17 @@ export default {
               : Math.floor(new Date(element.bucket).getTime()),
           value:
             this.legendTab === "price"
-              ? element.close
+              ? Number(element.close)
               : this.legendTab === "volume"
-              ? element.volume
+              ? Number(element.volume)
               : this.legendTab === "tvl"
-              ? element.tvl
+              ? Number(element.tvl)
               : null,
         };
       });
 
       document.getElementById("chart").innerHTML = "";
+
       var chart = createChart(document.getElementById("chart"), {
         rightPriceScale: {
           visible: true,
@@ -96,12 +101,11 @@ export default {
           },
         },
         grid: {
-          horzLines: {
-            visible: false,
-            color: "#10002A",
-          },
           vertLines: {
-            color: "rgba( 247, 147, 26, 0.05)",
+            color: "#f0f3fa",
+          },
+          horzLines: {
+            color: "#f0f3fa",
           },
         },
         crosshair: {
@@ -138,5 +142,7 @@ export default {
 #chart {
   width: 100%;
   height: 500px;
+  display: flex;
+  justify-content: flex-start;
 }
 </style>
