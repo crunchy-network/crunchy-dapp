@@ -122,7 +122,19 @@ export default {
         lineWidth: 2,
       });
 
+      if (this.legendTab === "price") {
+        areaSeries.applyOptions({
+          priceFormat: {
+            type: "price",
+            precision: 6,
+            minMove: 0.000001,
+          },
+        });
+      }
+
       areaSeries.setData(areaSeriesData);
+
+      chart.timeScale().fitContent();
     },
 
     formatDate(date) {

@@ -75,7 +75,7 @@
                   >
                   <el-col style="" :span="5">{{ tokenTracked.order }}</el-col>
                   <el-col :span="5">
-                    {{
+                    <!-- {{
                       vueNumberFormat(
                         formatNumShorthand(tokenTracked.volume1Day).value,
                         {
@@ -105,7 +105,8 @@
                           precision: 2,
                         })
                       }}</span
-                    >
+                    > -->
+                    N/A
                   </el-col>
                   <el-col :span="5">
                     {{
@@ -159,6 +160,13 @@
         <div class="tab-wrapper tab-custom-element">
           <button
             class="tab-text"
+            :style="isActiveTab('all', duration)"
+            @click="setDurationTab('all')"
+          >
+            All
+          </button>
+          <button
+            class="tab-text"
             :style="isActiveTab('1d', duration)"
             @click="setDurationTab('1d')"
           >
@@ -177,13 +185,6 @@
             @click="setDurationTab('30d')"
           >
             30d
-          </button>
-          <button
-            class="tab-text"
-            :style="isActiveTab('all', duration)"
-            @click="setDurationTab('all')"
-          >
-            All
           </button>
         </div>
         <div class="tab-wrapper tab-custom-element">
