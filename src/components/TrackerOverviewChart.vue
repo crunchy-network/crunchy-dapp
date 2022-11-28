@@ -162,26 +162,25 @@ export default {
       ) {
         toolTip.style.display = 'none';
       } else {
-        const dateStr = dateToString(param.time);
-        toolTip.style.display = 'block';
-        const price = param.seriesPrices.get(areaSeries);
-        toolTip.innerHTML = `<div style="color: ${'rgba( 38, 166, 154, 1)'}">Crunchy.</div><div style="font-size: 24px; margin: 4px 0px; color: ${'black'}">
-          $${Math.round(100 * price) / 100}
-          </div><div style="color: ${'black'}">
-          ${dateStr}
-          </div>`;
+          const dateStr = dateToString(param.time);
+          toolTip.style.display = 'block';
+          const price = param.seriesPrices.get(areaSeries);
+          toolTip.innerHTML = `<div style="color: ${'rgba( 38, 166, 154, 1)'}">Crunchy.</div><div style="font-size: 24px; margin: 4px 0px; color: ${'black'}">
+            $${Math.round(100 * price) / 100}
+            </div><div style="color: ${'black'}">
+            ${dateStr}
+            </div>`;
 
-        const y = param.point.y;
-        let left = param.point.x + toolTipMargin;
-        if (left > container.clientWidth - toolTipWidth) {
-          left = param.point.x - toolTipMargin - toolTipWidth;
+          const y = param.point.y;
+          let left = param.point.x + toolTipMargin;
+          if (left > container.clientWidth - toolTipWidth) {
+            left = param.point.x - toolTipMargin - toolTipWidth;
+          }
+          let top = y + toolTipMargin + toolTipHeightSupport;
+          toolTip.style.left = left + 'px';
+          toolTip.style.top = top + 'px';
         }
-        let top = y + toolTipMargin + toolTipHeightSupport;
-        toolTip.style.left = left + 'px';
-        toolTip.style.top = top + 'px';
-      }
       });
-
     },
 
     formatDate(date) {
