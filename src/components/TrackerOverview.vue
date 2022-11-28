@@ -23,7 +23,7 @@
               >
                 <el-col :span="5">Market Cap</el-col>
                 <el-col :span="5">Total Supply</el-col>
-                <el-col :span="5">#</el-col>
+                <el-col :span="5">Market Cap Rank</el-col>
                 <el-col :span="5">24h Trading Vol</el-col>
                 <el-col :span="5">All Time High</el-col>
                 <el-col :span="5">All Time Low</el-col>
@@ -118,7 +118,7 @@
                             .suffix,
                           decimal: ".",
                           thousand: ",",
-                          precision: 2,
+                          precision: 0.01 > tokenTracked.allTimeHigh ? 4 : 2,
                         }
                       )
                     }}<number-tooltip
@@ -135,7 +135,7 @@
                             .suffix,
                           decimal: ".",
                           thousand: ",",
-                          precision: 2,
+                          precision: 0.01 > tokenTracked.allTimeLow ? 4 : 2,
                         }
                       )
                     }}<number-tooltip
@@ -268,6 +268,11 @@ export default {
 
     "$router.query.legend": function (val) {
       this.legendTab = val;
+      if (val === "price") {
+        if (this.$route.query.duration !== "1d") {
+          this.setDurationTab("1d");
+        }
+      }
     },
 
     legendTab(val) {
@@ -282,11 +287,6 @@ export default {
   created() {
     if (this.$route.query.legend) {
       this.legendTab = this.$route.query.legend;
-      if (this.legendTab === "price") {
-        if (this.$route.query.duration !== "1d") {
-          this.setDurationTab("1d");
-        }
-      }
     } else {
       this.$router.replace({
         query: {
@@ -294,6 +294,12 @@ export default {
           legend: this.legendTab,
         },
       });
+    }
+
+    if (this.legendTab === "price") {
+      if (this.$route.query.duration !== "1d") {
+        this.setDurationTab("1d");
+      }
     }
   },
 
