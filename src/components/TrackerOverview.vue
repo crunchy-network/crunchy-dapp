@@ -75,7 +75,7 @@
                   >
                   <el-col style="" :span="5">{{ tokenTracked.order }}</el-col>
                   <el-col :span="5">
-                    {{
+                    <!-- {{
                       vueNumberFormat(
                         formatNumShorthand(tokenTracked.volume1Day).value,
                         {
@@ -105,7 +105,8 @@
                           precision: 2,
                         })
                       }}</span
-                    >
+                    > -->
+                    N/A
                   </el-col>
                   <el-col :span="5">
                     {{
@@ -158,6 +159,14 @@
       >
         <div class="tab-wrapper tab-custom-element">
           <button
+            v-if="legendTab !== 'price'"
+            class="tab-text"
+            :style="isActiveTab('all', duration)"
+            @click="setDurationTab('all')"
+          >
+            All
+          </button>
+          <button
             class="tab-text"
             :style="isActiveTab('1d', duration)"
             @click="setDurationTab('1d')"
@@ -165,6 +174,7 @@
             1d
           </button>
           <button
+            v-if="legendTab !== 'price'"
             class="tab-text"
             :style="isActiveTab('7d', duration)"
             @click="setDurationTab('7d')"
@@ -172,18 +182,12 @@
             7d
           </button>
           <button
+            v-if="legendTab !== 'price'"
             class="tab-text"
             :style="isActiveTab('30d', duration)"
             @click="setDurationTab('30d')"
           >
             30d
-          </button>
-          <button
-            class="tab-text"
-            :style="isActiveTab('all', duration)"
-            @click="setDurationTab('all')"
-          >
-            All
           </button>
         </div>
         <div class="tab-wrapper tab-custom-element">
@@ -262,14 +266,27 @@ export default {
       console.log(this.tokenTracked);
     },
 
-    "$router.query.legendTab": function (val) {
+    "$router.query.legend": function (val) {
       this.legendTab = val;
+    },
+
+    legendTab(val) {
+      if (val === "price") {
+        if (this.$route.query.duration !== "1d") {
+          this.setDurationTab("1d");
+        }
+      }
     },
   },
 
   created() {
     if (this.$route.query.legend) {
       this.legendTab = this.$route.query.legend;
+      if (this.legendTab === "price") {
+        if (this.$route.query.duration !== "1d") {
+          this.setDurationTab("1d");
+        }
+      }
     } else {
       this.$router.replace({
         query: {
