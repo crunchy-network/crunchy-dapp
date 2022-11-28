@@ -46,7 +46,7 @@
                   suffix: formatNumShorthand(asset.usdValue).suffix,
                   decimal: ".",
                   thousand: ",",
-                  precision: 2,
+                  precision: 0.01 > asset.usdValue ? 4 : 2,
                 })
               }}<number-tooltip :number="asset.usdValue" />
             </el-col>
@@ -57,7 +57,7 @@
                   suffix: formatNumShorthand(asset.volume1Day).suffix,
                   decimal: ".",
                   thousand: ",",
-                  precision: 2,
+                  precision: 0.01 > asset.volume1Day ? 4 : 2,
                 })
               }}
             </el-col>

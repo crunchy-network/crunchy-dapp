@@ -79,7 +79,7 @@
                         .suffix,
                       decimal: ".",
                       thousand: ",",
-                      precision: 2,
+                      precision: 0.01 > getTokenOverview.usdValue ? 4 : 2,
                     }
                   )
             }}<number-tooltip :number="getTokenOverview.usdValue" />
@@ -95,7 +95,7 @@
                       suffix: "%",
                       decimal: ".",
                       thousand: ",",
-                      precision: 2,
+                      precision: 0.01 > getTokenOverview.change1Day ? 4 : 2,
                     })
               }}
             </span>

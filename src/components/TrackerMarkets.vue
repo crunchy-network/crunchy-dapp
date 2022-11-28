@@ -80,7 +80,7 @@
                           prefix: "$",
                           decimal: ".",
                           thousand: ",",
-                          precision: 2,
+                          precision: 0.01 > item.lpPrice ? 4 : 2,
                         })
                       }}<number-tooltip :number="item.lpPrice" />
                     </el-col>
@@ -89,7 +89,7 @@
                         prefix: "$",
                         decimal: ".",
                         thousand: ",",
-                        precision: 2,
+                        precision: 0.01 > item.volume ? 4 : 2,
                       })
                     }}</el-col>
                   </el-row>

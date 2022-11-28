@@ -24,7 +24,7 @@
                   line-height: 42px;
                 "
               >
-                Tezos Token Tracker
+                Tezos Cryptocurrency Prices by Market Cap
               </h2>
               <span
                 style="
@@ -33,8 +33,8 @@
                   font-size: 16px;
                   line-height: 24px;
                 "
-                >The Tezos ecosystem crypto currency market cap by
-                project.</span
+                >View charts and price data on cryptocurrencies in the Tezos
+                ecosystem</span
               >
             </el-col>
 
@@ -42,13 +42,8 @@
               <el-button
                 type="primary"
                 round
+                style="font-weight: bold"
                 icon="fa-solid fa-wallet"
-                style="
-                  font-weight: bold;
-                  background: #ffffff;
-                  border: 2px solid #555cff;
-                  color: #555cff;
-                "
                 >{{ " " }}My Portfolio</el-button
               >
             </div>
@@ -87,7 +82,8 @@
                         {
                           decimal: ".",
                           thousand: ",",
-                          precision: 2,
+                          precision:
+                            0.01 > getTrackerData.estimatedMktCap ? 4 : 2,
                           prefix: "$",
                           suffix: fmtNumber(getTrackerData.estimatedMktCap)
                             .suffix,
@@ -126,7 +122,8 @@
                         {
                           decimal: ".",
                           thousand: ",",
-                          precision: 2,
+                          precision:
+                            0.01 > getTrackerData.total24hVolume ? 4 : 2,
                           prefix: "$",
                           suffix: fmtNumber(getTrackerData.total24hVolume)
                             .suffix,
@@ -212,12 +209,7 @@
               type="primary"
               round
               icon="fa-solid fa-wallet"
-              style="
-                font-weight: bold;
-                background: #ffffff;
-                border: 2px solid #555cff;
-                color: #555cff;
-              "
+              style="font-weight: bold"
               >{{ " " }}My Portfolio</el-button
             ></router-link
           >
