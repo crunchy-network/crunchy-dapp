@@ -109,6 +109,12 @@ export default {
           },
         },
         crosshair: {
+          // hide the horizontal crosshair line
+          horzLine: {
+            visible: false,
+            labelVisible: false,
+          },
+          // hide the vertical crosshair label
           vertLine: {
             labelVisible: false,
           },
@@ -121,29 +127,58 @@ export default {
         lineColor: "rgba(85,92,255,1)",
         lineWidth: 2,
       });
-
-      if (this.legendTab === "price") {
-        areaSeries.applyOptions({
-          priceFormat: {
-            type: "price",
-            precision: 6,
-            minMove: 0.000001,
-          },
-        });
-      }
-
       areaSeries.setData(areaSeriesData);
-
-      chart.timeScale().fitContent();
+      const container = document.getElementById("chart");
+      function dateToString(date) {
+        var timestamp = new Date(date);
+        return `${timestamp.getMonth()} - ${timestamp.getDate()} - ${timestamp.getFullYear()}`;
+      }
+      const toolTipWidth = 80;
+      const toolTipMargin = 15;
+      const toolTipHeightSupport = 250;
+      // Create and style the tooltip html element
+      const toolTip = document.createElement("div");
+      toolTip.style = `width: 130px; height: 100px; position: absolute; display: none; padding: 8px; box-sizing: border-box; font-size: 12px; text-align: left; z-index: 1000; top: 12px; left: 12px; pointer-events: none; border: 1px solid; border-radius: 2px;font-family: "Poppins", Roboto, Ubuntu, sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;`;
+      toolTip.style.background = "white";
+      toolTip.style.color = "black";
+      toolTip.style.borderColor = "rgba( 38, 166, 154, 1)";
+      container.appendChild(toolTip);
+      // update tooltip
+      chart.subscribeCrosshairMove((param) => {
+        if (
+          param.point === undefined ||
+          !param.time ||
+          param.point.x < 0 ||
+          param.point.x > container.clientWidth ||
+          param.point.y < 0 ||
+          param.point.y > container.clientHeight
+        ) {
+          toolTip.style.display = "none";
+        } else {
+          const dateStr = dateToString(param.time);
+          toolTip.style.display = "block";
+          const price = param.seriesPrices.get(areaSeries);
+          toolTip.innerHTML = `<div style="color: ${"rgba( 38, 166, 154, 1)"}">Crunchy.</div><div style="font-size: 24px; margin: 4px 0px; color: ${"black"}">
+            $${Math.round(100 * price) / 100}
+            </div><div style="color: ${"black"}">
+            ${dateStr}
+            </div>`;
+          const y = param.point.y;
+          let left = param.point.x + toolTipMargin;
+          if (left > container.clientWidth - toolTipWidth) {
+            left = param.point.x - toolTipMargin - toolTipWidth;
+          }
+          const top = y + toolTipMargin + toolTipHeightSupport;
+          toolTip.style.left = left + "px";
+          toolTip.style.top = top + "px";
+        }
+      });
     },
-
     formatDate(date) {
       const d = new Date(date);
-
       const DD = d.toLocaleString("default", { day: "2-digit" });
       const MMM = d.toLocaleString("default", { month: "short" });
       const YY = d.getFullYear().toString().slice(-2);
-
       return MMM + " " + DD + ", " + YY;
     },
   },
