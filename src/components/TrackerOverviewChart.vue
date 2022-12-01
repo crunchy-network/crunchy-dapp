@@ -170,7 +170,7 @@ export default {
           toolTip.style.display = "block";
           const price = param.seriesPrices.get(areaSeries);
           toolTip.innerHTML = `<div style="color: ${"rgba( 38, 166, 154, 1)"}">Crunchy.</div><div style="font-size: 24px; margin: 4px 0px; color: ${"black"}">
-            $${Math.round(100 * price) / 100}
+            $${Math.round(10000 * price) / 10000}
             </div><div style="color: ${"black"}">
             ${dateStr}
             </div>`;
