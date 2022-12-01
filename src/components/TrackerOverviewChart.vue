@@ -127,6 +127,17 @@ export default {
         lineColor: "rgba(85,92,255,1)",
         lineWidth: 2,
       });
+
+      if (this.legendTab === "price") {
+        areaSeries.applyOptions({
+          priceFormat: {
+            type: "price",
+            precision: 6,
+            minMove: 0.000001,
+          },
+        });
+      }
+
       areaSeries.setData(areaSeriesData);
       const container = document.getElementById("chart");
       function dateToString(date) {

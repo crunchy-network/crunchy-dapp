@@ -47,5 +47,6 @@
   { "symbol": "SZO", "name": "ShuttleOne Token", "decimals": 6, "tokenAddress": "KT1WzRVUnrJ4mNu59m9hPQZDY8Nq9JWtUbRf" },
   { "symbol": "FEM", "name": "Fuck Elon Musk", "decimals": 0, "tokenAddress": "KT1WHhATGLXFyhmZcK9k7NWo8nw53nDiBzWQ" },
   { "symbol": "RSAL", "name": "Red Salsa", "decimals": 0, "tokenId": 0, "tokenAddress": "KT19ovJhcsUn4YU8Q5L3BGovKSixfbWcecEA" },
-  { "symbol": "TCOIN", "name": "TCOIN", "decimals": 8, "tokenAddress": "KT1GorwGk5WXLUc3sEWrmPLQBSekmYrtz1sn" }
+  { "symbol": "TCOIN", "name": "TCOIN", "decimals": 8, "tokenAddress": "KT1GorwGk5WXLUc3sEWrmPLQBSekmYrtz1sn" },
+  { "symbol": "UP", "tokenAddress": "KT1TgmD7kXQzofpuc9VbTRMdZCS2e6JDuTtc", "decimals": 0, "name": "Upsorber" }
 ]

@@ -14,6 +14,8 @@ const filterQueryBytokenId = (tokenPriceRange, tokenAddress, tokenId) => {
 
 export default {
   async getQuotes() {
+    const day = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+
     const query = `
     query MyQuery {
       quotesTotal(distinct_on: tokenId) {
@@ -21,12 +23,14 @@ export default {
         low
         tokenId
       }
-      quotes1dNogaps(distinct_on: tokenId) {
+      quotes1dNogaps(
+        where: {bucket: {_gte: "${day}"}}
+        distinct_on: tokenId
+      ) {
         volume
         tokenId
       }
     }
-
     `;
     const {
       data: {
@@ -36,39 +40,83 @@ export default {
 
     return { quotesTotal, quotes1dNogaps };
   },
-  async getQuotes15mNogaps(tokenId, startTime) {
+  async getDayBeforeVolume() {
+    const day = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    const day2 = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
+
     const query = `
-    query MyQuery($tokenId: String, $startTime: timestamptz) {
-      quotes15mNogaps(
-        order_by: {bucket: asc}
-        where: {tokenId: {_eq: $tokenId},
-                bucket: {_gt: $startTime}}
-        distinct_on: bucket
+    query MyQuery {
+      quotes1dNogaps(
+        where: {bucket: {_gte: "${day2}",  _lt: "${day}"}}
+        distinct_on: tokenId
       ) {
-          bucket
-          volume
-          xtzVolume
-          close
-        }
+        volume
+        tokenId
+      }
+    }
+    `;
+
+    const {
+      data: {
+        data: { quotes1dNogaps },
+      },
+    } = await axios.post("https://dex.dipdup.net/v1/graphql", { query });
+
+    return quotes1dNogaps;
+  },
+  async getPriceAndVolumeQuotes(tokenId) {
+    const query = `
+    query MyQuery($tokenId: String) {
+      quotes1dNogaps (
+        where: {tokenId: {_eq: $tokenId}}
+        distinct_on: bucket
+        order_by: {bucket: asc}
+      ) {
+        bucket
+        close
+        volume
+        tokenId
+      }
+      quotes1wNogaps(
+        where: {tokenId: {_eq: $tokenId}}
+        distinct_on: bucket
+        order_by: {bucket: asc}
+      ) {
+        bucket
+        close
+        tokenId
+        volume
+      }
+      quotes1mo(
+        distinct_on: bucket
+        order_by: {bucket: asc}
+        where: {tokenId: {_eq: $tokenId}}
+      ) {
+        close
+        volume
+        tokenId
+        bucket
+      }
       }
     `;
     const {
       data: {
-        data: { quotes15mNogaps },
+        data: { quotes1dNogaps, quotes1wNogaps, quotes1mo },
       },
     } = await axios.post("https://dex.dipdup.net/v1/graphql", {
       query,
-      variables: { tokenId: tokenId, startTime: startTime },
+      variables: { tokenId: tokenId },
     });
-    return quotes15mNogaps;
+    return { quotes1d: quotes1dNogaps, quotes1w: quotes1wNogaps, quotes1mo };
   },
+
   async getQuotes1dNogaps(tokenId, startTime) {
     const query = `
     query MyQuery($tokenId: String, $startTime: timestamptz) {
       quotes1dNogaps(
         order_by: {bucket: asc}
         where: {tokenId: {_eq: $tokenId},
-                bucket: {_gt: $startTime}}
+                bucket: {_gt: $startTime}}xx
         distinct_on: bucket
       ) {
           bucket
@@ -177,7 +225,8 @@ export default {
     priceFeed,
     xtzUsd,
     tokenHighAndLow,
-    tokenVolumes
+    tokenVolumes,
+    tokensVolume2DaysAgo
   ) {
     const tokenPrice = await getPrice(
       token.tokenAddress,
@@ -196,6 +245,16 @@ export default {
       token.tokenAddress,
       token.tokenId?.toString()
     );
+
+    // const tokenVolume2DaysAgo =
+    //   Number(
+    //     filterQueryBytokenId(
+    //       tokensVolume2DaysAgo,
+    //       token.tokenAddress,
+    //       token.tokenId?.toString()
+    //     ).volume
+    //   ) || 0;
+
     const element = tokenPrice;
 
     if (element) {
@@ -241,7 +300,10 @@ export default {
       element.change7Day = change7Day;
       element.change30Day = change30Day;
       element.volume1Day = Number(tokenVolume.volume) || 0;
-      // element.volume1DayChange = await getVolumeChange(historyPrice);
+
+      // element.volume1DayChange =
+      //   ((element.volume1Day - tokenVolume2DaysAgo) / tokenVolume2DaysAgo) *
+      //     100 || 0;
       element.calcSupply = calcSupply;
 
       element.allTimeHigh = Number(tokenPriceRange?.high) || 0;

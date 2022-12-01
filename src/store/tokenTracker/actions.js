@@ -23,10 +23,12 @@ export default {
         { contracts: priceFeed },
         xtzUsd,
         { quotesTotal: tokenHighAndLow, quotes1dNogaps: tokenVolumes },
+        // tokenVolumesYesterday,
       ] = await Promise.all([
         teztools.getPricefeed(),
         coingecko.getXtzUsdPrice(),
         tokenTracker.getQuotes(),
+        // tokenTracker.getDayBeforeVolume(),
       ]);
 
       const tokens = [];
@@ -38,7 +40,8 @@ export default {
           priceFeed,
           xtzUsd,
           tokenHighAndLow,
-          tokenVolumes
+          tokenVolumes,
+          // tokenVolumesYesterday
         );
 
         if (token) {
@@ -99,26 +102,26 @@ export default {
     const chartData = {};
     try {
       const [
-        allVolumeAndPrice1d,
-        volumeAndPrice1Day,
-        volumeAndPrice7Day,
-        volumeAndPrice30Day,
+        {
+          quotes1d: volumeAndPrice1Day,
+          quotes1w: volumeAndPrice7Day,
+          quotes1mo: volumeAndPrice30Day,
+        },
+        allVolumeAndPrice,
         tvl1Day,
         tvl7Day,
         tvl30Day,
         tvlAll,
       ] = await Promise.all([
+        tokenTracker.getPriceAndVolumeQuotes(tokenId),
         tokenTracker.getAllQuotes1d(tokenId),
-        tokenTracker.getQuotes15mNogaps(tokenId, YESTERDAY),
-        tokenTracker.getQuotes1dNogaps(tokenId, WEEK_AGO),
-        tokenTracker.getQuotes1dNogaps(tokenId, MONTH_AGO),
         tokenTracker.getActivity(tokenId, YESTERDAY),
         tokenTracker.getActivity(tokenId, WEEK_AGO),
         tokenTracker.getActivity(tokenId, MONTH_AGO),
         tokenTracker.getAllActivity(tokenId),
       ]);
 
-      chartData.allVolumeAndPrice = allVolumeAndPrice1d;
+      chartData.allVolumeAndPrice = allVolumeAndPrice;
       chartData.volumeAndPrice1Day = volumeAndPrice1Day;
       chartData.volumeAndPrice7Day = volumeAndPrice7Day;
       chartData.volumeAndPrice30Day = volumeAndPrice30Day;
