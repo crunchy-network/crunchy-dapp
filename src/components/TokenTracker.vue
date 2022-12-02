@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="token-tracker">
     <nav-menu></nav-menu>
 
     <el-main class="page_width">
@@ -196,7 +196,7 @@
                 <el-input
                   :value="tokenTracker.searchInput"
                   placeholder="Search tokens"
-                  prefix-icon="fad fa-search"
+                  prefix-icon="fa-solid fa-magnifying-glass"
                   @input="updateSearchInput"
                 >
                 </el-input></div

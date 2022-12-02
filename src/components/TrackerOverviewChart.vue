@@ -149,7 +149,7 @@ export default {
       const toolTipHeightSupport = 250;
       // Create and style the tooltip html element
       const toolTip = document.createElement("div");
-      toolTip.style = `width: 130px; height: 100px; position: absolute; display: none; padding: 8px; box-sizing: border-box; font-size: 12px; text-align: left; z-index: 1000; top: 12px; left: 12px; pointer-events: none; border: 1px solid; border-radius: 2px;font-family: "Poppins", Roboto, Ubuntu, sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;`;
+      toolTip.style = `min-width: 130px; max-width: max-content; height: 100px; position: absolute; display: none; padding: 8px; box-sizing: border-box; font-size: 12px; text-align: left; z-index: 1000; top: 12px; left: 12px; pointer-events: none; border: 1px solid; border-radius: 2px;font-family: "Poppins", Roboto, Ubuntu, sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;`;
       toolTip.style.background = "white";
       toolTip.style.color = "black";
       toolTip.style.borderColor = "rgba( 38, 166, 154, 1)";

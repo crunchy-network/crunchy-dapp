@@ -30,15 +30,19 @@ export default {
         volume
         tokenId
       }
+      statsTotal(distinct_on: tokenId) {
+        tokenId
+        tvl
+      }
     }
     `;
     const {
       data: {
-        data: { quotesTotal, quotes1dNogaps },
+        data: { quotesTotal, quotes1dNogaps, statsTotal },
       },
     } = await axios.post("https://dex.dipdup.net/v1/graphql", { query });
 
-    return { quotesTotal, quotes1dNogaps };
+    return { quotesTotal, quotes1dNogaps, totalTvl: statsTotal };
   },
   async getDayBeforeVolume() {
     const day = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
@@ -226,7 +230,7 @@ export default {
     xtzUsd,
     tokenHighAndLow,
     tokenVolumes,
-    tokensVolume2DaysAgo
+    totalTvl
   ) {
     const tokenPrice = await getPrice(
       token.tokenAddress,
@@ -245,6 +249,12 @@ export default {
       token.tokenAddress,
       token.tokenId?.toString()
     );
+    const tvl =
+      filterQueryBytokenId(
+        totalTvl,
+        token.tokenAddress,
+        token.tokenId?.toString()
+      ).tvl || 0;
 
     // const tokenVolume2DaysAgo =
     //   Number(
@@ -300,6 +310,7 @@ export default {
       element.change7Day = change7Day;
       element.change30Day = change30Day;
       element.volume1Day = Number(tokenVolume.volume) || 0;
+      element.tokenTvl = tvl;
 
       // element.volume1DayChange =
       //   ((element.volume1Day - tokenVolume2DaysAgo) / tokenVolume2DaysAgo) *

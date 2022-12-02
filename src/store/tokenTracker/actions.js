@@ -22,7 +22,11 @@ export default {
       const [
         { contracts: priceFeed },
         xtzUsd,
-        { quotesTotal: tokenHighAndLow, quotes1dNogaps: tokenVolumes },
+        {
+          quotesTotal: tokenHighAndLow,
+          quotes1dNogaps: tokenVolumes,
+          totalTvl,
+        },
         // tokenVolumesYesterday,
       ] = await Promise.all([
         teztools.getPricefeed(),
@@ -41,6 +45,7 @@ export default {
           xtzUsd,
           tokenHighAndLow,
           tokenVolumes,
+          totalTvl
           // tokenVolumesYesterday
         );
 

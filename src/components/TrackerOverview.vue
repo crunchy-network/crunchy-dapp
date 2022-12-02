@@ -21,12 +21,13 @@
                 align="middle"
                 style="padding: 0 20px; color: #757679"
               >
-                <el-col :span="5">Market Cap</el-col>
-                <el-col :span="5">Total Supply</el-col>
-                <el-col :span="5">Market Cap Rank</el-col>
-                <el-col :span="5">24h Trading Vol</el-col>
-                <el-col :span="5">All Time High</el-col>
-                <el-col :span="5">All Time Low</el-col>
+                <el-col :span="4">Market Cap</el-col>
+                <el-col :span="4">Total Supply</el-col>
+                <el-col :span="3">Market Cap Rank</el-col>
+                <el-col :span="4">Total Value Locked</el-col>
+                <el-col :span="3">24h Trading Vol</el-col>
+                <el-col :span="3">All Time High</el-col>
+                <el-col :span="3">All Time Low</el-col>
               </el-row>
             </el-col>
           </el-row>
@@ -43,7 +44,7 @@
                   type="flex"
                   align="middle"
                 >
-                  <el-col :span="5">
+                  <el-col :span="4">
                     {{
                       vueNumberFormat(
                         formatNumShorthand(tokenTracked.mktCap).value,
@@ -58,7 +59,7 @@
                       )
                     }}
                   </el-col>
-                  <el-col :span="5">
+                  <el-col :span="4">
                     {{
                       vueNumberFormat(
                         formatNumShorthand(tokenTracked.calcSupply).value,
@@ -73,8 +74,19 @@
                       )
                     }}</el-col
                   >
-                  <el-col style="" :span="5">{{ tokenTracked.order }}</el-col>
-                  <el-col :span="5">
+                  <el-col style="" :span="3">{{ tokenTracked.order }}</el-col>
+                  <el-col :span="4">
+                    {{
+                      vueNumberFormat(tokenTracked.tokenTvl, {
+                        prefix: "",
+                        suffix: " ꜩ",
+                        decimal: ".",
+                        thousand: ",",
+                        precision: 4,
+                      })
+                    }}
+                  </el-col>
+                  <el-col :span="3">
                     <!-- {{
                       vueNumberFormat(
                         formatNumShorthand(tokenTracked.volume1Day).value,
@@ -108,7 +120,7 @@
                     > -->
                     N/A
                   </el-col>
-                  <el-col :span="5">
+                  <el-col :span="3">
                     {{
                       vueNumberFormat(
                         formatNumShorthand(tokenTracked.allTimeHigh).value,
@@ -125,7 +137,7 @@
                       :number="tokenTracked.allTimeHigh"
                     ></number-tooltip>
                   </el-col>
-                  <el-col :span="5">
+                  <el-col :span="3">
                     {{
                       vueNumberFormat(
                         formatNumShorthand(tokenTracked.allTimeLow).value,
