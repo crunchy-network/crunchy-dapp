@@ -317,7 +317,7 @@ export default {
       // element.volume1DayChange =
       //   ((element.volume1Day - tokenVolume2DaysAgo) / tokenVolume2DaysAgo) *
       //     100 || 0;
-      element.calcSupply = calcSupply;
+      element.calcSupply = calcSupply.toNumber();
 
       element.allTimeHigh = Number(tokenPriceRange?.high) || 0;
       element.allTimeLow = Number(tokenPriceRange?.low) || 0;

@@ -40,37 +40,13 @@
             </el-col>
 
             <el-col style="text-align: right" :span="4">
-              {{
-                vueNumberFormat(formatNumShorthand(asset.usdValue).value, {
-                  prefix: "$",
-                  suffix: formatNumShorthand(asset.usdValue).suffix,
-                  decimal: ".",
-                  thousand: ",",
-                  precision: 0.01 > asset.usdValue ? 4 : 2,
-                })
-              }}<number-tooltip :number="asset.usdValue" />
+              <price-format prefix="$" :value="asset.usdValue" />
             </el-col>
             <el-col style="text-align: right" :span="4">
-              {{
-                vueNumberFormat(formatNumShorthand(asset.volume1Day).value, {
-                  prefix: "$",
-                  suffix: formatNumShorthand(asset.volume1Day).suffix,
-                  decimal: ".",
-                  thousand: ",",
-                  precision: 0.01 > asset.volume1Day ? 4 : 2,
-                })
-              }}
+              <price-format prefix="$" :value="asset.volume1Day" />
             </el-col>
             <el-col style="text-align: right" :span="4">
-              {{
-                vueNumberFormat(formatNumShorthand(asset.mktCap).value, {
-                  prefix: "$",
-                  suffix: formatNumShorthand(asset.mktCap).suffix,
-                  decimal: ".",
-                  thousand: ",",
-                  precision: 2,
-                })
-              }}
+              <price-format prefix="$" :value="asset.mktCap" />
             </el-col>
 
             <el-col
@@ -133,11 +109,11 @@
 
 <script>
 import numberFormat from "../utils/number-format";
-import NumberTooltip from "./NumberTooltip.vue";
+import PriceFormat from "./PriceFormat.vue";
 
 export default {
   name: "PortfolioWalletRow",
-  components: { NumberTooltip },
+  components: { PriceFormat },
   props: {
     asset: { type: Object, required: true },
   },

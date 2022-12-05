@@ -69,27 +69,17 @@
                   </h2>
                   <div
                     style="
-                      font-weight: 700;
-                      font-size: 24px;
                       margin-top: 14px;
                       margin-bottom: 5px;
                       margin-top: 4px;
                     "
                   >
-                    {{
-                      vueNumberFormat(
-                        fmtNumber(getTrackerData.estimatedMktCap).value,
-                        {
-                          decimal: ".",
-                          thousand: ",",
-                          precision:
-                            0.01 > getTrackerData.estimatedMktCap ? 4 : 2,
-                          prefix: "$",
-                          suffix: fmtNumber(getTrackerData.estimatedMktCap)
-                            .suffix,
-                        }
-                      )
-                    }}
+                    <price-format
+                      prefix="$"
+                      :font-weight="700"
+                      :font-size="24"
+                      :value="getTrackerData.estimatedMktCap"
+                    />
                   </div>
                 </el-card>
               </div>
@@ -109,27 +99,17 @@
                   </h2>
                   <div
                     style="
-                      font-weight: 700;
-                      font-size: 24px;
                       margin-top: 14px;
                       margin-bottom: 5px;
                       margin-top: 4px;
                     "
                   >
-                    {{
-                      vueNumberFormat(
-                        fmtNumber(getTrackerData.total24hVolume).value,
-                        {
-                          decimal: ".",
-                          thousand: ",",
-                          precision:
-                            0.01 > getTrackerData.total24hVolume ? 4 : 2,
-                          prefix: "$",
-                          suffix: fmtNumber(getTrackerData.total24hVolume)
-                            .suffix,
-                        }
-                      )
-                    }}
+                    <price-format
+                      prefix="$"
+                      :font-weight="700"
+                      :font-size="24"
+                      :value="getTrackerData.total24hVolume"
+                    />
                   </div>
                 </el-card>
               </div>
@@ -367,12 +347,14 @@ import TokenTrakerRow from "./TokenTrakerRow.vue";
 import NavMenu from "./NavMenu.vue";
 import { mapActions, mapGetters, mapState } from "vuex";
 import numberFormat from "../utils/number-format";
+import PriceFormat from "./PriceFormat.vue";
 
 export default {
   name: "TokenTracker",
   components: {
     TokenTrakerRow,
     NavMenu,
+    PriceFormat,
   },
   data() {
     return {

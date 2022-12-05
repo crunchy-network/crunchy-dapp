@@ -140,10 +140,6 @@ export default {
 
       areaSeries.setData(areaSeriesData);
       const container = document.getElementById("chart");
-      function dateToString(date) {
-        var timestamp = new Date(date);
-        return `${timestamp.getMonth()} - ${timestamp.getDate()} - ${timestamp.getFullYear()}`;
-      }
       const toolTipWidth = 80;
       const toolTipMargin = 15;
       const toolTipHeightSupport = 250;
@@ -166,10 +162,12 @@ export default {
         ) {
           toolTip.style.display = "none";
         } else {
-          const dateStr = dateToString(param.time);
+          const dateStr = this.formatDate(param.time);
           toolTip.style.display = "block";
           const price = param.seriesPrices.get(areaSeries);
-          toolTip.innerHTML = `<div style="color: ${"rgba( 38, 166, 154, 1)"}">Crunchy.</div><div style="font-size: 24px; margin: 4px 0px; color: ${"black"}">
+          toolTip.innerHTML = `<div style="color: ${"rgba( 38, 166, 154, 1)"}">${
+            this.tokenTracked.symbol || this.tokenTracked.name
+          }.</div><div style="font-size: 24px; margin: 4px 0px; color: ${"black"}">
             $${Math.round(10000 * price) / 10000}
             </div><div style="color: ${"black"}">
             ${dateStr}

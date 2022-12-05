@@ -45,45 +45,14 @@
                   align="middle"
                 >
                   <el-col :span="4">
-                    {{
-                      vueNumberFormat(
-                        formatNumShorthand(tokenTracked.mktCap).value,
-                        {
-                          prefix: "$",
-                          suffix: formatNumShorthand(tokenTracked.mktCap)
-                            .suffix,
-                          decimal: ".",
-                          thousand: ",",
-                          precision: 2,
-                        }
-                      )
-                    }}
+                    <price-format prefix="$" :value="tokenTracked.mktCap" />
                   </el-col>
                   <el-col :span="4">
-                    {{
-                      vueNumberFormat(
-                        formatNumShorthand(tokenTracked.calcSupply).value,
-                        {
-                          prefix: "",
-                          suffix: formatNumShorthand(tokenTracked.calcSupply)
-                            .suffix,
-                          decimal: ".",
-                          thousand: ",",
-                          precision: 2,
-                        }
-                      )
-                    }}</el-col
-                  >
+                    <price-format :value="tokenTracked.calcSupply" />
+                  </el-col>
                   <el-col style="" :span="3">{{ tokenTracked.order }}</el-col>
                   <el-col :span="4">
-                    {{
-                      vueNumberFormat(tokenTracked.tokenTvl, {
-                        prefix: "$",
-                        decimal: ".",
-                        thousand: ",",
-                        precision: 4,
-                      })
-                    }}
+                    <price-format prefix="$" :value="tokenTracked.tokenTvl" />
                   </el-col>
                   <el-col :span="3">
                     <!-- {{
@@ -120,38 +89,13 @@
                     N/A
                   </el-col>
                   <el-col :span="3">
-                    {{
-                      vueNumberFormat(
-                        formatNumShorthand(tokenTracked.allTimeHigh).value,
-                        {
-                          prefix: "$",
-                          suffix: formatNumShorthand(tokenTracked.allTimeHigh)
-                            .suffix,
-                          decimal: ".",
-                          thousand: ",",
-                          precision: 0.01 > tokenTracked.allTimeHigh ? 4 : 2,
-                        }
-                      )
-                    }}<number-tooltip
-                      :number="tokenTracked.allTimeHigh"
-                    ></number-tooltip>
+                    <price-format
+                      prefix="$"
+                      :value="tokenTracked.allTimeHigh"
+                    />
                   </el-col>
                   <el-col :span="3">
-                    {{
-                      vueNumberFormat(
-                        formatNumShorthand(tokenTracked.allTimeLow).value,
-                        {
-                          prefix: "$",
-                          suffix: formatNumShorthand(tokenTracked.allTimeLow)
-                            .suffix,
-                          decimal: ".",
-                          thousand: ",",
-                          precision: 0.01 > tokenTracked.allTimeLow ? 4 : 2,
-                        }
-                      )
-                    }}<number-tooltip
-                      :number="tokenTracked.allTimeLow"
-                    ></number-tooltip>
+                    <price-format prefix="$" :value="tokenTracked.allTimeLow" />
                   </el-col>
                 </el-row>
               </div>
@@ -238,11 +182,11 @@
 
 <script>
 import numberFormat from "../utils/number-format";
-import NumberTooltip from "./NumberTooltip.vue";
 import TrackerOverviewChart from "./TrackerOverviewChart.vue";
 import { mapGetters } from "vuex";
+import PriceFormat from './PriceFormat.vue';
 export default {
-  components: { TrackerOverviewChart, NumberTooltip },
+  components: { TrackerOverviewChart, PriceFormat },
 
   props: {
     duration: {

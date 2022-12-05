@@ -67,39 +67,35 @@
               }})
             </a>
           </el-row>
-          <h2 style="font-weight: 600; font-size: 40px; line-height: 19px">
-            {{
-              getLoading
-                ? "-"
-                : vueNumberFormat(
-                    formatNumShorthand(getTokenOverview.usdValue).value,
-                    {
-                      prefix: "$",
-                      suffix: formatNumShorthand(getTokenOverview.usdValue)
-                        .suffix,
-                      decimal: ".",
-                      thousand: ",",
-                      precision: 0.01 > getTokenOverview.usdValue ? 4 : 2,
-                    }
-                  )
-            }}<number-tooltip :number="getTokenOverview.usdValue" />
-            <span
-              style="font-weight: 600; font-size: 24px"
-              :class="getTokenOverview.change1Day < 0 ? 'n-change' : 'p-change'"
+
+          <div style="margin: 18px 0 30px">
+            <price-format
+              v-if="!getLoading"
+              prefix="$"
+              :font-size="40"
+              :line-height="'19px'"
+              :value="getTokenOverview.usdValue"
             >
-              {{
-                getLoading
-                  ? "-"
-                  : vueNumberFormat(getTokenOverview.change1Day, {
-                      prefix: "",
-                      suffix: "%",
-                      decimal: ".",
-                      thousand: ",",
-                      precision: 0.01 > getTokenOverview.change1Day ? 4 : 2,
-                    })
-              }}
-            </span>
-          </h2>
+              <span
+                style="font-weight: 600; font-size: 24px"
+                :class="
+                  getTokenOverview.change1Day < 0 ? 'n-change' : 'p-change'
+                "
+              >
+                {{
+                  getLoading
+                    ? "-"
+                    : vueNumberFormat(getTokenOverview.change1Day, {
+                        prefix: "",
+                        suffix: "%",
+                        decimal: ".",
+                        thousand: ",",
+                        precision: 2,
+                      })
+                }}
+              </span>
+            </price-format>
+          </div>
         </div>
 
         <div>
@@ -152,9 +148,9 @@ import TrackerOverview from "./TrackerOverview.vue";
 import TrackerMarkets from "./TrackerMarkets.vue";
 import { mapActions, mapGetters, mapState } from "vuex";
 import numberFormat from "../utils/number-format";
-import NumberTooltip from "./NumberTooltip.vue";
+import PriceFormat from "./PriceFormat.vue";
 export default {
-  components: { NavMenu, TrackerOverview, TrackerMarkets, NumberTooltip },
+  components: { NavMenu, TrackerOverview, TrackerMarkets, PriceFormat },
   data() {
     return {
       activeTab: "overview",

@@ -74,24 +74,12 @@
                     <el-col style="text-align: right" :span="5">{{
                       item.symbols
                     }}</el-col>
-                    <el-col style="text-align: right" :span="5"
-                      >{{
-                        vueNumberFormat(item.lpPrice, {
-                          prefix: "$",
-                          decimal: ".",
-                          thousand: ",",
-                          precision: 0.01 > item.lpPrice ? 4 : 2,
-                        })
-                      }}<number-tooltip :number="item.lpPrice" />
+                    <el-col style="text-align: right" :span="5">
+                      <price-format prefix="$" :value="item.lpPrice" />
                     </el-col>
-                    <el-col style="text-align: right" :span="5">{{
-                      vueNumberFormat(item.volume, {
-                        prefix: "$",
-                        decimal: ".",
-                        thousand: ",",
-                        precision: 0.01 > item.volume ? 4 : 2,
-                      })
-                    }}</el-col>
+                    <el-col style="text-align: right" :span="5">
+                      <price-format prefix="$" :value="item.volume" />
+                    </el-col>
                   </el-row>
                 </div>
               </el-col>
@@ -104,11 +92,8 @@
 </template>
 
 <script>
-import NumberTooltip from "./NumberTooltip.vue";
-
 export default {
   name: "TrackerMarkets",
-  components: { NumberTooltip },
   props: {
     markets: {
       type: Array,

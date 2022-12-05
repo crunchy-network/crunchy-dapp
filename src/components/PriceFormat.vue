@@ -1,20 +1,19 @@
 <template>
-  <div>
-    <h2
-      :style="`font-weight: ${fontWeight}; font-size: ${handleFontSize()}px; line-height: ${lineHeight}; color: ${color};`"
-    >
-      {{
-        vueNumberFormat(shortHand ? numShorthand().value : value, {
-          prefix: prefix,
-          suffix: suffix || shortHand ? numShorthand().suffix : "",
-          decimal: ".",
-          thousand: ",",
-          precision: handlePrecision(),
-        })
-      }}
-    </h2>
+  <h2
+    :style="`font-weight: ${fontWeight} !important; font-size: ${handleFontSize()}px !important; line-height: ${lineHeight}; color: ${color};`"
+  >
+    {{
+      vueNumberFormat(shortHand ? numShorthand().value : value, {
+        prefix: prefix,
+        suffix: suffix || shortHand ? numShorthand().suffix : "",
+        decimal: ".",
+        thousand: ",",
+        precision: handlePrecision(),
+      })
+    }}
     <number-tooltip :number="value" :dp="0.00000001"></number-tooltip>
-  </div>
+    <slot />
+  </h2>
 </template>
 
 <script>
@@ -39,15 +38,15 @@ export default {
     },
     fontSize: {
       type: Number,
-      default: 16,
+      default: 14,
     },
     fontWeight: {
       type: Number,
       default: 600,
     },
     lineHeight: {
-      type: Number,
-      default: 19,
+      type: String,
+      default: "unset",
     },
     color: {
       type: String,
@@ -59,28 +58,26 @@ export default {
     },
   },
 
+  mounted() {
+    console.log(this.value);
+  },
+
   methods: {
     handlePrecision() {
       let precision = 2;
-      switch (this.vlue) {
-        case this.value < 0.001 && this.value > 0:
-          precision = 4;
-          break;
-        case this.value < 0.00001 && this.value > 0:
-          precision = 6;
-          break;
-        case this.value < 0.000001 && this.value > 0:
-          precision = 8;
-          break;
-        case this.value < 0.0000001 && this.value > 0:
-          precision = 10;
-          break;
-        case this.value < 0.00000001 && this.value > 0:
-          precision = 12;
-          break;
-        default:
-          precision = 2;
-          break;
+
+      if (this.value < 0.0000000001 && this.value > 0) {
+        precision = 12;
+      } else if (this.value < 0.00000001 && this.value > 0) {
+        precision = 10;
+      } else if (this.value < 0.000001 && this.value > 0) {
+        precision = 8;
+      } else if (this.value < 0.0001 && this.value > 0) {
+        precision = 6;
+      } else if (this.value < 0.001 && this.value > 0) {
+        precision = 4;
+      } else {
+        precision = 2;
       }
 
       return precision;
@@ -97,4 +94,8 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+h2 {
+  margin: 0;
+}
+</style>
