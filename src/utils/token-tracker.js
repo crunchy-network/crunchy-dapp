@@ -32,7 +32,7 @@ export default {
       }
       statsTotal(distinct_on: tokenId) {
         tokenId
-        tvl
+        tvlUsd
       }
     }
     `;
@@ -250,11 +250,13 @@ export default {
       token.tokenId?.toString()
     );
     const tvl =
-      filterQueryBytokenId(
-        totalTvl,
-        token.tokenAddress,
-        token.tokenId?.toString()
-      ).tvl || 0;
+      Number(
+        filterQueryBytokenId(
+          totalTvl,
+          token.tokenAddress,
+          token.tokenId?.toString()
+        ).tvlUsd
+      ) || 0;
 
     // const tokenVolume2DaysAgo =
     //   Number(

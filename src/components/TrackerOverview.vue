@@ -78,8 +78,7 @@
                   <el-col :span="4">
                     {{
                       vueNumberFormat(tokenTracked.tokenTvl, {
-                        prefix: "",
-                        suffix: " ꜩ",
+                        prefix: "$",
                         decimal: ".",
                         thousand: ",",
                         precision: 4,
