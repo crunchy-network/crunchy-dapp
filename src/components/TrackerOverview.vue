@@ -15,19 +15,22 @@
             "
           >
             <el-col :span="24">
-              <el-row
-                :gutter="20"
-                type="flex"
-                align="middle"
-                style="padding: 0 20px; color: #757679"
-              >
-                <el-col :span="4">Market Cap</el-col>
-                <el-col :span="4">Total Supply</el-col>
-                <el-col :span="3">Market Cap Rank</el-col>
-                <el-col :span="4">Total Value Locked</el-col>
-                <el-col :span="3">24h Trading Vol</el-col>
-                <el-col :span="3">All Time High</el-col>
-                <el-col :span="3">All Time Low</el-col>
+              <el-row align="middle" style="padding: 0 20px; color: #757679">
+                <div
+                  style="
+                    display: grid;
+                    grid-template-columns: repeat(7, 1fr);
+                    gap: 10px;
+                  "
+                >
+                  <el-col>Market Cap</el-col>
+                  <el-col>Total Supply</el-col>
+                  <el-col>Market Cap Rank</el-col>
+                  <el-col>Total Value Locked</el-col>
+                  <el-col>24h Trading Vol</el-col>
+                  <el-col>All Time High</el-col>
+                  <el-col>All Time Low</el-col>
+                </div>
               </el-row>
             </el-col>
           </el-row>
@@ -39,22 +42,26 @@
             <el-col :span="24">
               <div class="item-row">
                 <el-row
-                  :gutter="20"
                   class="farm-row"
                   type="flex"
                   align="middle"
+                  style="
+                    display: grid;
+                    grid-template-columns: repeat(7, 1fr);
+                    gap: 10px;
+                  "
                 >
-                  <el-col :span="4">
+                  <el-col>
                     <price-format prefix="$" :value="tokenTracked.mktCap" />
                   </el-col>
-                  <el-col :span="4">
+                  <el-col>
                     <price-format :value="tokenTracked.calcSupply" />
                   </el-col>
-                  <el-col style="" :span="3">{{ tokenTracked.order }}</el-col>
-                  <el-col :span="4">
+                  <el-col>{{ tokenTracked.order }}</el-col>
+                  <el-col>
                     <price-format prefix="$" :value="tokenTracked.tokenTvl" />
                   </el-col>
-                  <el-col :span="3">
+                  <el-col>
                     <!-- {{
                       vueNumberFormat(
                         formatNumShorthand(tokenTracked.volume1Day).value,
@@ -88,13 +95,13 @@
                     > -->
                     N/A
                   </el-col>
-                  <el-col :span="3">
+                  <el-col>
                     <price-format
                       prefix="$"
                       :value="tokenTracked.allTimeHigh"
                     />
                   </el-col>
-                  <el-col :span="3">
+                  <el-col>
                     <price-format prefix="$" :value="tokenTracked.allTimeLow" />
                   </el-col>
                 </el-row>
@@ -184,7 +191,7 @@
 import numberFormat from "../utils/number-format";
 import TrackerOverviewChart from "./TrackerOverviewChart.vue";
 import { mapGetters } from "vuex";
-import PriceFormat from './PriceFormat.vue';
+import PriceFormat from "./PriceFormat.vue";
 export default {
   components: { TrackerOverviewChart, PriceFormat },
 

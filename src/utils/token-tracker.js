@@ -4,6 +4,34 @@ import { getPrice } from "./home-wallet";
 import ipfs from "./ipfs";
 import teztools from "./teztools";
 
+const twentyFourHrs = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+const fourtyEightHrs = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
+
+async function getExchange24HrsVolume(exchangeId) {
+  const query = `
+  query MyQuery {
+    quotes1dNogaps(
+      where: {exchangeId: {_eq: "${exchangeId}"}, bucket: {_gte: "${twentyFourHrs}"}}
+    ) {
+      exchangeId
+      xtzVolume
+      bucket
+    }
+  }
+  
+  `;
+
+  const {
+    data: {
+      data: { quotes1dNogaps },
+    },
+  } = await axios.post("https://dex.dipdup.net/v1/graphql", {
+    query,
+  });
+
+  return quotes1dNogaps;
+}
+
 const filterQueryBytokenId = (tokenPriceRange, tokenAddress, tokenId) => {
   const value = tokenPriceRange?.filter(
     (val) => val.tokenId === `${tokenAddress}_${tokenId || 0}`
@@ -14,8 +42,6 @@ const filterQueryBytokenId = (tokenPriceRange, tokenAddress, tokenId) => {
 
 export default {
   async getQuotes() {
-    const day = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-
     const query = `
     query MyQuery {
       quotesTotal(distinct_on: tokenId) {
@@ -24,7 +50,7 @@ export default {
         tokenId
       }
       quotes1dNogaps(
-        where: {bucket: {_gte: "${day}"}}
+        where: {bucket: {_gte: "${twentyFourHrs}"}}
         distinct_on: tokenId
       ) {
         volume
@@ -45,13 +71,10 @@ export default {
     return { quotesTotal, quotes1dNogaps, totalTvl: statsTotal };
   },
   async getDayBeforeVolume() {
-    const day = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-    const day2 = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
-
     const query = `
     query MyQuery {
       quotes1dNogaps(
-        where: {bucket: {_gte: "${day2}",  _lt: "${day}"}}
+        where: {bucket: {_gte: "${fourtyEightHrs}",  _lt: "${twentyFourHrs}"}}
         distinct_on: tokenId
       ) {
         volume
@@ -120,7 +143,7 @@ export default {
       quotes1dNogaps(
         order_by: {bucket: asc}
         where: {tokenId: {_eq: $tokenId},
-                bucket: {_gt: $startTime}}xx
+                bucket: {_gt: $startTime}}
         distinct_on: bucket
       ) {
           bucket
@@ -140,6 +163,7 @@ export default {
     });
     return quotes1dNogaps;
   },
+
   async getAllQuotes1d(tokenId) {
     const query = `
     query MyQuery($tokenId: String) {
@@ -165,6 +189,7 @@ export default {
     });
     return quotes1dNogaps;
   },
+
   async getActivity(tokenId, startTime) {
     const query = `
     query MyQuery($tokenId: String, $startTime: timestamptz) {
@@ -222,6 +247,23 @@ export default {
     const { contracts: tokens } = await teztools.getPricefeed();
 
     return { ...tokens };
+  },
+
+  async calcExchangeVolume(token, xtzUsd) {
+    token?.pairs?.forEach(async (pair, index) => {
+      const volume = await getExchange24HrsVolume(pair.address);
+      console.log("volume", volume);
+      token.pairs[index].volume24 =
+        volume?.reduce((prev, current) => {
+          return prev + Number(current.xtzVolume);
+        }, 0) * xtzUsd || 0;
+    });
+
+    console.log("\n\n------ begin:  ------");
+    console.log(token);
+    console.log("------ end:  ------\n\n");
+
+    return token;
   },
 
   async calculateTokenData(

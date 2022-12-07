@@ -61,11 +61,7 @@ export default {
       console.log(error);
     } finally {
       if (id) {
-        const token = state.tokensTracked[id];
-        if (token) {
-          commit("updateTokenOverview", token || {});
-          dispatch("fetchChartData", token.id);
-        }
+        dispatch("updateChartAndOverview", id);
       }
       commit("updateLoading", false);
     }
@@ -89,16 +85,22 @@ export default {
       if (state.tokenList.length < 1) {
         dispatch("_setTokenTracked", id);
       } else {
-        const token = state.tokensTracked[id];
-        if (token) {
-          commit("updateTokenOverview", token || {});
-          dispatch("fetchChartData", token.id);
-        }
+        dispatch("updateChartAndOverview", id);
       }
     } catch (error) {
       console.log(error);
     } finally {
       commit("updateLoadingOverview", false);
+    }
+  },
+
+  async updateChartAndOverview({ commit, dispatch, state }, id) {
+    const xtzUsd = await coingecko.getXtzUsdPrice();
+    const token = state.tokensTracked[id];
+    if (token) {
+      const updatedToken = await tokenTracker.calcExchangeVolume(token, xtzUsd);
+      commit("updateTokenOverview", updatedToken || {});
+      dispatch("fetchChartData", token.id);
     }
   },
 

@@ -313,5 +313,13 @@
     "name": "CryptoEasy"
   },
   { "symbol": "wWETH", "tokenAddress": "KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ", "tokenId": 20, "decimals": 18, "name": "Wrapped WETH" },
-  { "symbol": "wBUSD", "tokenAddress": "KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ", "tokenId": 1, "decimals": 18, "name": "Wrapped BUSD" }
+  { "symbol": "wBUSD", "tokenAddress": "KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ", "tokenId": 1, "decimals": 18, "name": "Wrapped BUSD" },
+  {
+    "symbol": "GIF",
+    "tokenAddress": "KT1XTxpQvo7oRCqp85LikEZgAZ22uDxhbWJv",
+    "tokenId": 0,
+    "decimals": 9,
+    "description": "Governance token of the gif.games ecosystem",
+    "name": "GIF DAO"
+  }
 ]

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="number < dp" style="display: inline">
+  <div v-if="number < dp && number === 0" style="display: inline">
     <el-tooltip :content="`${number}`" placement="top"
       ><i style="font-size: 12px" class="el-icon-info"></i>
     </el-tooltip>

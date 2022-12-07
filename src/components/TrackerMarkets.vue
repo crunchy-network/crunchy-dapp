@@ -78,7 +78,7 @@
                       <price-format prefix="$" :value="item.lpPrice" />
                     </el-col>
                     <el-col style="text-align: right" :span="5">
-                      <price-format prefix="$" :value="item.volume" />
+                      <price-format prefix="$" :value="item.volume24" />
                     </el-col>
                   </el-row>
                 </div>
@@ -92,8 +92,10 @@
 </template>
 
 <script>
+import PriceFormat from "./PriceFormat.vue";
 export default {
   name: "TrackerMarkets",
+  components: { PriceFormat },
   props: {
     markets: {
       type: Array,

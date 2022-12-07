@@ -1,5 +1,7 @@
 <template>
-  <div id="chart"></div>
+  <div id="token-tracker">
+    <div id="chart"></div>
+  </div>
 </template>
 
 <script>
@@ -132,8 +134,8 @@ export default {
         areaSeries.applyOptions({
           priceFormat: {
             type: "price",
-            precision: 6,
-            minMove: 0.000001,
+            // precision: 6,
+            // minMove: 0.000001,
           },
         });
       }
@@ -145,7 +147,7 @@ export default {
       const toolTipHeightSupport = 250;
       // Create and style the tooltip html element
       const toolTip = document.createElement("div");
-      toolTip.style = `min-width: 130px; max-width: max-content; height: 100px; position: absolute; display: none; padding: 8px; box-sizing: border-box; font-size: 12px; text-align: left; z-index: 1000; top: 12px; left: 12px; pointer-events: none; border: 1px solid; border-radius: 2px;font-family: "Poppins", Roboto, Ubuntu, sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;`;
+      toolTip.id = "token-chart-tooltip";
       toolTip.style.background = "white";
       toolTip.style.color = "black";
       toolTip.style.borderColor = "rgba( 38, 166, 154, 1)";
@@ -168,7 +170,7 @@ export default {
           toolTip.innerHTML = `<div style="color: ${"rgba( 38, 166, 154, 1)"}">${
             this.tokenTracked.symbol || this.tokenTracked.name
           }.</div><div style="font-size: 24px; margin: 4px 0px; color: ${"black"}">
-            $${Math.round(10000 * price) / 10000}
+            $${Number(price).toFixed(this.handlePrecision(price))}
             </div><div style="color: ${"black"}">
             ${dateStr}
             </div>`;
@@ -190,15 +192,55 @@ export default {
       const YY = d.getFullYear().toString().slice(-2);
       return MMM + " " + DD + ", " + YY;
     },
+
+    handlePrecision(value) {
+      let precision = 2;
+      if (value < 0.0000000001 && value > 0) {
+        precision = 12;
+      } else if (value < 0.00000001 && value > 0) {
+        precision = 10;
+      } else if (value < 0.000001 && value > 0) {
+        precision = 8;
+      } else if (value < 0.0001 && value > 0) {
+        precision = 6;
+      } else if (value < 0.001 && value > 0) {
+        precision = 4;
+      } else {
+        precision = 2;
+      }
+
+      return precision;
+    },
   },
 };
 </script>
 
-<style scoped>
-#chart {
+<style>
+#token-tracker #chart {
   width: 100%;
   height: 500px;
   display: flex;
   justify-content: flex-start;
+}
+
+#token-tracker #token-chart-tooltip {
+  min-width: 130px;
+  max-width: max-content;
+  height: 100px;
+  position: absolute;
+  display: none;
+  padding: 8px;
+  box-sizing: border-box;
+  font-size: 12px;
+  text-align: left;
+  z-index: 1000;
+  top: 12px;
+  left: 12px;
+  pointer-events: none;
+  border: 1px solid;
+  border-radius: 4px;
+  font-family: "Poppins", Roboto, Ubuntu, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 </style>
