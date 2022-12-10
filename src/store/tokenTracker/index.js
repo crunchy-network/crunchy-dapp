@@ -29,7 +29,7 @@ export default {
         tokensTracked: state.tokenList.length,
         dexCovered: 3,
         total24hVolume: state.tokenList.reduce((prev, current) => {
-          return prev + current.volume1Day;
+          return prev + current.volume24;
         }, 0),
         estimatedMktCap: state.tokenList.reduce((prev, current) => {
           return prev + current.mktCap;

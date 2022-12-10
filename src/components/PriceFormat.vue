@@ -58,10 +58,6 @@ export default {
     },
   },
 
-  mounted() {
-    console.log(this.value);
-  },
-
   methods: {
     handlePrecision() {
       let precision = 2;

@@ -40,6 +40,27 @@ const filterQueryBytokenId = (tokenPriceRange, tokenAddress, tokenId) => {
   return value.length > 0 ? value[0] : { high: 0, low: 0 };
 };
 
+async function queryTokenXtzVolume(tokenId) {
+  const query = `
+  query MyQuery {
+    trade(where: {tokenId: {_eq: "${tokenId}"}, timestamp: {_gte: "${twentyFourHrs}"}}) {
+      tezQty
+      timestamp
+      tokenId
+    }
+  }`;
+
+  const {
+    data: {
+      data: { trade },
+    },
+  } = await axios.post("https://dex.dipdup.net/v1/graphql", {
+    query,
+  });
+
+  return trade;
+}
+
 export default {
   async getQuotes() {
     const query = `
@@ -91,6 +112,7 @@ export default {
 
     return quotes1dNogaps;
   },
+
   async getPriceAndVolumeQuotes(tokenId) {
     const query = `
     query MyQuery($tokenId: String) {
@@ -259,11 +281,18 @@ export default {
         }, 0) * xtzUsd || 0;
     });
 
-    console.log("\n\n------ begin:  ------");
-    console.log(token);
-    console.log("------ end:  ------\n\n");
-
     return token;
+  },
+
+  async calcTokenVolume(tokenId, xtzUsd) {
+    const volumes = await queryTokenXtzVolume(tokenId);
+    const volume = volumes?.reduce((prev, current) => {
+      return prev + Number(current.tezQty);
+    }, 0);
+
+    const volume24 = volume * xtzUsd || 0;
+
+    return volume24;
   },
 
   async calculateTokenData(
@@ -271,7 +300,6 @@ export default {
     priceFeed,
     xtzUsd,
     tokenHighAndLow,
-    tokenVolumes,
     totalTvl
   ) {
     const tokenPrice = await getPrice(
@@ -286,11 +314,6 @@ export default {
       token.tokenId?.toString()
     );
 
-    const tokenVolume = filterQueryBytokenId(
-      tokenVolumes,
-      token.tokenAddress,
-      token.tokenId?.toString()
-    );
     const tvl =
       Number(
         filterQueryBytokenId(
@@ -353,7 +376,8 @@ export default {
       element.change1Day = change1Day;
       element.change7Day = change7Day;
       element.change30Day = change30Day;
-      element.volume1Day = Number(tokenVolume.volume) || 0;
+      element.volume24 = 0;
+
       element.tokenTvl = tvl;
 
       // element.volume1DayChange =

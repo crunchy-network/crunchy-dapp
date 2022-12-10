@@ -64,6 +64,7 @@ export default {
         dispatch("updateChartAndOverview", id);
       }
       commit("updateLoading", false);
+      dispatch("softCalcTokensData");
     }
   },
 
@@ -72,9 +73,22 @@ export default {
     for (let index = 0; index < orderedTokens.length; index++) {
       const token = orderedTokens[index];
       token.order = index + 1;
+      token.softCalcDone = false;
       // orderedTokens[index].order = index + 1;
       commit("updateTokenTracked", token);
       commit("updateTokenList", token);
+    }
+  },
+
+  async softCalcTokensData({ commit, state }) {
+    const xtzUsd = await coingecko.getXtzUsdPrice();
+    const tokens = state.tokenList;
+    for (let index = 0; index < tokens.length; index++) {
+      const token = tokens[index];
+      token.volume24 = await tokenTracker.calcTokenVolume(token.id, xtzUsd);
+      token.softCalcDone = true;
+      commit("updateTokenListIndex", { index, token });
+      commit("updateTokenTracked", token);
     }
   },
 

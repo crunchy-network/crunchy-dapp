@@ -134,8 +134,8 @@ export default {
         areaSeries.applyOptions({
           priceFormat: {
             type: "price",
-            // precision: 6,
-            // minMove: 0.000001,
+            precision: 6,
+            minMove: 0.000001,
           },
         });
       }

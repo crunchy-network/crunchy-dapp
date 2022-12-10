@@ -43,7 +43,12 @@
               <price-format prefix="$" :value="asset.usdValue" />
             </el-col>
             <el-col style="text-align: right" :span="4">
-              <price-format prefix="$" :value="asset.volume1Day" />
+              <price-format
+                v-if="asset.softCalcDone"
+                prefix="$"
+                :value="asset.volume24"
+              />
+              <span v-else> - </span>
             </el-col>
             <el-col style="text-align: right" :span="4">
               <price-format prefix="$" :value="asset.mktCap" />

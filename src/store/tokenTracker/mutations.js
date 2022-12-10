@@ -14,9 +14,14 @@ export default {
     state.tokenList.push(payload);
   },
 
+  updateTokenListIndex(state, payload) {
+    state.tokenList[payload.index] = payload.token;
+  },
+
   setTokenList(state, payload) {
     state.tokenList = payload;
   },
+
 
   updateTokenOrder(state, payload) {
     state.tokensOrder = payload;
