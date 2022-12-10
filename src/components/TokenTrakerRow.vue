@@ -40,18 +40,19 @@
             </el-col>
 
             <el-col style="text-align: right" :span="4">
-              <price-format prefix="$" :value="asset.usdValue" />
+              <price-format prefix="$" :precision="4" :value="asset.usdValue" />
             </el-col>
             <el-col style="text-align: right" :span="4">
               <price-format
                 v-if="asset.softCalcDone"
                 prefix="$"
+                :precision="4"
                 :value="asset.volume24"
               />
               <span v-else> - </span>
             </el-col>
             <el-col style="text-align: right" :span="4">
-              <price-format prefix="$" :value="asset.mktCap" />
+              <price-format :precision="4" prefix="$" :value="asset.mktCap" />
             </el-col>
 
             <el-col

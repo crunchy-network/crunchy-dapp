@@ -52,16 +52,32 @@
                   "
                 >
                   <el-col>
-                    <price-format prefix="$" :value="tokenTracked.mktCap" />
+                    <price-format
+                      :precision="4"
+                      prefix="$"
+                      :value="tokenTracked.mktCap"
+                    />
                   </el-col>
                   <el-col>
-                    <price-format :value="tokenTracked.calcSupply" />
+                    <price-format
+                      :precision="4"
+                      :value="tokenTracked.calcSupply"
+                    />
                   </el-col>
                   <el-col>{{ tokenTracked.order }}</el-col>
                   <el-col>
-                    <price-format prefix="$" :value="tokenTracked.tokenTvl" />
+                    <price-format
+                      :precision="4"
+                      prefix="$"
+                      :value="tokenTracked.tokenTvl"
+                    />
                   </el-col>
                   <el-col>
+                    <price-format
+                      :precision="4"
+                      prefix="$"
+                      :value="tokenTracked.volume24"
+                    />
                     <!-- {{
                       vueNumberFormat(
                         formatNumShorthand(tokenTracked.volume1Day).value,
@@ -93,16 +109,20 @@
                         })
                       }}</span
                     > -->
-                    N/A
                   </el-col>
                   <el-col>
                     <price-format
                       prefix="$"
                       :value="tokenTracked.allTimeHigh"
+                      :precision="4"
                     />
                   </el-col>
                   <el-col>
-                    <price-format prefix="$" :value="tokenTracked.allTimeLow" />
+                    <price-format
+                      prefix="$"
+                      :value="tokenTracked.allTimeLow"
+                      :precision="4"
+                    />
                   </el-col>
                 </el-row>
               </div>
