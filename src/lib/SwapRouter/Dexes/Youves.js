@@ -6,16 +6,17 @@ const {
 } = require("../utils");
 const { getFlatCfmmOutput } = require("../SwapRates/flat-cfmm");
 const { addTokenApprovalOperators } = require("../TokenTypes");
+const config = require("./../config");
 
 const DEX_FEE = 0.15;
-const CASH_TOKENS = ["kUSD", "WUSDC", "tzBTC", "USDTz", "USDt"];
+
 const getSwapOutput = (input, pair) => {
   const inputAfterFee = input * percentToDecimal(DEX_FEE);
   return getFlatCfmmOutput(inputAfterFee, pair);
 };
 
 const isCash = (token) => {
-  return CASH_TOKENS.includes(token.tokenSymbol);
+  return config.dexes.youves.cashTokens.includes(token.tokenSymbol);
 };
 
 const cashToToken = async (dex, trade, walletAddress, tezos) => {

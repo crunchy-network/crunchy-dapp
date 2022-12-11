@@ -6,7 +6,7 @@ module.exports = {
   },
   dexes: {
     youves: {
-      cashTokens: [ "kUSD", "WUSDC", "tzBTC", "USDTz", "USDt" ],
+      cashTokens: [ "kUSD", "wUSDC", "tzBTC", "USDtz", "USDt" ],
     },
     spicy: {
       dexRouter: "KT1PwoZxyv4XkPEGnTqWYvjA1UYiPTgAGyqL",
