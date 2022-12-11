@@ -19,6 +19,7 @@
     "@tezos-domains/taquito-client": "^1.17.1",
     "axios": "^0.21.1",
     "bignumber.js": "^9.0.1",
+    "change-case": "^4.1.2",
     "core-js": "^3.6.5",
     "countup.js": "^2.0.7",
     "deepmerge": "^4.2.2",

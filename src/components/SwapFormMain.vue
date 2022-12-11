@@ -164,7 +164,7 @@
       >
         <i class="el-icon-loading"> </i>
         <div class="tooltiptext" data-html="true">
-          <span v-for="api in getToolTipContent" :key="api"> {{ api }}</span>
+          <span>Loading Data</span>
         </div>
       </div>
     </div>
@@ -214,15 +214,6 @@ export default {
     ]),
     areApisLoading() {
       return this.getApiLoadingStatus.some((a) => a.loading);
-    },
-    getToolTipContent() {
-      const toRet = ["Loading Data"];
-      this.getApiLoadingStatus
-        .filter((a) => a.loading)
-        .forEach((a) => {
-          toRet.push(a.api);
-        });
-      return toRet;
     },
     isLoading() {
       if (this.getSwapForm.inputToken === {}) {

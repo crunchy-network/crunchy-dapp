@@ -63,7 +63,7 @@ const calculateRate = (
     return {
       tokenOut,
     };
-  } else if (tokenIn === "tez") {
+  } else if (tokenIn === "XTZ") {
     const dy =
       newtonDxToDy(
         tezSupply * 2 ** 48,
@@ -80,7 +80,6 @@ const calculateRate = (
       tokenOut,
     };
   }
-  console.log("whoops", tokenIn);
 };
 
 module.exports = {
