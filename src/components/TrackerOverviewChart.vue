@@ -70,7 +70,8 @@ export default {
         return {
           time:
             this.legendTab === "tvl"
-              ? Math.floor(new Date(element.timestamp).getTime()) || Math.floor(new Date(element.bucket).getTime())
+              ? Math.floor(new Date(element.timestamp).getTime()) ||
+                Math.floor(new Date(element.bucket).getTime())
               : Math.floor(new Date(element.bucket).getTime()),
           value:
             this.legendTab === "price"
