@@ -70,13 +70,7 @@ export default {
         low
         tokenId
       }
-      quotes1dNogaps(
-        where: {bucket: {_gte: "${twentyFourHrs}"}}
-        distinct_on: tokenId
-      ) {
-        volume
-        tokenId
-      }
+     
       statsTotal(distinct_on: tokenId) {
         tokenId
         tvlUsd
@@ -85,11 +79,11 @@ export default {
     `;
     const {
       data: {
-        data: { quotesTotal, quotes1dNogaps, statsTotal },
+        data: { quotesTotal, statsTotal },
       },
     } = await axios.post("https://dex.dipdup.net/v1/graphql", { query });
 
-    return { quotesTotal, quotes1dNogaps, totalTvl: statsTotal };
+    return { quotesTotal, totalTvl: statsTotal };
   },
   async getDayBeforeVolume() {
     const query = `
@@ -124,6 +118,7 @@ export default {
         bucket
         close
         volume
+        xtzVolume
         tokenId
       }
       quotes1wNogaps(
@@ -134,6 +129,7 @@ export default {
         bucket
         close
         tokenId
+        xtzVolume
         volume
       }
       quotes1mo(
@@ -144,6 +140,7 @@ export default {
         close
         volume
         tokenId
+        xtzVolume
         bucket
       }
       }
@@ -265,6 +262,47 @@ export default {
     return activity;
   },
 
+  async getChartTvl(tokenId, exchangeId) {
+    const query = `
+    query MyQuery($tokenId: String) {
+      stats1d(
+        where: {exchangeId: {_eq: "${exchangeId}"}}
+        distinct_on: bucket
+      ) {
+        bucket
+        tvlUsd
+        exchangeId
+      }
+      stats1mo(where: {tokenId: {_eq: $tokenId }}, distinct_on: bucket) {
+        bucket
+        tvlUsd
+        tokenId
+      }
+      stats1w(distinct_on: bucket, where: {tokenId: {_eq: $tokenId }}) {
+        bucket
+        tokenId
+        tvlUsd
+      }
+    }
+    `;
+
+    const {
+      data: {
+        data: { stats1mo, stats1w, stats1d },
+      },
+    } = await axios.post("https://dex.dipdup.net/v1/graphql", {
+      query,
+      variables: { tokenId: tokenId },
+    });
+
+    return {
+      tvl1Day: stats1d,
+      tvl30Day: stats1mo,
+      tvl7Day: stats1w,
+      tvlAll: stats1d,
+    };
+  },
+
   async getTokens() {
     const { contracts: tokens } = await teztools.getPricefeed();
 
@@ -322,15 +360,6 @@ export default {
           token.tokenId?.toString()
         ).tvlUsd
       ) || 0;
-
-    // const tokenVolume2DaysAgo =
-    //   Number(
-    //     filterQueryBytokenId(
-    //       tokensVolume2DaysAgo,
-    //       token.tokenAddress,
-    //       token.tokenId?.toString()
-    //     ).volume
-    //   ) || 0;
 
     const element = tokenPrice;
 

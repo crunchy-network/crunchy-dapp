@@ -22,7 +22,6 @@ export default {
     state.tokenList = payload;
   },
 
-
   updateTokenOrder(state, payload) {
     state.tokensOrder = payload;
   },
@@ -48,6 +47,10 @@ export default {
 
   updateChartDataLoading(state, payload) {
     state.loadingChart = payload;
+  },
+
+  updateXtzUsdPrice(state, payload) {
+    state.xtzUsd = payload;
   },
   cleanTokenOverview(state) {
     state.tokenOverview = {

@@ -24,7 +24,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["getChartData"]),
+    ...mapGetters(["getChartData", "getXtzUsdPrice"]),
   },
   watch: {
     legendTab() {
@@ -70,15 +70,15 @@ export default {
         return {
           time:
             this.legendTab === "tvl"
-              ? Math.floor(new Date(element.timestamp).getTime())
+              ? Math.floor(new Date(element.timestamp).getTime()) || Math.floor(new Date(element.bucket).getTime())
               : Math.floor(new Date(element.bucket).getTime()),
           value:
             this.legendTab === "price"
               ? Number(element.close)
               : this.legendTab === "volume"
-              ? Number(element.volume)
+              ? Number(element.xtzVolume) * this.getXtzUsdPrice
               : this.legendTab === "tvl"
-              ? Number(element.tvl)
+              ? Number(element.tvlUsd)
               : null,
         };
       });
@@ -135,7 +135,7 @@ export default {
           priceFormat: {
             type: "price",
             precision: 4,
-            minMove: 0.000001,
+            minMove: 0.0001,
           },
         });
       }
@@ -170,7 +170,7 @@ export default {
           toolTip.innerHTML = `<div style="color: ${"rgba( 38, 166, 154, 1)"}">${
             this.tokenTracked.symbol || this.tokenTracked.name
           }.</div><div style="font-size: 24px; margin: 4px 0px; color: ${"black"}">
-            $${Number(price).toFixed(this.handlePrecision(price))}
+            $${Number(price).toFixed(4)}
             </div><div style="color: ${"black"}">
             ${dateStr}
             </div>`;

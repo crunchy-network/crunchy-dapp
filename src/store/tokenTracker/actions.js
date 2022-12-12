@@ -4,10 +4,6 @@ import teztools from "../../utils/teztools";
 import _ from "lodash";
 import coingecko from "../../utils/coingecko";
 
-const YESTERDAY = new Date(Date.now() - 86400000).toISOString();
-const WEEK_AGO = new Date(Date.now() - 7 * 86400000).toISOString();
-const MONTH_AGO = new Date(Date.now() - 30 * 86400000).toISOString();
-
 export default {
   async fetchTokensTracked({ commit, dispatch, state }) {
     if (state.tokenList.length < 1) {
@@ -19,18 +15,14 @@ export default {
   async _setTokenTracked({ commit, state, dispatch }, id) {
     commit("updateLoading", true);
     try {
+      const xtzUsd = await coingecko.getXtzUsdPrice();
+      commit("updateXtzUsdPrice", xtzUsd);
       const [
         { contracts: priceFeed },
-        xtzUsd,
-        {
-          quotesTotal: tokenHighAndLow,
-          quotes1dNogaps: tokenVolumes,
-          totalTvl,
-        },
+        { quotesTotal: tokenHighAndLow, totalTvl },
         // tokenVolumesYesterday,
       ] = await Promise.all([
         teztools.getPricefeed(),
-        coingecko.getXtzUsdPrice(),
         tokenTracker.getQuotes(),
         // tokenTracker.getDayBeforeVolume(),
       ]);
@@ -44,7 +36,6 @@ export default {
           priceFeed,
           xtzUsd,
           tokenHighAndLow,
-          tokenVolumes,
           totalTvl
           // tokenVolumesYesterday
         );
@@ -81,11 +72,13 @@ export default {
   },
 
   async softCalcTokensData({ commit, state }) {
-    const xtzUsd = await coingecko.getXtzUsdPrice();
     const tokens = state.tokenList;
     for (let index = 0; index < tokens.length; index++) {
       const token = tokens[index];
-      token.volume24 = await tokenTracker.calcTokenVolume(token.id, xtzUsd);
+      token.volume24 = await tokenTracker.calcTokenVolume(
+        token.id,
+        state.xtzUsd
+      );
       token.softCalcDone = true;
       commit("updateTokenListIndex", { index, token });
       commit("updateTokenTracked", token);
@@ -109,18 +102,21 @@ export default {
   },
 
   async updateChartAndOverview({ commit, dispatch, state }, id) {
-    const xtzUsd = await coingecko.getXtzUsdPrice();
     const token = state.tokensTracked[id];
     if (token) {
-      const updatedToken = await tokenTracker.calcExchangeVolume(token, xtzUsd);
+      const updatedToken = await tokenTracker.calcExchangeVolume(
+        token,
+        state.xtzUsd
+      );
       commit("updateTokenOverview", updatedToken || {});
       dispatch("fetchChartData", token.id);
     }
   },
 
-  async fetchChartData({ commit }, tokenId) {
+  async fetchChartData({ commit, state }, tokenId) {
     commit("updateChartDataLoading", true);
     const chartData = {};
+    const exchangeId = state.tokensTracked[tokenId].address || "";
     try {
       const [
         {
@@ -129,18 +125,14 @@ export default {
           quotes1mo: volumeAndPrice30Day,
         },
         allVolumeAndPrice,
-        tvl1Day,
-        tvl7Day,
-        tvl30Day,
-        tvlAll,
+        { tvl1Day, tvl7Day, tvl30Day, tvlAll },
       ] = await Promise.all([
         tokenTracker.getPriceAndVolumeQuotes(tokenId),
         tokenTracker.getAllQuotes1d(tokenId),
-        tokenTracker.getActivity(tokenId, YESTERDAY),
-        tokenTracker.getActivity(tokenId, WEEK_AGO),
-        tokenTracker.getActivity(tokenId, MONTH_AGO),
-        tokenTracker.getAllActivity(tokenId),
+        tokenTracker.getChartTvl(tokenId, exchangeId),
       ]);
+
+      console.log(tvl1Day, tvl7Day, tvl30Day, tvlAll);
 
       chartData.allVolumeAndPrice = allVolumeAndPrice;
       chartData.volumeAndPrice1Day = volumeAndPrice1Day;

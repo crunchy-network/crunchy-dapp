@@ -4,6 +4,7 @@ import actions from "./actions";
 export default {
   state: {
     loading: false,
+    xtzUsd: 0,
     searchInput: "",
     tokenList: [],
     tokensTracked: {},
@@ -65,6 +66,10 @@ export default {
 
     getChartData(state) {
       return state.tokenOverview.chartData;
+    },
+
+    getXtzUsdPrice(state) {
+      return state.xtzUsd;
     },
   },
 };
