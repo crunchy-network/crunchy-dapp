@@ -72,6 +72,7 @@
             <price-format
               v-if="!getLoading"
               prefix="$"
+              :precision="4"
               :font-size="40"
               :line-height="'19px'"
               :value="getTokenOverview.usdValue"

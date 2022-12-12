@@ -113,14 +113,14 @@
                   <el-col>
                     <price-format
                       prefix="$"
-                      :value="tokenTracked.allTimeHigh"
+                      :value="tokenTracked.allTimeHigh * getXtzUsdPrice"
                       :precision="4"
                     />
                   </el-col>
                   <el-col>
                     <price-format
                       prefix="$"
-                      :value="tokenTracked.allTimeLow"
+                      :value="tokenTracked.allTimeLow * getXtzUsdPrice"
                       :precision="4"
                     />
                   </el-col>
@@ -241,7 +241,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(["getLoadingChart"]),
+    ...mapGetters(["getLoadingChart", "getXtzUsdPrice"]),
   },
   watch: {
     tokenTracked() {

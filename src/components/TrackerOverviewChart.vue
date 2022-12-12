@@ -68,14 +68,10 @@ export default {
 
       const areaSeriesData = this.tokenData.map((element) => {
         return {
-          time:
-            this.legendTab === "tvl"
-              ? Math.floor(new Date(element.timestamp).getTime()) ||
-                Math.floor(new Date(element.bucket).getTime())
-              : Math.floor(new Date(element.bucket).getTime()),
+          time: Math.floor(new Date(element.bucket).getTime()),
           value:
             this.legendTab === "price"
-              ? Number(element.close)
+              ? Number(element.close) * this.getXtzUsdPrice
               : this.legendTab === "volume"
               ? Number(element.xtzVolume) * this.getXtzUsdPrice
               : this.legendTab === "tvl"
@@ -171,7 +167,9 @@ export default {
           toolTip.innerHTML = `<div style="color: ${"rgba( 38, 166, 154, 1)"}">${
             this.tokenTracked.symbol || this.tokenTracked.name
           }.</div><div style="font-size: 24px; margin: 4px 0px; color: ${"black"}">
-            $${Number(price).toFixed(price >= 1 ? 2 : 4)}
+            $${Number(Number(price).toFixed(price >= 1 ? 2 : 4)).toLocaleString(
+              "en-US"
+            )}
             </div><div style="color: ${"black"}">
             ${dateStr}
             </div>`;
