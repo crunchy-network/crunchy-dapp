@@ -171,7 +171,7 @@ export default {
           toolTip.innerHTML = `<div style="color: ${"rgba( 38, 166, 154, 1)"}">${
             this.tokenTracked.symbol || this.tokenTracked.name
           }.</div><div style="font-size: 24px; margin: 4px 0px; color: ${"black"}">
-            $${Number(price).toFixed(4)}
+            $${Number(price).toFixed(price >= 1 ? 2 : 4)}
             </div><div style="color: ${"black"}">
             ${dateStr}
             </div>`;
