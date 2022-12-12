@@ -102,6 +102,9 @@ export default {
   font-weight: 500;
   margin-bottom: 8px;
   .dex-icon {
+    height: 16px;
+    width: 16px;
+    margin-top: 10px;
     display: inline-block;
     vertical-align: bottom;
   }
@@ -129,9 +132,6 @@ export default {
   .swap-route-item {
     width: 90px;
     .dex-icon {
-      height: 16px;
-      width: 16px;
-      margin-top: 10px;
       cursor: pointer;
     }
   }
@@ -139,13 +139,17 @@ export default {
 
 @media (max-width: 500px) {
   .swap-route-item {
-    width: 75px;
-    height: 75px;
+    width: 76px;
+    height: 76px;
     .dex-icon {
-      height: 16px;
-      width: 16px;
       margin-top: 6px;
     }
+  }
+  .left {
+    left: 24px;
+  }
+  .right {
+    right: 24px;
   }
 }
 

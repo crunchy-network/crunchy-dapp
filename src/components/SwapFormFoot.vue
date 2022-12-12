@@ -45,13 +45,70 @@
       <span>Price Impact</span>
       <span :style="`color: ${impactColor}`"> {{ getPriceImpact() }}</span>
     </div>
+    <div class="row last">
+      <span>Swap Route</span>
+      <span v-if="numRoutes === 1 && numHops === 1">1 route / 1 hop</span>
+      <span v-else-if="numRoutes === 1 && numHops > 1">1 route / {{numHops}} hops</span>
+      <span v-else-if="numRoutes > 1">{{numRoutes}} routes / {{numHops}} hops</span>
+      <span v-else>~</span>
+    </div>
+
+    <div v-if="getCurrentTrade.trades">
+      <template v-if="getCurrentTrade.type === 'weighted'">
+        <div
+          v-for="(trade, n) in getCurrentTrade.trades"
+          :key="`trade_${n}`"
+          class="swap-route-container"
+        >
+          <div class="swap-route-label">{{ vueNumberFormat(trade[0].weight * 100, { precision: 2 }) }}%</div>
+          <div class="swap-route-row">
+            <div
+              v-for="(route, index) in trade"
+              :key="`trade_${n}_${route.dexAddress}_${index}`"
+              style="display: flex; align-items: center;"
+            >
+              <SwapRouteItem
+                :route="route"
+                :a-token="tokenList.find((t) => route.a.assetSlug === t.assetSlug)"
+                :b-token="tokenList.find((t) => route.b.assetSlug === t.assetSlug)"
+              />
+            </div>
+          </div>
+        </div>
+      </template>
+      <template v-else>
+        <div class="swap-route-container">
+          <div class="swap-route-label">100%</div>
+          <div class="swap-route-row">
+            <div
+              v-for="(route, index) in getCurrentTrade.trades"
+              :key="`${route.dexAddress}_${index}`"
+              style="display: flex;"
+            >
+              <SwapRouteItem
+                :route="route"
+                :a-token="tokenList.find((t) => route.a.assetSlug === t.assetSlug)"
+                :b-token="tokenList.find((t) => route.b.assetSlug === t.assetSlug)"
+              />
+            </div>
+          </div>
+        </div>
+      </template>
+    </div>
+
   </div>
 </template>
 <script>
 import { mapActions, mapGetters } from "vuex";
+import SwapRouteItem from "./SwapRouteItem.vue";
 import { ROUTING_FEE_PERCENT } from "./swapConfig";
 import { calculatePriceImpact } from "../lib/SwapRouter";
 export default {
+  name: "SwapFormFoot",
+  components: { SwapRouteItem },
+  props: {
+    tokenList: { type: Array, required: true },
+  },
   data: () => ({
     routingFee: ROUTING_FEE_PERCENT,
     toleranceOptions: [0.5, 1],
@@ -61,6 +118,21 @@ export default {
 
   computed: {
     ...mapGetters(["getSwapForm", "getCurrentTrade"]),
+    numRoutes() {
+      if (!this.getCurrentTrade.trades) {
+        return 0;
+      }
+      return this.getCurrentTrade.trades.length;
+    },
+    numHops() {
+      if (!this.getCurrentTrade.trades || !this.getCurrentTrade.trades.length) {
+        return 0;
+      }
+      if (this.getCurrentTrade.trades.length === 1) {
+        return 1;
+      }
+      return this.getCurrentTrade.trades.reduce((a, t) => a + t.length, 0);
+    },
   },
   watch: {
     customSlippage() {
@@ -102,16 +174,20 @@ export default {
 @import "~element-ui/packages/theme-chalk/src/common/var";
 
 .bottom-section {
-  margin: 0px 40px;
+  margin: 0px 16px;
   .row {
     color: #757679;
     width: 100%;
     font-weight: 500;
-    margin-top: 5px;
+    padding: 6px 0;
     font-size: 12px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-bottom: 1px solid #E8E8E9;
+    &.last {
+      border-bottom: none;
+    }
   }
 }
 .slippage-button {

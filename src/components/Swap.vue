@@ -27,19 +27,32 @@
         </el-tooltip>
       </div>
 
-      <SwapFormMain />
-      <SwapFormFoot />
+      <SwapFormMain :tokenList="tokenList" />
+      <SwapFormFoot :tokenList="tokenList" />
     </div>
   </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
 import NavMenu from "./NavMenu.vue";
 import SwapFormMain from "./SwapFormMain.vue";
 import SwapFormFoot from "./SwapFormFoot.vue";
+import { buildTokenListFromWalletAndPriceFeed } from "../utils/swapRouterHelper";
 export default {
   name: "Swap",
   components: { NavMenu, SwapFormMain, SwapFormFoot },
+  computed: {
+    ...mapState(["homeWallet", "farms"]),
+    tokenList() {
+      const ownedAssets = this.homeWallet.assets || [];
+      const toRet = buildTokenListFromWalletAndPriceFeed(
+        ownedAssets,
+        this.farms.priceFeed
+      );
+      return toRet;
+    },
+  },
 };
 </script>
 <style lang="scss">

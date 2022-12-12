@@ -92,53 +92,6 @@
         :selected-token="getSwapForm.outputToken"
       />
     </div>
-
-    <div v-if="getCurrentTrade.trades" class="from-section">
-      <span>Swap Route</span>
-    </div>
-    <div v-if="getCurrentTrade.trades">
-
-      <template v-if="getCurrentTrade.type === 'weighted'">
-        <div
-          v-for="(trade, n) in getCurrentTrade.trades"
-          :key="`trade_${n}`"
-          class="swap-route-container"
-        >
-          <div class="swap-route-label">{{ vueNumberFormat(trade[0].weight * 100, { precision: 2 }) }}%</div>
-          <div class="swap-route-row">
-            <div
-              v-for="(route, index) in trade"
-              :key="`trade_${n}_${route.dexAddress}_${index}`"
-              style="display: flex; align-items: center;"
-            >
-              <SwapRouteItem
-                :route="route"
-                :a-token="tokenList.find((t) => route.a.assetSlug === t.assetSlug)"
-                :b-token="tokenList.find((t) => route.b.assetSlug === t.assetSlug)"
-              />
-            </div>
-          </div>
-        </div>
-      </template>
-      <template v-else>
-        <div class="swap-route-container">
-          <div class="swap-route-label">100%</div>
-          <div class="swap-route-row">
-            <div
-              v-for="(route, index) in getCurrentTrade.trades"
-              :key="`${route.dexAddress}_${index}`"
-              style="display: flex;"
-            >
-              <SwapRouteItem
-                :route="route"
-                :a-token="tokenList.find((t) => route.a.assetSlug === t.assetSlug)"
-                :b-token="tokenList.find((t) => route.b.assetSlug === t.assetSlug)"
-              />
-            </div>
-          </div>
-        </div>
-      </template>
-    </div>
     <div style="width: 100%; margin-top: 16px; text-align: center">
       <div :style="`${!getPkh ? 'display: none;' : ''}`">
         <el-button
@@ -190,14 +143,10 @@
 </template>
 <script>
 import { mapActions, mapGetters, mapState } from "vuex";
-import {
-  buildTokenListFromWalletAndPriceFeed,
-  getBestTrade,
-} from "../utils/swapRouterHelper";
+import { getBestTrade } from "../utils/swapRouterHelper";
 import reverseIcon from "../assets/svg-icons/swap-icon.svg";
 
 import TokenSelectMenu from "./TokenSelectMenu.vue";
-import SwapRouteItem from "./SwapRouteItem.vue";
 import { buildRoutingFeeOperation } from "../utils/routing-fee";
 import { buildOperationParams } from "../lib/SwapRouter";
 import { Tezos } from "../utils/tezos";
@@ -207,7 +156,10 @@ import * as signalR from "@microsoft/signalr";
 
 export default {
   name: "SwapFormMain",
-  components: { TokenSelectMenu, SwapRouteItem },
+  components: { TokenSelectMenu },
+  props: {
+    tokenList: { type: Array, required: true },
+  },
   data: () => ({
     numFormatOpts: { decimal: ".", thousand: ",", prefix: "" },
     percentOptions: [25, 50, 75, 100],
@@ -222,7 +174,7 @@ export default {
     },
   }),
   computed: {
-    ...mapState(["homeWallet", "farms"]),
+    ...mapState(["homeWallet"]),
     ...mapGetters([
       "getPkh",
       "getSwapForm",
@@ -241,14 +193,6 @@ export default {
         return true;
       }
       return false;
-    },
-    tokenList() {
-      const ownedAssets = this.homeWallet.assets || [];
-      const toRet = buildTokenListFromWalletAndPriceFeed(
-        ownedAssets,
-        this.farms.priceFeed
-      );
-      return toRet;
     },
     errorMessage() {
       const bal = this.getBalanceOfSelectedToken(this.getSwapForm.inputToken);
