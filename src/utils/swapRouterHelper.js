@@ -2,6 +2,7 @@ import {
   addSlippageToleranceToRoute,
   addSlippageToleranceToWeightedRoute,
   findBestRoute,
+  findTopRoutes,
   findBestWeightedRoute,
   getAllCombinations,
 } from "../lib/SwapRouter";
@@ -82,27 +83,27 @@ const getBestTrade = (form, routePairs) => {
     return undefined;
   }
 
-  const bestRoute = findBestRoute(
-    inputAmount,
-    combos,
-    slippageTolerance,
-    ROUTING_FEE_RATIO
-  );
-  const weightedCombos = routePairs.filter(
-    (p) =>
-      p.a.assetSlug === inputToken.assetSlug &&
-      p.b.assetSlug === outputToken.assetSlug
-  );
+  var inputAfterRatio = inputAmount * ROUTING_FEE_RATIO;
+  if (inputToken.decimals === 0) {
+    inputAfterRatio = inputAmount;
+  }
+
+  const bestRoute = findBestRoute(inputAfterRatio, combos, slippageTolerance);
+
+  const topRoutes = findTopRoutes(inputAfterRatio, combos, slippageTolerance);
+  const weightedCombos = topRoutes.map(r => r.combo);
 
   if (weightedCombos.length > 1) {
     var inputAfterRatio = inputAmount;
     if (inputToken.decimals !== 0) {
       inputAfterRatio = inputAmount * ROUTING_FEE_RATIO;
     }
+
     const bestWeightedRoute = findBestWeightedRoute(
       inputAfterRatio,
       weightedCombos
     );
+
     if (bestWeightedRoute.outputAmount > bestRoute.outputAmount) {
       return addSlippageToleranceToWeightedRoute(
         bestWeightedRoute,
@@ -110,6 +111,7 @@ const getBestTrade = (form, routePairs) => {
       );
     }
   }
+
   if (bestRoute.trades.length === 0) {
     return {
       trades: [],

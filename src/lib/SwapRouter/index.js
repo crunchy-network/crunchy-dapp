@@ -2,6 +2,7 @@ import { buildSwapPairs } from "./DataParsers/dex-indexer-data-parser";
 import {
   getAllCombinations,
   findBestRoute,
+  findTopRoutes,
   findBestWeightedRoute,
   addSlippageToleranceToRoute,
   addSlippageToleranceToWeightedRoute,
@@ -12,6 +13,7 @@ export {
   buildSwapPairs,
   getAllCombinations,
   findBestRoute,
+  findTopRoutes,
   findBestWeightedRoute,
   addSlippageToleranceToRoute,
   addSlippageToleranceToWeightedRoute,

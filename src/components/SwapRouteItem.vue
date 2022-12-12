@@ -1,13 +1,13 @@
 <template>
   <div class="swap-route-item">
-    <div>
+    <div class="dex">
       <img
         class="dex-icon"
         :src="icons[route.dexType || route.dex]"
         alt="dex icon"
         :title="route.dex"
         @click="handleDexClick(route.dexAddress)"
-      />
+      /> {{ displayName[route.dex] }}
     </div>
     <div v-if="aToken && bToken" class="token-icon-container">
       <div class="token-icon-image left">
@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import liquidity from "../assets/dex-icons/LiquidityBaking.png";
+import sirius from "../assets/dex-icons/Sirius.svg";
 import plenty from "../assets/dex-icons/Plenty.svg";
 import quipuswap from "../assets/dex-icons/QuipuSwap.svg";
 import vortex from "../assets/dex-icons/Vortex.svg";
@@ -49,7 +49,7 @@ export default {
   data: function () {
     return {
       icons: {
-        LiquidityBaking: liquidity,
+        LiquidityBaking: sirius,
         Plenty: plenty,
         PlentyStable: plenty,
         PlentyCtezTez: plenty,
@@ -62,6 +62,20 @@ export default {
         WTZ: wtz,
         Youves: youves,
       },
+      displayName: {
+        LiquidityBaking: 'Sirius',
+        Plenty: 'Plenty',
+        PlentyStable: 'Plenty',
+        PlentyCtezTez: 'Plenty',
+        QuipuSwap: 'Quipu',
+        QuipuSwapTokenToTokenDex: 'Quipu',
+        Quipuswap: 'Quipu',
+        QuipuswapStable: 'Quipu',
+        Vortex: 'Vortex',
+        Spicy: 'Spicy',
+        WTZ: 'WTZ',
+        Youves: 'Youves',
+      }
     };
   },
   methods: {
@@ -74,38 +88,52 @@ export default {
     handleDexClick(dex) {
       const url = `https://better-call.dev/mainnet/${dex}/operations`;
       window.open(url, "_blank").focus();
-    },
+    }
   },
 };
 </script>
 
 <style lang="scss">
+@import "../crunchy-variables.scss";
+
+.dex {
+  font-size: 12px;
+  color: $--color-text-gray;
+  font-weight: 500;
+  margin-bottom: 8px;
+  .dex-icon {
+    display: inline-block;
+    vertical-align: bottom;
+  }
+}
+
+.token-icon-container {
+  .token-icon-image {
+    height: 16px;
+    width: 16px;
+  }
+  img {
+    display: block;
+    height: 16px;
+    width: 16px;
+  }
+}
+.left {
+  left: 31px;
+}
+.right {
+  right: 31px;
+}
+
 @media (min-width: 500px) {
   .swap-route-item {
-    width: 100px;
-    height: 100px;
+    width: 90px;
     .dex-icon {
-      height: 32px;
-      width: 32px;
+      height: 16px;
+      width: 16px;
       margin-top: 10px;
       cursor: pointer;
     }
-  }
-  .token-icon-container {
-    .token-icon-image {
-      height: 24px;
-      width: 24px;
-    }
-    img {
-      height: 24px;
-      width: 24px;
-    }
-  }
-  .left {
-    left: 28px;
-  }
-  .right {
-    right: 28px;
   }
 }
 
@@ -114,26 +142,10 @@ export default {
     width: 75px;
     height: 75px;
     .dex-icon {
-      height: 28px;
-      width: 28px;
+      height: 16px;
+      width: 16px;
       margin-top: 6px;
     }
-  }
-  .token-icon-container {
-    .token-icon-image {
-      height: 20px;
-      width: 20px;
-    }
-    img {
-      height: 20px;
-      width: 20px;
-    }
-  }
-  .left {
-    left: 22px;
-  }
-  .right {
-    right: 22px;
   }
 }
 
@@ -141,14 +153,15 @@ export default {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-
   border-radius: 18px;
   border: 1px solid rgba(25, 27, 31, 0.1);
+  background: #fff;
+  z-index: 1;
 }
 
 .token-icon-container {
   flex: 100%;
-  height: 50px;
+  height: 38px;
   position: relative;
   .token-icon-image {
     top: 7px;

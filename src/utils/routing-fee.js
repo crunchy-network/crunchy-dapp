@@ -112,7 +112,14 @@ const buildRoutingFeeOperation = async (
   if (ROUTING_FEE_RATIO === 1) {
     return [];
   }
-  const inputToken = route.slippageTrades[0].a;
+
+  let inputToken;
+  if (Array.isArray(route.slippageTrades[0])) {
+    inputToken = route.slippageTrades[0][0].a;
+  } else {
+    inputToken = route.slippageTrades[0].a;
+  }
+
   if (inputToken.decimals === 0) {
     return [];
   }

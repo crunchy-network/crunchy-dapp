@@ -25,7 +25,7 @@
       <TokenSelectMenu
         :id="'tokenInput'"
         :list="tokenList"
-        :on-change="handleInputChange"
+        :on-change="(e) => handleInputChange(e)"
         :amount="getSwapForm.inputAmount"
         :selected-token="getSwapForm.inputToken"
       />
@@ -94,32 +94,50 @@
     </div>
 
     <div v-if="getCurrentTrade.trades" class="from-section">
-      <span>Swap Route </span>
+      <span>Swap Route</span>
     </div>
-    <div v-if="getCurrentTrade.trades" class="swap-route-container">
-      <div
-        v-for="(route, index) in getCurrentTrade.trades"
-        :key="`${route.dexAddress}_${index}`"
-        style="display: flex"
-      >
-        <SwapRouteItem
-          :route="route"
-          :a-token="tokenList.find((t) => route.a.assetSlug === t.assetSlug)"
-          :b-token="tokenList.find((t) => route.b.assetSlug === t.assetSlug)"
-        />
+    <div v-if="getCurrentTrade.trades">
+
+      <template v-if="getCurrentTrade.type === 'weighted'">
         <div
-          v-if="index < getCurrentTrade.trades.length - 1"
-          style="margin: auto 7px"
+          v-for="(trade, n) in getCurrentTrade.trades"
+          :key="`trade_${n}`"
+          class="swap-route-container"
         >
-          <img
-            v-if="getCurrentTrade.type === 'weighted'"
-            :src="plusSolid"
-            alt="plus"
-            width="16"
-          />
-          <img v-else :src="arrowRight" alt="arrow" />
+          <div class="swap-route-label">{{ vueNumberFormat(trade[0].weight * 100, { precision: 2 }) }}%</div>
+          <div class="swap-route-row">
+            <div
+              v-for="(route, index) in trade"
+              :key="`trade_${n}_${route.dexAddress}_${index}`"
+              style="display: flex; align-items: center;"
+            >
+              <SwapRouteItem
+                :route="route"
+                :a-token="tokenList.find((t) => route.a.assetSlug === t.assetSlug)"
+                :b-token="tokenList.find((t) => route.b.assetSlug === t.assetSlug)"
+              />
+            </div>
+          </div>
         </div>
-      </div>
+      </template>
+      <template v-else>
+        <div class="swap-route-container">
+          <div class="swap-route-label">100%</div>
+          <div class="swap-route-row">
+            <div
+              v-for="(route, index) in getCurrentTrade.trades"
+              :key="`${route.dexAddress}_${index}`"
+              style="display: flex;"
+            >
+              <SwapRouteItem
+                :route="route"
+                :a-token="tokenList.find((t) => route.a.assetSlug === t.assetSlug)"
+                :b-token="tokenList.find((t) => route.b.assetSlug === t.assetSlug)"
+              />
+            </div>
+          </div>
+        </div>
+      </template>
     </div>
     <div style="width: 100%; margin-top: 16px; text-align: center">
       <div :style="`${!getPkh ? 'display: none;' : ''}`">
@@ -398,7 +416,7 @@ export default {
     roundDown(v, n) {
       return Math.floor(v * Math.pow(10, n)) / Math.pow(10, n);
     },
-    handleInputChange(e) {
+    async handleInputChange(e) {
       if (e.asset !== undefined) {
         this.updateForm({ inputToken: e.asset });
       }
@@ -708,10 +726,38 @@ export default {
 }
 
 .swap-route-container {
+  position: relative;
   margin-top: 8px;
   display: flex;
   flex-basis: 100%;
-  justify-content: center;
+  align-items: center;
+}
+
+.swap-route-label {
+  font-size: 11px;
+  width: 50px;
+  color: #757679;
+  border: 1px solid #E8E8E9;
+  border-radius: 16px;
+  padding: 4px;
+  text-align: center;
+  background: #fff;
+  z-index: 1;
+}
+
+.swap-route-row {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  &:before {
+    content: '';
+    position: absolute;
+    left: 5px;
+    right: 5px;
+    bottom: 50%;
+    border-bottom: 2px solid #E8E8E9;
+    z-index: 0;
+  }
 }
 
 .tooltip {
