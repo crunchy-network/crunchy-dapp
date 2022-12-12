@@ -35,7 +35,7 @@
 <script>
 import sirius from "../assets/dex-icons/Sirius.svg";
 import plenty from "../assets/dex-icons/Plenty.svg";
-import quipuswap from "../assets/dex-icons/QuipuSwap.svg";
+import quipuswap from "../assets/dex-icons/QuipuSwap.png";
 import vortex from "../assets/dex-icons/Vortex.svg";
 import spicy from "../assets/dex-icons/Spicy.png";
 import wtz from "../assets/dex-icons/Wtz.png";
