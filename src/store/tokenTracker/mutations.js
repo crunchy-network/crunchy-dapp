@@ -52,6 +52,11 @@ export default {
   updateXtzUsdPrice(state, payload) {
     state.xtzUsd = payload;
   },
+
+  updateXtzUsdHistory(state, payload) {
+    state.xtzUsdHistory = payload;
+  },
+
   cleanTokenOverview(state) {
     state.tokenOverview = {
       chartData: {

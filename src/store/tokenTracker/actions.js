@@ -16,7 +16,9 @@ export default {
     commit("updateLoading", true);
     try {
       const xtzUsd = await coingecko.getXtzUsdPrice();
+      const xtzUsdHistory = await coingecko.getXtzUsdHistory();
       commit("updateXtzUsdPrice", xtzUsd);
+      commit("updateXtzUsdHistory", xtzUsdHistory);
       const [
         { contracts: priceFeed },
         { quotesTotal: tokenHighAndLow, totalTvl },
@@ -79,6 +81,7 @@ export default {
         token.id,
         state.xtzUsd
       );
+
       token.softCalcDone = true;
       commit("updateTokenListIndex", { index, token });
       commit("updateTokenTracked", token);
@@ -106,7 +109,8 @@ export default {
     if (token) {
       const updatedToken = await tokenTracker.calcExchangeVolume(
         token,
-        state.xtzUsd
+        state.xtzUsd,
+        state.xtzUsdHistory
       );
       commit("updateTokenOverview", updatedToken || {});
       dispatch("fetchChartData", token.id);

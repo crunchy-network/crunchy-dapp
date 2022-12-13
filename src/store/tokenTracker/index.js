@@ -6,6 +6,7 @@ export default {
     loading: false,
     xtzUsd: 0,
     searchInput: "",
+    xtzUsdHistory: [],
     tokenList: [],
     tokensTracked: {},
     tokenOverview: {
@@ -70,6 +71,9 @@ export default {
 
     getXtzUsdPrice(state) {
       return state.xtzUsd;
+    },
+    getXtzUsdHistory(state) {
+      return state.xtzUsdHistory;
     },
   },
 };

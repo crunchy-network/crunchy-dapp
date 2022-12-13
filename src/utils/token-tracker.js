@@ -32,6 +32,40 @@ async function getExchange24HrsVolume(exchangeId) {
   return quotes1dNogaps;
 }
 
+const queryTokenPriceBucket = async (tokenId, value, param) => {
+  const query = `
+    query MyQuery {
+      quotes1dNogaps(where: {${param}: {_eq: "${value}"}, tokenId: {_eq: "${tokenId}"}}, distinct_on: ${param}) {
+        bucket
+      }
+    }    
+  `;
+
+  console.log("\n\n------ begin:  ------");
+  console.log("queryTokenPriceBucket", query);
+  console.log("------ end:  ------\n\n");
+
+  const {
+    data: {
+      data: { quotes1dNogaps },
+    },
+  } = await axios.post("https://dex.dipdup.net/v1/graphql", {
+    query,
+  });
+
+  return quotes1dNogaps;
+};
+
+const getTokenPriceBucket = async (tokenId, value, param = "high") => {
+  const query = await queryTokenPriceBucket(tokenId, value, param);
+
+  if (query.length === 0) {
+    return 0;
+  } else {
+    return query[0].bucket;
+  }
+};
+
 const filterQueryBytokenId = (tokenPriceRange, tokenAddress, tokenId) => {
   const value = tokenPriceRange?.filter(
     (val) => val.tokenId === `${tokenAddress}_${tokenId || 0}`
@@ -309,7 +343,7 @@ export default {
     return { ...tokens };
   },
 
-  async calcExchangeVolume(token, xtzUsd) {
+  async calcExchangeVolume(token, xtzUsd, xtzUsdHistory) {
     token?.pairs?.forEach(async (pair, index) => {
       const volume = await getExchange24HrsVolume(pair.address);
       console.log("volume", volume);
@@ -318,6 +352,21 @@ export default {
           return prev + Number(current.xtzVolume);
         }, 0) * xtzUsd || 0;
     });
+
+    // token.athBucket = await getTokenPriceBucket(token.id, token.allTimeHigh);
+    // token.atlBucket = await getTokenPriceBucket(
+    //   token.id,
+    //   token.allTimeLow,
+    //   "low"
+    // );
+
+    // token.allTimeHigh =
+    //   this.binarySearch(xtzUsdHistory, new Date(token.athBucket).getTime()) *
+    //   token.allTimeHigh;
+
+    // token.allTimeLow =
+    //   this.binarySearch(xtzUsdHistory, new Date(token.atlBucket).getTime()) *
+    //   token.allTimeLow;
 
     return token;
   },
@@ -424,6 +473,34 @@ export default {
       }
 
       if (mktCap < 200000000) return element;
+    }
+  },
+
+  binarySearch(arr, target) {
+    // Find the middle element of the array
+    const mid = Math.floor(arr.length / 2);
+
+    // If the target is less than the middle element, search the left half of the array
+    if (target < arr[mid][0]) {
+      // If the left half of the array is empty, return the index of the middle element
+      if (mid === 0) {
+        return arr[mid][1];
+      } else {
+        return this.binarySearch(arr.slice(0, mid), target);
+      }
+    }
+    // If the target is greater than the middle element, search the right half of the array
+    else if (target > arr[mid][0]) {
+      // If the right half of the array is empty, return the index of the middle element
+      if (mid === arr.length - 1) {
+        return arr[mid][1];
+      } else {
+        return this.binarySearch(arr.slice(mid + 1), target);
+      }
+    }
+    // If the target is equal to the middle element, return the index of the middle element
+    else {
+      return arr[mid][1];
     }
   },
 };

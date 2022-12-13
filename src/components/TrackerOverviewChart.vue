@@ -7,6 +7,7 @@
 <script>
 import { createChart } from "lightweight-charts";
 import { mapGetters } from "vuex";
+import tokenTracker from "../utils/token-tracker";
 
 export default {
   props: {
@@ -22,9 +23,38 @@ export default {
       type: String,
       default: "volume",
     },
+    setLoading: {
+      type: Function,
+      default: () => {},
+    },
   },
+  data() {
+    return {
+      updatedChartData: {
+        price: {
+          days1: [],
+          days7: [],
+          days30: [],
+          all: [],
+        },
+        volume: {
+          days1: [],
+          days7: [],
+          days30: [],
+          all: [],
+        },
+        tvl: {
+          days1: [],
+          days7: [],
+          days30: [],
+          all: [],
+        },
+      },
+    };
+  },
+
   computed: {
-    ...mapGetters(["getChartData", "getXtzUsdPrice"]),
+    ...mapGetters(["getChartData", "getXtzUsdPrice", "getXtzUsdHistory"]),
   },
   watch: {
     legendTab() {
@@ -34,51 +64,197 @@ export default {
       this.getPrices();
     },
     getChartData: function (val) {
+      this.sortTokenData();
+      this.getPrices();
+    },
+    updatedChartData() {
+
+      this.getPrices();
+    },
+    getXtzUsdHistory() {
       this.getPrices();
     },
   },
   mounted() {
     this.getPrices();
+    this.sortTokenData();
   },
   methods: {
+    sortTokenData() {
+      this.setLoading(true);
+      this.updatedChartData.tvl.days1 = this.getChartData.tvl1Day.map(
+        (element) => {
+          return {
+            time: Math.floor(new Date(element.bucket).getTime()),
+            value: Number(element.tvlUsd),
+          };
+        }
+      );
+
+      this.updatedChartData.tvl.days7 = this.getChartData.tvl7Day.map(
+        (element) => {
+          return {
+            time: Math.floor(new Date(element.bucket).getTime()),
+            value: Number(element.tvlUsd),
+          };
+        }
+      );
+
+      this.updatedChartData.tvl.days30 = this.getChartData.tvl30Day.map(
+        (element) => {
+          return {
+            time: Math.floor(new Date(element.bucket).getTime()),
+            value: Number(element.tvlUsd),
+          };
+        }
+      );
+
+      this.updatedChartData.tvl.all = this.getChartData.tvlAll.map(
+        (element) => {
+          return {
+            time: Math.floor(new Date(element.bucket).getTime()),
+            value: Number(element.tvlUsd),
+          };
+        }
+      );
+
+      this.updatedChartData.price.days1 =
+        this.getChartData.volumeAndPrice1Day.map((element) => {
+          const timeUsdValue = tokenTracker.binarySearch(
+            this.getXtzUsdHistory,
+            new Date(element.bucket).getTime()
+          );
+          return {
+            time: Math.floor(new Date(element.bucket).getTime()),
+            value: Number(element.close) * timeUsdValue,
+          };
+        });
+      this.updatedChartData.volume.days1 =
+        this.getChartData.volumeAndPrice1Day.map((element) => {
+          const timeUsdValue = tokenTracker.binarySearch(
+            this.getXtzUsdHistory,
+            new Date(element.bucket).getTime()
+          );
+          return {
+            time: Math.floor(new Date(element.bucket).getTime()),
+            value: Number(element.xtzVolume) * timeUsdValue,
+          };
+        });
+
+      this.updatedChartData.price.days7 =
+        this.getChartData.volumeAndPrice7Day.map((element) => {
+          const timeUsdValue = tokenTracker.binarySearch(
+            this.getXtzUsdHistory,
+            new Date(element.bucket).getTime()
+          );
+          return {
+            time: Math.floor(new Date(element.bucket).getTime()),
+            value: Number(element.close) * timeUsdValue,
+          };
+        });
+      this.updatedChartData.volume.days7 =
+        this.getChartData.volumeAndPrice7Day.map((element) => {
+          const timeUsdValue = tokenTracker.binarySearch(
+            this.getXtzUsdHistory,
+            new Date(element.bucket).getTime()
+          );
+          return {
+            time: Math.floor(new Date(element.bucket).getTime()),
+            value: Number(element.xtzVolume) * timeUsdValue,
+          };
+        });
+
+      this.updatedChartData.price.days30 =
+        this.getChartData.volumeAndPrice30Day.map((element) => {
+          const timeUsdValue = tokenTracker.binarySearch(
+            this.getXtzUsdHistory,
+            new Date(element.bucket).getTime()
+          );
+          return {
+            time: Math.floor(new Date(element.bucket).getTime()),
+            value: Number(element.close) * timeUsdValue,
+          };
+        });
+      this.updatedChartData.volume.days30 =
+        this.getChartData.volumeAndPrice30Day.map((element) => {
+          const timeUsdValue = tokenTracker.binarySearch(
+            this.getXtzUsdHistory,
+            new Date(element.bucket).getTime()
+          );
+          return {
+            time: Math.floor(new Date(element.bucket).getTime()),
+            value: Number(element.xtzVolume) * timeUsdValue,
+          };
+        });
+
+      this.updatedChartData.price.all = this.getChartData.allVolumeAndPrice.map(
+        (element) => {
+          const timeUsdValue = tokenTracker.binarySearch(
+            this.getXtzUsdHistory,
+            new Date(element.bucket).getTime()
+          );
+          return {
+            time: Math.floor(new Date(element.bucket).getTime()),
+            value: Number(element.close) * timeUsdValue,
+          };
+        }
+      );
+      this.updatedChartData.volume.all =
+        this.getChartData.allVolumeAndPrice.map((element) => {
+          const timeUsdValue = tokenTracker.binarySearch(
+            this.getXtzUsdHistory,
+            new Date(element.bucket).getTime()
+          );
+          return {
+            time: Math.floor(new Date(element.bucket).getTime()),
+            value: Number(element.xtzVolume) * timeUsdValue,
+          };
+        });
+
+      this.setLoading(false);
+    },
+
     async getPrices() {
       if (this.legendTab === "tvl") {
         this.tokenData =
           this.duration === "1d"
-            ? this.getChartData.tvl1Day
+            ? this.updatedChartData.tvl.days1
             : this.duration === "7d"
-            ? this.getChartData.tvl7Day
+            ? this.updatedChartData.tvl.days7
             : this.duration === "30d"
-            ? this.getChartData.tvl30Day
+            ? this.updatedChartData.tvl.days30
             : this.duration === "all"
-            ? this.getChartData.tvlAll
-            : null;
-      } else {
-        this.tokenData =
-          this.duration === "1d"
-            ? this.getChartData.volumeAndPrice1Day
-            : this.duration === "7d"
-            ? this.getChartData.volumeAndPrice7Day
-            : this.duration === "30d"
-            ? this.getChartData.volumeAndPrice30Day
-            : this.duration === "all"
-            ? this.getChartData.allVolumeAndPrice
+            ? this.updatedChartData.tvl.all
             : null;
       }
 
-      const areaSeriesData = this.tokenData.map((element) => {
-        return {
-          time: Math.floor(new Date(element.bucket).getTime()),
-          value:
-            this.legendTab === "price"
-              ? Number(element.close) * this.getXtzUsdPrice
-              : this.legendTab === "volume"
-              ? Number(element.xtzVolume) * this.getXtzUsdPrice
-              : this.legendTab === "tvl"
-              ? Number(element.tvlUsd)
-              : null,
-        };
-      });
+      if (this.legendTab === "price") {
+        this.tokenData =
+          this.duration === "1d"
+            ? this.updatedChartData.price.days1
+            : this.duration === "7d"
+            ? this.updatedChartData.price.days7
+            : this.duration === "30d"
+            ? this.updatedChartData.price.days30
+            : this.duration === "all"
+            ? this.updatedChartData.price.all
+            : null;
+      }
+
+      if (this.legendTab === "volume") {
+        this.tokenData =
+          this.duration === "1d"
+            ? this.updatedChartData.volume.days1
+            : this.duration === "7d"
+            ? this.updatedChartData.volume.days7
+            : this.duration === "30d"
+            ? this.updatedChartData.volume.days30
+            : this.duration === "all"
+            ? this.updatedChartData.volume.all
+            : null;
+      }
+
+      const areaSeriesData = this.tokenData;
 
       document.getElementById("chart").innerHTML = "";
 

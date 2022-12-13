@@ -111,18 +111,21 @@
                     > -->
                   </el-col>
                   <el-col>
-                    <price-format
+                    <!-- <price-format
                       prefix="$"
                       :value="tokenTracked.allTimeHigh * getXtzUsdPrice"
                       :precision="4"
-                    />
+                    /> -->
+                    -
                   </el-col>
                   <el-col>
-                    <price-format
+                    <!-- <price-format
                       prefix="$"
                       :value="tokenTracked.allTimeLow * getXtzUsdPrice"
                       :precision="4"
-                    />
+                    /> -->
+
+                    -
                   </el-col>
                 </el-row>
               </div>
@@ -131,7 +134,11 @@
         </div>
       </div>
     </el-card>
-    <el-card v-loading="loading" style="margin-top: 24px" shadow="always">
+    <el-card
+      v-loading="loading || chartLoading"
+      style="margin-top: 24px"
+      shadow="always"
+    >
       <el-row
         class="tab-flex"
         :gutter="10"
@@ -201,6 +208,7 @@
           :token-tracked="tokenTracked"
           :duration="duration"
           :legend-tab="legendTab"
+          :set-loading="setChartLoading"
         />
       </div>
     </el-card>
@@ -237,6 +245,7 @@ export default {
   data() {
     return {
       legendTab: "price",
+      chartLoading: false,
     };
   },
 
@@ -286,6 +295,10 @@ export default {
   },
 
   methods: {
+    setChartLoading(val) {
+      this.chartLoading = val;
+    },
+
     isActiveTab(tabValue, tab) {
       return tabValue === tab && "color: #FF4D4B; font-weight: 700";
     },
