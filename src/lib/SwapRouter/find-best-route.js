@@ -168,6 +168,11 @@ const getOutputOfWeightedTrade = (
         slippageTolerance
       ),
     };
+
+    if (pairTrades.length === 0) {
+      return { trades: [], outputAmount: 0, minOutAmount: 0 };
+    }
+
     pairTrades[0].weight = (pair[0].a.pool / totalWeight);
     trades.push(pairTrades);
     outputAmount += hopOutput;

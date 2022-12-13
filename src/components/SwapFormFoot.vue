@@ -1,13 +1,15 @@
 <template>
   <div class="bottom-section">
-    <div v-if="routingFee > 0" class="row">
-      <span> Routing Fee</span> <span> {{ routingFee }}%</span>
+    <div class="row">
+      <span>Routing Fee</span>
+      <span>{{ routingFee }}%</span>
     </div>
     <div class="row">
-      <span> Rate</span> <span> {{ getSwapRate() }} </span>
+      <span>Rate</span>
+      <span>{{ getSwapRate() }}</span>
     </div>
     <div class="row">
-      <span> Slippage Tolerance</span>
+      <span>Slippage Tolerance</span>
       <span style="display: flex; justify-content: right; min-height: 26px">
         <el-button
           v-for="value in toleranceOptions"
@@ -110,7 +112,6 @@ export default {
     tokenList: { type: Array, required: true },
   },
   data: () => ({
-    routingFee: ROUTING_FEE_PERCENT,
     toleranceOptions: [0.5, 1],
     customSlippage: "",
     impactColor: "#757679",
@@ -118,6 +119,12 @@ export default {
 
   computed: {
     ...mapGetters(["getSwapForm", "getCurrentTrade"]),
+    routingFee() {
+      if (this.getCurrentTrade.trades && this.getCurrentTrade.trades.length > 1) {
+        return ROUTING_FEE_PERCENT;
+      }
+      return 0.0;
+    },
     numRoutes() {
       if (!this.getCurrentTrade.trades) {
         return 0;
@@ -205,5 +212,40 @@ export default {
     height: 26px;
   }
   margin-left: 10px;
+}
+
+.swap-route-container {
+  position: relative;
+  margin-top: 8px;
+  display: flex;
+  flex-basis: 100%;
+  align-items: center;
+}
+
+.swap-route-label {
+  font-size: 11px;
+  width: 50px;
+  color: #757679;
+  border: 1px solid #E8E8E9;
+  border-radius: 16px;
+  padding: 4px;
+  text-align: center;
+  background: #fff;
+  z-index: 1;
+}
+
+.swap-route-row {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  &:before {
+    content: '';
+    position: absolute;
+    left: 5px;
+    right: 5px;
+    bottom: 50%;
+    border-bottom: 2px solid #E8E8E9;
+    z-index: 0;
+  }
 }
 </style>

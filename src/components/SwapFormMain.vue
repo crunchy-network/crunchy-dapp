@@ -669,41 +669,6 @@ export default {
   top: 6px;
 }
 
-.swap-route-container {
-  position: relative;
-  margin-top: 8px;
-  display: flex;
-  flex-basis: 100%;
-  align-items: center;
-}
-
-.swap-route-label {
-  font-size: 11px;
-  width: 50px;
-  color: #757679;
-  border: 1px solid #E8E8E9;
-  border-radius: 16px;
-  padding: 4px;
-  text-align: center;
-  background: #fff;
-  z-index: 1;
-}
-
-.swap-route-row {
-  display: flex;
-  width: 100%;
-  justify-content: space-around;
-  &:before {
-    content: '';
-    position: absolute;
-    left: 5px;
-    right: 5px;
-    bottom: 50%;
-    border-bottom: 2px solid #E8E8E9;
-    z-index: 0;
-  }
-}
-
 .tooltip {
   position: relative;
   display: inline-block;

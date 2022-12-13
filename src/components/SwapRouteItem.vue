@@ -119,6 +119,7 @@ export default {
     display: block;
     height: 16px;
     width: 16px;
+    border-radius: 50%;
   }
 }
 .left {
@@ -171,7 +172,7 @@ export default {
     top: 7px;
     position: absolute;
     border-radius: 50%;
-    background-color: rgb(153, 153, 153);
+    background: transparent
   }
 }
 </style>
