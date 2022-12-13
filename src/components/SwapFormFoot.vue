@@ -50,8 +50,12 @@
     <div class="row last">
       <span>Swap Route</span>
       <span v-if="numRoutes === 1 && numHops === 1">1 route / 1 hop</span>
-      <span v-else-if="numRoutes === 1 && numHops > 1">1 route / {{numHops}} hops</span>
-      <span v-else-if="numRoutes > 1">{{numRoutes}} routes / {{numHops}} hops</span>
+      <span v-else-if="numRoutes === 1 && numHops > 1"
+        >1 route / {{ numHops }} hops</span
+      >
+      <span v-else-if="numRoutes > 1"
+        >{{ numRoutes }} routes / {{ numHops }} hops</span
+      >
       <span v-else>~</span>
     </div>
 
@@ -62,17 +66,23 @@
           :key="`trade_${n}`"
           class="swap-route-container"
         >
-          <div class="swap-route-label">{{ vueNumberFormat(trade[0].weight * 100, { precision: 2 }) }}%</div>
+          <div class="swap-route-label">
+            {{ vueNumberFormat(trade[0].weight * 100, { precision: 2 }) }}%
+          </div>
           <div class="swap-route-row">
             <div
               v-for="(route, index) in trade"
               :key="`trade_${n}_${route.dexAddress}_${index}`"
-              style="display: flex; align-items: center;"
+              style="display: flex; align-items: center"
             >
               <SwapRouteItem
                 :route="route"
-                :a-token="tokenList.find((t) => route.a.assetSlug === t.assetSlug)"
-                :b-token="tokenList.find((t) => route.b.assetSlug === t.assetSlug)"
+                :a-token="
+                  tokenList.find((t) => route.a.assetSlug === t.assetSlug)
+                "
+                :b-token="
+                  tokenList.find((t) => route.b.assetSlug === t.assetSlug)
+                "
               />
             </div>
           </div>
@@ -85,19 +95,22 @@
             <div
               v-for="(route, index) in getCurrentTrade.trades"
               :key="`${route.dexAddress}_${index}`"
-              style="display: flex;"
+              style="display: flex"
             >
               <SwapRouteItem
                 :route="route"
-                :a-token="tokenList.find((t) => route.a.assetSlug === t.assetSlug)"
-                :b-token="tokenList.find((t) => route.b.assetSlug === t.assetSlug)"
+                :a-token="
+                  tokenList.find((t) => route.a.assetSlug === t.assetSlug)
+                "
+                :b-token="
+                  tokenList.find((t) => route.b.assetSlug === t.assetSlug)
+                "
               />
             </div>
           </div>
         </div>
       </template>
     </div>
-
   </div>
 </template>
 <script>
@@ -120,7 +133,10 @@ export default {
   computed: {
     ...mapGetters(["getSwapForm", "getCurrentTrade"]),
     routingFee() {
-      if (this.getCurrentTrade.trades && this.getCurrentTrade.trades.length > 1) {
+      if (
+        this.getCurrentTrade.trades &&
+        this.getCurrentTrade.trades.length > 1
+      ) {
         return ROUTING_FEE_PERCENT;
       }
       return 0.0;
@@ -191,7 +207,7 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #E8E8E9;
+    border-bottom: 1px solid #e8e8e9;
     &.last {
       border-bottom: none;
     }
@@ -226,7 +242,7 @@ export default {
   font-size: 11px;
   width: 50px;
   color: #757679;
-  border: 1px solid #E8E8E9;
+  border: 1px solid #e8e8e9;
   border-radius: 16px;
   padding: 4px;
   text-align: center;
@@ -239,12 +255,12 @@ export default {
   width: 100%;
   justify-content: space-around;
   &:before {
-    content: '';
+    content: "";
     position: absolute;
     left: 5px;
     right: 5px;
     bottom: 50%;
-    border-bottom: 2px solid #E8E8E9;
+    border-bottom: 2px solid #e8e8e9;
     z-index: 0;
   }
 }

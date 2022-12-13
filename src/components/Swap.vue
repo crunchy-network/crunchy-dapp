@@ -2,8 +2,8 @@
   <div>
     <div id="swap-router-wrapper">
       <NavMenu />
-      <SwapFormMain :tokenList="tokenList" />
-      <SwapFormFoot :tokenList="tokenList" />
+      <SwapFormMain :token-list="tokenList" />
+      <SwapFormFoot :token-list="tokenList" />
     </div>
   </div>
 </template>

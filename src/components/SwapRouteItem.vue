@@ -7,7 +7,8 @@
         alt="dex icon"
         :title="route.dex"
         @click="handleDexClick(route.dexAddress)"
-      /> {{ displayName[route.dex] }}
+      />
+      {{ displayName[route.dex] }}
     </div>
     <div v-if="aToken && bToken" class="token-icon-container">
       <div class="token-icon-image left">
@@ -63,19 +64,19 @@ export default {
         Youves: youves,
       },
       displayName: {
-        LiquidityBaking: 'Sirius',
-        Plenty: 'Plenty',
-        PlentyStable: 'Plenty',
-        PlentyCtezTez: 'Plenty',
-        QuipuSwap: 'Quipu',
-        QuipuSwapTokenToTokenDex: 'Quipu',
-        Quipuswap: 'Quipu',
-        QuipuswapStable: 'Quipu',
-        Vortex: 'Vortex',
-        Spicy: 'Spicy',
-        WTZ: 'WTZ',
-        Youves: 'Youves',
-      }
+        LiquidityBaking: "Sirius",
+        Plenty: "Plenty",
+        PlentyStable: "Plenty",
+        PlentyCtezTez: "Plenty",
+        QuipuSwap: "Quipu",
+        QuipuSwapTokenToTokenDex: "Quipu",
+        Quipuswap: "Quipu",
+        QuipuswapStable: "Quipu",
+        Vortex: "Vortex",
+        Spicy: "Spicy",
+        WTZ: "WTZ",
+        Youves: "Youves",
+      },
     };
   },
   methods: {
@@ -88,7 +89,7 @@ export default {
     handleDexClick(dex) {
       const url = `https://better-call.dev/mainnet/${dex}/operations`;
       window.open(url, "_blank").focus();
-    }
+    },
   },
 };
 </script>
@@ -172,7 +173,7 @@ export default {
     top: 7px;
     position: absolute;
     border-radius: 50%;
-    background: transparent
+    background: transparent;
   }
 }
 </style>

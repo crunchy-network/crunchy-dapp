@@ -20,10 +20,7 @@ function calcFees(pair, swapRate) {
 }
 
 function getSwapOutput(input, pair) {
-  const swapRate = getQuipuCurveOutput(
-    pair,
-    getAmountIn(input, pair.a),
-  );
+  const swapRate = getQuipuCurveOutput(pair, getAmountIn(input, pair.a));
   const fees = calcFees(pair, swapRate);
   const output = swapRate.minus(fees);
   return output.div(10 ** pair.b.decimals).toNumber();

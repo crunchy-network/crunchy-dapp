@@ -6,19 +6,6 @@ const _ = require("lodash");
 const { default: BigNumber } = require("bignumber.js");
 // throws verbose errors for better developer experience
 
-const combinations = function*(elements, length) {
-  for (let i = 0; i < elements.length; i++) {
-    if (length === 1) {
-      yield [elements[i]];
-    } else {
-      let remaining = combinations(elements.slice(i + 1, elements.length), length - 1);
-      for (let next of remaining) {
-        yield [elements[i], ...next];
-      }
-    }
-  };
-}
-
 const validateSlippageToleranceInput = (route, slippageTolerance) => {
   if (!Array.isArray(route.trades)) {
     throw new Error("expected routes.trades to be an array");
@@ -89,17 +76,23 @@ const getAllCombinations = (inputAssetSlug, outputAssetSlug, routePairs) => {
     );
   }
 
-  toRet = toRet.filter(hops => _.uniqBy(hops, 'dexAddress').length === hops.length);
+  toRet = toRet.filter(
+    (hops) => _.uniqBy(hops, "dexAddress").length === hops.length
+  );
 
   const combos = new Map();
   for (const route of toRet) {
     combos.set(
-      route.reduce((s, hop) => `${s}_${hop.a.assetSlug}_${hop.b.assetSlug}_${hop.dexAddress}`, "route"),
+      route.reduce(
+        (s, hop) =>
+          `${s}_${hop.a.assetSlug}_${hop.b.assetSlug}_${hop.dexAddress}`,
+        "route"
+      ),
       route
     );
   }
 
-  return [ ...combos.values() ];
+  return [...combos.values()];
 };
 
 const getDexOutput = (input, pair) => {
@@ -157,23 +150,21 @@ const getOutputOfWeightedTrade = (
   for (const pair of pairs) {
     const weightedInput = input * (pair[0].a.pool / totalWeight);
 
-    const slippagePerTrade =
-      percentToDecimal(slippageTolerance) ** (slippageTolerance / pair.length);
-    const { trades: pairTrades, outputAmount: hopOutput, minOut: hopMinOut } = {
-      ...getOutputOfTrade(
-        weightedInput,
-        pair,
-        0,
-        [],
-        slippageTolerance
-      ),
+    // const slippagePerTrade =
+    //   percentToDecimal(slippageTolerance) ** (slippageTolerance / pair.length);
+    const {
+      trades: pairTrades,
+      outputAmount: hopOutput,
+      minOut: hopMinOut,
+    } = {
+      ...getOutputOfTrade(weightedInput, pair, 0, [], slippageTolerance),
     };
 
     if (pairTrades.length === 0) {
       return { trades: [], outputAmount: 0, minOutAmount: 0 };
     }
 
-    pairTrades[0].weight = (pair[0].a.pool / totalWeight);
+    pairTrades[0].weight = pair[0].a.pool / totalWeight;
     trades.push(pairTrades);
     outputAmount += hopOutput;
     minOutAmount += hopMinOut;
@@ -268,7 +259,7 @@ const findBestRoute = (
 const findTopRoutes = (inputAmount, routePairCombos, slippageTolerance) => {
   inputAmount = parseFloat(inputAmount);
   validateFindBestRouteInput(inputAmount, routePairCombos);
-  let routes = [];
+  const routes = [];
   for (var i = 0; i < routePairCombos.length; i++) {
     const slippagePerTrade =
       percentToDecimal(slippageTolerance) ** (1 / routePairCombos[i].length);
@@ -282,31 +273,35 @@ const findTopRoutes = (inputAmount, routePairCombos, slippageTolerance) => {
       ),
     };
 
-    routes.push({ inputAmount, outputAmount, trades, combo: routePairCombos[i] });
+    routes.push({
+      inputAmount,
+      outputAmount,
+      trades,
+      combo: routePairCombos[i],
+    });
   }
-  return _.orderBy(routes, ['outputAmount'], ['desc']).slice(0, 20);
+  return _.orderBy(routes, ["outputAmount"], ["desc"]).slice(0, 20);
 };
 
 const findBestWeightedRoute = (inputAmount, weightedPairs) => {
   let bestRoute = { inputAmount, type: "weighted" };
-  let weightedPairCombos = [ ...new Combination(weightedPairs, 2) ];
+  let weightedPairCombos = [...new Combination(weightedPairs, 2)];
 
   if (weightedPairCombos.length > 2 && MAX_DEPTH > 2) {
     weightedPairCombos = weightedPairCombos.concat([
-        ...new Combination(weightedPairs, 3),
-        // ...new Combination(weightedPairs, 4),
+      ...new Combination(weightedPairs, 3),
+      // ...new Combination(weightedPairs, 4),
     ]);
   }
 
-  for (let weightedPair of weightedPairCombos) {
-
+  for (const weightedPair of weightedPairCombos) {
     // pools must only exist in the whole route 1 time
     const check = new Set();
     let totalHops = 0;
-    for (let combo of weightedPair) {
+    for (const combo of weightedPair) {
       for (const hop of combo) {
-        const slugs = [ hop.a.assetSlug, hop.b.assetSlug ];
-        slugs.sort()
+        const slugs = [hop.a.assetSlug, hop.b.assetSlug];
+        slugs.sort();
         check.add(`${slugs.join("_")}_${hop.dexAddress}`);
         totalHops++;
       }
@@ -316,7 +311,13 @@ const findBestWeightedRoute = (inputAmount, weightedPairs) => {
       continue;
     }
 
-    const weightedTradeOutput = getOutputOfWeightedTrade(inputAmount, weightedPair, 0, [], 1);
+    const weightedTradeOutput = getOutputOfWeightedTrade(
+      inputAmount,
+      weightedPair,
+      0,
+      [],
+      1
+    );
 
     if (bestRoute.outputAmount === undefined) {
       bestRoute = weightedTradeOutput;

@@ -18,7 +18,7 @@ const getNewPoolEstimate = (tradeList) => {
 };
 
 const getNewWeightedPoolEstimate = (routes) => {
-  return routes.map(route => getNewPoolEstimate(route));
+  return routes.map((route) => getNewPoolEstimate(route));
 };
 
 const simulateNewTradeOutput = (estimatedPools, inputAmount = 1) => {

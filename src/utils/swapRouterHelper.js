@@ -83,7 +83,7 @@ const getBestTrade = (form, routePairs) => {
     return undefined;
   }
 
-  var inputAfterRatio = inputAmount * ROUTING_FEE_RATIO;
+  let inputAfterRatio = inputAmount * ROUTING_FEE_RATIO;
   if (inputToken.decimals === 0) {
     inputAfterRatio = inputAmount;
   }
@@ -91,10 +91,10 @@ const getBestTrade = (form, routePairs) => {
   const bestRoute = findBestRoute(inputAfterRatio, combos, slippageTolerance);
 
   const topRoutes = findTopRoutes(inputAfterRatio, combos, slippageTolerance);
-  const weightedCombos = topRoutes.map(r => r.combo);
+  const weightedCombos = topRoutes.map((r) => r.combo);
 
   if (weightedCombos.length > 1) {
-    var inputAfterRatio = inputAmount;
+    inputAfterRatio = inputAmount;
     if (inputToken.decimals !== 0) {
       inputAfterRatio = inputAmount * ROUTING_FEE_RATIO;
     }

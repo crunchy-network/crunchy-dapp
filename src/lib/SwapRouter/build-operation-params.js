@@ -5,7 +5,7 @@ const buildOperationParams = async (route, tezos, walletAddress) => {
   let params = [];
   for (let trades of route.slippageTrades) {
     if (!Array.isArray(trades)) {
-      trades = [ trades ];
+      trades = [trades];
     }
     for (const trade of trades) {
       const c = await getContractAndStorage(trade.dexAddress, tezos);

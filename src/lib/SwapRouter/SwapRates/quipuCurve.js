@@ -61,7 +61,7 @@ function calculateY(c, aNnF, s_, d, pair) {
 }
 
 function getXp(_ref) {
-  let toRet = [];
+  const toRet = [];
   for (const pool of _ref.poolParams) {
     toRet.push(pool.rate.times(pool.reserves).idiv(precision));
   }
