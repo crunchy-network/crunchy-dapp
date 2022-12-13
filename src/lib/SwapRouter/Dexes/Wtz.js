@@ -23,7 +23,7 @@ const calcWtzToXtz = (input, pair) => {
 
 const getSwapOutput = (input, pair) => {
   return Number(
-    pair.a.tokenAddress === "tez"
+    pair.a.assetSlug === "tez"
       ? calcXtzToWtz(input, pair)
       : calcWtzToXtz(input, pair)
   );
@@ -33,7 +33,7 @@ const buildDexOperation = async (dex, trade, walletAddress, tezos) => {
   const input = convertToMuTez(trade.input, trade.a);
   // const output = convertToMuTez(trade.output, trade.b);
   let transfers = [];
-  if (trade.a.tokenAddress === "tez") {
+  if (trade.a.assetSlug === "tez") {
     return dex.contract.methods
       .wrap(walletAddress)
       .toTransferParams(fromOpOpts(input));

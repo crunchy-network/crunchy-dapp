@@ -6,8 +6,8 @@ const FEE_DENOM = 1000;
 
 const getSwapOutput = (input, pair) => {
   const inputMuTez = convertToMuTez(input, pair.a);
-  const tez = [pair.a, pair.b].find((token) => token.tokenSymbol === "tez");
-  const ctez = [pair.a, pair.b].find((token) => token.tokenSymbol !== "tez");
+  const tez = [pair.a, pair.b].find((token) => token.assetSlug === "tez");
+  const ctez = [pair.a, pair.b].find((token) => token.assetSlug !== "tez");
   const toRet = ctezEstimator.calculateRate(
     convertToMuTez(tez.pool, tez),
     convertToMuTez(ctez.pool, ctez),
@@ -23,9 +23,6 @@ const tezToCtez = (dex, trade, walletAddress, input, output, tezos) => {
   const toRet = dex.contract.methods
     .tez_to_ctez(output, walletAddress)
     .toTransferParams(fromOpOpts(input));
-
-  console.log("params", toRet);
-
   return toRet;
 };
 

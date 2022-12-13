@@ -14,31 +14,7 @@ export default {
     currentTrade: {},
     swapPairs: [],
     dexApis: {
-      tezTools: {
-        loading: false,
-        pairs: [],
-      },
-      vortex: {
-        loading: false,
-        pairs: [],
-      },
-      spicy: {
-        loading: false,
-        pairs: [],
-      },
-      WTZ: {
-        loading: false,
-        pairs: [],
-      },
-      Youves: {
-        loading: false,
-        pairs: [],
-      },
-      Plenty: {
-        loading: false,
-        pairs: [],
-      },
-      QuipuStable: {
+      core: {
         loading: false,
         pairs: [],
       },
@@ -50,18 +26,7 @@ export default {
   getters: {
     getCurrentTrade: (state) => state.currentTrade,
     getSwapForm: (state) => state.swapForm,
-    getSwapPairs: (state) => {
-      const apis = state.dexApis;
-      return [
-        ...apis.tezTools.pairs,
-        ...apis.vortex.pairs,
-        ...apis.spicy.pairs,
-        ...apis.WTZ.pairs,
-        ...apis.Youves.pairs,
-        ...apis.Plenty.pairs,
-        ...apis.QuipuStable.pairs,
-      ];
-    },
+    getSwapPairs: (state) => state.dexApis.core.pairs,
     getApiLoadingStatus: (state) => {
       return Object.keys(state.dexApis).map((api) => ({
         api,

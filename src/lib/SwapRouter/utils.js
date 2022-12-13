@@ -26,7 +26,7 @@ const fromOpOpts = (tezValue, opts = {}) => {
 };
 
 const isTez = (token) => {
-  return token.tokenSymbol === "tez";
+  return token.assetSlug === "tez";
 };
 const isToken = (token) => {
   return !isTez(token);

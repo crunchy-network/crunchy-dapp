@@ -41,8 +41,8 @@ function getD(xp, ampF) {
   return d;
 }
 
-function calculateY(c, aNnF, s_, d, pool) {
-  var tokensCount = pool.tokensInfo.length;
+function calculateY(c, aNnF, s_, d, pair) {
+  var tokensCount = pair.poolParams.length;
   c = c.times(d).times(aPrecision).idiv(aNnF.times(tokensCount));
   var b = s_.plus(d.times(aPrecision).idiv(aNnF));
   var y = d;
@@ -61,17 +61,10 @@ function calculateY(c, aNnF, s_, d, pool) {
 }
 
 function getXp(_ref) {
-  var tokensInfo = [..._ref.tokensInfo];
-  var toRet = [];
-  tokensInfo.forEach(function (tokenInfo) {
-    var info = Object.assign(
-      {},
-      { rate: tokenInfo.rate, reserves: tokenInfo.reserves }
-    );
-    var rate = new BigNumber(info.rate);
-    var reserves = new BigNumber(info.reserves);
-    toRet.push(rate.times(reserves).idiv(precision));
-  });
+  const toRet = [];
+  for (const pool of _ref.poolParams) {
+    toRet.push(pool.rate.times(pool.reserves).idiv(precision));
+  }
   return toRet;
 }
 
@@ -106,7 +99,7 @@ var getA = function getA(t0, a0, t1, a1) {
 };
 
 var getY = function getY(i, j, x, xp, s) {
-  var tokensCount = s.tokensInfo.length;
+  var tokensCount = s.poolParams.length;
   var ampF = getA(
     new Date(s.initialATime),
     s.initialA,
@@ -134,18 +127,18 @@ var getY = function getY(i, j, x, xp, s) {
   return calculateY(res.c, aNnF, res.s_, d, s);
 };
 
-function getQuipuCurveOutput(i, j, dx, pool) {
+function getQuipuCurveOutput(pair, dx) {
   dx = new BigNumber(dx);
-  var xp = getXp(pool);
-  var xpI = xp[i];
-  var xpJ = xp[j];
-  var tI = pool.tokensInfo[i];
-  var tJ = pool.tokensInfo[j];
+  var xp = getXp(pair);
+  var xpI = xp[pair.a.index];
+  var xpJ = xp[pair.b.index];
+  var tI = pair.poolParams[pair.a.index];
+  var tJ = pair.poolParams[pair.b.index];
   var rateIF = tI.rate;
   var rateJF = tJ.rate;
   var x = xpI.plus(dx.times(rateIF).idiv(precision));
 
-  var y = getY(i, j, x, xp, pool); // -1 just in case there were some rounding errors
+  var y = getY(pair.a.index, pair.b.index, x, xp, pair); // -1 just in case there were some rounding errors
 
   var dy = xpJ.minus(y).minus(1);
   if (dy.toNumber() < 0) {

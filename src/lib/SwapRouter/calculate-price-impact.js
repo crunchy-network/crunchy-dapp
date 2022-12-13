@@ -17,6 +17,10 @@ const getNewPoolEstimate = (tradeList) => {
   });
 };
 
+const getNewWeightedPoolEstimate = (routes) => {
+  return routes.map((route) => getNewPoolEstimate(route));
+};
+
 const simulateNewTradeOutput = (estimatedPools, inputAmount = 1) => {
   if (!estimatedPools.length) {
     return { inputAmount: 1, outputAmount: 0 };
@@ -36,50 +40,29 @@ const simulateNewWeightedTradeOutput = (estimatedPools, inputAmount = 1) => {
   return { inputAmount, outputAmount };
 };
 
-// For debugging purposes.
-const printComparison = (trades, estimate) => {
-  // console.log(trades, estimate);
-  // var str = "";
-  // for (var i = 0; i < trades.length; i++) {
-  //   str = str.concat(` \n <<< dex ${i + 1}, ${trades[i].dex} >>> \n
-  //       dex address: ${trades[i].dexAddress}
-  //       pool A ${trades[i].a.tokenSymbol}\n
-  //         ${trades[i].a.pool} vs  ${estimate[i].a.pool} \n
-  //       pool B ${trades[i].b.tokenSymbol} \n
-  //         ${trades[i].b.pool} vs  ${estimate[i].b.pool} \n
-  //       input: ${trades[i].input} vs  ${estimate[i].input} \n
-  //       output: ${trades[i].output} vs  ${estimate[i].output} \n
-  //       diff: ${1 - estimate[i].output / trades[i].output} \n
-  //     `);
-  // }
-  // console.debug(str);
-};
-
 const calculatePriceImpact = (trade) => {
   if (!trade.trades) return undefined;
-  const estimatedPools = getNewPoolEstimate([...trade.trades]);
-  const currPools = trade.trades.map((t) => ({
-    dex: t.dex,
-    dexAddress: t.dexAddress,
-    input: t.input,
-    output: t.output,
-    a: { pool: t.a.pool, tokenSymbol: t.a.tokenSymbol },
-    b: { pool: t.b.pool, tokenSymbol: t.b.tokenSymbol },
-  }));
-  let tradeOne, simulatedOutput;
+  let estimatedPools, tradeOne, simulatedOutput;
+  switch (trade.type) {
+    case "weighted":
+      estimatedPools = getNewWeightedPoolEstimate([...trade.trades]);
+      break;
+    default:
+      estimatedPools = getNewPoolEstimate([...trade.trades]);
+      break;
+  }
+
   switch (trade.type) {
     case "weighted":
       tradeOne = simulateNewWeightedTradeOutput([...trade.trades]);
       simulatedOutput = simulateNewWeightedTradeOutput(estimatedPools);
       break;
-
     default:
       tradeOne = simulateNewTradeOutput([...trade.trades]);
       simulatedOutput = simulateNewTradeOutput(estimatedPools);
       break;
   }
 
-  printComparison(currPools, simulatedOutput.estimatedPools);
   return (
     (1 - simulatedOutput.outputAmount / tradeOne.outputAmount) *
     100
