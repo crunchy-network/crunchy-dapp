@@ -32,39 +32,39 @@ async function getExchange24HrsVolume(exchangeId) {
   return quotes1dNogaps;
 }
 
-const queryTokenPriceBucket = async (tokenId, value, param) => {
-  const query = `
-    query MyQuery {
-      quotes1dNogaps(where: {${param}: {_eq: "${value}"}, tokenId: {_eq: "${tokenId}"}}, distinct_on: ${param}) {
-        bucket
-      }
-    }    
-  `;
+// const queryTokenPriceBucket = async (tokenId, value, param) => {
+//   const query = `
+//     query MyQuery {
+//       quotes1dNogaps(where: {${param}: {_eq: "${value}"}, tokenId: {_eq: "${tokenId}"}}, distinct_on: ${param}) {
+//         bucket
+//       }
+//     }
+//   `;
 
-  console.log("\n\n------ begin:  ------");
-  console.log("queryTokenPriceBucket", query);
-  console.log("------ end:  ------\n\n");
+//   console.log("\n\n------ begin:  ------");
+//   console.log("queryTokenPriceBucket", query);
+//   console.log("------ end:  ------\n\n");
 
-  const {
-    data: {
-      data: { quotes1dNogaps },
-    },
-  } = await axios.post("https://dex.dipdup.net/v1/graphql", {
-    query,
-  });
+//   const {
+//     data: {
+//       data: { quotes1dNogaps },
+//     },
+//   } = await axios.post("https://dex.dipdup.net/v1/graphql", {
+//     query,
+//   });
 
-  return quotes1dNogaps;
-};
+//   return quotes1dNogaps;
+// };
 
-const getTokenPriceBucket = async (tokenId, value, param = "high") => {
-  const query = await queryTokenPriceBucket(tokenId, value, param);
+// const getTokenPriceBucket = async (tokenId, value, param = "high") => {
+//   const query = await queryTokenPriceBucket(tokenId, value, param);
 
-  if (query.length === 0) {
-    return 0;
-  } else {
-    return query[0].bucket;
-  }
-};
+//   if (query.length === 0) {
+//     return 0;
+//   } else {
+//     return query[0].bucket;
+//   }
+// };
 
 const filterQueryBytokenId = (tokenPriceRange, tokenAddress, tokenId) => {
   const value = tokenPriceRange?.filter(
