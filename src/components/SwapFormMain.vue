@@ -59,13 +59,12 @@
 
     <div class="swap-placeholder">
       <div class="swap-image-container">
-        <img
-          :src="reverseIcon"
-          height="20px"
-          width="20px"
-          style="cursor: pointer"
+        <el-button
+          type="text"
+          icon="fak fa-crunchy-swap fa-rotate-90"
+          style="font-size: 20px; padding: 0; margin: 0"
           @click="reverseSwap"
-        />
+        ></el-button>
       </div>
     </div>
     <div class="from-section">
@@ -125,18 +124,20 @@
       </div>
     </div>
     <div
-      style="width: 100%; display: flex; height: 20px; justify-content: right"
+      v-if="areApisLoading"
+      style="
+        height: 20px;
+        width: 20px;
+        position: absolute;
+        right: 8px;
+        bottom: 8px;
+      "
+      data-html="true"
+      class="tooltip"
     >
-      <div
-        v-if="areApisLoading"
-        style="width: 20px"
-        data-html="true"
-        class="tooltip"
-      >
-        <i class="el-icon-loading"> </i>
-        <div class="tooltiptext" data-html="true">
-          <span>Loading Data</span>
-        </div>
+      <i class="el-icon-loading"> </i>
+      <div class="tooltiptext" data-html="true">
+        <span>Loading Data</span>
       </div>
     </div>
   </el-card>
@@ -144,14 +145,11 @@
 <script>
 import { mapActions, mapGetters, mapState } from "vuex";
 import { getBestTrade } from "../utils/swapRouterHelper";
-import reverseIcon from "../assets/svg-icons/swap-icon.svg";
 
 import TokenSelectMenu from "./TokenSelectMenu.vue";
 import { buildRoutingFeeOperation } from "../utils/routing-fee";
 import { buildOperationParams } from "../lib/SwapRouter";
 import { Tezos } from "../utils/tezos";
-import arrowRight from "../assets/svg-icons/arrow-right.svg";
-import plusSolid from "../assets/svg-icons/plus-solid.svg";
 import * as signalR from "@microsoft/signalr";
 
 export default {
@@ -163,9 +161,6 @@ export default {
   data: () => ({
     numFormatOpts: { decimal: ".", thousand: ",", prefix: "" },
     percentOptions: [25, 50, 75, 100],
-    reverseIcon,
-    arrowRight,
-    plusSolid,
     notifyDefaults: {
       duration: 10000,
       showClose: true,
@@ -548,8 +543,7 @@ export default {
 @import "~element-ui/packages/theme-chalk/src/common/var";
 
 .swap-form-main-box-card {
-  box-shadow: 0 0px 12px 0 rgba(21, 21, 52, 0.05) !important;
-
+  position: relative;
   width: 100%;
   max-width: 440px;
 }

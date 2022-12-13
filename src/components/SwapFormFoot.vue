@@ -62,7 +62,7 @@
     <div v-if="getCurrentTrade.trades">
       <template v-if="getCurrentTrade.type === 'weighted'">
         <div
-          v-for="(trade, n) in getCurrentTrade.trades"
+          v-for="(trade, n) in getCurrentTradesSorted"
           :key="`trade_${n}`"
           class="swap-route-container"
         >
@@ -114,6 +114,7 @@
   </div>
 </template>
 <script>
+import _ from "lodash";
 import { mapActions, mapGetters } from "vuex";
 import SwapRouteItem from "./SwapRouteItem.vue";
 import { ROUTING_FEE_PERCENT } from "./swapConfig";
@@ -132,6 +133,9 @@ export default {
 
   computed: {
     ...mapGetters(["getSwapForm", "getCurrentTrade"]),
+    getCurrentTradesSorted() {
+      return _.orderBy(this.getCurrentTrade.trades, ["[0].weight"], ["desc"]);
+    },
     routingFee() {
       if (
         this.getCurrentTrade.trades &&
@@ -198,6 +202,7 @@ export default {
 
 .bottom-section {
   margin: 0px 16px;
+  margin-top: 16px;
   .row {
     color: #757679;
     width: 100%;
