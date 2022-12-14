@@ -144,7 +144,7 @@ export default {
   async getPriceAndVolumeQuotes(tokenId) {
     const query = `
     query MyQuery($tokenId: String) {
-      quotes1dNogaps (
+      quotes1d (
         where: {tokenId: {_eq: $tokenId}}
         distinct_on: bucket
         order_by: {bucket: asc}
@@ -155,7 +155,7 @@ export default {
         xtzVolume
         tokenId
       }
-      quotes1wNogaps(
+      quotes1w(
         where: {tokenId: {_eq: $tokenId}}
         distinct_on: bucket
         order_by: {bucket: asc}
@@ -181,13 +181,13 @@ export default {
     `;
     const {
       data: {
-        data: { quotes1dNogaps, quotes1wNogaps, quotes1mo },
+        data: { quotes1d, quotes1w, quotes1mo },
       },
     } = await axios.post("https://dex.dipdup.net/v1/graphql", {
       query,
       variables: { tokenId: tokenId },
     });
-    return { quotes1d: quotes1dNogaps, quotes1w: quotes1wNogaps, quotes1mo };
+    return { quotes1d: quotes1d, quotes1w: quotes1w, quotes1mo };
   },
 
   async getQuotes1dNogaps(tokenId, startTime) {
@@ -385,6 +385,7 @@ export default {
   async calculateTokenData(
     token,
     priceFeed,
+    allTokensMetadata,
     xtzUsd,
     tokenHighAndLow,
     totalTvl
@@ -394,6 +395,13 @@ export default {
       token.tokenId?.toString(),
       priceFeed
     );
+
+    const tokenMetadata = allTokensMetadata.find((el) => {
+      return (
+        el.token_address === token.tokenAddress &&
+        (el.token_id ? el.token_id === (token.tokenId || 0) : true)
+      );
+    });
 
     const tokenPriceRange = filterQueryBytokenId(
       tokenHighAndLow,
@@ -423,13 +431,19 @@ export default {
         (el) => el.dex === "Quipuswap" && el.sides[1].symbol === "XTZ"
       );
 
-      const mktCap = new BigNumber(element.totalSupply)
-        .div(new BigNumber(10).pow(element.decimals))
-        .times(element.usdValue);
+      let calcSupply = 0;
 
-      const calcSupply = new BigNumber(element.totalSupply).div(
-        new BigNumber(10).pow(element.decimals)
-      );
+      if (tokenMetadata) {
+        calcSupply = new BigNumber(tokenMetadata.total_supply).div(
+          new BigNumber(10).pow(tokenMetadata.decimals)
+        );
+      } else {
+        calcSupply = new BigNumber(element.totalSupply).div(
+          new BigNumber(10).pow(element.decimals)
+        );
+      }
+
+      const mktCap = new BigNumber(calcSupply).times(element.usdValue);
 
       const change1Day =
         price

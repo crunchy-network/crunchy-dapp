@@ -47,7 +47,7 @@ const QUERY_GET_ALL_DEXES = `query AllDexes {
 export default {
   async getAllTokens() {
     return makeQuery(QUERY_GET_ALL_TOKENS).then((res) =>
-      res.data && res.dat.data && res.data.data.tokens
+      res.data && res.data.data && res.data.data.tokens
         ? res.data.data.tokens
         : []
     );

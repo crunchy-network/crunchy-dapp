@@ -3,6 +3,7 @@ import tokensToTrack from "../../tokensTracked.json";
 import teztools from "../../utils/teztools";
 import _ from "lodash";
 import coingecko from "../../utils/coingecko";
+import dexIndexer from "../../utils/dex-indexer";
 
 export default {
   async fetchTokensTracked({ commit, dispatch, state }) {
@@ -15,10 +16,14 @@ export default {
   async _setTokenTracked({ commit, state, dispatch }, id) {
     commit("updateLoading", true);
     try {
+      const allTokensMetadata = await dexIndexer.getAllTokens();
       const xtzUsd = await coingecko.getXtzUsdPrice();
       const xtzUsdHistory = await coingecko.getXtzUsdHistory();
       commit("updateXtzUsdPrice", xtzUsd);
       commit("updateXtzUsdHistory", xtzUsdHistory);
+
+      console.log(allTokensMetadata);
+
       const [
         { contracts: priceFeed },
         { quotesTotal: tokenHighAndLow, totalTvl },
@@ -36,6 +41,7 @@ export default {
         const token = await tokenTracker.calculateTokenData(
           tokenData,
           priceFeed,
+          allTokensMetadata,
           xtzUsd,
           tokenHighAndLow,
           totalTvl

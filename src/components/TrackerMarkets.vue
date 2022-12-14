@@ -31,6 +31,7 @@
           </el-row>
           <div v-for="(item, index) in markets" :key="index">
             <el-row
+              v-if="`${item.dex}`.toLowerCase() === 'quipuswap'"
               style="font-size: 14px; font-weight: 600"
               type="flex"
               align="top"

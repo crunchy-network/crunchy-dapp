@@ -26,10 +26,10 @@
                   <el-col>Market Cap</el-col>
                   <el-col>Total Supply</el-col>
                   <el-col>Market Cap Rank</el-col>
-                  <el-col>Total Value Locked</el-col>
-                  <el-col>24h Trading Vol</el-col>
-                  <el-col>All Time High</el-col>
-                  <el-col>All Time Low</el-col>
+                  <el-col style="text-align: center">Total Value Locked</el-col>
+                  <el-col style="text-align: right">24h Trading Vol</el-col>
+                  <el-col style="text-align: right">All Time High</el-col>
+                  <el-col style="text-align: right">All Time Low</el-col>
                 </div>
               </el-row>
             </el-col>
@@ -65,14 +65,14 @@
                     />
                   </el-col>
                   <el-col>{{ tokenTracked.order }}</el-col>
-                  <el-col>
+                  <el-col style="text-align: center">
                     <price-format
                       :precision="4"
                       prefix="$"
                       :value="tokenTracked.tokenTvl"
                     />
                   </el-col>
-                  <el-col>
+                  <el-col style="text-align: right">
                     <price-format
                       :precision="4"
                       prefix="$"
@@ -110,7 +110,7 @@
                       }}</span
                     > -->
                   </el-col>
-                  <el-col>
+                  <el-col style="text-align: right">
                     <!-- <price-format
                       prefix="$"
                       :value="tokenTracked.allTimeHigh * getXtzUsdPrice"
@@ -118,7 +118,7 @@
                     /> -->
                     -
                   </el-col>
-                  <el-col>
+                  <el-col style="text-align: right">
                     <!-- <price-format
                       prefix="$"
                       :value="tokenTracked.allTimeLow * getXtzUsdPrice"
