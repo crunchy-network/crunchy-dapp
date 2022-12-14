@@ -14,6 +14,7 @@ const QUERY_GET_ALL_TOKENS = `query AllTokens {
     thumbnail_uri
     token_address
     token_id
+    total_supply
     token_type
   }
 }`;
