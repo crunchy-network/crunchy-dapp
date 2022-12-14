@@ -144,7 +144,7 @@ export default {
   async getPriceAndVolumeQuotes(tokenId) {
     const query = `
     query MyQuery($tokenId: String) {
-      quotes1d (
+      quotes1dNogaps (
         where: {tokenId: {_eq: $tokenId}}
         distinct_on: bucket
         order_by: {bucket: asc}
@@ -155,7 +155,7 @@ export default {
         xtzVolume
         tokenId
       }
-      quotes1w(
+      quotes1wNogaps(
         where: {tokenId: {_eq: $tokenId}}
         distinct_on: bucket
         order_by: {bucket: asc}
@@ -181,13 +181,14 @@ export default {
     `;
     const {
       data: {
-        data: { quotes1d, quotes1w, quotes1mo },
+        data: { quotes1dNogaps, quotes1wNogaps, quotes1mo },
       },
     } = await axios.post("https://dex.dipdup.net/v1/graphql", {
       query,
       variables: { tokenId: tokenId },
     });
-    return { quotes1d: quotes1d, quotes1w: quotes1w, quotes1mo };
+
+    return { quotes1d: quotes1dNogaps, quotes1w: quotes1wNogaps, quotes1mo };
   },
 
   async getQuotes1dNogaps(tokenId, startTime) {
@@ -438,6 +439,9 @@ export default {
           new BigNumber(10).pow(tokenMetadata.decimals)
         );
       } else {
+        console.log("\n\n------ begin:  ------");
+        console.log(token);
+        console.log("------ end:  ------\n\n");
         calcSupply = new BigNumber(element.totalSupply).div(
           new BigNumber(10).pow(element.decimals)
         );
