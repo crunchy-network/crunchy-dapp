@@ -10,7 +10,7 @@ const getQuipuDex = (swapPairs, token) => {
     (p) =>
       p.dex === "Quipuswap" &&
       p.a.assetSlug === token.assetSlug &&
-      p.b.tokenSymbol === "tez"
+      p.b.assetSlug === "tez"
   );
 };
 
@@ -27,9 +27,11 @@ const sendTezToBuybackAndBurnAddress = (fee, inputToken) => {
 const makeTradeObject = (inputToken, fee, quipuDex) => {
   const slippageTolerance = 0.85;
   const tez = {
-    tokenSymbol: "tez",
+    tokenSymbol: "XTZ",
     type: "tez",
     tokenAddress: "tez",
+    tokenId: 0,
+    assetSlug: "tez",
     decimals: 6,
   };
   const output = Quipuswap.getSwapOutput(fee, quipuDex);
@@ -110,7 +112,14 @@ const buildRoutingFeeOperation = async (
   if (ROUTING_FEE_RATIO === 1) {
     return [];
   }
-  const inputToken = route.slippageTrades[0].a;
+
+  let inputToken;
+  if (Array.isArray(route.slippageTrades[0])) {
+    inputToken = route.slippageTrades[0][0].a;
+  } else {
+    inputToken = route.slippageTrades[0].a;
+  }
+
   if (inputToken.decimals === 0) {
     return [];
   }

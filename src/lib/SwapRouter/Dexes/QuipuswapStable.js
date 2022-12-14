@@ -20,12 +20,7 @@ function calcFees(pair, swapRate) {
 }
 
 function getSwapOutput(input, pair) {
-  const swapRate = getQuipuCurveOutput(
-    pair.a.infoIndex,
-    pair.b.infoIndex,
-    getAmountIn(input, pair.a),
-    pair.pool
-  );
+  const swapRate = getQuipuCurveOutput(pair, getAmountIn(input, pair.a));
   const fees = calcFees(pair, swapRate);
   const output = swapRate.minus(fees);
   return output.div(10 ** pair.b.decimals).toNumber();
@@ -37,9 +32,9 @@ const buildDexOperation = (dex, trade, walletAddres, tezos) => {
   const transfers = [
     dex.contract.methods
       .swap(
-        trade.pool.poolId,
-        trade.a.infoIndex,
-        trade.b.infoIndex,
+        trade.poolId,
+        trade.a.index,
+        trade.b.index,
         input,
         output,
         `${secondsFromNow(300)}`

@@ -25,7 +25,7 @@
       <TokenSelectMenu
         :id="'tokenInput'"
         :list="tokenList"
-        :on-change="handleInputChange"
+        :on-change="(e) => handleInputChange(e)"
         :amount="getSwapForm.inputAmount"
         :selected-token="getSwapForm.inputToken"
       />
@@ -59,13 +59,12 @@
 
     <div class="swap-placeholder">
       <div class="swap-image-container">
-        <img
-          :src="reverseIcon"
-          height="20px"
-          width="20px"
-          style="cursor: pointer"
+        <el-button
+          type="text"
+          icon="fak fa-crunchy-swap fa-rotate-90"
+          style="font-size: 20px; padding: 0; margin: 0"
           @click="reverseSwap"
-        />
+        ></el-button>
       </div>
     </div>
     <div class="from-section">
@@ -91,35 +90,6 @@
         :input-disabled="true"
         :selected-token="getSwapForm.outputToken"
       />
-    </div>
-
-    <div v-if="getCurrentTrade.trades" class="from-section">
-      <span>Swap Route </span>
-    </div>
-    <div v-if="getCurrentTrade.trades" class="swap-route-container">
-      <div
-        v-for="(route, index) in getCurrentTrade.trades"
-        :key="`${route.dexAddress}_${index}`"
-        style="display: flex"
-      >
-        <SwapRouteItem
-          :route="route"
-          :a-token="tokenList.find((t) => route.a.assetSlug === t.assetSlug)"
-          :b-token="tokenList.find((t) => route.b.assetSlug === t.assetSlug)"
-        />
-        <div
-          v-if="index < getCurrentTrade.trades.length - 1"
-          style="margin: auto 7px"
-        >
-          <img
-            v-if="getCurrentTrade.type === 'weighted'"
-            :src="plusSolid"
-            alt="plus"
-            width="16"
-          />
-          <img v-else :src="arrowRight" alt="arrow" />
-        </div>
-      </div>
     </div>
     <div style="width: 100%; margin-top: 16px; text-align: center">
       <div :style="`${!getPkh ? 'display: none;' : ''}`">
@@ -154,48 +124,43 @@
       </div>
     </div>
     <div
-      style="width: 100%; display: flex; height: 20px; justify-content: right"
+      v-if="areApisLoading"
+      style="
+        height: 20px;
+        width: 20px;
+        position: absolute;
+        right: 8px;
+        bottom: 8px;
+      "
+      data-html="true"
+      class="tooltip"
     >
-      <div
-        v-if="areApisLoading"
-        style="width: 20px"
-        data-html="true"
-        class="tooltip"
-      >
-        <i class="el-icon-loading"> </i>
-        <div class="tooltiptext" data-html="true">
-          <span v-for="api in getToolTipContent" :key="api"> {{ api }}</span>
-        </div>
+      <i class="el-icon-loading"> </i>
+      <div class="tooltiptext" data-html="true">
+        <span>Loading Data</span>
       </div>
     </div>
   </el-card>
 </template>
 <script>
 import { mapActions, mapGetters, mapState } from "vuex";
-import {
-  buildTokenListFromWalletAndPriceFeed,
-  getBestTrade,
-} from "../utils/swapRouterHelper";
-import reverseIcon from "../assets/svg-icons/swap-icon.svg";
+import { getBestTrade } from "../utils/swapRouterHelper";
 
 import TokenSelectMenu from "./TokenSelectMenu.vue";
-import SwapRouteItem from "./SwapRouteItem.vue";
 import { buildRoutingFeeOperation } from "../utils/routing-fee";
 import { buildOperationParams } from "../lib/SwapRouter";
 import { Tezos } from "../utils/tezos";
-import arrowRight from "../assets/svg-icons/arrow-right.svg";
-import plusSolid from "../assets/svg-icons/plus-solid.svg";
 import * as signalR from "@microsoft/signalr";
 
 export default {
   name: "SwapFormMain",
-  components: { TokenSelectMenu, SwapRouteItem },
+  components: { TokenSelectMenu },
+  props: {
+    tokenList: { type: Array, required: true },
+  },
   data: () => ({
     numFormatOpts: { decimal: ".", thousand: ",", prefix: "" },
     percentOptions: [25, 50, 75, 100],
-    reverseIcon,
-    arrowRight,
-    plusSolid,
     notifyDefaults: {
       duration: 10000,
       showClose: true,
@@ -204,7 +169,7 @@ export default {
     },
   }),
   computed: {
-    ...mapState(["homeWallet", "farms"]),
+    ...mapState(["homeWallet"]),
     ...mapGetters([
       "getPkh",
       "getSwapForm",
@@ -215,15 +180,6 @@ export default {
     areApisLoading() {
       return this.getApiLoadingStatus.some((a) => a.loading);
     },
-    getToolTipContent() {
-      const toRet = ["Loading Data"];
-      this.getApiLoadingStatus
-        .filter((a) => a.loading)
-        .forEach((a) => {
-          toRet.push(a.api);
-        });
-      return toRet;
-    },
     isLoading() {
       if (this.getSwapForm.inputToken === {}) {
         return true;
@@ -232,14 +188,6 @@ export default {
         return true;
       }
       return false;
-    },
-    tokenList() {
-      const ownedAssets = this.homeWallet.assets || [];
-      const toRet = buildTokenListFromWalletAndPriceFeed(
-        ownedAssets,
-        this.farms.priceFeed
-      );
-      return toRet;
     },
     errorMessage() {
       const bal = this.getBalanceOfSelectedToken(this.getSwapForm.inputToken);
@@ -407,7 +355,7 @@ export default {
     roundDown(v, n) {
       return Math.floor(v * Math.pow(10, n)) / Math.pow(10, n);
     },
-    handleInputChange(e) {
+    async handleInputChange(e) {
       if (e.asset !== undefined) {
         this.updateForm({ inputToken: e.asset });
       }
@@ -595,8 +543,7 @@ export default {
 @import "~element-ui/packages/theme-chalk/src/common/var";
 
 .swap-form-main-box-card {
-  box-shadow: 0 0px 12px 0 rgba(21, 21, 52, 0.05) !important;
-
+  position: relative;
   width: 100%;
   max-width: 440px;
 }
@@ -714,13 +661,6 @@ export default {
   left: calc(50% - 10px);
 
   top: 6px;
-}
-
-.swap-route-container {
-  margin-top: 8px;
-  display: flex;
-  flex-basis: 100%;
-  justify-content: center;
 }
 
 .tooltip {
