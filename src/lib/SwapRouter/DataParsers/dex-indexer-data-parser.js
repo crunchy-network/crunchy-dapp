@@ -204,6 +204,7 @@ const buildSwapPairs = (dexes) => {
       case "quipuswap":
       case "vortex":
       case "sirius":
+      case "plenty":
         pairs.push(buildSimplePair(dex, "tez"));
         pairs.push(buildSimplePair(dex, "tez", true));
         break;
