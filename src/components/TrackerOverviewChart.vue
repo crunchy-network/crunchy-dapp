@@ -7,6 +7,7 @@
 <script>
 import { createChart } from "lightweight-charts";
 import { mapGetters } from "vuex";
+import numberFormat from "../utils/number-format";
 import tokenTracker from "../utils/token-tracker";
 
 export default {
@@ -342,9 +343,14 @@ export default {
           toolTip.innerHTML = `<div style="color: ${"rgba( 38, 166, 154, 1)"}">${
             this.tokenTracked.symbol || this.tokenTracked.name
           }.</div><div style="font-size: 24px; margin: 4px 0px; color: ${"black"}">
-            $${Number(Number(price).toFixed(price >= 1 ? 2 : 4)).toLocaleString(
-              "en-US"
-            )}
+            $${
+              this.formatNumShorthand(
+                price.toFixed(this.handlePrecision(price))
+              ).value
+            }${
+            this.formatNumShorthand(price.toFixed(this.handlePrecision(price)))
+              .suffix
+          }
             </div><div style="color: ${"black"}">
             ${dateStr}
             </div>`;
@@ -389,6 +395,10 @@ export default {
       }
 
       return precision;
+    },
+
+    formatNumShorthand(val) {
+      return numberFormat.shorthand(val);
     },
   },
 };
