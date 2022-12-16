@@ -8,13 +8,12 @@
         suffix: suffix || shortHand ? numShorthand().suffix : "",
         decimal: ".",
         thousand: ",",
-        precision:
-          1 > value ? precision || handlePrecision() : handlePrecision(),
+        precision: handlePrecision(),
       })
     }}
     <number-tooltip
-      :number="value"
-      :dp="precision ? 1 * 10 ** -precision : 0.00000001"
+      :number="value.toString()"
+      :dp="0.00000001"
     ></number-tooltip>
     <slot />
   </h2>
@@ -84,11 +83,15 @@ export default {
         precision = 2;
       }
 
-      return precision;
+      return this.value >= 1
+        ? 2
+        : this.precision > precision
+        ? this.precision
+        : precision;
     },
 
     handleFontSize() {
-      return !this.precision
+      return this.handlePrecision() > this.precision
         ? this.fontSize - (this.handlePrecision() - 2) / 2
         : this.fontSize;
     },

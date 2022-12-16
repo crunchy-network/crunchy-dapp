@@ -68,7 +68,6 @@ export default {
       this.getPrices();
     },
     updatedChartData() {
-
       this.getPrices();
     },
     getXtzUsdHistory() {
@@ -307,8 +306,8 @@ export default {
         areaSeries.applyOptions({
           priceFormat: {
             type: "price",
-            precision: 4,
-            minMove: 0.0001,
+            precision: this.handlePrecision(this.tokenTracked.usdValue),
+            minMove: 10 ** -this.handlePrecision(this.tokenTracked.usdValue),
           },
         });
       }
@@ -369,7 +368,10 @@ export default {
     },
 
     handlePrecision(value) {
-      let precision = 2;
+      let precision = 4;
+
+      console.log(value);
+
       if (value < 0.0000000001 && value > 0) {
         precision = 12;
       } else if (value < 0.00000001 && value > 0) {
@@ -380,8 +382,10 @@ export default {
         precision = 6;
       } else if (value < 0.001 && value > 0) {
         precision = 4;
-      } else {
+      } else if (value >= 1) {
         precision = 2;
+      } else {
+        precision = 4;
       }
 
       return precision;

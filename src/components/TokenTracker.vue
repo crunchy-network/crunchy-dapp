@@ -209,15 +209,12 @@
               <el-row
                 type="flex"
                 align="middle"
+                class="header-row-wrap"
                 style="
-                  color: #757679;
-                  font-size: 14px;
-                  font-weight: 600;
                   border-bottom: 2px solid #f4f4f4;
                   padding-bottom: 14px;
                   margin-bottom: 14px;
                   min-width: 900px;
-                  opacity: 0.6;
                 "
               >
                 <el-col :span="24">
@@ -229,42 +226,112 @@
                   >
                     <el-col :span="2">#</el-col>
 
-                    <el-col :span="4">Token</el-col>
+                    <el-col :span="4">
+                      <div
+                        class="wrap-sort-icon"
+                        @click="toggleColumSort('symbol')"
+                      >
+                        Token
+                        <sort-arrow-indicator
+                          v-if="sort.key === 'symbol'"
+                          :value="sort.rule"
+                          :margin-left="true"
+                        />
+                      </div>
+                    </el-col>
 
-                    <el-col style="text-align: right" :span="4">Price</el-col>
-                    <el-col style="text-align: right" :span="4"
-                      >24h Volume</el-col
-                    >
-                    <el-col style="text-align: right" :span="4">Mkt Cap</el-col>
-                    <el-col style="text-align: right" :span="2"
-                      >1d
-                      <el-tooltip
-                        content="% Change in XTZ"
-                        placement="top"
-                        effect="light"
+                    <el-col style="text-align: right" :span="4">
+                      <div
+                        class="wrap-sort-icon"
+                        @click="toggleColumSort('usdValue')"
                       >
-                        <i class="fa-regular fa-info-circle"></i>
-                      </el-tooltip>
+                        <sort-arrow-indicator
+                          v-if="sort.key === 'usdValue'"
+                          :value="sort.rule"
+                        />
+                        Price
+                      </div>
                     </el-col>
-                    <el-col style="text-align: right" :span="2"
-                      >7d
-                      <el-tooltip
-                        content="% Change in XTZ"
-                        placement="top"
-                        effect="light"
+                    <el-col style="text-align: right" :span="4">
+                      <div
+                        class="wrap-sort-icon"
+                        @click="toggleColumSort('volume24')"
                       >
-                        <i class="fa-regular fa-info-circle"></i>
-                      </el-tooltip>
+                        <sort-arrow-indicator
+                          v-if="sort.key === 'volume24'"
+                          :value="sort.rule"
+                        />
+                        24 Volume
+                      </div>
                     </el-col>
-                    <el-col style="text-align: right" :span="2"
-                      >30d
-                      <el-tooltip
-                        content="% Change in XTZ"
-                        placement="top"
-                        effect="light"
+                    <el-col style="text-align: right" :span="4">
+                      <div
+                        class="wrap-sort-icon"
+                        @click="toggleColumSort('mktCap')"
                       >
-                        <i class="fa-regular fa-info-circle"></i>
-                      </el-tooltip>
+                        <sort-arrow-indicator
+                          v-if="sort.key === 'mktCap'"
+                          :value="sort.rule"
+                        />
+                        Mkt Cap
+                      </div>
+                    </el-col>
+                    <el-col style="text-align: right" :span="2">
+                      <div
+                        class="wrap-sort-icon"
+                        @click="toggleColumSort('change1Day')"
+                      >
+                        <sort-arrow-indicator
+                          v-if="sort.key === 'change1Day'"
+                          :value="sort.rule"
+                        />
+                        1d
+                        <el-tooltip
+                          content="% Change in XTZ"
+                          placement="top"
+                          effect="light"
+                        >
+                          <i class="fa-regular fa-info-circle"></i>
+                        </el-tooltip>
+                      </div>
+                    </el-col>
+                    <el-col style="text-align: right" :span="2">
+                      <div
+                        class="wrap-sort-icon"
+                        @click="toggleColumSort('change7Day')"
+                      >
+                        <sort-arrow-indicator
+                          v-if="sort.key === 'change7Day'"
+                          :value="sort.rule"
+                        />
+                        7d
+                        <el-tooltip
+                          content="% Change in XTZ"
+                          placement="top"
+                          effect="light"
+                        >
+                          <i class="fa-regular fa-info-circle"></i>
+                        </el-tooltip>
+                      </div>
+                    </el-col>
+                    <el-col style="text-align: right" :span="2">
+                      <div
+                        class="wrap-sort-icon"
+                        @click="toggleColumSort('change30Day')"
+                      >
+                        <sort-arrow-indicator
+                          v-if="sort.key === 'change30Day'"
+                          :value="sort.rule"
+                        />
+                        30d
+                        <el-tooltip
+                          content="% Change in XTZ"
+                          placement="top"
+                          effect="light"
+                        >
+                          <i class="fa-regular fa-info-circle"></i>
+                        </el-tooltip>
+                      </div>
                     </el-col>
                   </el-row>
                 </el-col>
@@ -348,6 +415,8 @@ import NavMenu from "./NavMenu.vue";
 import { mapActions, mapGetters, mapState } from "vuex";
 import numberFormat from "../utils/number-format";
 import PriceFormat from "./PriceFormat.vue";
+import _ from "lodash";
+import SortArrowIndicator from "./SortArrowIndicator.vue";
 
 export default {
   name: "TokenTracker",
@@ -355,10 +424,15 @@ export default {
     TokenTrakerRow,
     NavMenu,
     PriceFormat,
+    SortArrowIndicator,
   },
   data() {
     return {
       activeTab: "wallet",
+      sort: {
+        key: "",
+        rule: "",
+      },
       tabledata: [],
       showUsd: false,
       currentPage: 0,
@@ -372,6 +446,9 @@ export default {
   computed: {
     ...mapState(["tokenTracker"]),
     ...mapGetters(["getTrackerData", "getTokens"]),
+    sortedTokensTracked() {
+      return _.orderBy(this.getTokens, [this.sort.key], [this.sort.rule]) || [];
+    },
   },
 
   watch: {
@@ -383,8 +460,24 @@ export default {
       },
     },
 
-    getTokens() {
+    sortedTokensTracked(newValue) {
       this.paginationHandler();
+    },
+
+    "sort.key": {
+      immediate: true,
+      deep: true,
+      handler() {
+        this.paginationHandler();
+      },
+    },
+
+    "sort.rule": {
+      immediate: true,
+      deep: true,
+      handler() {
+        this.paginationHandler();
+      },
     },
   },
 
@@ -403,17 +496,19 @@ export default {
     },
 
     paginationHandler() {
-      this.pages = Math.ceil(this.getTokens.length / this.displayCount);
+      this.pages = Math.ceil(
+        this.sortedTokensTracked.length / this.displayCount
+      );
 
       this.handleVisibleData();
     },
 
     handleVisibleData() {
       const next = this.nextPage > this.pages ? this.pages : this.nextPage;
-      this.tabledata = this.getTokens.slice(
+      this.tabledata = this.sortedTokensTracked.slice(
         (next - 1) * this.displayCount,
-        this.nextPage * this.displayCount > this.getTokens.length
-          ? this.getTokens.length
+        this.nextPage * this.displayCount > this.sortedTokensTracked.length
+          ? this.sortedTokensTracked.length
           : next * this.displayCount
       );
     },
@@ -458,6 +553,15 @@ export default {
       this.pages = 0;
       this.nextPage = 1;
       this.prevPage = 0;
+    },
+
+    toggleColumSort(column) {
+      if (this.sort.key === column) {
+        this.sort.rule = this.sort.rule === "asc" ? "desc" : "asc";
+      } else {
+        this.sort.key = column;
+        this.sort.rule = "desc";
+      }
     },
   },
 };
@@ -530,6 +634,16 @@ export default {
   }
 }
 
+.header-row-wrap .wrap-sort-icon {
+  color: #757679;
+  font-size: 14px;
+  font-weight: 600;
+  align-items: center;
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
 .el-input__inner {
   border-radius: 28px;
 }

@@ -1,5 +1,8 @@
 <template>
-  <div v-if="number < dp && number !== 0" style="display: inline">
+  <div
+    v-if="Number(number) !== 0 && Number(number) < dp"
+    style="display: inline"
+  >
     <el-tooltip :content="`${number}`" placement="top"
       ><i style="font-size: 12px" class="el-icon-info"></i>
     </el-tooltip>
@@ -11,8 +14,8 @@ export default {
   name: "NumberTooltip",
   props: {
     number: {
-      type: Number,
-      default: 0,
+      type: String,
+      default: "0",
     },
     dp: {
       type: Number,
