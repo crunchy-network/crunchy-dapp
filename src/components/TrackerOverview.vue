@@ -253,9 +253,6 @@ export default {
     ...mapGetters(["getLoadingChart", "getXtzUsdPrice"]),
   },
   watch: {
-    tokenTracked() {
-      console.log(this.tokenTracked);
-    },
 
     "$router.query.legend": function (val) {
       this.legendTab = val;

@@ -107,56 +107,6 @@ export default {
       default: false,
     },
   },
-  data() {
-    return {
-      // markets: [
-      //   {
-      //     id: "1",
-      //     exchange: "Quipuswap",
-      //     url: "https://quipuswap.com/liquidity/add/tez-KT193D4vozYnhGJQVtw7CoxxqphqUEEwK6Vb_0",
-      //     thumbnailUri:
-      //       "https://res.cloudinary.com/melvin-manni/image/upload/v1645292809/c1rutxlzllilmtuibcdo.png",
-      //     market: "EASY/XTZ",
-      //     price: 1.32,
-      //     volume: 12123,
-      //   },
-      //   {
-      //     id: "2",
-      //     exchange: "Spicyswap",
-      //     url: "https://spicyswap.xyz/#/app",
-      //     thumbnailUri: "https://docs.spicyswap.xyz/img/spicy.png",
-      //     market: "EASY/XTZ",
-      //     price: 1.32,
-      //     volume: 1123,
-      //   },
-      //   {
-      //     id: "3",
-      //     exchange: "Vortex",
-      //     url: "https://app.vortex.network/vortex/liquidity",
-      //     thumbnailUri:
-      //       "https://www.gitbook.com/cdn-cgi/image/width=40,height=40,fit=contain,dpr=1,format=auto/https%3A%2F%2F3533877337-files.gitbook.io%2F~%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FyX7WTYr0YMeQcemP26Of%252Ficon%252F76rbNGaJiDxSJwFIjsLQ%252FGroup%25201494.png%3Falt%3Dmedia%26token%3D829a380f-2d70-4ceb-ac23-8c2aaddf8fe5",
-      //     market: "EASY/XTZ",
-      //     price: 1.31,
-      //     volume: 1.23,
-      //   },
-      //   {
-      //     id: "4",
-      //     exchange: "Youves",
-      //     url: "https://app.youves.com/dashboard",
-      //     thumbnailUri:
-      //       "https://pbs.twimg.com/profile_images/1397080302196039680/teEliSzA_400x400.png",
-      //     market: "EASY/XTZ",
-      //     price: 1.1,
-      //     volume: 1,
-      //   },
-      // ],
-    };
-  },
-  watch: {
-    markets() {
-      console.log(this.markets);
-    },
-  },
 
   methods: {
     handleDexUri(dex = "") {

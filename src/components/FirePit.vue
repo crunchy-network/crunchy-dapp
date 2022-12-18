@@ -32,7 +32,7 @@
                 >
                 <el-col :sm="16">
                   <el-link
-                    :href="`https://better-call.dev/${wallet.network}/${burnRecord.contract}`"
+                    :href="`https://tzkt.io/${burnRecord.contract}`"
                     target="_blank"
                     style="word-break: break-all"
                     >{{ burnRecord.contract }}

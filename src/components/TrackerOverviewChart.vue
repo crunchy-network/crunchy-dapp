@@ -376,8 +376,6 @@ export default {
     handlePrecision(value) {
       let precision = 4;
 
-      console.log(value);
-
       if (value < 0.0000000001 && value > 0) {
         precision = 12;
       } else if (value < 0.00000001 && value > 0) {

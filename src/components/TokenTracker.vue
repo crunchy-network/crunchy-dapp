@@ -643,6 +643,12 @@ export default {
   border: none;
   outline: none;
   cursor: pointer;
+  width: 100%;
+  height: 100%;
+
+  &:hover {
+    background: #b2b4ff;
+  }
 }
 .el-input__inner {
   border-radius: 28px;
