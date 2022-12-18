@@ -1,5 +1,5 @@
 <template>
-  <div style="margin-bottom: 100px">
+  <div style="margin-bottom: 150px">
     <el-header
       id="nav-menu"
       style="
@@ -10,11 +10,22 @@
         right: 0;
         left: 0;
         z-index: 999;
-        display: flex;
+        /*display: flex;*/
         align-items: center;
         border-bottom: 1px solid #f2f2f2;
       "
     >
+      <div class="el-row" id="notice" style="
+          background: #f8535b;
+          padding: 8px 0px;
+          width: 100%;
+          display: block;
+          color: #fff;
+          text-align: center;
+          font-size: 14px;
+      ">Important Announcement: $CRUNCH and $crDAO tokens are merging.
+        <a href="https://crunchytez.medium.com/introducing-crnchy-b99879b4974e" target="_blank">Please read the medium article for full details.</a>
+      </div>
       <el-row class="el-menu-row" type="flex" justify="space-between">
         <div class="show-mobile" style="text-align: center; margin: 0 20px">
           <img src="../assets/logo_transparent_background.png" width="170" />
@@ -333,6 +344,12 @@ export default {
 
 <style lang="scss" scoped>
 @import "~element-ui/packages/theme-chalk/src/common/var";
+
+#notice {
+  a {
+    color: #fff;
+  }
+}
 
 .el-menu-row {
   border-right: none !important;
