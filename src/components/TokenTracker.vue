@@ -439,7 +439,7 @@ export default {
       pages: 0,
       nextPage: 1,
       prevPage: 0,
-      displayCount: 12,
+      displayCount: 100,
     };
   },
 
