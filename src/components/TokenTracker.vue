@@ -647,7 +647,8 @@ export default {
   height: 100%;
 
   &:hover {
-    background: #b2b4ff;
+    color: #191b1f;
+    transition: 0.2s ease-in-out color;
   }
 }
 .el-input__inner {

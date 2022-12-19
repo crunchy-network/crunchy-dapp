@@ -253,7 +253,6 @@ export default {
     ...mapGetters(["getLoadingChart", "getXtzUsdPrice"]),
   },
   watch: {
-
     "$router.query.legend": function (val) {
       this.legendTab = val;
       if (val === "price") {
