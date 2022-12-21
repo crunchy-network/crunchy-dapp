@@ -1,8 +1,6 @@
 import axios from "axios";
 import BigNumber from "bignumber.js";
-import { getPrice } from "./home-wallet";
 import ipfs from "./ipfs";
-import teztools from "./teztools";
 
 const twentyFourHrs = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
 const fourtyEightHrs = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
@@ -31,48 +29,6 @@ async function getExchange24HrsVolume(exchangeId) {
 
   return quotes1dNogaps;
 }
-
-// const queryTokenPriceBucket = async (tokenId, value, param) => {
-//   const query = `
-//     query MyQuery {
-//       quotes1dNogaps(where: {${param}: {_eq: "${value}"}, tokenId: {_eq: "${tokenId}"}}, distinct_on: ${param}) {
-//         bucket
-//       }
-//     }
-//   `;
-
-//   console.log("\n\n------ begin:  ------");
-//   console.log("queryTokenPriceBucket", query);
-//   console.log("------ end:  ------\n\n");
-
-//   const {
-//     data: {
-//       data: { quotes1dNogaps },
-//     },
-//   } = await axios.post("https://dex.dipdup.net/v1/graphql", {
-//     query,
-//   });
-
-//   return quotes1dNogaps;
-// };
-
-// const getTokenPriceBucket = async (tokenId, value, param = "high") => {
-//   const query = await queryTokenPriceBucket(tokenId, value, param);
-
-//   if (query.length === 0) {
-//     return 0;
-//   } else {
-//     return query[0].bucket;
-//   }
-// };
-
-const filterQueryBytokenId = (tokenPriceRange, tokenAddress, tokenId) => {
-  const value = tokenPriceRange?.filter(
-    (val) => val.tokenId === `${tokenAddress}_${tokenId || 0}`
-  );
-
-  return value.length > 0 ? value[0] : { high: 0, low: 0 };
-};
 
 async function queryTokenXtzVolume(tokenId) {
   const query = `
@@ -338,10 +294,102 @@ export default {
     };
   },
 
-  async getTokens() {
-    const { contracts: tokens } = await teztools.getPricefeed();
+  async getTokenFeed() {
+    const query = `
+     query MyQuery {
+      quotes1dNogaps(order_by: {bucket: desc}) {
+        close
+        tokenId
+        bucket
+      }
+      quotes1mo(order_by: {bucket: desc}) {
+        close
+        tokenId
+        bucket
+      }
+      quotes1wNogaps(order_by: {bucket: desc}) {
+        close
+        bucket
+        tokenId
+      }
+      quotesTotal {
+        close
+        low
+        high
+        tokenId
+      }
+      statsTotal {
+        tvlUsd
+        exchangeId
+        tokenId
+      }
+      token {
+        exchanges {
+          name
+          tezPool
+          tokenPool
+        }
+        address
+        decimals
+        id
+        name
+        symbol
+        thumbnailUri
+        tokenId
+      }
+    }`;
 
-    return { ...tokens };
+    const {
+      data: {
+        data: {
+          quotes1dNogaps,
+          quotes1mo,
+          quotes1wNogaps,
+          quotesTotal,
+          statsTotal,
+          token,
+        },
+      },
+    } = await axios.post("https://dex.dipdup.net/v1/graphql", {
+      query,
+    });
+
+    const tokenObjkt = {};
+
+    for (let index = 0; index < token.length; index++) {
+      const element = token[index];
+      const tokenId = element.id;
+      const dayClose =
+        quotes1dNogaps.find((quote) => quote.tokenId === tokenId)?.close || 0;
+
+      const weekClose =
+        quotes1wNogaps.find((quote) => quote.tokenId === tokenId)?.close || 0;
+
+      const monthClose =
+        quotes1mo.find((quote) => quote.tokenId === tokenId)?.close || 0;
+
+      const tokenQuotesTotal = quotesTotal.find(
+        (quote) => quote.tokenId === tokenId
+      );
+
+      const tokenTvl =
+        new BigNumber(
+          statsTotal.find((quote) => quote.tokenId === tokenId)?.tvlUsd
+        ).toNumber() || 0;
+
+      tokenObjkt[element.id] = {
+        ...element,
+        currentPrice: tokenQuotesTotal?.close || 0,
+        allTimeHigh: tokenQuotesTotal?.high || 0,
+        allTimeLow: tokenQuotesTotal?.low || 0,
+        dayClose,
+        weekClose,
+        monthClose,
+        tokenTvl,
+      };
+    }
+
+    return tokenObjkt;
   },
 
   async calcExchangeVolume(token, xtzUsd, xtzUsdHistory) {
@@ -353,21 +401,6 @@ export default {
           return prev + Number(current.xtzVolume);
         }, 0) * xtzUsd || 0;
     });
-
-    // token.athBucket = await getTokenPriceBucket(token.id, token.allTimeHigh);
-    // token.atlBucket = await getTokenPriceBucket(
-    //   token.id,
-    //   token.allTimeLow,
-    //   "low"
-    // );
-
-    // token.allTimeHigh =
-    //   this.binarySearch(xtzUsdHistory, new Date(token.athBucket).getTime()) *
-    //   token.allTimeHigh;
-
-    // token.allTimeLow =
-    //   this.binarySearch(xtzUsdHistory, new Date(token.atlBucket).getTime()) *
-    //   token.allTimeLow;
 
     return token;
   },
@@ -383,19 +416,8 @@ export default {
     return volume24;
   },
 
-  async calculateTokenData(
-    token,
-    priceFeed,
-    allTokensMetadata,
-    xtzUsd,
-    tokenHighAndLow,
-    totalTvl
-  ) {
-    const tokenPrice = await getPrice(
-      token.tokenAddress,
-      token.tokenId?.toString(),
-      priceFeed
-    );
+  async calculateTokenData(token, tokenFeed, allTokensMetadata, xtzUsd) {
+    const tokenPrice = tokenFeed[token.id];
 
     const tokenMetadata = allTokensMetadata.find((el) => {
       return (
@@ -404,21 +426,6 @@ export default {
       );
     });
 
-    const tokenPriceRange = filterQueryBytokenId(
-      tokenHighAndLow,
-      token.tokenAddress,
-      token.tokenId?.toString()
-    );
-
-    const tvl =
-      Number(
-        filterQueryBytokenId(
-          totalTvl,
-          token.tokenAddress,
-          token.tokenId?.toString()
-        ).tvlUsd
-      ) || 0;
-
     const element = tokenPrice;
 
     if (element) {
@@ -426,72 +433,46 @@ export default {
         element.thumbnailUri = ipfs.transformUri(element.thumbnailUri);
 
       const currentPrice = element?.currentPrice || false;
+
       const price = new BigNumber(currentPrice);
+      element.usdValue = price.times(xtzUsd).toNumber();
 
-      const pricePair = element?.pairs.find(
-        (el) => el.dex === "Quipuswap" && el.sides[1].symbol === "XTZ"
-      );
+      element.calcSupply = new BigNumber(tokenMetadata.total_supply)
+        .div(new BigNumber(10).pow(tokenMetadata.decimals))
+        .toNumber();
 
-      let calcSupply = 0;
+      const mktCap = new BigNumber(element.calcSupply).times(element.usdValue);
 
-      if (tokenMetadata) {
-        calcSupply = new BigNumber(tokenMetadata.total_supply).div(
-          new BigNumber(10).pow(tokenMetadata.decimals)
-        );
-      } else {
-        console.log("\n\n------ begin:  ------");
-        console.log(token);
-        console.log("------ end:  ------\n\n");
-        calcSupply = new BigNumber(element.totalSupply).div(
-          new BigNumber(10).pow(element.decimals)
-        );
-      }
-
-      const mktCap = new BigNumber(calcSupply).times(element.usdValue);
-
-      const change1Day =
+      element.change1Day =
         price
-          .minus(pricePair?.sides[0]?.dayClose)
-          .div(pricePair?.sides[0]?.dayClose)
+          .minus(element?.dayClose)
+          .div(element?.dayClose)
           .times(100)
           .toNumber() || 0;
-      const change7Day =
+      element.change7Day =
         price
-          .minus(pricePair?.sides[0]?.weekClose)
-          .div(pricePair?.sides[0]?.weekClose)
+          .minus(element?.weekClose)
+          .div(element?.weekClose)
           .times(100)
           .toNumber() || 0;
-      const change30Day =
+      element.change30Day =
         price
-          .minus(pricePair?.sides[0]?.monthClose)
-          .div(pricePair?.sides[0]?.monthClose)
+          .minus(element?.monthClose)
+          .div(element?.monthClose)
           .times(100)
           .toNumber() || 0;
 
       element.mktCap = isNaN(mktCap.toNumber()) ? 0 : mktCap.toNumber();
-      element.change1Day = change1Day;
-      element.change7Day = change7Day;
-      element.change30Day = change30Day;
       element.volume24 = 0;
-
-      element.tokenTvl = tvl;
-
-      // element.volume1DayChange =
-      //   ((element.volume1Day - tokenVolume2DaysAgo) / tokenVolume2DaysAgo) *
-      //     100 || 0;
-      element.calcSupply = calcSupply.toNumber();
-
-      element.allTimeHigh = Number(tokenPriceRange?.high) || 0;
-      element.allTimeLow = Number(tokenPriceRange?.low) || 0;
 
       for (let index = 0; index < element?.pairs?.length; index++) {
         const market = element?.pairs[index];
         element.pairs[index].lpPrice =
           (market.tvl / market.lptSupply) * xtzUsd || 0;
       }
-
-      if (mktCap < 200000000) return element;
     }
+
+    if (element.mktCap < 800000000) return element;
   },
 
   binarySearch(arr, target) {

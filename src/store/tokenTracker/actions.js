@@ -1,6 +1,5 @@
 import tokenTracker from "../../utils/token-tracker";
 import tokensToTrack from "../../tokensTracked.json";
-import teztools from "../../utils/teztools";
 import _ from "lodash";
 import coingecko from "../../utils/coingecko";
 import dexIndexer from "../../utils/dex-indexer";
@@ -24,33 +23,24 @@ export default {
 
       console.log(allTokensMetadata);
 
-      const [
-        { contracts: priceFeed },
-        { quotesTotal: tokenHighAndLow, totalTvl },
-        // tokenVolumesYesterday,
-      ] = await Promise.all([
-        teztools.getPricefeed(),
-        tokenTracker.getQuotes(),
-        // tokenTracker.getDayBeforeVolume(),
-      ]);
+      const tokenFeed = await tokenTracker.getTokenFeed();
 
       const tokens = [];
       for (let i = 0; i < tokensToTrack.length; i++) {
         const value = tokensToTrack[i];
+        value.id = `${value.tokenAddress}_${value.tokenId || 0}`;
+
         const tokenData = value;
         const token = await tokenTracker.calculateTokenData(
           tokenData,
-          priceFeed,
+          tokenFeed,
           allTokensMetadata,
-          xtzUsd,
-          tokenHighAndLow,
-          totalTvl
+          xtzUsd
           // tokenVolumesYesterday
         );
 
         if (token) {
           tokens.push({
-            id: `${value.tokenAddress}_${value.tokenId || 0}`,
             ...token,
           });
         }

@@ -308,7 +308,12 @@ export default {
           priceFormat: {
             type: "price",
             precision: this.handlePrecision(this.tokenTracked.usdValue),
-            minMove: 10 ** -this.handlePrecision(this.tokenTracked.usdValue),
+            minMove:
+              this.handlePrecision(this.tokenTracked.usdValue) >= 6
+                ? 0.00000000001
+                : this.handlePrecision(this.tokenTracked.usdValue) >= 4
+                ? 0.00001
+                : 0.0001,
           },
         });
       }
@@ -339,17 +344,14 @@ export default {
         } else {
           const dateStr = this.formatDate(param.time);
           toolTip.style.display = "block";
-          const price = param.seriesPrices.get(areaSeries);
+          const price = Number(param.seriesPrices.get(areaSeries)).toFixed(
+            this.handlePrecision(param.seriesPrices.get(areaSeries))
+          );
           toolTip.innerHTML = `<div style="color: ${"rgba( 38, 166, 154, 1)"}">${
             this.tokenTracked.symbol || this.tokenTracked.name
           }.</div><div style="font-size: 24px; margin: 4px 0px; color: ${"black"}">
-            $${
-              this.formatNumShorthand(
-                price.toFixed(this.handlePrecision(price))
-              ).value
-            }${
-            this.formatNumShorthand(price.toFixed(this.handlePrecision(price)))
-              .suffix
+            $${this.formatNumShorthand(price).value}${
+            this.formatNumShorthand(price).suffix
           }
             </div><div style="color: ${"black"}">
             ${dateStr}
