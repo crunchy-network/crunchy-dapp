@@ -30,10 +30,10 @@ async function getExchange24HrsVolume(exchangeId) {
   return quotes1dNogaps;
 }
 
-async function queryTokenXtzVolume(tokenId) {
+async function queryXtzVolume() {
   const query = `
   query MyQuery {
-    trade(where: {tokenId: {_eq: "${tokenId}"}, timestamp: {_gte: "${twentyFourHrs}"}}) {
+    trade(where: { timestamp: {_gte: "${twentyFourHrs}"}}) {
       tezQty
       timestamp
       tokenId
@@ -354,6 +354,8 @@ export default {
       query,
     });
 
+    const tokensVolume = await queryXtzVolume();
+
     const tokenObjkt = {};
 
     for (let index = 0; index < token.length; index++) {
@@ -372,6 +374,14 @@ export default {
         (quote) => quote.tokenId === tokenId
       );
 
+      let volume24Xtz = 0;
+
+      tokensVolume.forEach((o) => {
+        if (o.tokenId === tokenId) {
+          volume24Xtz = new BigNumber(o.tezQty).plus(volume24Xtz).toNumber();
+        }
+      });
+
       const tokenTvl =
         new BigNumber(
           statsTotal.find((quote) => quote.tokenId === tokenId)?.tvlUsd
@@ -386,6 +396,7 @@ export default {
         weekClose,
         monthClose,
         tokenTvl,
+        volume24Xtz,
       };
     }
 
@@ -406,14 +417,12 @@ export default {
   },
 
   async calcTokenVolume(tokenId, xtzUsd) {
-    const volumes = await queryTokenXtzVolume(tokenId);
-    const volume = volumes?.reduce((prev, current) => {
-      return prev + Number(current.tezQty);
-    }, 0);
-
-    const volume24 = volume * xtzUsd || 0;
-
-    return volume24;
+    // const volumes = await queryTokenXtzVolume(tokenId);
+    // const volume = volumes?.reduce((prev, current) => {
+    //   return prev + Number(current.tezQty);
+    // }, 0);
+    // const volume24 = volume * xtzUsd || 0;
+    // return volume24;
   },
 
   async calculateTokenData(token, tokenFeed, allTokensMetadata, xtzUsd) {
@@ -463,7 +472,9 @@ export default {
           .toNumber() || 0;
 
       element.mktCap = isNaN(mktCap.toNumber()) ? 0 : mktCap.toNumber();
-      element.volume24 = 0;
+      element.volume24 = new BigNumber(element.volume24Xtz)
+        .times(xtzUsd)
+        .toNumber();
 
       for (let index = 0; index < element?.pairs?.length; index++) {
         const market = element?.pairs[index];
