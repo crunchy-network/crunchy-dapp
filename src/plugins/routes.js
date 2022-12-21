@@ -19,7 +19,7 @@ import TokenTrackerItem from "./../components/TokenTrackerItem.vue";
 Vue.use(VueRouter);
 
 const routes = [
-  { name: "home", path: "/", component: HomeWalletPage },
+  { name: "home", path: "/", component: TokenTracker },
   {
     name: "home-view-wallet",
     path: "/wallet/:walletAddress",
@@ -32,14 +32,10 @@ const routes = [
     path: "/wtz",
     component: WtzMain,
   },
-  {
-    name: "token-tracker",
-    path: "/token-tracker",
-    component: TokenTracker,
-  },
+
   {
     name: "token-tracker-item",
-    path: "/token-tracker/:tokenId",
+    path: "/token/:tokenId",
     component: TokenTrackerItem,
   },
 

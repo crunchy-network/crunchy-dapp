@@ -1,5 +1,5 @@
 <template>
-  <router-link :to="'/token-tracker/' + asset.id" exact>
+  <router-link :to="'/token/' + asset.id" exact>
     <el-row
       style="padding-bottom: 14px; font-size: 14px; font-weight: 600"
       type="flex"
