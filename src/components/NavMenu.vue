@@ -72,6 +72,17 @@
                 <span>Home</span>
               </router-link>
 
+              <router-link
+                tag="li"
+                class="el-menu-item"
+                :to="{ name: 'home-view-portfolio' }"
+                exact
+                active-class="is-active"
+              >
+                <i v-if="mobile" class="fak fa-light fa-coins"></i>
+                <span>Portfolio</span>
+              </router-link>
+
               <el-submenu
                 id="defi-menu"
                 :popper-append-to-body="false"
@@ -315,7 +326,9 @@ export default {
     openSubmenu(index) {
       if (
         this.$route.name !== "home-view-wallet" &&
-        this.$route.name !== "home"
+        this.$route.name !== "home" &&
+        this.$route.name !== "home-view-portfolio" &&
+        this.$route.name === "token-tracker-item"
       ) {
         this.defiActive = true;
 

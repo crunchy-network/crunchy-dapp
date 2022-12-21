@@ -25,6 +25,11 @@ const routes = [
     path: "/wallet/:walletAddress",
     component: HomeWalletPage,
   },
+  {
+    name: "home-view-portfolio",
+    path: "/portfolio",
+    component: HomeWalletPage,
+  },
 
   // { name: 'home-wallet', path: '/home-wallet', component: HomeWalletPage },
   {
