@@ -18,10 +18,11 @@ export default {
       const allTokensMetadata = await dexIndexer.getAllTokens();
       const xtzUsd = await coingecko.getXtzUsdPrice();
       const xtzUsdHistory = await coingecko.getXtzUsdHistory();
+      console.log("\n\n------ begin:  ------");
+      console.log(xtzUsdHistory);
+      console.log("------ end:  ------\n\n");
       commit("updateXtzUsdPrice", xtzUsd);
       commit("updateXtzUsdHistory", xtzUsdHistory);
-
-      console.log(allTokensMetadata);
 
       const tokenFeed = await tokenTracker.getTokenFeed();
 
@@ -77,7 +78,6 @@ export default {
     //     token.id,
     //     state.xtzUsd
     //   );
-
     //   token.softCalcDone = true;
     //   commit("updateTokenListIndex", { index, token });
     //   commit("updateTokenTracked", token);
@@ -131,8 +131,6 @@ export default {
         tokenTracker.getAllQuotes1d(tokenId),
         tokenTracker.getChartTvl(tokenId, exchangeId),
       ]);
-
-      console.log(tvl1Day, tvl7Day, tvl30Day, tvlAll);
 
       chartData.allVolumeAndPrice = allVolumeAndPrice;
       chartData.volumeAndPrice1Day = volumeAndPrice1Day;

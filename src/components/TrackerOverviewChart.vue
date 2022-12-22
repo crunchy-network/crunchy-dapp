@@ -76,8 +76,8 @@ export default {
     },
   },
   mounted() {
-    this.getPrices();
     this.sortTokenData();
+    this.getPrices();
   },
   methods: {
     sortTokenData() {
@@ -85,7 +85,7 @@ export default {
       this.updatedChartData.tvl.days1 = this.getChartData.tvl1Day.map(
         (element) => {
           return {
-            time: Math.floor(new Date(element.bucket).getTime()),
+            time: new Date(element.bucket).getTime(),
             value: Number(element.tvlUsd),
           };
         }
@@ -94,7 +94,7 @@ export default {
       this.updatedChartData.tvl.days7 = this.getChartData.tvl7Day.map(
         (element) => {
           return {
-            time: Math.floor(new Date(element.bucket).getTime()),
+            time: new Date(element.bucket).getTime(),
             value: Number(element.tvlUsd),
           };
         }
@@ -103,7 +103,7 @@ export default {
       this.updatedChartData.tvl.days30 = this.getChartData.tvl30Day.map(
         (element) => {
           return {
-            time: Math.floor(new Date(element.bucket).getTime()),
+            time: new Date(element.bucket).getTime(),
             value: Number(element.tvlUsd),
           };
         }
@@ -112,7 +112,7 @@ export default {
       this.updatedChartData.tvl.all = this.getChartData.tvlAll.map(
         (element) => {
           return {
-            time: Math.floor(new Date(element.bucket).getTime()),
+            time: new Date(element.bucket).getTime(),
             value: Number(element.tvlUsd),
           };
         }
@@ -122,11 +122,12 @@ export default {
         this.getChartData.volumeAndPrice1Day.map((element) => {
           const timeUsdValue = tokenTracker.binarySearch(
             this.getXtzUsdHistory,
-            new Date(element.bucket).getTime()
+            new Date(element.bucket).getTime() + 1000 * 60 * 60 * 24
           );
           return {
-            time: Math.floor(new Date(element.bucket).getTime()),
+            time: new Date(element.bucket).getTime(),
             value: Number(element.close) * timeUsdValue,
+            timeUsdValue,
           };
         });
       this.updatedChartData.volume.days1 =
@@ -136,22 +137,22 @@ export default {
             new Date(element.bucket).getTime()
           );
           return {
-            time: Math.floor(new Date(element.bucket).getTime()),
+            time: new Date(element.bucket).getTime(),
             value: Number(element.xtzVolume) * timeUsdValue,
           };
         });
 
-      this.updatedChartData.price.days7 =
-        this.getChartData.volumeAndPrice7Day.map((element) => {
-          const timeUsdValue = tokenTracker.binarySearch(
-            this.getXtzUsdHistory,
-            new Date(element.bucket).getTime()
-          );
-          return {
-            time: Math.floor(new Date(element.bucket).getTime()),
-            value: Number(element.close) * timeUsdValue,
-          };
-        });
+      // this.updatedChartData.price.days7 =
+      //   this.getChartData.volumeAndPrice7Day.map((element) => {
+      //     const timeUsdValue = tokenTracker.binarySearch(
+      //       this.getXtzUsdHistory,
+      //       new Date(element.bucket).getTime()
+      //     );
+      //     return {
+      //       time: new Date(element.bucket).getTime(),
+      //       value: Number(element.close) * timeUsdValue,
+      //     };
+      //   });
       this.updatedChartData.volume.days7 =
         this.getChartData.volumeAndPrice7Day.map((element) => {
           const timeUsdValue = tokenTracker.binarySearch(
@@ -159,22 +160,22 @@ export default {
             new Date(element.bucket).getTime()
           );
           return {
-            time: Math.floor(new Date(element.bucket).getTime()),
+            time: new Date(element.bucket).getTime(),
             value: Number(element.xtzVolume) * timeUsdValue,
           };
         });
 
-      this.updatedChartData.price.days30 =
-        this.getChartData.volumeAndPrice30Day.map((element) => {
-          const timeUsdValue = tokenTracker.binarySearch(
-            this.getXtzUsdHistory,
-            new Date(element.bucket).getTime()
-          );
-          return {
-            time: Math.floor(new Date(element.bucket).getTime()),
-            value: Number(element.close) * timeUsdValue,
-          };
-        });
+      // this.updatedChartData.price.days30 =
+      //   this.getChartData.volumeAndPrice30Day.map((element) => {
+      //     const timeUsdValue = tokenTracker.binarySearch(
+      //       this.getXtzUsdHistory,
+      //       new Date(element.bucket).getTime()
+      //     );
+      //     return {
+      //       time: new Date(element.bucket).getTime(),
+      //       value: Number(element.close) * timeUsdValue,
+      //     };
+      //   });
       this.updatedChartData.volume.days30 =
         this.getChartData.volumeAndPrice30Day.map((element) => {
           const timeUsdValue = tokenTracker.binarySearch(
@@ -182,7 +183,7 @@ export default {
             new Date(element.bucket).getTime()
           );
           return {
-            time: Math.floor(new Date(element.bucket).getTime()),
+            time: new Date(element.bucket).getTime(),
             value: Number(element.xtzVolume) * timeUsdValue,
           };
         });
@@ -194,7 +195,7 @@ export default {
             new Date(element.bucket).getTime()
           );
           return {
-            time: Math.floor(new Date(element.bucket).getTime()),
+            time: new Date(element.bucket).getTime(),
             value: Number(element.close) * timeUsdValue,
           };
         }
@@ -206,7 +207,7 @@ export default {
             new Date(element.bucket).getTime()
           );
           return {
-            time: Math.floor(new Date(element.bucket).getTime()),
+            time: new Date(element.bucket).getTime(),
             value: Number(element.xtzVolume) * timeUsdValue,
           };
         });
@@ -255,6 +256,10 @@ export default {
       }
 
       const areaSeriesData = this.tokenData;
+
+      console.log("\n\n------ begin:  ------");
+      console.log(this.updatedChartData.price.days1);
+      console.log("------ end:  ------\n\n");
 
       document.getElementById("chart").innerHTML = "";
 
@@ -307,13 +312,9 @@ export default {
         areaSeries.applyOptions({
           priceFormat: {
             type: "price",
-            precision: this.handlePrecision(this.tokenTracked.usdValue),
-            minMove:
-              this.handlePrecision(this.tokenTracked.usdValue) >= 6
-                ? 0.00000000001
-                : this.handlePrecision(this.tokenTracked.usdValue) >= 4
-                ? 0.00001
-                : 0.0001,
+            precision: this.handlePrecision(this.tokenTracked.usdValue)
+              .precision,
+            minMove: this.handlePrecision(this.tokenTracked.usdValue).minMove,
           },
         });
       }
@@ -345,7 +346,7 @@ export default {
           const dateStr = this.formatDate(param.time);
           toolTip.style.display = "block";
           const price = Number(param.seriesPrices.get(areaSeries)).toFixed(
-            this.handlePrecision(param.seriesPrices.get(areaSeries))
+            this.handlePrecision(param.seriesPrices.get(areaSeries)).precision
           );
           toolTip.innerHTML = `<div style="color: ${"rgba( 38, 166, 154, 1)"}">${
             this.tokenTracked.symbol || this.tokenTracked.name
@@ -367,6 +368,7 @@ export default {
         }
       });
     },
+
     formatDate(date) {
       const d = new Date(date);
       const DD = d.toLocaleString("default", { day: "2-digit" });
@@ -377,24 +379,29 @@ export default {
 
     handlePrecision(value) {
       let precision = 4;
+      let minMove = 0.0001;
 
       if (value < 0.0000000001 && value > 0) {
         precision = 12;
+        minMove = 0.0000000001;
       } else if (value < 0.00000001 && value > 0) {
         precision = 10;
+        minMove = 0.00000001;
       } else if (value < 0.000001 && value > 0) {
         precision = 8;
+        minMove = 0.000001;
       } else if (value < 0.0001 && value > 0) {
         precision = 6;
+        minMove = 0.0001;
       } else if (value < 0.001 && value > 0) {
         precision = 4;
-      } else if (value >= 1) {
-        precision = 2;
+        minMove = 0.001;
       } else {
         precision = 4;
+        minMove = 0.0001;
       }
 
-      return precision;
+      return { precision, minMove };
     },
 
     formatNumShorthand(val) {

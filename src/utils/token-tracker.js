@@ -51,6 +51,31 @@ async function queryXtzVolume() {
   return trade;
 }
 
+// async function queryTokenXtzPrice(tokenId) {
+//   const query = `
+//   query MyQuery {
+//     quotes15mNogaps(
+//       limit: 1
+//       order_by: {bucket: desc}
+//       where: {tokenId: {_eq: "${tokenId}"}}
+//     ) {
+//       close
+//       tokenId
+//       bucket
+//     }
+//   }`;
+
+//   const {
+//     data: {
+//       data: { quotes15mNogaps },
+//     },
+//   } = await axios.post("https://dex.dipdup.net/v1/graphql", {
+//     query,
+//   });
+
+//   return quotes15mNogaps[0].close;
+// }
+
 export default {
   async getQuotes() {
     const query = `
@@ -428,6 +453,8 @@ export default {
   async calculateTokenData(token, tokenFeed, allTokensMetadata, xtzUsd) {
     const tokenPrice = tokenFeed[token.id];
 
+    // tokenPrice.currentPrice = currentPrice;
+
     const tokenMetadata = allTokensMetadata.find((el) => {
       return (
         el.token_address === token.tokenAddress &&
@@ -483,7 +510,7 @@ export default {
       }
     }
 
-    if (element.mktCap < 800000000) return element;
+    if (element.mktCap < 800000000 && element.mktCap > 0) return element;
   },
 
   binarySearch(arr, target) {

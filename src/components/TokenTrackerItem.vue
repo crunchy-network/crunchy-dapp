@@ -7,7 +7,7 @@
         <router-link
           tag="a"
           class="link-text"
-          :to="{ name: 'token-tracker' }"
+          :to="{ name: 'home' }"
           type="text"
           style="
             font-weight: 600;
@@ -100,11 +100,7 @@
         </div>
 
         <div>
-          <router-link
-            :to="`/swap?from=tez&to=${getTokenOverview.tokenAddress}_${
-              getTokenOverview.tokenId || 0
-            }`"
-          >
+          <router-link :to="`/swap?from=tez&to=${getTokenOverview.id}`">
             <el-button round type="primary"> Swap </el-button>
           </router-link>
         </div>
