@@ -190,7 +190,7 @@
               round
               icon="fa-solid fa-wallet"
               style="font-weight: bold"
-              >{{ " " }}My Portfolio</el-button
+              ><span style="margin-left: 8px"> My Portfolio </span></el-button
             ></router-link
           >
           <div style="margin-top: 14px">

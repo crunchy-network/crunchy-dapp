@@ -83,6 +83,16 @@
                 <span>Portfolio</span>
               </router-link>
 
+              <router-link
+                tag="li"
+                class="el-menu-item"
+                to="/swap"
+                active-class="is-active"
+              >
+                <i v-if="mobile" class="fak fa-crunchy-swap-alt"></i>
+
+                <span>Swap</span>
+              </router-link>
               <el-submenu
                 id="defi-menu"
                 :popper-append-to-body="false"
@@ -128,16 +138,6 @@
                   </svg>
                   DeFi</template
                 >
-                <router-link
-                  tag="li"
-                  class="el-menu-item submenu-item"
-                  to="/swap"
-                  active-class="is-active"
-                >
-                  <i class="fak fa-crunchy-swap-alt"></i>
-
-                  <span>SWAP</span>
-                </router-link>
                 <router-link
                   tag="li"
                   class="el-menu-item submenu-item"
