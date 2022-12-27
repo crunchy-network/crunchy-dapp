@@ -320,19 +320,32 @@ export default {
   },
 
   async getTokenFeed() {
+    const date = new Date();
+    const previousDay = new Date(
+      date.setDate(date.getDate() - 1)
+    ).toDateString();
+
+    const previousWeek = new Date(
+      date.setDate(date.getDate() - ((date.getDay() + 6) % 7))
+    ).toDateString();
+
+    const previousMonth = new Date(
+      new Date(date.setDate(1)).setMonth(date.getMonth() - 1)
+    ).toDateString();
+
     const query = `
      query MyQuery {
-      quotes1dNogaps(order_by: {bucket: desc}) {
+      quotes1dNogaps(distinct_on: tokenId, where: {bucket:{_eq: "${previousDay}"}}) {
         close
         tokenId
         bucket
       }
-      quotes1mo(order_by: {bucket: desc}) {
+      quotes1mo(distinct_on: tokenId, where: {bucket:{_eq: "${previousMonth}"}}) {
         close
         tokenId
         bucket
       }
-      quotes1wNogaps(order_by: {bucket: desc}) {
+      quotes1wNogaps(distinct_on: tokenId, where: {bucket:{_eq: "${previousWeek}"}}) {
         close
         bucket
         tokenId
@@ -379,6 +392,8 @@ export default {
       query,
     });
 
+    console.log("tag", quotes1wNogaps);
+
     const tokensVolume = await queryXtzVolume();
 
     const tokenObjkt = {};
@@ -387,13 +402,18 @@ export default {
       const element = token[index];
       const tokenId = element.id;
       const dayClose =
-        quotes1dNogaps.find((quote) => quote.tokenId === tokenId)?.close || 0;
+        Number(
+          quotes1dNogaps.find((quote) => quote.tokenId === tokenId)?.close
+        ) || 0;
 
       const weekClose =
-        quotes1wNogaps.find((quote) => quote.tokenId === tokenId)?.close || 0;
+        Number(
+          quotes1wNogaps.find((quote) => quote.tokenId === tokenId)?.close
+        ) || 0;
 
       const monthClose =
-        quotes1mo.find((quote) => quote.tokenId === tokenId)?.close || 0;
+        Number(quotes1mo.find((quote) => quote.tokenId === tokenId)?.close) ||
+        0;
 
       const tokenQuotesTotal = quotesTotal.find(
         (quote) => quote.tokenId === tokenId
@@ -479,24 +499,23 @@ export default {
 
       const mktCap = new BigNumber(element.calcSupply).times(element.usdValue);
 
-      element.change1Day =
-        price
-          .minus(element?.dayClose)
-          .div(element?.dayClose)
-          .times(100)
-          .toNumber() || 0;
-      element.change7Day =
-        price
-          .minus(element?.weekClose)
-          .div(element?.weekClose)
-          .times(100)
-          .toNumber() || 0;
-      element.change30Day =
-        price
-          .minus(element?.monthClose)
-          .div(element?.monthClose)
-          .times(100)
-          .toNumber() || 0;
+      element.change1Day = price
+        .minus(element?.dayClose)
+        .div(element?.dayClose)
+        .times(100)
+        .toNumber();
+      element.change7Day = price
+        .minus(element?.weekClose)
+        .div(element?.weekClose)
+        .times(100)
+        .toNumber();
+      element.change30Day = price
+        .minus(element?.monthClose)
+        .div(element?.monthClose)
+        .times(100)
+        .toNumber();
+
+      console.log("XXXX", element);
 
       element.mktCap = isNaN(mktCap.toNumber()) ? 0 : mktCap.toNumber();
       element.volume24 = new BigNumber(element.volume24Xtz)
