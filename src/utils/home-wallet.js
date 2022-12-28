@@ -5,6 +5,7 @@ import ipfs from "./ipfs";
 // import teztools from "./teztools";
 import knownContracts from "../knownContracts.json";
 import tzkt from "./tzkt";
+import queryDipdup from "./queryDipdup";
 
 // const getTokenId = (priceObj, token) => {
 //   if (priceObj) {
@@ -24,15 +25,7 @@ import tzkt from "./tzkt";
 // };
 
 const getPrice = (address, tokenId, priceFeed) => {
-  const price = priceFeed.find(
-    (val) =>
-      val.tokenAddress === address &&
-      (tokenId !== undefined && val.tokenId !== undefined
-        ? val.tokenId.toString() === tokenId
-        : true)
-  );
-
-  return price;
+  return priceFeed[`${address}_${tokenId || 0}`];
 };
 
 const generateObjktQuery = (contractList) => {
@@ -75,47 +68,6 @@ function getImgUri(uri, collection) {
 function getObjktLink(token) {
   return `https://objkt.com/asset/${token.contract.address}/${token.tokenId}`;
 }
-
-const queryTokenAndQuotes = async (xtzUsd) => {
-  const tokenObjkt = {};
-
-  const query = `
-  query MyQuery {
-    quotesTotal(distinct_on: tokenId){
-      close
-      tokenId
-    }
-    token {
-      address
-      decimals
-      id
-      name
-      standard
-      symbol
-      thumbnailUri
-      tokenId
-    }
-  }
-  `;
-
-  const {
-    data: {
-      data: { quotesTotal, token },
-    },
-  } = await axios.post("https://dex.dipdup.net/v1/graphql", { query });
-
-  for (let index = 0; index < token.length; index++) {
-    const element = token[index];
-    const tokenVal = quotesTotal.find((val) => val.tokenId === element.id);
-
-    tokenObjkt[element.id] = {
-      ...element,
-      currentPrice: Number(tokenVal?.close),
-    };
-  }
-
-  return tokenObjkt;
-};
 
 export default {
   async fetchNFts(pkh) {
@@ -258,7 +210,7 @@ export default {
       // const { contracts: prices } = await teztools.getPricefeed();
 
       // Get token metadata and prices
-      const tokenData = await queryTokenAndQuotes(usdMul);
+      const tokenData = await queryDipdup.getAllTokenAndQuotes();
 
       // filter out NFTs by checking for artifactURI and token symbol or alias
       const tokens = [];
@@ -495,12 +447,6 @@ export default {
           priceFeed
         );
 
-        if (address === "KT1K4EwTpbvYN9agJdjpyJm4ZZdhpUNKB3F6") {
-          console.log(tokenMetaData);
-          console.log("HEre !!!");
-          console.log(new BigNumber(lpBal[i].balance).div(1e6).toNumber());
-        }
-
         if (tokenMetaData) {
           if (tokenMetaData.thumbnailUri)
             tokenMetaData.thumbnailUri = ipfs.transformUri(
@@ -641,9 +587,12 @@ export default {
         );
 
         if (tokenMetaData) {
+          console.log(tokenMetaData);
+          // if (tokenMetaData.thumbnailUri) {
           tokenMetaData.thumbnailUri = ipfs.transformUri(
             tokenMetaData.thumbnailUri
           );
+          // }
 
           const xtzSide = new BigNumber(tokenObjkt.balance)
             .times(tokenObjkt.tezPool)

@@ -242,6 +242,8 @@ export default {
     if (!farm.loading) {
       commit("updateFarmLoading", { farmId, loading: true });
 
+      console.log("++++++++");
+      console.log(state.priceFeed, "++++++++");
       let poolTokenMeta = teztools.findTokenInPriceFeed(
         farm.poolToken,
         state.priceFeed

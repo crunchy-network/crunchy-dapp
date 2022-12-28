@@ -1,4 +1,5 @@
 import axios from "axios";
+import dexIndexer from "./dex-indexer";
 
 export default {
   async getTokenPriceAndData(tokenId) {
@@ -33,5 +34,55 @@ export default {
         currentPrice: Number(quotesTotal[0]?.close),
       };
     } else return {};
+  },
+  async getAllTokenAndQuotes() {
+    const tokenObjkt = {};
+    const query = `
+    query MyQuery {
+      quotesTotal(distinct_on: tokenId){
+        close
+        tokenId
+      }
+      token {
+        address
+        decimals
+        id
+        name
+        standard
+        symbol
+        thumbnailUri
+        tokenId
+      }
+    }
+    `;
+
+    const [
+      {
+        data: {
+          data: { quotesTotal, token },
+        },
+      },
+      allTokens,
+    ] = await Promise.all([
+      axios.post("https://dex.dipdup.net/v1/graphql", { query }),
+      dexIndexer.getAllTokens(),
+    ]);
+
+    for (let index = 0; index < token.length; index++) {
+      const element = token[index];
+      if (index + 1 < allTokens.length) {
+        element.thumbnailUri = allTokens[index].thumbnail_uri;
+      }
+
+      element.thumbnailUri = element.thumbnailUri || "";
+      const tokenVal = quotesTotal.find((val) => val.tokenId === element.id);
+
+      tokenObjkt[element.id] = {
+        ...element,
+        currentPrice: Number(tokenVal?.close),
+      };
+    }
+
+    return tokenObjkt;
   },
 };
