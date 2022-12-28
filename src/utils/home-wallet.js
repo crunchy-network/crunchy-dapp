@@ -2,26 +2,26 @@ import axios from "axios";
 import BigNumber from "bignumber.js";
 import coingecko from "./coingecko";
 import ipfs from "./ipfs";
-import teztools from "./teztools";
+// import teztools from "./teztools";
 import knownContracts from "../knownContracts.json";
 import tzkt from "./tzkt";
 
-const getTokenId = (priceObj, token) => {
-  if (priceObj) {
-    if (priceObj.tokenId !== undefined) {
-      return priceObj.tokenId;
-    }
-    if (priceObj.type !== undefined) {
-      return 0;
-    }
-  }
-  if (token) {
-    if (token.tokenId !== undefined) {
-      return token.tokenId;
-    }
-  }
-  return undefined;
-};
+// const getTokenId = (priceObj, token) => {
+//   if (priceObj) {
+//     if (priceObj.tokenId !== undefined) {
+//       return priceObj.tokenId;
+//     }
+//     if (priceObj.type !== undefined) {
+//       return 0;
+//     }
+//   }
+//   if (token) {
+//     if (token.tokenId !== undefined) {
+//       return token.tokenId;
+//     }
+//   }
+//   return undefined;
+// };
 
 const getPrice = (address, tokenId, priceFeed) => {
   const price = priceFeed.find(
@@ -75,6 +75,47 @@ function getImgUri(uri, collection) {
 function getObjktLink(token) {
   return `https://objkt.com/asset/${token.contract.address}/${token.tokenId}`;
 }
+
+const queryTokenAndQuotes = async (xtzUsd) => {
+  const tokenObjkt = {};
+
+  const query = `
+  query MyQuery {
+    quotesTotal(distinct_on: tokenId){
+      close
+      tokenId
+    }
+    token {
+      address
+      decimals
+      id
+      name
+      standard
+      symbol
+      thumbnailUri
+      tokenId
+    }
+  }
+  `;
+
+  const {
+    data: {
+      data: { quotesTotal, token },
+    },
+  } = await axios.post("https://dex.dipdup.net/v1/graphql", { query });
+
+  for (let index = 0; index < token.length; index++) {
+    const element = token[index];
+    const tokenVal = quotesTotal.find((val) => val.tokenId === element.id);
+
+    tokenObjkt[element.id] = {
+      ...element,
+      currentPrice: Number(tokenVal?.close),
+    };
+  }
+
+  return tokenObjkt;
+};
 
 export default {
   async fetchNFts(pkh) {
@@ -249,7 +290,10 @@ export default {
       }
 
       // Get all wallet prices
-      const { contracts: prices } = await teztools.getPricefeed();
+      // const { contracts: prices } = await teztools.getPricefeed();
+
+      // Get token metadata and prices
+      const tokenData = await queryTokenAndQuotes(usdMul);
 
       // filter out NFTs by checking for artifactURI and token symbol or alias
       const tokens = [];
@@ -267,30 +311,43 @@ export default {
           tokens.push(val);
         }
       });
+
       balances = tokens;
+
       // map through all the balances to sort data
       for (let i = 0; i < balances.length; i++) {
-        let priceFilter = prices.filter(
-          (val) => val.tokenAddress === balances[i]?.token?.contract?.address
-        );
+        const priceObj =
+          tokenData[
+            `${balances[i]?.token?.contract?.address}_${
+              balances[i]?.token?.tokenId || 0
+            }`
+          ];
 
-        if (priceFilter.length > 1) {
-          if (balances[i]?.token?.metadata !== undefined) {
-            priceFilter = priceFilter.filter(
-              (val) => val.symbol === balances[i]?.token?.metadata?.symbol
-            );
-          } else if (balances[i]?.token?.tokenId !== undefined) {
-            priceFilter = priceFilter.filter(
-              (val) => val.tokenId.toString() === balances[i].token.tokenId
-            );
-          }
-        }
+        // if (!token) {
+        //   console.log("\n\n------ begin:  ------");
+        //   console.log(balances[i]);
+        //   console.log("------ end:  ------\n\n");
+        // }
+        // let priceFilter = prices.filter(
+        //   (val) => val.tokenAddress === balances[i]?.token?.contract?.address
+        // );
 
-        const priceObj = priceFilter.length ? priceFilter[0] : undefined;
+        // if (priceFilter) {
+        //   if (balances[i]?.token?.metadata !== undefined) {
+        //     priceFilter = priceFilter.filter(
+        //       (val) => val.symbol === balances[i]?.token?.metadata?.symbol
+        //     );
+        //   } else if (balances[i]?.token?.tokenId !== undefined) {
+        //     priceFilter = priceFilter.filter(
+        //       (val) => val.tokenId.toString() === balances[i].token.tokenId
+        //     );
+        //   }
+        // }
 
+        // const priceObj = priceFilter.length ? priceFilter[0] : undefined;
         // get current price of token
         const currentPrice = priceObj?.currentPrice || false;
-        const tokenid = getTokenId(priceObj, balances[i].token);
+        const tokenid = priceObj?.tokenId;
         // get token uri from prices :: This is because  balance does not return  some tokens thumbnail
         const thumbnailUri = priceObj?.thumbnailUri || false;
 
@@ -315,9 +372,9 @@ export default {
         const icon = ipfs.transformUri(
           balances[i]?.token?.metadata?.thumbnailUri || thumbnailUri || ""
         );
-        const pricePair = priceObj?.pairs.find(
-          (el) => el.dex === "Quipuswap" && el.sides[1].symbol === "XTZ"
-        );
+        // const pricePair = priceObj?.pairs?.find(
+        //   (el) => el.dex === "Quipuswap" && el.sides[1].symbol === "XTZ"
+        // );
         var assetSlug;
         if (tokenid !== undefined) {
           assetSlug = `${balances[i]?.token?.contract?.address}_${tokenid}`;
@@ -333,21 +390,21 @@ export default {
           balance: balance.toNumber(),
           price: price.toNumber(),
           name: priceObj?.name,
-          priceChange1Day: price
-            .minus(pricePair?.sides[0]?.dayClose)
-            .div(pricePair?.sides[0]?.dayClose)
-            .times(100)
-            .toNumber(),
-          priceChange7Day: price
-            .minus(pricePair?.sides[0]?.weekClose)
-            .div(pricePair?.sides[0]?.weekClose)
-            .times(100)
-            .toNumber(),
-          priceChange30Day: price
-            .minus(pricePair?.sides[0]?.monthClose)
-            .div(pricePair?.sides[0]?.monthClose)
-            .times(100)
-            .toNumber(),
+          priceChange1Day: 0 /* price
+              .minus(pricePair?.sides[0]?.dayClose)
+              .div(pricePair?.sides[0]?.dayClose)
+              .times(100)
+              .toNumber() */,
+          priceChange7Day: 0 /* price
+              .minus(pricePair?.sides[0]?.weekClose)
+              .div(pricePair?.sides[0]?.weekClose)
+              .times(100)
+              .toNumber() */,
+          priceChange30Day: 0 /* price
+              .minus(pricePair?.sides[0]?.monthClose)
+              .div(pricePair?.sides[0]?.monthClose)
+              .times(100)
+              .toNumber() */,
           priceUsd: priceUsd.toNumber(),
           valueUsd: valueUsd.toNumber(),
           value: value.toNumber(),
@@ -356,7 +413,7 @@ export default {
           assetSlug,
           decimals: balances[i]?.token?.metadata?.decimals,
         };
-        if (currentPrice) {
+        if (priceObj) {
           assets.push(valObj);
         }
       }
