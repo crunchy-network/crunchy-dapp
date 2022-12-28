@@ -242,52 +242,17 @@ export default {
       const usdMul = await coingecko.getXtzUsdPrice();
 
       // Check if address has CRUNCH token , if the address doesnot, i will append the token data
-      if (
-        balances.filter(
-          (val) =>
-            val.token?.contract?.address ===
-            process.env.VUE_APP_CONTRACTS_CRUNCH
-        ).length < 1
-      ) {
-        balances.push({
-          token: {
-            token_id: 0,
-            tokenId: 0,
-            contract: { address: process.env.VUE_APP_CONTRACTS_CRUNCH },
-            metadata: {
-              thumbnail_uri:
-                "https://ipfs.fleek.co/ipfs/bafybeienhhbxz53n3gtg7stjou2zs3lmhupahwovv2kxwh5uass3bc5xzq",
-              symbol: "CRUNCH",
-              decimals: 8,
-            },
-          },
-          balance: new BigNumber(0),
-        });
-      }
 
+      balances.forEach((val, index) => {
+        if (
+          val.token?.contract?.address ===
+            process.env.VUE_APP_CONTRACTS_CRUNCH ||
+          val.token?.contract?.address === process.env.VUE_APP_CONTRACTS_CRDAO
+        ) {
+          delete balances[index];
+        }
+      });
       // Check if address has crDAO token , if the address doesnot, i will append the token data
-      if (
-        balances.filter(
-          (val) =>
-            val.token?.contract?.address === process.env.VUE_APP_CONTRACTS_CRDAO
-        ).length < 1
-      ) {
-        balances.push({
-          token: {
-            contract: { address: process.env.VUE_APP_CONTRACTS_CRDAO },
-            token_id: 0,
-            tokenId: 0,
-            name: "Crunchy DAO",
-            metadata: {
-              thumbnail_uri:
-                "https://ipfs.fleek.co/ipfs/bafybeigulbzm5x72qtmckxqvd3ksk6q3vlklxjgpnvvnbcofgdp6qwu43u",
-              symbol: "crDAO",
-              decimals: 8,
-            },
-          },
-          balance: new BigNumber(0),
-        });
-      }
 
       // Get all wallet prices
       // const { contracts: prices } = await teztools.getPricefeed();
