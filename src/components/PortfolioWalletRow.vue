@@ -49,14 +49,19 @@
               :prefix="showUsd ? '$' : ''"
               :suffix="!showUsd ? 'ꜩ' : ''"
               :precision="4"
-              :value="showUsd ? asset.usdPrice : asset.price"
+              :show-usd="showUsd"
+              :usd-value="asset.priceUsd"
+              :value="asset.price"
             />
           </el-col>
           <el-col style="text-align: right" :span="4">
             <price-format
-              :prefix="showUsd ? '$' : 'ꜩ'"
+              :prefix="showUsd ? '$' : ''"
+              :suffix="!showUsd ? 'ꜩ' : ''"
               :precision="4"
-              :value="showUsd ? asset.usdValue : asset.value"
+              :show-usd="showUsd"
+              :usd-value="asset.valueUsd"
+              :value="asset.value"
             />
           </el-col>
 
@@ -141,8 +146,8 @@
 <script>
 import PriceFormat from "./PriceFormat.vue";
 export default {
-  components: { PriceFormat },
   name: "PortfolioWalletRow",
+  components: { PriceFormat },
   props: {
     asset: { type: Object, required: true },
     showUsd: { type: Boolean, required: true },

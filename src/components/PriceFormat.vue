@@ -31,6 +31,10 @@ export default {
       type: Number,
       default: 0,
     },
+    usdValue: {
+      type: Number,
+      default: 0,
+    },
     prefix: {
       type: String,
       default: "",
@@ -63,6 +67,14 @@ export default {
       type: Number,
       default: null,
     },
+    showUsd: {
+      type: Boolean,
+      default: false,
+    },
+  },
+
+  mounted() {
+    console.log("tag", this.usdValue, "");
   },
 
   methods: {
@@ -97,7 +109,7 @@ export default {
     },
 
     numShorthand() {
-      return numberFormat.shorthand(this.value);
+      return numberFormat.shorthand(this.showUsd ? this.usdValue : this.value);
     },
   },
 };

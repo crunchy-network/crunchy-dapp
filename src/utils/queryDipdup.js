@@ -85,4 +85,103 @@ export default {
 
     return tokenObjkt;
   },
+
+  async getTokensPriceClose() {
+    const date = new Date();
+
+    const previousDay = new Date(
+      date.setDate(date.getDate() - 1)
+    ).toDateString();
+
+    const previousWeek = new Date(
+      date.setDate(date.getDate() - ((date.getDay() + 6) % 7))
+    ).toDateString();
+
+    const previousMonth = new Date(
+      new Date(date.setDate(1)).setMonth(date.getMonth() - 1)
+    ).toDateString();
+
+    const query = (bucket) => `
+    query MyQuery {
+      quotes1dNogaps(where: {bucket: {_eq: "${bucket}"}}) {
+        average
+        close
+        bucket
+        tokenId
+      }
+    }
+    `;
+
+    const [
+      {
+        data: {
+          data: { quotes1dNogaps: dayCloseArray },
+        },
+      },
+      {
+        data: {
+          data: { quotes1dNogaps: weekCloseArray },
+        },
+      },
+      {
+        data: {
+          data: { quotes1dNogaps: monthCloseArray },
+        },
+      },
+    ] = await Promise.all([
+      axios.post("https://dex.dipdup.net/v1/graphql", {
+        query: query(previousDay),
+      }),
+      axios.post("https://dex.dipdup.net/v1/graphql", {
+        query: query(previousWeek),
+      }),
+      axios.post("https://dex.dipdup.net/v1/graphql", {
+        query: query(previousMonth),
+      }),
+    ]);
+
+    const dayClose = {};
+    const weekClose = {};
+    const monthClose = {};
+
+    const length = Math.max(
+      dayCloseArray.length,
+      weekCloseArray.length,
+      monthCloseArray.length
+    );
+
+    for (let index = 0; index < length; index++) {
+      if (dayCloseArray.length > index) {
+        const token = dayCloseArray[index];
+        dayClose[token.tokenId] = dayClose[token.tokenId]
+          ? { ...dayClose[token.tokenId], close: token.average }
+          : token;
+      }
+      if (weekCloseArray.length > index) {
+        const token = weekCloseArray[index];
+        weekClose[token.tokenId] = weekClose[token.tokenId]
+          ? { ...weekClose[token.tokenId], close: token.average }
+          : token;
+      }
+      if (monthCloseArray.length > index) {
+        const token = monthCloseArray[index];
+        monthClose[token.tokenId] = monthClose[token.tokenId]
+          ? { ...dayClose[token.tokenId], close: token.average }
+          : token;
+      }
+    }
+    return {
+      dayClose,
+      weekClose,
+      monthClose,
+    };
+  },
+
+  filterTokenClose(tokenId, closeObjkt) {
+    return {
+      dayClose: closeObjkt.dayClose[tokenId]?.close || 0,
+      weekClose: closeObjkt.weekClose[tokenId]?.close || 0,
+      monthClose: closeObjkt.monthClose[tokenId]?.close || 0,
+    };
+  },
 };

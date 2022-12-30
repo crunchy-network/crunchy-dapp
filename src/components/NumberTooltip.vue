@@ -8,8 +8,8 @@
     </el-tooltip>
   </div>
 </template>
-  
-  <script>
+
+<script>
 export default {
   name: "NumberTooltip",
   props: {
@@ -24,6 +24,5 @@ export default {
   },
 };
 </script>
-  
-  <style></style>
-  
+
+<style></style>

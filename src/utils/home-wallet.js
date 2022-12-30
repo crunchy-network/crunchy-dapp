@@ -210,7 +210,10 @@ export default {
       // const { contracts: prices } = await teztools.getPricefeed();
 
       // Get token metadata and prices
-      const tokenData = await queryDipdup.getAllTokenAndQuotes();
+      const [tokenData, tokensClose] = await Promise.all([
+        queryDipdup.getAllTokenAndQuotes(),
+        queryDipdup.getTokensPriceClose(),
+      ]);
 
       // filter out NFTs by checking for artifactURI and token symbol or alias
       const tokens = [];
@@ -233,12 +236,12 @@ export default {
 
       // map through all the balances to sort data
       for (let i = 0; i < balances.length; i++) {
-        const priceObj =
-          tokenData[
-            `${balances[i]?.token?.contract?.address}_${
-              balances[i]?.token?.tokenId || 0
-            }`
-          ];
+        const tokenId = `${balances[i]?.token?.contract?.address}_${
+          balances[i]?.token?.tokenId || 0
+        }`;
+        const priceObj = tokenData[tokenId];
+
+        const tokenClose = queryDipdup.filterTokenClose(tokenId, tokensClose);
 
         // if (!token) {
         //   console.log("\n\n------ begin:  ------");
@@ -281,9 +284,7 @@ export default {
         );
 
         const price = new BigNumber(currentPrice);
-        const priceUsd = new BigNumber(currentPrice).multipliedBy(
-          new BigNumber(usdMul)
-        );
+        const priceUsd = new BigNumber(currentPrice).times(usdMul);
         const value = balance.multipliedBy(price);
         const valueUsd = balance.multipliedBy(priceUsd);
         const icon = ipfs.transformUri(
@@ -307,21 +308,21 @@ export default {
           balance: balance.toNumber(),
           price: price.toNumber(),
           name: priceObj?.name,
-          priceChange1Day: 0 /* price
-              .minus(pricePair?.sides[0]?.dayClose)
-              .div(pricePair?.sides[0]?.dayClose)
-              .times(100)
-              .toNumber() */,
-          priceChange7Day: 0 /* price
-              .minus(pricePair?.sides[0]?.weekClose)
-              .div(pricePair?.sides[0]?.weekClose)
-              .times(100)
-              .toNumber() */,
-          priceChange30Day: 0 /* price
-              .minus(pricePair?.sides[0]?.monthClose)
-              .div(pricePair?.sides[0]?.monthClose)
-              .times(100)
-              .toNumber() */,
+          priceChange1Day: price
+            .minus(tokenClose?.dayClose)
+            .div(tokenClose?.dayClose)
+            .times(100)
+            .toNumber(),
+          priceChange7Day: price
+            .minus(tokenClose?.weekClose)
+            .div(tokenClose?.weekClose)
+            .times(100)
+            .toNumber(),
+          priceChange30Day: price
+            .minus(tokenClose?.monthClose)
+            .div(tokenClose?.monthClose)
+            .times(100)
+            .toNumber(),
           priceUsd: priceUsd.toNumber(),
           valueUsd: valueUsd.toNumber(),
           value: value.toNumber(),
@@ -365,6 +366,7 @@ export default {
     } catch (e) {
       console.log("/utils/home-wallet", e);
     }
+    console.log("tag", "", assets);
     return { assets };
   },
 
