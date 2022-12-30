@@ -31,7 +31,7 @@
           </el-row>
           <div v-for="(item, index) in markets" :key="index">
             <el-row
-              v-if="`${item.dex}`.toLowerCase() === 'quipuswap'"
+              v-if="`${item.name}`.toLowerCase() === 'quipuswap'"
               style="font-size: 14px; font-weight: 600"
               type="flex"
               align="top"
@@ -73,7 +73,7 @@
                       </el-row></el-col
                     >
                     <el-col style="text-align: right" :span="5">{{
-                      item.symbols
+                      item.symbol
                     }}</el-col>
                     <el-col style="text-align: right" :span="5">
                       <price-format prefix="$" :value="item.lpPrice" />
@@ -93,18 +93,25 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import PriceFormat from "./PriceFormat.vue";
 export default {
   name: "TrackerMarkets",
   components: { PriceFormat },
   props: {
-    markets: {
-      type: Array,
-      default: () => [],
-    },
     loading: {
       type: Boolean,
       default: false,
+    },
+  },
+  computed: {
+    ...mapGetters(["getTokenOverview"]),
+    markets() {
+      console.log("\n\n------ begin:  ------");
+      console.log(this.getTokenOverview.exchanges);
+      console.log("------ end:  ------\n\n");
+
+      return this.getTokenOverview.exchanges;
     },
   },
 

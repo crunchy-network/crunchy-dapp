@@ -476,16 +476,15 @@ export default {
       element.volume24 = new BigNumber(element.volume24Xtz)
         .times(xtzUsd)
         .toNumber();
-      console.log("====");
-      console.log(element);
+
       for (let index = 0; index < element?.exchanges.length; index++) {
         const market = element?.exchanges[index];
 
         element.exchanges[index].lpPrice =
           Number(market.midPrice) * xtzUsd || 0;
 
-        element.exchanges[index].symbol = `XTZ/${element.symmbol}`;
-        element.exchanges[index].volume = `XTZ/${element.symmbol}`;
+        element.exchanges[index].symbol = `XTZ/${element.symbol}`;
+        element.exchanges[index].volume = Number(market.tradeVolume);
       }
     }
 

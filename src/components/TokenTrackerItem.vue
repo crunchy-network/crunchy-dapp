@@ -132,7 +132,6 @@
       />
       <TrackerMarkets
         v-if="activeTab === 'markets'"
-        :markets="getTokenOverview.exchanges"
         :loading="getLoading"
       />
     </el-main>
@@ -169,9 +168,6 @@ export default {
     },
     "$router.query.duration": function (val) {
       this.activeTab = val;
-    },
-    getTokenOverview(val) {
-      console.log("tag", val, "");
     },
   },
 
