@@ -57,7 +57,7 @@
             type="flex"
             style="flex-wrap: wrap; row-gap: 20px"
           >
-            <el-col :sm="12" :md="6">
+            <el-col :sm="12" :md="8">
               <div class="grid-content" style="height: 100%">
                 <el-card
                   v-loading="farms.loading"
@@ -110,7 +110,7 @@
                 </el-card>
               </div>
             </el-col>
-            <el-col :sm="12" :md="6">
+            <el-col :sm="12" :md="8">
               <div class="grid-content" style="height: 100%">
                 <el-card
                   v-loading="farms.loading"
@@ -151,7 +151,7 @@
                 </el-card>
               </div>
             </el-col>
-            <el-col :sm="12" :md="6">
+            <el-col :sm="12" :md="8">
               <div class="grid-content" style="height: 100%">
                 <el-card
                   v-loading="farms.loading"
@@ -199,8 +199,8 @@
                 </el-card>
               </div>
             </el-col>
-
-            <el-col :sm="12" :md="6">
+            <!-- 
+            <el-col :sm="12" :md="8" :lg="4">
               <div class="grid-content" style="height: 100%">
                 <el-card
                   v-loading="farms.loading"
@@ -229,7 +229,7 @@
                 </el-card>
               </div>
             </el-col>
-            <!-- <el-col :sm="12" :md="8" :lg="4">
+            <el-col :sm="12" :md="8" :lg="4">
               <div class="grid-content" style="height: 100%">
                 <el-card
                   v-loading="farms.loading"

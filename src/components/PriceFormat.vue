@@ -5,7 +5,7 @@
     {{
       vueNumberFormat(shortHand ? numShorthand().value : value, {
         prefix: prefix,
-        suffix: suffix || shortHand ? numShorthand().suffix : "",
+        suffix: suffix || shortHand ? `${numShorthand().suffix}${suffix}` : "",
         decimal: ".",
         thousand: ",",
         precision: handlePrecision(),
@@ -28,6 +28,10 @@ export default {
   components: { NumberTooltip },
   props: {
     value: {
+      type: Number,
+      default: 0,
+    },
+    usdValue: {
       type: Number,
       default: 0,
     },
@@ -63,6 +67,14 @@ export default {
       type: Number,
       default: null,
     },
+    showUsd: {
+      type: Boolean,
+      default: false,
+    },
+  },
+
+  mounted() {
+    console.log("tag", this.usdValue, "");
   },
 
   methods: {
@@ -97,12 +109,11 @@ export default {
     },
 
     numShorthand() {
-      return numberFormat.shorthand(this.value);
+      return numberFormat.shorthand(this.showUsd ? this.usdValue : this.value);
     },
   },
 };
 </script>
-
 <style lang="scss" scoped>
 h2 {
   margin: 0;

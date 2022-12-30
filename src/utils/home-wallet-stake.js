@@ -1,7 +1,8 @@
-import axios from "axios";
+// import axios from "axios";
 import BigNumber from "bignumber.js";
 import coingecko from "./coingecko";
 import ipfs from "./ipfs";
+import queryDipdup from "./queryDipdup";
 // import teztools from "./teztools";
 import tzkt from "./tzkt";
 
@@ -229,26 +230,22 @@ export default {
       process.env.VUE_APP_DOGAMI_STAKE
     );
 
-    const [
-      { data: tokenMetaData },
-      { data: dataObjs },
-      { data: stakeLockPack },
-    ] = await Promise.all([
-      await axios.get(
-        `https://api.teztools.io/v1/${dogami.FA12TokenContract}/price`
-      ),
+    const [tokenMetaData, { data: dataObjs }, { data: stakeLockPack }] =
+      await Promise.all([
+        queryDipdup.getTokenPriceAndData(`${dogami.FA12TokenContract}_0`),
+        await tzkt.getContractBigMapKeys(
+          process.env.VUE_APP_DOGAMI_STAKE,
+          "addressId",
+          { key: pkh }
+        ),
+        await tzkt.getContractBigMapKeys(
+          process.env.VUE_APP_DOGAMI_STAKE_2,
+          "userStakeLockPack",
+          { key: pkh }
+        ),
+      ]);
 
-      await tzkt.getContractBigMapKeys(
-        process.env.VUE_APP_DOGAMI_STAKE,
-        "addressId",
-        { key: pkh }
-      ),
-      await tzkt.getContractBigMapKeys(
-        process.env.VUE_APP_DOGAMI_STAKE_2,
-        "userStakeLockPack",
-        { key: pkh }
-      ),
-    ]);
+    console.log(tokenMetaData);
 
     if (dataObjs.length > 0) {
       const [{ value: addressId }] = dataObjs;
@@ -339,19 +336,15 @@ export default {
       process.env.VUE_APP_GIF_STAKE
     );
 
-    const [{ data: poolToken }, xtzUsd, { data: dataObjs }] = await Promise.all(
-      [
-        await axios.get(
-          `https://api.teztools.io/v1/${gif.staking.gif.address}_0/price`
-        ),
-        await coingecko.getXtzUsdPrice(),
-        await tzkt.getContractBigMapKeys(
-          process.env.VUE_APP_GIF_STAKE,
-          "ledger",
-          { key: pkh }
-        ),
-      ]
-    );
+    const [poolToken, xtzUsd, { data: dataObjs }] = await Promise.all([
+      queryDipdup.getTokenPriceAndData(`${gif.staking.gif.address}_0`),
+      await coingecko.getXtzUsdPrice(),
+      await tzkt.getContractBigMapKeys(
+        process.env.VUE_APP_GIF_STAKE,
+        "ledger",
+        { key: pkh }
+      ),
+    ]);
 
     if (dataObjs.length > 0) {
       const [{ value: userStake }] = dataObjs;

@@ -2,37 +2,30 @@ import axios from "axios";
 import BigNumber from "bignumber.js";
 import coingecko from "./coingecko";
 import ipfs from "./ipfs";
-import teztools from "./teztools";
+// import teztools from "./teztools";
 import knownContracts from "../knownContracts.json";
 import tzkt from "./tzkt";
+import queryDipdup from "./queryDipdup";
 
-const getTokenId = (priceObj, token) => {
-  if (priceObj) {
-    if (priceObj.tokenId !== undefined) {
-      return priceObj.tokenId;
-    }
-    if (priceObj.type !== undefined) {
-      return 0;
-    }
-  }
-  if (token) {
-    if (token.tokenId !== undefined) {
-      return token.tokenId;
-    }
-  }
-  return undefined;
-};
+// const getTokenId = (priceObj, token) => {
+//   if (priceObj) {
+//     if (priceObj.tokenId !== undefined) {
+//       return priceObj.tokenId;
+//     }
+//     if (priceObj.type !== undefined) {
+//       return 0;
+//     }
+//   }
+//   if (token) {
+//     if (token.tokenId !== undefined) {
+//       return token.tokenId;
+//     }
+//   }
+//   return undefined;
+// };
 
-export const getPrice = (address, tokenId, priceFeed) => {
-  const price = priceFeed.find(
-    (val) =>
-      val.tokenAddress === address &&
-      (tokenId !== undefined && val.tokenId !== undefined
-        ? val.tokenId.toString() === tokenId
-        : true)
-  );
-
-  return price;
+const getPrice = (address, tokenId, priceFeed) => {
+  return priceFeed[`${address}_${tokenId || 0}`];
 };
 
 const generateObjktQuery = (contractList) => {
@@ -201,55 +194,26 @@ export default {
       const usdMul = await coingecko.getXtzUsdPrice();
 
       // Check if address has CRUNCH token , if the address doesnot, i will append the token data
-      if (
-        balances.filter(
-          (val) =>
-            val.token?.contract?.address ===
-            process.env.VUE_APP_CONTRACTS_CRUNCH
-        ).length < 1
-      ) {
-        balances.push({
-          token: {
-            token_id: 0,
-            tokenId: 0,
-            contract: { address: process.env.VUE_APP_CONTRACTS_CRUNCH },
-            metadata: {
-              thumbnail_uri:
-                "https://ipfs.fleek.co/ipfs/bafybeienhhbxz53n3gtg7stjou2zs3lmhupahwovv2kxwh5uass3bc5xzq",
-              symbol: "CRUNCH",
-              decimals: 8,
-            },
-          },
-          balance: new BigNumber(0),
-        });
-      }
 
+      balances.forEach((val, index) => {
+        if (
+          val.token?.contract?.address ===
+            process.env.VUE_APP_CONTRACTS_CRUNCH ||
+          val.token?.contract?.address === process.env.VUE_APP_CONTRACTS_CRDAO
+        ) {
+          delete balances[index];
+        }
+      });
       // Check if address has crDAO token , if the address doesnot, i will append the token data
-      if (
-        balances.filter(
-          (val) =>
-            val.token?.contract?.address === process.env.VUE_APP_CONTRACTS_CRDAO
-        ).length < 1
-      ) {
-        balances.push({
-          token: {
-            contract: { address: process.env.VUE_APP_CONTRACTS_CRDAO },
-            token_id: 0,
-            tokenId: 0,
-            name: "Crunchy DAO",
-            metadata: {
-              thumbnail_uri:
-                "https://ipfs.fleek.co/ipfs/bafybeigulbzm5x72qtmckxqvd3ksk6q3vlklxjgpnvvnbcofgdp6qwu43u",
-              symbol: "crDAO",
-              decimals: 8,
-            },
-          },
-          balance: new BigNumber(0),
-        });
-      }
 
       // Get all wallet prices
-      const { contracts: prices } = await teztools.getPricefeed();
+      // const { contracts: prices } = await teztools.getPricefeed();
+
+      // Get token metadata and prices
+      const [tokenData, tokensClose] = await Promise.all([
+        queryDipdup.getAllTokenAndQuotes(),
+        queryDipdup.getTokensPriceClose(),
+      ]);
 
       // filter out NFTs by checking for artifactURI and token symbol or alias
       const tokens = [];
@@ -267,30 +231,43 @@ export default {
           tokens.push(val);
         }
       });
+
       balances = tokens;
+
       // map through all the balances to sort data
       for (let i = 0; i < balances.length; i++) {
-        let priceFilter = prices.filter(
-          (val) => val.tokenAddress === balances[i]?.token?.contract?.address
-        );
+        const tokenId = `${balances[i]?.token?.contract?.address}_${
+          balances[i]?.token?.tokenId || 0
+        }`;
+        const priceObj = tokenData[tokenId];
 
-        if (priceFilter.length > 1) {
-          if (balances[i]?.token?.metadata !== undefined) {
-            priceFilter = priceFilter.filter(
-              (val) => val.symbol === balances[i]?.token?.metadata?.symbol
-            );
-          } else if (balances[i]?.token?.tokenId !== undefined) {
-            priceFilter = priceFilter.filter(
-              (val) => val.tokenId.toString() === balances[i].token.tokenId
-            );
-          }
-        }
+        const tokenClose = queryDipdup.filterTokenClose(tokenId, tokensClose);
 
-        const priceObj = priceFilter.length ? priceFilter[0] : undefined;
+        // if (!token) {
+        //   console.log("\n\n------ begin:  ------");
+        //   console.log(balances[i]);
+        //   console.log("------ end:  ------\n\n");
+        // }
+        // let priceFilter = prices.filter(
+        //   (val) => val.tokenAddress === balances[i]?.token?.contract?.address
+        // );
 
+        // if (priceFilter) {
+        //   if (balances[i]?.token?.metadata !== undefined) {
+        //     priceFilter = priceFilter.filter(
+        //       (val) => val.symbol === balances[i]?.token?.metadata?.symbol
+        //     );
+        //   } else if (balances[i]?.token?.tokenId !== undefined) {
+        //     priceFilter = priceFilter.filter(
+        //       (val) => val.tokenId.toString() === balances[i].token.tokenId
+        //     );
+        //   }
+        // }
+
+        // const priceObj = priceFilter.length ? priceFilter[0] : undefined;
         // get current price of token
         const currentPrice = priceObj?.currentPrice || false;
-        const tokenid = getTokenId(priceObj, balances[i].token);
+        const tokenid = priceObj?.tokenId;
         // get token uri from prices :: This is because  balance does not return  some tokens thumbnail
         const thumbnailUri = priceObj?.thumbnailUri || false;
 
@@ -307,17 +284,15 @@ export default {
         );
 
         const price = new BigNumber(currentPrice);
-        const priceUsd = new BigNumber(currentPrice).multipliedBy(
-          new BigNumber(usdMul)
-        );
+        const priceUsd = new BigNumber(currentPrice).times(usdMul);
         const value = balance.multipliedBy(price);
         const valueUsd = balance.multipliedBy(priceUsd);
         const icon = ipfs.transformUri(
           balances[i]?.token?.metadata?.thumbnailUri || thumbnailUri || ""
         );
-        const pricePair = priceObj?.pairs.find(
-          (el) => el.dex === "Quipuswap" && el.sides[1].symbol === "XTZ"
-        );
+        // const pricePair = priceObj?.pairs?.find(
+        //   (el) => el.dex === "Quipuswap" && el.sides[1].symbol === "XTZ"
+        // );
         var assetSlug;
         if (tokenid !== undefined) {
           assetSlug = `${balances[i]?.token?.contract?.address}_${tokenid}`;
@@ -334,18 +309,18 @@ export default {
           price: price.toNumber(),
           name: priceObj?.name,
           priceChange1Day: price
-            .minus(pricePair?.sides[0]?.dayClose)
-            .div(pricePair?.sides[0]?.dayClose)
+            .minus(tokenClose?.dayClose)
+            .div(tokenClose?.dayClose)
             .times(100)
             .toNumber(),
           priceChange7Day: price
-            .minus(pricePair?.sides[0]?.weekClose)
-            .div(pricePair?.sides[0]?.weekClose)
+            .minus(tokenClose?.weekClose)
+            .div(tokenClose?.weekClose)
             .times(100)
             .toNumber(),
           priceChange30Day: price
-            .minus(pricePair?.sides[0]?.monthClose)
-            .div(pricePair?.sides[0]?.monthClose)
+            .minus(tokenClose?.monthClose)
+            .div(tokenClose?.monthClose)
             .times(100)
             .toNumber(),
           priceUsd: priceUsd.toNumber(),
@@ -356,7 +331,7 @@ export default {
           assetSlug,
           decimals: balances[i]?.token?.metadata?.decimals,
         };
-        if (currentPrice) {
+        if (priceObj) {
           assets.push(valObj);
         }
       }
@@ -391,6 +366,7 @@ export default {
     } catch (e) {
       console.log("/utils/home-wallet", e);
     }
+    console.log("tag", "", assets);
     return { assets };
   },
 
@@ -472,12 +448,6 @@ export default {
           tokenObjkt.tokenId,
           priceFeed
         );
-
-        if (address === "KT1K4EwTpbvYN9agJdjpyJm4ZZdhpUNKB3F6") {
-          console.log(tokenMetaData);
-          console.log("HEre !!!");
-          console.log(new BigNumber(lpBal[i].balance).div(1e6).toNumber());
-        }
 
         if (tokenMetaData) {
           if (tokenMetaData.thumbnailUri)
@@ -619,9 +589,12 @@ export default {
         );
 
         if (tokenMetaData) {
+          console.log(tokenMetaData);
+          // if (tokenMetaData.thumbnailUri) {
           tokenMetaData.thumbnailUri = ipfs.transformUri(
             tokenMetaData.thumbnailUri
           );
+          // }
 
           const xtzSide = new BigNumber(tokenObjkt.balance)
             .times(tokenObjkt.tezPool)
