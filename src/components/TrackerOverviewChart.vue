@@ -257,10 +257,6 @@ export default {
 
       const areaSeriesData = this.tokenData;
 
-      console.log("\n\n------ begin:  ------");
-      console.log(this.updatedChartData.price.days1);
-      console.log("------ end:  ------\n\n");
-
       document.getElementById("chart").innerHTML = "";
 
       var chart = createChart(document.getElementById("chart"), {
@@ -383,19 +379,19 @@ export default {
 
       if (value < 0.0000000001 && value > 0) {
         precision = 12;
-        minMove = 0.0000000001;
+        minMove = 0.00000000001;
       } else if (value < 0.00000001 && value > 0) {
         precision = 10;
-        minMove = 0.00000001;
+        minMove = 0.000000001;
       } else if (value < 0.000001 && value > 0) {
         precision = 8;
-        minMove = 0.000001;
+        minMove = 0.00000001;
       } else if (value < 0.0001 && value > 0) {
         precision = 6;
-        minMove = 0.0001;
+        minMove = 0.000001;
       } else if (value < 0.001 && value > 0) {
         precision = 4;
-        minMove = 0.001;
+        minMove = 0.0001;
       } else {
         precision = 4;
         minMove = 0.0001;

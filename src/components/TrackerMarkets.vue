@@ -25,7 +25,7 @@
                 <el-col :span="7">Exchange</el-col>
                 <el-col style="text-align: right" :span="5">Market</el-col>
                 <el-col style="text-align: right" :span="5">Price</el-col>
-                <el-col style="text-align: right" :span="5">24h Volume</el-col>
+                <el-col style="text-align: right" :span="5">Volume</el-col>
               </el-row>
             </el-col>
           </el-row>
@@ -48,7 +48,7 @@
                     <el-col :span="7">
                       <el-row type="flex" style="align-items: center">
                         <img
-                          :src="handleDexUri(item.dex)"
+                          :src="handleDexUri(item.name)"
                           style="
                             position: relative;
                             margin-right: 10px;
@@ -68,7 +68,7 @@
                             text-decoration: none;
                           "
                         >
-                          {{ item.dex }}
+                          {{ capitalize(item.name) }}
                         </a>
                       </el-row></el-col
                     >
@@ -79,7 +79,7 @@
                       <price-format prefix="$" :value="item.lpPrice" />
                     </el-col>
                     <el-col style="text-align: right" :span="5">
-                      <price-format prefix="$" :value="item.volume24" />
+                      <price-format prefix="$" :value="item.volume" />
                     </el-col>
                   </el-row>
                 </div>
@@ -129,6 +129,12 @@ export default {
         default:
           return "";
       }
+    },
+
+    capitalize(str) {
+      return str.replace(/\b[a-z]/gi, function (char) {
+        return char.toUpperCase();
+      });
     },
   },
 };

@@ -32,7 +32,7 @@
                 <a
                   style="color: #555cff; text-decoration: none"
                   target="_blank"
-                  :href="`https://tzkt.io/${asset.contract}/operations/`"
+                  :href="`https://tzkt.io/${asset.address}/operations/`"
                 >
                   {{ asset.symbol || asset.name }}
                 </a>

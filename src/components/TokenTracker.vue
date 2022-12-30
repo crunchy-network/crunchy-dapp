@@ -37,16 +37,6 @@
                 ecosystem</span
               >
             </el-col>
-
-            <div class="show-md" :span="5" style="text-align: right">
-              <el-button
-                type="primary"
-                round
-                style="font-weight: bold"
-                icon="fa-solid fa-wallet"
-                >{{ " " }}My Portfolio</el-button
-              >
-            </div>
           </el-row>
 
           <el-row
@@ -184,15 +174,6 @@
           </el-row>
         </el-col>
         <el-col class="hide-md" :span="5" style="text-align: right">
-          <router-link :to="'/'">
-            <el-button
-              type="primary"
-              round
-              icon="fa-solid fa-wallet"
-              style="font-weight: bold"
-              ><span style="margin-left: 8px"> My Portfolio </span></el-button
-            ></router-link
-          >
           <div style="margin-top: 14px">
             <img
               style="width: 80%"

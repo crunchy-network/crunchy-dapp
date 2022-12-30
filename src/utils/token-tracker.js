@@ -1,6 +1,7 @@
 import axios from "axios";
 import BigNumber from "bignumber.js";
 import ipfs from "./ipfs";
+import queryDipdup from "./queryDipdup";
 
 const twentyFourHrs = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
 const fourtyEightHrs = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
@@ -320,40 +321,10 @@ export default {
   },
 
   async getTokenFeed() {
-    const date = new Date();
-    const previousDay = new Date(
-      date.setDate(date.getDate() - 1)
-    ).toDateString();
-
-    const previousWeek = new Date(
-      date.setDate(date.getDate() - ((date.getDay() + 6) % 7))
-    ).toDateString();
-
-    const previousMonth = new Date(
-      new Date(date.setDate(1)).setMonth(date.getMonth() - 1)
-    ).toDateString();
-
     const query = `
      query MyQuery {
-      quotes1dNogaps(distinct_on: tokenId, where: {bucket:{_eq: "${previousDay}"}}) {
+      quotesTotal(distinct_on: tokenId){
         close
-        tokenId
-        bucket
-      }
-      quotes1mo(distinct_on: tokenId, where: {bucket:{_eq: "${previousMonth}"}}) {
-        close
-        tokenId
-        bucket
-      }
-      quotes1wNogaps(distinct_on: tokenId, where: {bucket:{_eq: "${previousWeek}"}}) {
-        close
-        bucket
-        tokenId
-      }
-      quotesTotal {
-        close
-        low
-        high
         tokenId
       }
       statsTotal {
@@ -362,10 +333,14 @@ export default {
         tokenId
       }
       token {
-        exchanges {
+        exchanges{
+          address
           name
+          tokenId
           tezPool
           tokenPool
+          tradeVolume
+          midPrice
         }
         address
         decimals
@@ -377,22 +352,19 @@ export default {
       }
     }`;
 
-    const {
-      data: {
+    const [
+      {
         data: {
-          quotes1dNogaps,
-          quotes1mo,
-          quotes1wNogaps,
-          quotesTotal,
-          statsTotal,
-          token,
+          data: { quotesTotal, statsTotal, token },
         },
       },
-    } = await axios.post("https://dex.dipdup.net/v1/graphql", {
-      query,
-    });
-
-    console.log("tag", quotes1wNogaps);
+      tokensCloseData,
+    ] = await Promise.all([
+      axios.post("https://dex.dipdup.net/v1/graphql", {
+        query,
+      }),
+      queryDipdup.getTokensPriceClose(),
+    ]);
 
     const tokensVolume = await queryXtzVolume();
 
@@ -401,19 +373,7 @@ export default {
     for (let index = 0; index < token.length; index++) {
       const element = token[index];
       const tokenId = element.id;
-      const dayClose =
-        Number(
-          quotes1dNogaps.find((quote) => quote.tokenId === tokenId)?.close
-        ) || 0;
-
-      const weekClose =
-        Number(
-          quotes1wNogaps.find((quote) => quote.tokenId === tokenId)?.close
-        ) || 0;
-
-      const monthClose =
-        Number(quotes1mo.find((quote) => quote.tokenId === tokenId)?.close) ||
-        0;
+      const closes = queryDipdup.filterTokenClose(tokenId, tokensCloseData);
 
       const tokenQuotesTotal = quotesTotal.find(
         (quote) => quote.tokenId === tokenId
@@ -434,12 +394,9 @@ export default {
 
       tokenObjkt[element.id] = {
         ...element,
-        currentPrice: tokenQuotesTotal?.close || 0,
-        allTimeHigh: tokenQuotesTotal?.high || 0,
-        allTimeLow: tokenQuotesTotal?.low || 0,
-        dayClose,
-        weekClose,
-        monthClose,
+        ...closes,
+        currentPrice: Number(tokenQuotesTotal?.close),
+        // allTimeLow: tokenQuotesTotal?.low || 0,
         tokenTvl,
         volume24Xtz,
       };
@@ -515,17 +472,20 @@ export default {
         .times(100)
         .toNumber();
 
-      console.log("XXXX", element);
-
       element.mktCap = isNaN(mktCap.toNumber()) ? 0 : mktCap.toNumber();
       element.volume24 = new BigNumber(element.volume24Xtz)
         .times(xtzUsd)
         .toNumber();
+      console.log("====");
+      console.log(element);
+      for (let index = 0; index < element?.exchanges.length; index++) {
+        const market = element?.exchanges[index];
 
-      for (let index = 0; index < element?.pairs?.length; index++) {
-        const market = element?.pairs[index];
-        element.pairs[index].lpPrice =
-          (market.tvl / market.lptSupply) * xtzUsd || 0;
+        element.exchanges[index].lpPrice =
+          Number(market.midPrice) * xtzUsd || 0;
+
+        element.exchanges[index].symbol = `XTZ/${element.symmbol}`;
+        element.exchanges[index].volume = `XTZ/${element.symmbol}`;
       }
     }
 
