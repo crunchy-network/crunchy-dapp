@@ -130,10 +130,7 @@
         :token-tracked="getTokenOverview"
         :loading="getLoading"
       />
-      <TrackerMarkets
-        v-if="activeTab === 'markets'"
-        :loading="getLoading"
-      />
+      <TrackerMarkets v-if="activeTab === 'markets'" :loading="getLoading" />
     </el-main>
   </div>
 </template>

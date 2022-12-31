@@ -366,7 +366,6 @@ export default {
     } catch (e) {
       console.log("/utils/home-wallet", e);
     }
-    console.log("tag", "", assets);
     return { assets };
   },
 

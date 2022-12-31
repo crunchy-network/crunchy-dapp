@@ -18,9 +18,7 @@ export default {
       const allTokensMetadata = await dexIndexer.getAllTokens();
       const xtzUsd = await coingecko.getXtzUsdPrice();
       const xtzUsdHistory = await coingecko.getXtzUsdHistory();
-      console.log("\n\n------ begin:  ------");
-      console.log(xtzUsdHistory);
-      console.log("------ end:  ------\n\n");
+
       commit("updateXtzUsdPrice", xtzUsd);
       commit("updateXtzUsdHistory", xtzUsdHistory);
 
@@ -116,7 +114,7 @@ export default {
   async fetchChartData({ commit, state }, tokenId) {
     commit("updateChartDataLoading", true);
     const chartData = {};
-    const exchangeId = state.tokensTracked[tokenId].address || "";
+    const exchangeId = state.tokensTracked[tokenId].exchanges[0].address || "";
     try {
       const [
         {

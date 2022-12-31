@@ -456,21 +456,25 @@ export default {
 
       const mktCap = new BigNumber(element.calcSupply).times(element.usdValue);
 
-      element.change1Day = price
+      const change1Day = price
         .minus(element?.dayClose)
         .div(element?.dayClose)
         .times(100)
         .toNumber();
-      element.change7Day = price
+      const change7Day = price
         .minus(element?.weekClose)
         .div(element?.weekClose)
         .times(100)
         .toNumber();
-      element.change30Day = price
+      const change30Day = price
         .minus(element?.monthClose)
         .div(element?.monthClose)
         .times(100)
         .toNumber();
+
+      element.change1Day = change1Day === Infinity ? 0 : change1Day || 0;
+      element.change7Day = change7Day === Infinity ? 0 : change7Day || 0;
+      element.change30Day = change30Day === Infinity ? 0 : change30Day || 0;
 
       element.mktCap = isNaN(mktCap.toNumber()) ? 0 : mktCap.toNumber();
       element.volume24 = new BigNumber(element.volume24Xtz)

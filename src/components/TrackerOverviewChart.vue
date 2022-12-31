@@ -1,4 +1,4 @@
-<template>
+ <template>
   <div id="token-tracker">
     <div id="chart"></div>
   </div>
@@ -130,6 +130,7 @@ export default {
             timeUsdValue,
           };
         });
+
       this.updatedChartData.volume.days1 =
         this.getChartData.volumeAndPrice1Day.map((element) => {
           const timeUsdValue = tokenTracker.binarySearch(
@@ -216,153 +217,157 @@ export default {
     },
 
     async getPrices() {
-      if (this.legendTab === "tvl") {
-        this.tokenData =
-          this.duration === "1d"
-            ? this.updatedChartData.tvl.days1
-            : this.duration === "7d"
-            ? this.updatedChartData.tvl.days7
-            : this.duration === "30d"
-            ? this.updatedChartData.tvl.days30
-            : this.duration === "all"
-            ? this.updatedChartData.tvl.all
-            : null;
-      }
+      try {
+        if (this.legendTab === "tvl") {
+          this.tokenData =
+            this.duration === "1d"
+              ? this.updatedChartData.tvl.days1
+              : this.duration === "7d"
+              ? this.updatedChartData.tvl.days7
+              : this.duration === "30d"
+              ? this.updatedChartData.tvl.days30
+              : this.duration === "all"
+              ? this.updatedChartData.tvl.all
+              : null;
+        }
 
-      if (this.legendTab === "price") {
-        this.tokenData =
-          this.duration === "1d"
-            ? this.updatedChartData.price.days1
-            : this.duration === "7d"
-            ? this.updatedChartData.price.days7
-            : this.duration === "30d"
-            ? this.updatedChartData.price.days30
-            : this.duration === "all"
-            ? this.updatedChartData.price.all
-            : null;
-      }
+        if (this.legendTab === "price") {
+          this.tokenData =
+            this.duration === "1d"
+              ? this.updatedChartData.price.days1
+              : this.duration === "7d"
+              ? this.updatedChartData.price.days7
+              : this.duration === "30d"
+              ? this.updatedChartData.price.days30
+              : this.duration === "all"
+              ? this.updatedChartData.price.all
+              : null;
+        }
 
-      if (this.legendTab === "volume") {
-        this.tokenData =
-          this.duration === "1d"
-            ? this.updatedChartData.volume.days1
-            : this.duration === "7d"
-            ? this.updatedChartData.volume.days7
-            : this.duration === "30d"
-            ? this.updatedChartData.volume.days30
-            : this.duration === "all"
-            ? this.updatedChartData.volume.all
-            : null;
-      }
+        if (this.legendTab === "volume") {
+          this.tokenData =
+            this.duration === "1d"
+              ? this.updatedChartData.volume.days1
+              : this.duration === "7d"
+              ? this.updatedChartData.volume.days7
+              : this.duration === "30d"
+              ? this.updatedChartData.volume.days30
+              : this.duration === "all"
+              ? this.updatedChartData.volume.all
+              : null;
+        }
 
-      const areaSeriesData = this.tokenData;
+        const areaSeriesData = this.tokenData;
 
-      document.getElementById("chart").innerHTML = "";
+        document.getElementById("chart").innerHTML = "";
 
-      var chart = createChart(document.getElementById("chart"), {
-        rightPriceScale: {
-          visible: true,
-          scaleMargins: {
-            top: 0.2,
-            bottom: 0.2,
+        var chart = createChart(document.getElementById("chart"), {
+          rightPriceScale: {
+            visible: true,
+            scaleMargins: {
+              top: 0.2,
+              bottom: 0.2,
+            },
+            borderVisible: false,
           },
-          borderVisible: false,
-        },
-        timeScale: {
-          borderVisible: false,
-          timeVisible: true,
-          tickMarkFormatter: (time) => {
-            const date = new Date(time);
-            return this.formatDate(date);
+          timeScale: {
+            borderVisible: false,
+            timeVisible: true,
+            tickMarkFormatter: (time) => {
+              const date = new Date(time);
+              return this.formatDate(date);
+            },
           },
-        },
-        grid: {
-          vertLines: {
-            color: "#f0f3fa",
+          grid: {
+            vertLines: {
+              color: "#f0f3fa",
+            },
+            horzLines: {
+              color: "#f0f3fa",
+            },
           },
-          horzLines: {
-            color: "#f0f3fa",
-          },
-        },
-        crosshair: {
-          // hide the horizontal crosshair line
-          horzLine: {
-            visible: false,
-            labelVisible: false,
-          },
-          // hide the vertical crosshair label
-          vertLine: {
-            labelVisible: false,
-          },
-        },
-      });
-
-      var areaSeries = chart.addAreaSeries({
-        topColor: "rgba(85,92,255,.5)",
-        bottomColor: "rgba(85,92,255,.04)",
-        lineColor: "rgba(85,92,255,1)",
-        lineWidth: 2,
-      });
-
-      if (this.legendTab === "price") {
-        areaSeries.applyOptions({
-          priceFormat: {
-            type: "price",
-            precision: this.handlePrecision(this.tokenTracked.usdValue)
-              .precision,
-            minMove: this.handlePrecision(this.tokenTracked.usdValue).minMove,
+          crosshair: {
+            // hide the horizontal crosshair line
+            horzLine: {
+              visible: false,
+              labelVisible: false,
+            },
+            // hide the vertical crosshair label
+            vertLine: {
+              labelVisible: false,
+            },
           },
         });
-      }
 
-      areaSeries.setData(areaSeriesData);
-      const container = document.getElementById("chart");
-      const toolTipWidth = 80;
-      const toolTipMargin = 15;
-      const toolTipHeightSupport = 250;
-      // Create and style the tooltip html element
-      const toolTip = document.createElement("div");
-      toolTip.id = "token-chart-tooltip";
-      toolTip.style.background = "white";
-      toolTip.style.color = "black";
-      toolTip.style.borderColor = "rgba( 38, 166, 154, 1)";
-      container.appendChild(toolTip);
-      // update tooltip
-      chart.subscribeCrosshairMove((param) => {
-        if (
-          param.point === undefined ||
-          !param.time ||
-          param.point.x < 0 ||
-          param.point.x > container.clientWidth ||
-          param.point.y < 0 ||
-          param.point.y > container.clientHeight
-        ) {
-          toolTip.style.display = "none";
-        } else {
-          const dateStr = this.formatDate(param.time);
-          toolTip.style.display = "block";
-          const price = Number(param.seriesPrices.get(areaSeries)).toFixed(
-            this.handlePrecision(param.seriesPrices.get(areaSeries)).precision
-          );
-          toolTip.innerHTML = `<div style="color: ${"rgba( 38, 166, 154, 1)"}">${
-            this.tokenTracked.symbol || this.tokenTracked.name
-          }.</div><div style="font-size: 24px; margin: 4px 0px; color: ${"black"}">
+        var areaSeries = chart.addAreaSeries({
+          topColor: "rgba(85,92,255,.5)",
+          bottomColor: "rgba(85,92,255,.04)",
+          lineColor: "rgba(85,92,255,1)",
+          lineWidth: 2,
+        });
+
+        if (this.legendTab === "price") {
+          areaSeries.applyOptions({
+            priceFormat: {
+              type: "price",
+              precision: this.handlePrecision(this.tokenTracked.usdValue)
+                .precision,
+              minMove: this.handlePrecision(this.tokenTracked.usdValue).minMove,
+            },
+          });
+        }
+
+        areaSeries.setData(areaSeriesData);
+        const container = document.getElementById("chart");
+        const toolTipWidth = 80;
+        const toolTipMargin = 15;
+        const toolTipHeightSupport = 250;
+        // Create and style the tooltip html element
+        const toolTip = document.createElement("div");
+        toolTip.id = "token-chart-tooltip";
+        toolTip.style.background = "white";
+        toolTip.style.color = "black";
+        toolTip.style.borderColor = "rgba( 38, 166, 154, 1)";
+        container.appendChild(toolTip);
+        // update tooltip
+        chart.subscribeCrosshairMove((param) => {
+          if (
+            param.point === undefined ||
+            !param.time ||
+            param.point.x < 0 ||
+            param.point.x > container.clientWidth ||
+            param.point.y < 0 ||
+            param.point.y > container.clientHeight
+          ) {
+            toolTip.style.display = "none";
+          } else {
+            const dateStr = this.formatDate(param.time);
+            toolTip.style.display = "block";
+            const price = Number(param.seriesPrices.get(areaSeries)).toFixed(
+              this.handlePrecision(param.seriesPrices.get(areaSeries)).precision
+            );
+            toolTip.innerHTML = `<div style="color: ${"rgba( 38, 166, 154, 1)"}">${
+              this.tokenTracked.symbol || this.tokenTracked.name
+            }.</div><div style="font-size: 24px; margin: 4px 0px; color: ${"black"}">
             $${this.formatNumShorthand(price).value}${
-            this.formatNumShorthand(price).suffix
-          }
+              this.formatNumShorthand(price).suffix
+            }
             </div><div style="color: ${"black"}">
             ${dateStr}
             </div>`;
-          const y = param.point.y;
-          let left = param.point.x + toolTipMargin;
-          if (left > container.clientWidth - toolTipWidth) {
-            left = param.point.x - toolTipMargin - toolTipWidth;
+            const y = param.point.y;
+            let left = param.point.x + toolTipMargin;
+            if (left > container.clientWidth - toolTipWidth) {
+              left = param.point.x - toolTipMargin - toolTipWidth;
+            }
+            const top = y + toolTipMargin + toolTipHeightSupport;
+            toolTip.style.left = left + "px";
+            toolTip.style.top = top + "px";
           }
-          const top = y + toolTipMargin + toolTipHeightSupport;
-          toolTip.style.left = left + "px";
-          toolTip.style.top = top + "px";
-        }
-      });
+        });
+      } catch (error) {
+        console.log("ERROR", error);
+      }
     },
 
     formatDate(date) {
