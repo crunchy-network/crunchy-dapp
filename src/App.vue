@@ -330,6 +330,11 @@ header .grid-content button.el-button {
 .search-input .el-input__prefix {
   color: #191b1f;
 }
+
+#token-tracker .search-input .el-input__prefix {
+  color: #DCDFE6;
+}
+
 .search-input .el-input__inner,
 #farm-listing .search-input .el-input__inner {
   border-radius: 24px !important;

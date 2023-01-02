@@ -12,15 +12,22 @@ import IfoPixelPriv from "./../components/IfoPixelPriv.vue";
 import HomeWalletPage from "./../components/HomeWalletPage.vue";
 import IFOList from "./../components/IFOList.vue";
 import Swap from "./../components/Swap.vue";
+import TokenTracker from "./../components/TokenTracker.vue";
+import TokenTrackerItem from "./../components/TokenTrackerItem.vue";
 // import Bakery from './../components/Bakery.vue'
 
 Vue.use(VueRouter);
 
 const routes = [
-  { name: "home", path: "/", component: HomeWalletPage },
+  { name: "home", path: "/", component: TokenTracker },
   {
     name: "home-view-wallet",
     path: "/wallet/:walletAddress",
+    component: HomeWalletPage,
+  },
+  {
+    name: "home-view-portfolio",
+    path: "/portfolio",
     component: HomeWalletPage,
   },
 
@@ -29,6 +36,12 @@ const routes = [
     name: "wtz",
     path: "/wtz",
     component: WtzMain,
+  },
+
+  {
+    name: "token-tracker-item",
+    path: "/token/:tokenId",
+    component: TokenTrackerItem,
   },
 
   {

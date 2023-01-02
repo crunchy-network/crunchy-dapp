@@ -42,50 +42,27 @@
           </el-col>
 
           <el-col style="text-align: right" :span="4">
-            {{
-              vueNumberFormat(asset.balance, {
-                prefix: "",
-                decimal: ".",
-                thousand: ",",
-                precision: 4,
-              })
-            }}
+            <price-format :precision="4" :value="asset.balance" />
           </el-col>
           <el-col style="text-align: right" :span="4">
-            {{
-              !showUsd
-                ? vueNumberFormat(asset.price, {
-                    prefix: "",
-                    suffix: " ꜩ",
-                    decimal: ".",
-                    thousand: ",",
-                    precision: 4,
-                  })
-                : vueNumberFormat(asset.priceUsd, {
-                    prefix: "$",
-                    decimal: ".",
-                    thousand: ",",
-                    precision: 2,
-                  })
-            }}
+            <price-format
+              :prefix="showUsd ? '$' : ''"
+              :suffix="!showUsd ? 'ꜩ' : ''"
+              :precision="4"
+              :show-usd="showUsd"
+              :usd-value="asset.priceUsd"
+              :value="asset.price"
+            />
           </el-col>
           <el-col style="text-align: right" :span="4">
-            {{
-              !showUsd
-                ? vueNumberFormat(asset.value, {
-                    prefix: "",
-                    suffix: " ꜩ",
-                    decimal: ".",
-                    thousand: ",",
-                    precision: 4,
-                  })
-                : vueNumberFormat(asset.valueUsd, {
-                    prefix: "$",
-                    decimal: ".",
-                    thousand: ",",
-                    precision: 2,
-                  })
-            }}
+            <price-format
+              :prefix="showUsd ? '$' : ''"
+              :suffix="!showUsd ? 'ꜩ' : ''"
+              :precision="4"
+              :show-usd="showUsd"
+              :usd-value="asset.valueUsd"
+              :value="asset.value"
+            />
           </el-col>
 
           <el-col
@@ -167,8 +144,10 @@
 </template>
 
 <script>
+import PriceFormat from "./PriceFormat.vue";
 export default {
   name: "PortfolioWalletRow",
+  components: { PriceFormat },
   props: {
     asset: { type: Object, required: true },
     showUsd: { type: Boolean, required: true },

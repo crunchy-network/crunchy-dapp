@@ -277,7 +277,7 @@ export default {
         var outputToken = this.tokenList.find((t) => t.assetSlug === to);
         if (!outputToken) {
           outputToken = this.tokenList.find(
-            (t) => t.assetSlug === `${process.env.VUE_APP_CONTRACTS_CRDAO}_0`
+            (t) => t.assetSlug === `KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV_0`
           );
         }
         form.outputToken = outputToken;

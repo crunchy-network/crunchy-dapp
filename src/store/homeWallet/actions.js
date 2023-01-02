@@ -2,6 +2,7 @@ import axios from "axios";
 import coingecko from "../../utils/coingecko";
 import homeWallet from "../../utils/home-wallet";
 import homeWalletStake from "../../utils/home-wallet-stake";
+import queryDipdup from "../../utils/queryDipdup";
 import teztools from "../../utils/teztools";
 
 export default {
@@ -29,6 +30,7 @@ export default {
       });
     }
   },
+
   async fetchNftCollection({ state, commit }, address) {
     let collection = {};
     if (state.nfts.length > 1) {
@@ -37,6 +39,7 @@ export default {
 
     commit("updateNftCollection", collection);
   },
+
   async softFetchNFTs({ rootState, commit }, pkh) {
     if (!pkh && !rootState.wallet.pkh) {
       // @todo
@@ -66,7 +69,7 @@ export default {
 
   async loadStakeAssets({ dispatch, commit }, pkh) {
     commit("updateStakeLoading", true);
-    const { contracts: priceFeed } = await teztools.getPricefeed();
+    const priceFeed = await teztools.getPricefeed();
     commit("updatePriceFeed", priceFeed);
     await Promise.all([
       dispatch("loadCrunchyStake", pkh),
@@ -143,9 +146,7 @@ export default {
         `https://staging.api.tzkt.io/v1/tokens/balances?account=${account}&balance.gt=0&limit=10000&select=token,balance`
       );
 
-      const {
-        data: { contracts: priceFeed },
-      } = await axios.get("https://api.teztools.io/v1/prices");
+      const priceFeed = await queryDipdup.getAllTokenAndQuotes();
 
       const xtzUsd = await coingecko.getXtzUsdPrice();
 
@@ -168,6 +169,7 @@ export default {
       commit("updateLpLoading", false);
     }
   },
+
   async softLoadAllLiquidity({ rootState, commit }, pkh) {
     const account = pkh || rootState.wallet.pkh;
 
@@ -175,9 +177,8 @@ export default {
       const { data: balances } = await axios.get(
         `https://staging.api.tzkt.io/v1/tokens/balances?account=${account}&balance.gt=0&limit=10000&select=token,balance`
       );
-      const {
-        data: { contracts: priceFeed },
-      } = await axios.get("https://api.teztools.io/v1/prices");
+
+      const priceFeed = await queryDipdup.getAllTokenAndQuotes();
       const xtzUsd = await coingecko.getXtzUsdPrice();
 
       const [quipuswap, vortex, plenty, spicyswap, sirius] = await Promise.all([

@@ -57,7 +57,7 @@
             type="flex"
             style="flex-wrap: wrap; row-gap: 20px"
           >
-            <el-col :sm="12" :md="8" :lg="4">
+            <el-col :sm="12" :md="8">
               <div class="grid-content" style="height: 100%">
                 <el-card
                   v-loading="farms.loading"
@@ -110,7 +110,7 @@
                 </el-card>
               </div>
             </el-col>
-            <el-col :sm="12" :md="8" :lg="4">
+            <el-col :sm="12" :md="8">
               <div class="grid-content" style="height: 100%">
                 <el-card
                   v-loading="farms.loading"
@@ -151,7 +151,7 @@
                 </el-card>
               </div>
             </el-col>
-            <el-col :sm="12" :md="8" :lg="4">
+            <el-col :sm="12" :md="8">
               <div class="grid-content" style="height: 100%">
                 <el-card
                   v-loading="farms.loading"
@@ -199,7 +199,7 @@
                 </el-card>
               </div>
             </el-col>
-
+            <!-- 
             <el-col :sm="12" :md="8" :lg="4">
               <div class="grid-content" style="height: 100%">
                 <el-card
@@ -258,8 +258,8 @@
                   </div>
                 </el-card>
               </div>
-            </el-col>
-            <el-col :sm="12" :md="8" :lg="4">
+            </el-col> -->
+            <!-- <el-col :sm="12" :md="8" :lg="4">
               <div class="grid-content" style="height: 100%">
                 <el-card
                   v-loading="farms.loading"
@@ -288,7 +288,7 @@
                   </div>
                 </el-card>
               </div>
-            </el-col>
+            </el-col> -->
           </el-row>
         </el-col>
         <!-- <el-col :lg="8">
@@ -573,13 +573,6 @@ export default {
       return Object.values(this.farms.data).length;
     },
   },
-
-  // watch: {
-  //   activeTab() {
-  //     console.log("++++++++");
-  //     console.log(this.farms.userData);
-  //   },
-  // },
 
   created() {
     if (this.$route.query.q) {

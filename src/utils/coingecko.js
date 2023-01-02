@@ -15,4 +15,13 @@ export default {
       return res.data.tezos.usd;
     });
   },
+  async getXtzUsdHistory() {
+    return makeReqest(`/v3/coins/tezos/market_chart`, {
+      vs_currency: "usd",
+      days: "max",
+      interval: "daily",
+    }).then((res) => {
+      return res.data.prices;
+    });
+  },
 };
