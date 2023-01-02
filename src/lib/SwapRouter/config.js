@@ -1,6 +1,6 @@
 module.exports = {
   minPoolSize: 15000000, // muTez
-  excludedTokens: ["ANTI"],
+  excludedTokens: ["ANTI", "crDAO", "CRUNCH"],
   addresses: {
     wtz: process.env.VUE_APP_CONTRACTS_WTZ_FA2,
   },

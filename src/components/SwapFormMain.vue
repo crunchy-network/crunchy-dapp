@@ -277,7 +277,7 @@ export default {
         var outputToken = this.tokenList.find((t) => t.assetSlug === to);
         if (!outputToken) {
           outputToken = this.tokenList.find(
-            (t) => t.assetSlug === `KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV_0`
+            (t) => t.assetSlug === `${process.env.VUE_APP_CONTRACTS_CRNCHY}_0`
           );
         }
         form.outputToken = outputToken;
@@ -290,10 +290,10 @@ export default {
         this.updateForm({ inputToken: tez });
       }
       if (this.getSwapForm.outputToken.asset === undefined) {
-        const crDao = this.tokenList.find(
-          (t) => t.assetSlug === `${process.env.VUE_APP_CONTRACTS_CRDAO}_0`
+        const outputToken = this.tokenList.find(
+          (t) => t.assetSlug === `${process.env.VUE_APP_CONTRACTS_CRNCHY}_0`
         );
-        this.updateForm({ outputToken: crDao });
+        this.updateForm({ outputToken });
       }
     },
     async subscribeToTzktForDexUpdateTrigger(dexCall) {
