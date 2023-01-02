@@ -119,13 +119,13 @@
                     <el-table-column label="Burned By">
                       <template slot-scope="scope">
                         <el-link
-                          :href="`https://tzkt.io/${scope.row.from}`"
+                          :href="`https://tzkt.io/${scope.row.from.address}`"
                           target="_blank"
                           >{{
                             $async(
-                              scope.row.fromDomain,
-                              `tez-domain-${scope.row.from}`
-                            ) || scope.row.from
+                              scope.row.from.domain,
+                              `tez-domain-${scope.row.from.address}`
+                            ) || scope.row.from.alias || scope.row.from.address
                           }}
                           <i class="far fa-external-link fa-icon-right"></i
                         ></el-link>
@@ -140,7 +140,7 @@
                         {{
                           vueNumberFormat(
                             Number.parseInt(scope.row.amount) /
-                              Math.pow(10, scope.row.token.decimals)
+                              Math.pow(10, scope.row.token.metadata.decimals)
                           )
                         }}
                       </template>
@@ -148,9 +148,9 @@
                     <el-table-column label="Token" width="280">
                       <template slot-scope="scope">
                         <el-link
-                          :href="`https://better-call.dev/${scope.row.token.network}/${scope.row.token.contract}`"
+                          :href="`https://tzkt.io/${scope.row.token.contract.address}`"
                           target="_blank"
-                          >{{ scope.row.token.name || scope.row.token.symbol }}
+                          >{{ scope.row.token.metadata.name || scope.row.token.metadata.symbol }}
                           <i class="far fa-external-link fa-icon-right"></i
                         ></el-link>
                       </template>
@@ -189,7 +189,7 @@
                     <el-table-column label="" width="110" align="right">
                       <template slot-scope="scope">
                         <el-link
-                          :href="`https://better-call.dev/${scope.row.token.network}/opg/${scope.row.hash}`"
+                          :href="`https://tzkt.io/${scope.row.hash}`"
                           target="_blank"
                           >View Op
                           <i class="far fa-external-link fa-icon-right"></i
@@ -246,6 +246,7 @@ export default {
 
 .fire-pit {
   position: relative;
+  overflow: hidden;
 
   &:before {
     position: absolute;
