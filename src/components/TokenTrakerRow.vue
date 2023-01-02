@@ -62,7 +62,7 @@
             >
               {{
                 asset.contract !== "tez"
-                  ? vueNumberFormat(asset.change1Day, {
+                  ? vueNumberFormat(asset.change1DayUsd, {
                       prefix: "",
                       suffix: "%",
                       decimal: ".",
@@ -75,11 +75,11 @@
             <el-col
               style="text-align: right"
               :span="2"
-              :class="asset.change7Day < 0 ? 'n-change' : 'p-change'"
+              :class="asset.change7DayUsd < 0 ? 'n-change' : 'p-change'"
             >
               {{
                 asset.contract !== "tez"
-                  ? vueNumberFormat(asset.change7Day, {
+                  ? vueNumberFormat(asset.change7DayUsd, {
                       prefix: "",
                       suffix: "%",
                       decimal: ".",
@@ -92,11 +92,11 @@
             <el-col
               style="text-align: right"
               :span="2"
-              :class="asset.change30Day < 0 ? 'n-change' : 'p-change'"
+              :class="asset.change30DayUsd < 0 ? 'n-change' : 'p-change'"
             >
               {{
                 asset.contract !== "tez"
-                  ? vueNumberFormat(asset.change30Day, {
+                  ? vueNumberFormat(asset.change30DayUsd, {
                       prefix: "",
                       suffix: "%",
                       decimal: ".",
