@@ -236,16 +236,14 @@ export default {
         await tzkt.getContractBigMapKeys(
           process.env.VUE_APP_DOGAMI_STAKE,
           "addressId",
-          { key: pkh }
+          { key: pkh, active: "true" }
         ),
         await tzkt.getContractBigMapKeys(
           process.env.VUE_APP_DOGAMI_STAKE_2,
           "userStakeLockPack",
-          { key: pkh }
+          { key: pkh, active: "true" }
         ),
       ]);
-
-    console.log(tokenMetaData);
 
     if (dataObjs.length > 0) {
       const [{ value: addressId }] = dataObjs;
@@ -262,7 +260,7 @@ export default {
         } = await tzkt.getContractBigMapKeys(
           process.env.VUE_APP_DOGAMI_STAKE,
           "userStakeFlexPack",
-          { key: addressId }
+          { key: addressId, active: "true" }
         );
 
         const userStake = stake[pkh];
@@ -342,7 +340,7 @@ export default {
       await tzkt.getContractBigMapKeys(
         process.env.VUE_APP_GIF_STAKE,
         "ledger",
-        { key: pkh }
+        { key: pkh, active: "true" }
       ),
     ]);
 
