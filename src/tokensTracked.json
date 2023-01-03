@@ -1,4 +1,11 @@
 [
+  {
+    "symbol": "CRNCHY",
+    "tokenAddress": "KT1914CUZ7EegAFPbfgQMRkw8Uz5mYkEz2ui",
+    "tokenId": 0,
+    "decimals": 8,
+    "name": "Crunchy.Network CRNCHY"
+  },
   { "symbol": "wWBTC", "name": "Wrapped WBTC", "decimals": 8, "tokenId": 19, "tokenAddress": "KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ" },
   { "symbol": "wCEL", "name": "Wrapped CEL", "decimals": 4, "tokenId": 2, "tokenAddress": "KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ" },
   { "symbol": "DOGA", "name": "DOGAMI", "decimals": 5, "tokenAddress": "KT1Ha4yFVeyzw6KRAdkzq6TxDHB97KG4pZe8" },
@@ -15,12 +22,10 @@
   { "symbol": "USDtz", "name": "USDtez", "decimals": 6, "tokenAddress": "KT1LN4LPSqTMS7Sd2CJw4bbDGRkMv2t68Fy9" },
   { "symbol": "FUCKS", "name": "FUCKS", "decimals": 2, "tokenId": 0, "tokenAddress": "KT1GhX6MzTHKcjkMTg1mwCPzam12HRjsp6Sf" },
   { "symbol": "TZD", "name": "Tezard Coin", "decimals": 8, "tokenId": 0, "tokenAddress": "KT1RhRYoGmhDr4DShdggQqumRAhwAETxrs3t" },
-  { "symbol": "CRUNCH", "decimals": 8, "tokenId": 0, "tokenAddress": "KT1BHCumksALJQJ8q8to2EPigPW6qpyTr7Ng" },
   { "symbol": "sDAO", "name": "Salsa DAO", "decimals": 0, "tokenId": 1, "tokenAddress": "KT19ovJhcsUn4YU8Q5L3BGovKSixfbWcecEA" },
   { "symbol": "ctez", "name": "Ctez", "decimals": 6, "tokenAddress": "KT1SjXiUX63QvdNMcM2m492f7kuf8JxXRLp4" },
   { "symbol": "kDAO", "name": "Kolibri DAO", "decimals": 18, "tokenAddress": "KT1JkoE42rrMBP9b2oDhbx6EUr26GcySZMUH" },
   { "symbol": "STKR", "name": "STKR", "decimals": 18, "tokenAddress": "KT1AEfeckNbdEYwaMKkytBwPJPycz7jdSGea" },
-  { "symbol": "crDAO", "name": "Crunchy DAO", "decimals": 8, "tokenId": 0, "tokenAddress": "KT1XPFjZqCULSnqfKaaYy8hJjeY63UNSGwXg" },
   { "symbol": "USDS", "name": "Stably USD", "decimals": 6, "tokenId": 0, "tokenAddress": "KT1REEb5VxWRjcHm5GzDMwErMmNFftsE5Gpf" },
   { "symbol": "WRAP", "name": "Wrap Governance Token", "decimals": 8, "tokenId": 0, "tokenAddress": "KT1LRboPna9yQY9BrjtQYDS1DVxhKESK4VVd" },
   { "symbol": "ETHtz", "name": "ETHtez", "decimals": 18, "tokenAddress": "KT19at7rQUvyjxnZ2fBv7D9zc8rkyG7gAoU8" },
