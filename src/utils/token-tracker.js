@@ -448,6 +448,7 @@ export default {
       const currentPrice = element?.currentPrice || false;
 
       const price = new BigNumber(currentPrice);
+      const priceUsd = price.times(xtzUsd);
       element.usdValue = price.times(xtzUsd).toNumber();
 
       element.calcSupply = new BigNumber(tokenMetadata.total_supply)
@@ -475,6 +476,33 @@ export default {
       element.change1Day = change1Day === Infinity ? 0 : change1Day || 0;
       element.change7Day = change7Day === Infinity ? 0 : change7Day || 0;
       element.change30Day = change30Day === Infinity ? 0 : change30Day || 0;
+
+      /**
+       *Calculating % changes in Usd
+       */
+
+      const change1DayUsd = priceUsd
+        .minus(element?.dayCloseUsd)
+        .div(element?.dayCloseUsd)
+        .times(100)
+        .toNumber();
+      const change7DayUsd = priceUsd
+        .minus(element?.weekCloseUsd)
+        .div(element?.weekCloseUsd)
+        .times(100)
+        .toNumber();
+      const change30DayUsd = priceUsd
+        .minus(element?.monthCloseUsd)
+        .div(element?.monthCloseUsd)
+        .times(100)
+        .toNumber();
+
+      element.change1DayUsd =
+        change1DayUsd === Infinity ? 0 : change1DayUsd || 0;
+      element.change7DayUsd =
+        change7DayUsd === Infinity ? 0 : change7DayUsd || 0;
+      element.change30DayUsd =
+        change30DayUsd === Infinity ? 0 : change30DayUsd || 0;
 
       element.mktCap = isNaN(mktCap.toNumber()) ? 0 : mktCap.toNumber();
       element.volume24 = new BigNumber(element.volume24Xtz)
