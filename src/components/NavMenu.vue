@@ -1,5 +1,5 @@
 <template>
-  <div style="margin-bottom: 150px">
+  <div :style="(!showMenu || !mobile) && 'margin-bottom: 150px'">
     <el-header
       id="nav-menu"
       style="
@@ -15,23 +15,18 @@
         border-bottom: 1px solid #f2f2f2;
       "
     >
-      <div class="el-row" id="notice" style="
-          background: #f8535b;
-          padding: 8px 0px;
-          width: 100%;
-          display: block;
-          color: #fff;
-          text-align: center;
-          font-size: 14px;
-      ">Important Announcement: $CRUNCH and $crDAO tokens are merging.
-        <a href="https://crunchytez.medium.com/introducing-crnchy-b99879b4974e" target="_blank">Please read the medium article for full details.</a>
-      </div>
+      <Notice v-if="!showMenu || !mobile" />
       <el-row class="el-menu-row" type="flex" justify="space-between">
-        <div class="show-mobile" style="text-align: center; margin: 0 20px">
+        <div
+          v-if="!showMenu || !mobile"
+          class="show-mobile"
+          style="text-align: center; margin: 0 20px"
+        >
           <img src="../assets/logo_transparent_background.png" width="170" />
         </div>
         <button
-          :class="['show-mobile clear-btn', showMenu && ' close-btn']"
+          v-if="!showMenu || !mobile"
+          class="show-mobile clear-btn"
           style="
             color: #555cff;
             margin: 0 20px;
@@ -40,18 +35,38 @@
           "
           @click="toggleMenu"
         >
-          <i
-            v-if="!showMenu"
-            style="font-size: 28px"
-            class="fa-solid fa-bars-staggered"
-          ></i>
-          <i
-            v-if="showMenu"
-            style="font-size: 20px !important; width: unset !important"
-            class="fa-solid fa-xmark"
-          ></i>
+          <i style="font-size: 28px" class="fa-solid fa-bars-staggered"></i>
         </button>
         <div :class="[mobile && 'mobile-menu', showMenu && 'active']">
+          <div v-if="mobile && showMenu">
+            <Notice />
+            <el-row class="el-menu-row" type="flex" justify="space-between">
+              <div
+                class="show-mobile"
+                style="text-align: center; margin: 0 20px"
+              >
+                <img
+                  src="../assets/logo_transparent_background.png"
+                  width="170"
+                />
+              </div>
+              <button
+                :class="'show-mobile close-btn'"
+                style="
+                  color: #555cff;
+                  margin: 0 20px;
+                  width: 33px !important;
+                  height: 33px !important;
+                "
+                @click="toggleMenu"
+              >
+                <i
+                  style="font-size: 20px !important; width: unset !important"
+                  class="fa-solid fa-xmark"
+                ></i>
+              </button>
+            </el-row>
+          </div>
           <div>
             <el-menu
               ref="menu"
@@ -262,6 +277,7 @@
               showMenu ? 'grid-content mobile active' : 'grid-content mobile'
             "
           >
+            <CRNCHY />
             <nav-wallet />
             <slot />
           </div>
@@ -277,6 +293,9 @@
             height: 100%;
           "
         >
+          <div>
+            <CRNCHY />
+          </div>
           <slot />
           <nav-wallet />
         </div>
@@ -286,10 +305,12 @@
 </template>
 
 <script>
+import CRNCHY from "./CRNCHY.vue";
 import NavWallet from "./NavWallet.vue";
+import Notice from "./Notice.vue";
 export default {
   name: "NavMenu",
-  components: { NavWallet },
+  components: { NavWallet, CRNCHY, Notice },
   data() {
     return {
       mobile: false,
@@ -357,12 +378,6 @@ export default {
 
 <style lang="scss" scoped>
 @import "~element-ui/packages/theme-chalk/src/common/var";
-
-#notice {
-  a {
-    color: #fff;
-  }
-}
 
 .el-menu-row {
   border-right: none !important;
@@ -445,7 +460,7 @@ export default {
 @media (max-width: 991px) {
   .mobile-menu {
     position: fixed;
-    top: 70px;
+    top: 0px;
     bottom: 0;
     z-index: 200000;
     left: -200%;
@@ -459,7 +474,7 @@ export default {
     overflow-y: auto;
 
     > div:first-child {
-      margin-bottom: 120px;
+      margin-bottom: 50px;
     }
 
     &::-webkit-scrollbar {
