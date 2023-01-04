@@ -435,15 +435,14 @@ export default {
     const tokenMetadata = allTokensMetadata.find((el) => {
       return (
         el.token_address === token.tokenAddress &&
-        (el.token_id ? el.token_id === (token.tokenId || 0) : true)
+        (el.token_id !== undefined ? el.token_id === (token.tokenId || 0) : true)
       );
     });
 
     const element = tokenPrice;
 
-    if (element) {
-      if (element.thumbnailUri)
-        element.thumbnailUri = ipfs.transformUri(element.thumbnailUri);
+    if (element && tokenMetadata) {
+      element.thumbnailUri = ipfs.transformUri(tokenMetadata.thumbnail_uri || element.thumbnailUri || "https://static.thenounproject.com/png/796573-200.png");
 
       const currentPrice = element?.currentPrice || false;
 
@@ -518,9 +517,9 @@ export default {
         element.exchanges[index].symbol = `XTZ/${element.symbol}`;
         element.exchanges[index].volume = Number(market.tradeVolume);
       }
-    }
 
-    if (element.mktCap < 800000000 && element.mktCap > 0) return element;
+      if (element.mktCap < 800000000 && element.mktCap > 0) return element;
+    }
   },
 
   binarySearch(arr, target) {
