@@ -987,7 +987,7 @@ export default {
 
   async createFarm({ state, rootState }, params) {
     const farmContract = await getContract(state.contract);
-    const crunch = await getContract(state.crunchAddress);
+    const crnchy = await getContract(state.crnchyAddress);
     const rewardToken = await getContract(params.rewardToken.tokenAddress);
 
     let prevM = 0;
@@ -1000,7 +1000,7 @@ export default {
 
     const batch = await getBatch()
       .withContractCall(
-        crunch.methods.update_operators([
+        crnchy.methods.update_operators([
           {
             add_operator: {
               owner: rootState.wallet.pkh,
@@ -1072,6 +1072,17 @@ export default {
               },
             ])
           : rewardToken.methods.approve(state.contract, 0)
+      )
+      .withContractCall(
+        crnchy.methods.update_operators([
+          {
+            remove_operator: {
+              owner: rootState.wallet.pkh,
+              operator: state.contract,
+              token_id: 0,
+            },
+          },
+        ])
       );
 
     const tx = await batch.send();
