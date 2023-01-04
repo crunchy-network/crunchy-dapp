@@ -234,5 +234,101 @@
     "decimals": 9,
     "description": "Governance token of the gif.games ecosystem",
     "name": "GIF DAO"
+  },
+  {
+    "symbol": "WETH.e",
+    "tokenAddress": "KT1UsSfaXyqcjSVPeiD7U1bWgKy3taYN7NWY",
+    "tokenId": 0,
+    "decimals": 18,
+    "description": "Wrapped Ether",
+    "name": "Ethereum WETH"
+  },
+  {
+    "symbol": "WBTC.e",
+    "tokenAddress": "KT1UsSfaXyqcjSVPeiD7U1bWgKy3taYN7NWY",
+    "tokenId": 1,
+    "decimals": 8,
+    "description": "Wrapped BTC",
+    "name": "Ethereum WBTC"
+  },
+   {
+    "symbol": "USDC.e",
+    "tokenAddress": "KT1UsSfaXyqcjSVPeiD7U1bWgKy3taYN7NWY",
+    "tokenId": 2,
+    "decimals": 6,
+    "description": "USD Coin",
+    "name": "Ethereum USDC"
+  },
+  {
+    "symbol": "USDT.e",
+    "tokenAddress": "KT1UsSfaXyqcjSVPeiD7U1bWgKy3taYN7NWY",
+    "tokenId": 3,
+    "decimals": 6,
+    "description": "Tether USD",
+    "name": "Ethereum USDT"
+  },
+  {
+    "symbol": "MATIC.e",
+    "tokenAddress": "KT1UsSfaXyqcjSVPeiD7U1bWgKy3taYN7NWY",
+    "tokenId": 4,
+    "decimals": 18,
+    "description": "Matic Token",
+    "name": "Ethereum MATIC"
+  },
+  {
+    "symbol": "LINK.e",
+    "tokenAddress": "KT1UsSfaXyqcjSVPeiD7U1bWgKy3taYN7NWY",
+    "tokenId": 5,
+    "decimals": 18,
+    "description": "Chainlink Token",
+    "name": "Ethereum LINK"
+  },
+  {
+    "symbol": "DAI.e",
+    "tokenAddress": "KT1UsSfaXyqcjSVPeiD7U1bWgKy3taYN7NWY",
+    "tokenId": 6,
+    "decimals": 18,
+    "description": "Dai Stablecoin",
+    "name": "Ethereum DAI"
+  },
+  {
+    "symbol": "BUSD.e",
+    "tokenAddress": "KT1UsSfaXyqcjSVPeiD7U1bWgKy3taYN7NWY",
+    "tokenId": 7,
+    "decimals": 18,
+    "description": "Binance USD",
+    "name": "Ethereum BUSD"
+  },
+   {
+    "symbol": "agEUR.e",
+    "tokenAddress": "KT1UsSfaXyqcjSVPeiD7U1bWgKy3taYN7NWY",
+    "tokenId": 8,
+    "decimals": 18,
+    "description": "agEUR",
+    "name": "Ethereum agEUR"
+  },
+  {
+    "symbol": "PAXG.e",
+    "tokenAddress": "KT1UsSfaXyqcjSVPeiD7U1bWgKy3taYN7NWY",
+    "tokenId": 9,
+    "decimals": 18,
+    "description": "PAXG",
+    "name": "Ethereum PAXG"
+  },
+  {
+    "symbol": "ALEPH.e",
+    "tokenAddress": "KT1UsSfaXyqcjSVPeiD7U1bWgKy3taYN7NWY",
+    "tokenId": 10,
+    "decimals": 18,
+    "description": "ALEPH",
+    "name": "Ethereum ALEPH"
+  },
+  {
+    "symbol": "USDT",
+    "tokenAddress": "KT1XnTn74bUtxHfDtBmm2bGZAQfhPbvKWR8o",
+    "tokenId": 0,
+    "decimals": 6,
+    "description": "Tether Token",
+    "name": "Tether USD"
   }
 ]
