@@ -360,9 +360,11 @@
             >Service Fee:</el-col
           >
           <el-col :span="16">
-            <div v-if="form.serviceFeeId === '0'">100 CRUNCH</div>
-            <div v-if="form.serviceFeeId === '1'">1,000 CRUNCH</div>
-            <div v-if="form.serviceFeeId === '2'">10,000 CRUNCH</div>
+            <div v-if="form.serviceFeeId === '0'">10,000 CRNCHY</div>
+            <div v-if="form.serviceFeeId === '1'">50,000 CRNCHY</div>
+            <div v-if="form.serviceFeeId === '2'">100,000 CRNCHY</div>
+            <div v-if="form.serviceFeeId === '3'">500,000 CRNCHY</div>
+
             <div v-if="form.serviceFeeId === '0'">
               {{ vueNumberFormat(form.input * 0.015) }} {{ form.lpTokenName }}
             </div>
@@ -467,9 +469,10 @@ export default {
       loading: false,
       visible: false,
       serviceFees: [
-        { value: "0", label: "100 CRUNCH + 1.5% of tokens" },
-        { value: "1", label: "1,000 CRUNCH + 1.0% of tokens" },
-        { value: "2", label: "10,000 CRUNCH + 0.5% of tokens" },
+        { value: "0", label: "10,000 CRNCHY + 1.5% of tokens" },
+        { value: "1", label: "50,000 CRNCHY + 1.0% of tokens" },
+        { value: "2", label: "100,000 CRNCHY + 0.5% of tokens" },
+        { value: "3", label: "500,000 CRNCHY + 0% of tokens" },
       ],
       rules: {
         unlockTime: [
