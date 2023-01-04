@@ -6,8 +6,6 @@
     "decimals": 8,
     "name": "Crunchy.Network CRNCHY"
   },
-  { "symbol": "wWBTC", "name": "Wrapped WBTC", "decimals": 8, "tokenId": 19, "tokenAddress": "KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ" },
-  { "symbol": "wCEL", "name": "Wrapped CEL", "decimals": 4, "tokenId": 2, "tokenAddress": "KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ" },
   { "symbol": "DOGA", "name": "DOGAMI", "decimals": 5, "tokenAddress": "KT1Ha4yFVeyzw6KRAdkzq6TxDHB97KG4pZe8" },
   { "symbol": "tzBTC", "name": "tzBTC", "decimals": 8, "tokenAddress": "KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn" },
   { "symbol": "uUSD", "name": "youves uUSD", "decimals": 12, "tokenId": 0, "tokenAddress": "KT1XRPEPXbZK25r3Htzp2o1x7xdMMmfocKNW" },
@@ -16,9 +14,6 @@
   { "symbol": "SMAK", "name": "Smartlink", "decimals": 3, "tokenAddress": "KT1TwzD6zV3WeJ39ukuqxcfK2fJCnhvrdN1X" },
   { "symbol": "kUSD", "name": "Kolibri USD", "decimals": 18, "tokenAddress": "KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV" },
   { "symbol": "PLENTY", "name": "Plenty DAO", "decimals": 18, "tokenAddress": "KT1GRSvLoikDsXujKgZPsGLX8k8VvR2Tq95b" },
-  { "symbol": "wUSDC", "name": "Wrapped USDC", "decimals": 6, "tokenId": 17, "tokenAddress": "KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ" },
-  { "symbol": "wUSDT", "name": "Wrapped USDT", "decimals": 6, "tokenId": 18, "tokenAddress": "KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ" },
-  { "symbol": "wTaco", "name": "Wrapped Taco", "decimals": 0, "tokenId": 0, "tokenAddress": "KT1WtCq6FuL2kYTK1x7AkmpPjb8wEJZTUwvX" },
   { "symbol": "USDtz", "name": "USDtez", "decimals": 6, "tokenAddress": "KT1LN4LPSqTMS7Sd2CJw4bbDGRkMv2t68Fy9" },
   { "symbol": "FUCKS", "name": "FUCKS", "decimals": 2, "tokenId": 0, "tokenAddress": "KT1GhX6MzTHKcjkMTg1mwCPzam12HRjsp6Sf" },
   { "symbol": "TZD", "name": "Tezard Coin", "decimals": 8, "tokenId": 0, "tokenAddress": "KT1RhRYoGmhDr4DShdggQqumRAhwAETxrs3t" },
@@ -48,42 +43,17 @@
   { "symbol": "RSAL", "name": "Red Salsa", "decimals": 0, "tokenId": 0, "tokenAddress": "KT19ovJhcsUn4YU8Q5L3BGovKSixfbWcecEA" },
   { "symbol": "TCOIN", "name": "TCOIN", "decimals": 8, "tokenAddress": "KT1GorwGk5WXLUc3sEWrmPLQBSekmYrtz1sn" },
   { "symbol": "UP", "tokenAddress": "KT1TgmD7kXQzofpuc9VbTRMdZCS2e6JDuTtc", "decimals": 0, "name": "Upsorber" },
-  { "symbol": "wMATIC", "tokenAddress": "KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ", "tokenId": 11, "decimals": 18, "name": "Wrapped MATIC" },
   { "symbol": "NATAS", "tokenAddress": "KT1GaEvbD4zA3pHs7mv3grpuqR1KGtjXAEDe", "tokenId": 0, "decimals": 0, "name": "NaTaS" },
-  { "symbol": "wUNI", "tokenAddress": "KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ", "tokenId": 16, "decimals": 18, "name": "Wrapped UNI" },
   { "symbol": "DeMN", "tokenAddress": "KT1GBgCd5dk7v4TSzWvtk1X64TxMyG4r7eRX", "tokenId": 0, "decimals": 8, "name": "DeMN" },
-  {
-    "symbol": "FARM",
-    "tokenAddress": "KT1CnuKyaAuYBAwJf9g5LobtxRZsF2KCD3o6",
-    "tokenId": 0,
-    "decimals": 4,
-    "description": "Use $SOIL to $FARM",
-    "name": "Farm"
-  },
   { "symbol": "apUSDC", "tokenAddress": "KT1UG6PdaKoJcc3yD6mkFVfxnS1uJeW3cGeX", "tokenId": 2, "decimals": 6, "name": "Allbridge Wrapped Polygon USDC" },
   { "symbol": "TOKENS", "tokenAddress": "KT1Gf5JGXC1M8GMji58pKraXiRLkzW2NRK1s", "tokenId": 0, "decimals": 2, "name": "Tokens" },
-  {
-    "symbol": "wSUSHI",
-    "tokenAddress": "KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ",
-    "tokenId": 15,
-    "decimals": 18,
-    "name": "Wrapped SUSHI"
-  },
-  {
+   {
     "symbol": "tChicken",
     "tokenAddress": "KT1QoDjTpkG9jmAMwrPCsaRR78xHDcRKydBp",
     "tokenId": 0,
     "decimals": 6,
     "description": "Tezos Chicken Token",
     "name": "tChicken"
-  },
-  {
-    "symbol": "RCKT",
-    "tokenAddress": "KT19JYndHaesXpvUfiwgg8BtE41HKkjjGMRC",
-    "tokenId": 0,
-    "decimals": 6,
-    "description": "rocketlaunchpad.io",
-    "name": "Rocket"
   },
   {
     "symbol": "bDAO",
@@ -133,13 +103,6 @@
     "decimals": 8,
     "description": "Hey, Wojak is here. As you know, I'm always being rekt when trading crypto. No matter what I do - buying a dip, hodl, or investing into a Dogecoin - I always end in a significant loss of capital.\n\nBut recently I discovered Tezos and its DeFi and found it so awesome! First time for many years I feel I have a chance to not be rekt here. \n\n100% of the supply will be added to the Quipuswap pool at the initial price of 1 WOJAK = 0.1 XTZ & locked for the 3 years via Crunchy Deep Freezers.\nThen, on LP tokens release, the LP will be removed and all WOJAKs in it from it burned in the Fire Pit.",
     "name": "WOJAK"
-  },
-  {
-    "symbol": "wHUSD",
-    "tokenAddress": "KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ",
-    "tokenId": 8,
-    "decimals": 8,
-    "name": "Wrapped HUSD"
   },
   {
     "symbol": "CLOVER",
@@ -194,13 +157,6 @@
     "name": "MIXMIXCOIN"
   },
   {
-    "symbol": "wPAX",
-    "tokenAddress": "KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ",
-    "tokenId": 14,
-    "decimals": 18,
-    "name": "Wrapped PAX"
-  },
-  {
     "symbol": "EURL",
     "tokenAddress": "KT1JBNFcB5tiycHNdYGYCtR3kk6JaJysUCi8",
     "tokenId": 0,
@@ -221,13 +177,6 @@
     "tokenId": 0,
     "decimals": 6,
     "name": "Materia"
-  },
-  {
-    "symbol": "wLINK",
-    "tokenAddress": "KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ",
-    "tokenId": 10,
-    "decimals": 18,
-    "name": "Wrapped LINK"
   },
   { "symbol": "uDEFI", "tokenAddress": "KT1XRPEPXbZK25r3Htzp2o1x7xdMMmfocKNW", "tokenId": 1, "decimals": 12, "name": "youves uDEFI" },
   {
@@ -262,7 +211,6 @@
     "description": "$PXL is the utility token of the Pixel ecosystem (PixelPotus, Debates, and beyond).",
     "name": "Pixel"
   },
-  { "symbol": "wCRO", "tokenAddress": "KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ", "tokenId": 4, "decimals": 8, "name": "Wrapped CRO" },
   {
     "symbol": "INSTA",
     "tokenAddress": "KT19y6R8x53uDKiM46ahgguS6Tjqhdj2rSzZ",
@@ -272,14 +220,6 @@
   },
   { "symbol": "IDZ", "tokenAddress": "KT1WapdVeFqhCfqwdHWwTzSTX7yXoHgiPRPU", "tokenId": 0, "decimals": 8, "description": "TezID IDZ Token", "name": "TezID" },
   {
-    "symbol": "SOIL",
-    "tokenAddress": "KT1TtaMcoSx5cZrvaVBWsFoeZ1L15cxo5AEy",
-    "tokenId": 0,
-    "decimals": 4,
-    "description": "Need $SOIL to grow your $FARM",
-    "name": "Soil"
-  },
-  {
     "symbol": "EASY",
     "tokenAddress": "KT1QgAtLPu3SNq9c6DPLanwL5bvfX3rgh2CS",
     "tokenId": 0,
@@ -287,8 +227,6 @@
     "description": "Native token of the CryptoEasy DeFi platform.",
     "name": "CryptoEasy"
   },
-  { "symbol": "wWETH", "tokenAddress": "KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ", "tokenId": 20, "decimals": 18, "name": "Wrapped WETH" },
-  { "symbol": "wBUSD", "tokenAddress": "KT18fp5rcTW7mbWDmzFwjLDUhs5MeJmagDSZ", "tokenId": 1, "decimals": 18, "name": "Wrapped BUSD" },
   {
     "symbol": "GIF",
     "tokenAddress": "KT1XTxpQvo7oRCqp85LikEZgAZ22uDxhbWJv",
