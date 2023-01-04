@@ -179,7 +179,6 @@
     "decimals": 6,
     "name": "Materia"
   },
-  },
   { "symbol": "uDEFI", "tokenAddress": "KT1XRPEPXbZK25r3Htzp2o1x7xdMMmfocKNW", "tokenId": 1, "decimals": 12, "name": "youves uDEFI" },
   {
     "symbol": "3P",
