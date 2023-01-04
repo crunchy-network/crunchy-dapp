@@ -442,7 +442,7 @@ export default {
     const element = tokenPrice;
 
     if (element && tokenMetadata) {
-      element.thumbnailUri = ipfs.transformUri(tokenMetadata.thumbnail_uri || element.thumbnailUri || "https://static.thenounproject.com/png/796573-200.png");
+      element.thumbnailUri = ipfs.transformUri(tokenMetadata.thumbnail_uri || "https://static.thenounproject.com/png/796573-200.png");
 
       const currentPrice = element?.currentPrice || false;
 
