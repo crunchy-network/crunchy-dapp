@@ -15,7 +15,6 @@
   { "symbol": "kUSD", "name": "Kolibri USD", "decimals": 18, "tokenAddress": "KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV" },
   { "symbol": "PLENTY", "name": "Plenty DAO", "decimals": 18, "tokenAddress": "KT1GRSvLoikDsXujKgZPsGLX8k8VvR2Tq95b" },
   { "symbol": "USDtz", "name": "USDtez", "decimals": 6, "tokenAddress": "KT1LN4LPSqTMS7Sd2CJw4bbDGRkMv2t68Fy9" },
-  { "symbol": "FUCKS", "name": "FUCKS", "decimals": 2, "tokenId": 0, "tokenAddress": "KT1GhX6MzTHKcjkMTg1mwCPzam12HRjsp6Sf" },
   { "symbol": "TZD", "name": "Tezard Coin", "decimals": 8, "tokenId": 0, "tokenAddress": "KT1RhRYoGmhDr4DShdggQqumRAhwAETxrs3t" },
   { "symbol": "sDAO", "name": "Salsa DAO", "decimals": 0, "tokenId": 1, "tokenAddress": "KT19ovJhcsUn4YU8Q5L3BGovKSixfbWcecEA" },
   { "symbol": "ctez", "name": "Ctez", "decimals": 6, "tokenAddress": "KT1SjXiUX63QvdNMcM2m492f7kuf8JxXRLp4" },
@@ -25,136 +24,25 @@
   { "symbol": "WRAP", "name": "Wrap Governance Token", "decimals": 8, "tokenId": 0, "tokenAddress": "KT1LRboPna9yQY9BrjtQYDS1DVxhKESK4VVd" },
   { "symbol": "ETHtz", "name": "ETHtez", "decimals": 18, "tokenAddress": "KT19at7rQUvyjxnZ2fBv7D9zc8rkyG7gAoU8" },
   { "symbol": "oXTZ", "name": "objkt.com wrapped Tezos", "decimals": 6, "tokenAddress": "KT1TjnZYs5CGLbmV6yuW169P8Pnr9BiVwwjz" },
-  { "symbol": "PKA", "name": "Paprika", "decimals": 3, "tokenId": 0, "tokenAddress": "KT1V5yCUQ73nUjrbk82ALcrGNdRFNk3k2tvX" },
   { "symbol": "hDAO", "name": "hic et nunc DAO", "decimals": 6, "tokenId": 0, "tokenAddress": "KT1AFA2mwNUMNd4SsujE1YYp29vd8BZejyKW" },
-  { "symbol": "ptai", "name": "Painters.ai", "decimals": 4, "tokenId": 0, "tokenAddress": "KT1AyVdjSZffJtiMkdwwztEK7ePVyTogzogr" },
   { "symbol": "KALAM", "name": "Kalamint", "decimals": 10, "tokenId": 0, "tokenAddress": "KT1A5P4ejnLix13jtadsfV9GCnXLMNnab8UT" },
   { "symbol": "SEX", "name": "Sex", "decimals": 6, "tokenId": 0, "tokenAddress": "KT1UAE1nZQhHdPD4tZMEEqhdbQHbxZ9qh5zF" },
   { "symbol": "SPI", "name": "Spice Token", "decimals": 6, "tokenId": 0, "tokenAddress": "KT1CS2xKGHNPTauSh5Re4qE3N9PCfG5u4dPx" },
-  { "symbol": "TCZ", "name": "Tacoz", "decimals": 18, "tokenId": 0, "tokenAddress": "KT1GGxCNiJ7yaBAH4hAw5AHXbP3PSmAiy3wK" },
   { "symbol": "GOT", "name": "GOeureka", "decimals": 8, "tokenId": 0, "tokenAddress": "KT1GioMCKwRyWoQpdrwxvsPVEsFJkkLyquVZ" },
-  { "symbol": "PLAYA", "name": "Playa Coin", "decimals": 8, "tokenAddress": "KT1AhFqs7dbJjLq6FPSjv2EEJX7jVq4BxvuA" },
   { "symbol": "MYH", "name": "MoneyHero", "decimals": 8, "tokenId": 0, "tokenAddress": "KT1BB1uMwVvJ1M3vVHXWALs1RWdgTp1rnXTR" },
   { "symbol": "SEB", "name": "Sebuh.net ", "decimals": 2, "tokenId": 0, "tokenAddress": "KT1981tPmXh4KrUQKZpQKb55kREX7QGJcF3E" },
-  { "symbol": "FLAME", "name": "FLAME", "decimals": 6, "tokenId": 0, "tokenAddress": "KT1Wa8yqRBpFCusJWgcQyjhRz7hUQAmFxW7j" },
-  { "symbol": "HERA", "name": "Hera Network Token", "decimals": 3, "tokenId": 0, "tokenAddress": "KT1JXxK3bd39ayLiiBdKm2cdReYnVSG3bkzK" },
-  { "symbol": "SZO", "name": "ShuttleOne Token", "decimals": 6, "tokenAddress": "KT1WzRVUnrJ4mNu59m9hPQZDY8Nq9JWtUbRf" },
-  { "symbol": "FEM", "name": "Fuck Elon Musk", "decimals": 0, "tokenAddress": "KT1WHhATGLXFyhmZcK9k7NWo8nw53nDiBzWQ" },
   { "symbol": "RSAL", "name": "Red Salsa", "decimals": 0, "tokenId": 0, "tokenAddress": "KT19ovJhcsUn4YU8Q5L3BGovKSixfbWcecEA" },
   { "symbol": "TCOIN", "name": "TCOIN", "decimals": 8, "tokenAddress": "KT1GorwGk5WXLUc3sEWrmPLQBSekmYrtz1sn" },
   { "symbol": "UP", "tokenAddress": "KT1TgmD7kXQzofpuc9VbTRMdZCS2e6JDuTtc", "decimals": 0, "name": "Upsorber" },
   { "symbol": "NATAS", "tokenAddress": "KT1GaEvbD4zA3pHs7mv3grpuqR1KGtjXAEDe", "tokenId": 0, "decimals": 0, "name": "NaTaS" },
   { "symbol": "DeMN", "tokenAddress": "KT1GBgCd5dk7v4TSzWvtk1X64TxMyG4r7eRX", "tokenId": 0, "decimals": 8, "name": "DeMN" },
   { "symbol": "apUSDC", "tokenAddress": "KT1UG6PdaKoJcc3yD6mkFVfxnS1uJeW3cGeX", "tokenId": 2, "decimals": 6, "name": "Allbridge Wrapped Polygon USDC" },
-  { "symbol": "TOKENS", "tokenAddress": "KT1Gf5JGXC1M8GMji58pKraXiRLkzW2NRK1s", "tokenId": 0, "decimals": 2, "name": "Tokens" },
-   {
-    "symbol": "tChicken",
-    "tokenAddress": "KT1QoDjTpkG9jmAMwrPCsaRR78xHDcRKydBp",
-    "tokenId": 0,
-    "decimals": 6,
-    "description": "Tezos Chicken Token",
-    "name": "tChicken"
-  },
-  {
-    "symbol": "bDAO",
-    "tokenAddress": "KT1GUNKmkrgtMQjJp3XxcmCj6HZBhkUmMbge",
-    "tokenId": 0,
-    "decimals": 6,
-    "description": "bDAO is the official governance token for Bazaar Community",
-    "name": "Bazaar DAO"
-  },
-  {
-    "symbol": "STV",
-    "tokenAddress": "KT1CxE36bXiCJnLZ9C9z1Ma921qu3ksmeZxc",
-    "tokenId": 0,
-    "decimals": 8,
-    "description": "Token to be used on StorryTV",
-    "name": "STV"
-  },
-  { "symbol": "hrDAO", "tokenAddress": "KT1ExpspQSag2x5dATrBxEQzrHP5PJd28fA4", "tokenId": 0, "decimals": 6, "name": "Hera Network DAO Token" },
-  {
-    "symbol": "TZK",
-    "tokenAddress": "KT1JoBx9GQmWZts7vdUEe5uU2wsWZiAhrepf",
-    "tokenId": 0,
-    "decimals": 8,
-    "description": "The Tezos King",
-    "name": "Tezos King"
-  },
-  {
-    "symbol": "ECN",
-    "tokenAddress": "KT1M81KrJr6TxYLkZkVqcpSTNKGoya8XytWT",
-    "tokenId": 0,
-    "decimals": 8,
-    "description": "The EC betting platform allows for holders of the ECN token to participate in Head-to-Head bets against community members and also, participate in pool betting scenarios.",
-    "name": "ECOIN NETWORK"
-  },
-  {
-    "symbol": "YODA",
-    "tokenAddress": "KT1BdFvYD2Z1cPEMoREUtMNBcBPmrm5s4Xww",
-    "tokenId": 0,
-    "decimals": 6,
-    "description": "\"May the Force be with you\"",
-    "name": "Master Yoda"
-  },
-  {
-    "symbol": "WOJAK",
-    "tokenAddress": "KT1DH7nnWLSBM5f4i8KehH1F5nMvDvknXgJj",
-    "tokenId": 0,
-    "decimals": 8,
-    "description": "Hey, Wojak is here. As you know, I'm always being rekt when trading crypto. No matter what I do - buying a dip, hodl, or investing into a Dogecoin - I always end in a significant loss of capital.\n\nBut recently I discovered Tezos and its DeFi and found it so awesome! First time for many years I feel I have a chance to not be rekt here. \n\n100% of the supply will be added to the Quipuswap pool at the initial price of 1 WOJAK = 0.1 XTZ & locked for the 3 years via Crunchy Deep Freezers.\nThen, on LP tokens release, the LP will be removed and all WOJAKs in it from it burned in the Fire Pit.",
-    "name": "WOJAK"
-  },
-  {
-    "symbol": "CLOVER",
-    "tokenAddress": "KT18jyxMDSMJRPPaZjoe49SUkXxax9QZtcWH",
-    "decimals": 6,
-    "name": "Four Leaf Clover"
-  },
-  {
-    "symbol": "MIMEY",
-    "tokenAddress": "KT1F8gkt9o4a2DKwHVsZv9akrF7ZbaYBHpMy",
-    "tokenId": 0,
-    "decimals": 8,
-    "description": "...\nmimexmime.xyz",
-    "name": "MIMEY"
-  },
   {
     "symbol": "uBTC",
     "tokenAddress": "KT1XRPEPXbZK25r3Htzp2o1x7xdMMmfocKNW",
     "tokenId": 2,
     "decimals": 12,
     "name": "youves uBTC"
-  },
-  { "symbol": "PURPLE", "tokenAddress": "KT1Trhji1aVzDtGiAxiCfWNi9T74Kyi49DK1", "decimals": 6, "name": "Eggplant" },
-  {
-    "symbol": "BDVXP",
-    "tokenAddress": "KT1T1PeeRDbsKDYM2nX8JjJ1kkAhHh5FnjgC",
-    "tokenId": 0,
-    "decimals": 6,
-    "description": "Streamline your workflow with Bohner DyldohVX Pro. BDVXP was developed with g-wave alpha transports on the Tezos blockchain to suit a range of purposes.",
-    "name": "BohnerDyldoh VX Pro"
-  },
-  {
-    "symbol": "PLAT",
-    "tokenAddress": "KT1SybeY3QZ3kX4PS5ZXhxyv2dZWghTFuCdu",
-    "tokenId": 0,
-    "decimals": 6,
-    "description": "Bro, you have no pallet for this. This for for ballers. It was made for ballers, it epitomizes ballers. If you have this then you are a baller. The drink icon is silly because you are so dope that no one even realizes how awesome YOU are. I personally award you a trillion cool points.",
-    "name": "Tezos Platinum Tequila"
-  },
-  {
-    "symbol": "TezDAO",
-    "tokenAddress": "KT1C9X9s5rpVJGxwVuHEVBLYEdAQ1Qw8QDjH",
-    "tokenId": 0,
-    "decimals": 6,
-    "description": "TezDAO is the decentralized autonomous organization enabling governance on Tezos.",
-    "name": "TezDAO"
-  },
-  {
-    "symbol": "MXC",
-    "tokenAddress": "KT1Lx4StJbTpSVqrSGXSXyCrjzqWwMv9927S",
-    "decimals": 6,
-    "name": "MIXMIXCOIN"
   },
   {
     "symbol": "EURL",
@@ -186,12 +74,6 @@
     "decimals": 6,
     "description": "thr33p3nny the thr33som3s utility token",
     "name": "thr33p3nny"
-  },
-  {
-    "symbol": "MAG",
-    "tokenAddress": "KT1H5KJDxuM9DURSfttepebb6Cn7GbvAAT45",
-    "decimals": 6,
-    "name": "MAG Token"
   },
   {
     "symbol": "UNO",
