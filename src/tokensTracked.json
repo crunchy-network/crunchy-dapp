@@ -31,7 +31,6 @@
   { "symbol": "GOT", "name": "GOeureka", "decimals": 8, "tokenId": 0, "tokenAddress": "KT1GioMCKwRyWoQpdrwxvsPVEsFJkkLyquVZ" },
   { "symbol": "MYH", "name": "MoneyHero", "decimals": 8, "tokenId": 0, "tokenAddress": "KT1BB1uMwVvJ1M3vVHXWALs1RWdgTp1rnXTR" },
   { "symbol": "SEB", "name": "Sebuh.net ", "decimals": 2, "tokenId": 0, "tokenAddress": "KT1981tPmXh4KrUQKZpQKb55kREX7QGJcF3E" },
-  { "symbol": "FLAME", "name": "FLAME", "decimals": 6, "tokenId": 0, "tokenAddress": "KT1Wa8yqRBpFCusJWgcQyjhRz7hUQAmFxW7j" },
   { "symbol": "RSAL", "name": "Red Salsa", "decimals": 0, "tokenId": 0, "tokenAddress": "KT19ovJhcsUn4YU8Q5L3BGovKSixfbWcecEA" },
   { "symbol": "TCOIN", "name": "TCOIN", "decimals": 8, "tokenAddress": "KT1GorwGk5WXLUc3sEWrmPLQBSekmYrtz1sn" },
   { "symbol": "UP", "tokenAddress": "KT1TgmD7kXQzofpuc9VbTRMdZCS2e6JDuTtc", "decimals": 0, "name": "Upsorber" },
