@@ -13,8 +13,7 @@ export default {
 
   updateCurrentPrices(state, prices) {
     state.currentPrices = prices;
-    state.crdaoTez = prices[`${state.crdaoAddress}_0`];
-    state.crunchTez = prices[`${state.crunchAddress}_0`];
+    state.crnchyTez = prices[`${state.crnchyAddress}_0`];
   },
 
   updatePriceFeed(state, feed) {

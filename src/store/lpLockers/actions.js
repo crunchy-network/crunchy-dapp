@@ -172,7 +172,7 @@ export default {
 
   async createLpLock({ state, rootState }, params) {
     const locker = await getContract(state.contract);
-    const crunch = await getContract(state.crunchAddress);
+    const crnchy = await getContract(state.crnchyAddress);
     const lpToken = await getContract(params.lpToken.address);
 
     let amount = BigNumber(params.amount)
@@ -185,7 +185,7 @@ export default {
 
     const batch = await getBatch()
       .withContractCall(
-        crunch.methods.update_operators([
+        crnchy.methods.update_operators([
           {
             add_operator: {
               owner: rootState.wallet.pkh,
@@ -240,7 +240,7 @@ export default {
           : lpToken.methods.approve(state.contract, 0)
       )
       .withContractCall(
-        crunch.methods.update_operators([
+        crnchy.methods.update_operators([
           {
             remove_operator: {
               owner: rootState.wallet.pkh,

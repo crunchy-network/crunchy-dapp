@@ -268,7 +268,7 @@
                         />
                         1d
                         <el-tooltip
-                          content="% Change in XTZ"
+                          content="% Change in USD"
                           placement="top"
                           effect="light"
                         >
@@ -287,7 +287,7 @@
                         />
                         7d
                         <el-tooltip
-                          content="% Change in XTZ"
+                          content="% Change in USD"
                           placement="top"
                           effect="light"
                         >
@@ -306,7 +306,7 @@
                         />
                         30d
                         <el-tooltip
-                          content="% Change in XTZ"
+                          content="% Change in USD"
                           placement="top"
                           effect="light"
                         >

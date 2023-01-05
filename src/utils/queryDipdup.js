@@ -1,4 +1,5 @@
 import axios from "axios";
+import coingecko from "./coingecko";
 import dexIndexer from "./dex-indexer";
 
 export default {
@@ -107,17 +108,13 @@ export default {
   async getTokensPriceClose() {
     const date = new Date();
 
-    const previousDay = new Date(
-      date.setDate(date.getDate() - 1)
-    ).toDateString();
+    const day1 = new Date(date.setDate(date.getDate() - 1)).toDateString();
+    const day7 = new Date(date.setDate(date.getDate() - 7)).toDateString();
+    const day30 = new Date(date.setDate(date.getDate() - 30)).toDateString();
 
-    const previousWeek = new Date(
-      date.setDate(date.getDate() - ((date.getDay() + 6) % 7))
-    ).toDateString();
-
-    const previousMonth = new Date(
-      new Date(date.setDate(1)).setMonth(date.getMonth() - 1)
-    ).toDateString();
+    let day1UsdPrice = 0;
+    let day7UsdPrice = 0;
+    let day30UsdPrice = 0;
 
     const query = (bucket) => `
     query MyQuery {
@@ -131,6 +128,7 @@ export default {
     `;
 
     const [
+      xtzUsdHistory,
       {
         data: {
           data: { quotes1dNogaps: dayCloseArray },
@@ -147,16 +145,36 @@ export default {
         },
       },
     ] = await Promise.all([
-      axios.post("https://dex.dipdup.net/v1/graphql", {
-        query: query(previousDay),
+      coingecko.getXtzUsdHistory({
+        vs_currency: "usd",
+        days: "60",
+        interval: "daily",
       }),
       axios.post("https://dex.dipdup.net/v1/graphql", {
-        query: query(previousWeek),
+        query: query(day1),
       }),
       axios.post("https://dex.dipdup.net/v1/graphql", {
-        query: query(previousMonth),
+        query: query(day7),
+      }),
+      axios.post("https://dex.dipdup.net/v1/graphql", {
+        query: query(day30),
       }),
     ]);
+
+    for (let index = 0; index < xtzUsdHistory.length; index++) {
+      const value = xtzUsdHistory[index];
+
+      if (new Date(value[0]).toDateString() === day1) {
+        day1UsdPrice = value[1];
+      }
+
+      if (new Date(value[0]).toDateString() === day7) {
+        day7UsdPrice = value[1];
+      }
+      if (new Date(value[0]).toDateString() === day30) {
+        day30UsdPrice = value[1];
+      }
+    }
 
     const dayClose = {};
     const weekClose = {};
@@ -171,21 +189,24 @@ export default {
     for (let index = 0; index < length; index++) {
       if (dayCloseArray.length > index) {
         const token = dayCloseArray[index];
-        dayClose[token.tokenId] = dayClose[token.tokenId]
-          ? { ...dayClose[token.tokenId], close: token.average }
-          : token;
+        dayClose[token.tokenId] = {
+          ...token,
+          closeUsd: Number(token.close) * day1UsdPrice,
+        };
       }
       if (weekCloseArray.length > index) {
         const token = weekCloseArray[index];
-        weekClose[token.tokenId] = weekClose[token.tokenId]
-          ? { ...weekClose[token.tokenId], close: token.average }
-          : token;
+        weekClose[token.tokenId] = {
+          ...token,
+          closeUsd: Number(token.close) * day7UsdPrice,
+        };
       }
       if (monthCloseArray.length > index) {
         const token = monthCloseArray[index];
-        monthClose[token.tokenId] = monthClose[token.tokenId]
-          ? { ...dayClose[token.tokenId], close: token.average }
-          : token;
+        monthClose[token.tokenId] = {
+          ...token,
+          closeUsd: Number(token.close) * day30UsdPrice,
+        };
       }
     }
     return {
@@ -200,6 +221,9 @@ export default {
       dayClose: closeObjkt.dayClose[tokenId]?.close || 0,
       weekClose: closeObjkt.weekClose[tokenId]?.close || 0,
       monthClose: closeObjkt.monthClose[tokenId]?.close || 0,
+      dayCloseUsd: closeObjkt.dayClose[tokenId]?.closeUsd || 0,
+      weekCloseUsd: closeObjkt.weekClose[tokenId]?.closeUsd || 0,
+      monthCloseUsd: closeObjkt.monthClose[tokenId]?.closeUsd || 0,
     };
   },
 };

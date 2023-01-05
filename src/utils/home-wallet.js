@@ -725,8 +725,8 @@ export default {
           tokenObjkt.totalValueUsd = tokenObjkt.totalValue * xtzUsd;
 
           lp.push({
-            ...{ token0: token0MetaData, token1: token1MetaData },
             ...tokenObjkt,
+            ...{ token0: token0MetaData, token1: token1MetaData },
           });
 
           spicy.totalValue += tokenObjkt.totalValue;
@@ -835,8 +835,8 @@ export default {
           tokenObjkt.totalValueUsd = tokenObjkt.totalValue * xtzUsd;
 
           lp.push({
-            ...{ token0: token0MetaData, token1: token1MetaData },
             ...tokenObjkt,
+            ...{ token0: token0MetaData, token1: token1MetaData },
           });
 
           plenty.totalValue += tokenObjkt.totalValue;
