@@ -44,12 +44,35 @@ const QUERY_GET_ALL_DEXES = `query AllDexes {
   }
 }`;
 
+const QUERY_GET_A_TOKEN = (tokenAddress, tokenId) => `
+query MyQuery {
+  tokens(where: {token_address: {_eq: "${tokenAddress}"}, token_id: {_eq: ${Number(
+  tokenId
+)}}}){
+    decimals
+    name
+    symbol
+    thumbnail_uri
+    token_type
+    total_supply
+    token_address
+    token_id
+  }
+}
+`;
 export default {
   async getAllTokens() {
     return makeQuery(QUERY_GET_ALL_TOKENS).then((res) =>
       res.data && res.data.data && res.data.data.tokens
         ? res.data.data.tokens
         : []
+    );
+  },
+  async getToken(tokenAddress, tokenId) {
+    return makeQuery(QUERY_GET_A_TOKEN(tokenAddress, tokenId)).then((res) =>
+      res.data && res.data.data && res.data.data.tokens
+        ? res.data.data.tokens[0]
+        : {}
     );
   },
 

@@ -1,6 +1,11 @@
 <template>
-  <el-card class="box-card" shadow="never" style="height: 100%; width: 100%">
-    <h2>CRUNCH Burned</h2>
+  <el-card
+    v-loading="loading"
+    class="box-card"
+    shadow="never"
+    style="height: 100%; width: 100%"
+  >
+    <h2>CRNCHY Burned</h2>
     <h2 style="color: #ff4d4b; margin-bottom: 0">
       {{
         vueNumberFormat(burnedValue, {
@@ -36,6 +41,7 @@ export default {
     return {
       burnedValue: 0,
       burnedValueUsd: 0,
+      loading: false,
     };
   },
 
@@ -44,10 +50,16 @@ export default {
   },
   methods: {
     setBurned() {
-      firePit.getCrunchBurned().then((resp) => {
-        this.burnedValue = resp.burned;
-        this.burnedValueUsd = resp.burnedUsd;
-      });
+      this.loading = true;
+      firePit
+        .getCrunchBurned()
+        .then((resp) => {
+          this.burnedValue = resp.burned;
+          this.burnedValueUsd = resp.burnedUsd;
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
   },
 };
