@@ -3,7 +3,7 @@ import coingecko from "../../utils/coingecko";
 import homeWallet from "../../utils/home-wallet";
 import homeWalletStake from "../../utils/home-wallet-stake";
 import queryDipdup from "../../utils/queryDipdup";
-import teztools from "../../utils/teztools";
+// import teztools from "../../utils/teztools";
 
 export default {
   async fetchHomeWalletBalances({ rootState, commit }, pkh) {
@@ -69,8 +69,8 @@ export default {
 
   async loadStakeAssets({ dispatch, commit }, pkh) {
     commit("updateStakeLoading", true);
-    const priceFeed = await teztools.getPricefeed();
-    commit("updatePriceFeed", priceFeed);
+    // const { contract: priceFeed } = await teztools.getPricefeed();
+    // commit("updateFeed", priceFeed);
     await Promise.all([
       dispatch("loadCrunchyStake", pkh),
       dispatch("loadDogamiStake", pkh),

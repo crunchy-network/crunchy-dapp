@@ -103,7 +103,7 @@ export default {
         positions: [],
       },
     },
-    priceFeed: [],
+    // feed: [],
     portfolio: 0,
     portfolioUsd: 0,
     crunchBal: 0,
