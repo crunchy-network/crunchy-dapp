@@ -88,7 +88,7 @@
           formatDecimals(getCurrentTrade.outputAmount, getSwapForm.outputToken)
         "
         :input-disabled="true"
-        :selected-token="getSwapForm.outputToken"
+        :selected-token="getSwapForm.outputToken || {}"
       />
     </div>
     <div style="width: 100%; margin-top: 16px; text-align: center">
@@ -228,9 +228,11 @@ export default {
     getSwapPairs() {
       this.updateBestTrade();
     },
-    tokenList() {
-      this.updateInitialSelectedTokens(this.tokenList);
-      this.handleDefaults();
+    tokenList(val) {
+      if (val.length > 0) {
+        this.updateInitialSelectedTokens(this.tokenList);
+        this.handleDefaults();
+      }
     },
   },
   created() {
@@ -256,8 +258,8 @@ export default {
       ) {
         const { to, from } = this.$route.query;
         if (to !== undefined && from !== undefined) {
-          const inputToken = this.tokenList.find((t) => t.assetSlug === from);
-          const outputToken = this.tokenList.find((t) => t.assetSlug === to);
+          const inputToken = this.tokenList.find((t) => t?.assetSlug === from);
+          const outputToken = this.tokenList.find((t) => t?.assetSlug === to);
           this.updateForm({ inputToken, outputToken });
         }
         this.handleDefaults();
@@ -266,18 +268,18 @@ export default {
     updateInitialSelectedTokens(tokenList) {
       const { to, from } = this.$route.query;
       const form = {};
-      if (this.getSwapForm.inputToken.asset === undefined) {
-        var inputToken = this.tokenList.find((t) => t.assetSlug === from);
+      if (this.getSwapForm.inputToken?.asset === undefined) {
+        var inputToken = this.tokenList.find((t) => t?.assetSlug === from);
         if (!inputToken) {
-          inputToken = this.tokenList.find((t) => t.assetSlug === "tez");
+          inputToken = this.tokenList.find((t) => t?.assetSlug === "tez");
         }
         form.inputToken = inputToken;
       }
       if (this.getSwapForm.outputToken.asset === undefined) {
-        var outputToken = this.tokenList.find((t) => t.assetSlug === to);
+        var outputToken = this.tokenList.find((t) => t?.assetSlug === to);
         if (!outputToken) {
           outputToken = this.tokenList.find(
-            (t) => t.assetSlug === `${process.env.VUE_APP_CONTRACTS_CRNCHY}_0`
+            (t) => t?.assetSlug === `${process.env.VUE_APP_CONTRACTS_CRNCHY}_0`
           );
         }
         form.outputToken = outputToken;
@@ -286,12 +288,12 @@ export default {
     },
     handleDefaults() {
       if (this.getSwapForm.inputToken.asset === undefined) {
-        const tez = this.tokenList.find((t) => t.assetSlug === "tez");
+        const tez = this.tokenList.find((t) => t?.assetSlug === "tez");
         this.updateForm({ inputToken: tez });
       }
       if (this.getSwapForm.outputToken.asset === undefined) {
         const outputToken = this.tokenList.find(
-          (t) => t.assetSlug === `${process.env.VUE_APP_CONTRACTS_CRNCHY}_0`
+          (t) => t?.assetSlug === `${process.env.VUE_APP_CONTRACTS_CRNCHY}_0`
         );
         this.updateForm({ outputToken });
       }
@@ -345,7 +347,7 @@ export default {
     getBalanceOfSelectedToken(token) {
       if (token === undefined) return 0;
       const found = this.homeWallet.assets.find(
-        (t) => t.assetSlug === token.assetSlug
+        (t) => t?.assetSlug === token?.assetSlug
       );
       if (found) {
         return this.roundDown(found.availableBalance || found.balance, 6);
@@ -498,8 +500,8 @@ export default {
       }
     },
     updateUrlParams(from, to) {
-      if (from.assetSlug && to.assetSlug) {
-        const newQuery = { from: from.assetSlug, to: to.assetSlug };
+      if (from?.assetSlug && to?.assetSlug) {
+        const newQuery = { from: from?.assetSlug, to: to?.assetSlug };
         if (JSON.stringify(newQuery) !== JSON.stringify(this.$route.query)) {
           this.$router.replace({
             ...this.$route,

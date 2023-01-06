@@ -36,6 +36,24 @@ export default {
       };
     } else return {};
   },
+  async getTokenPriceXTZ(tokenId) {
+    const query = `
+    query MyQuery {
+        quotesTotal(distinct_on: tokenId, where: {tokenId: {_eq: "${tokenId}"}}) {
+          close
+        }
+      }
+      
+    `;
+
+    const {
+      data: {
+        data: { quotesTotal },
+      },
+    } = await axios.post("https://dex.dipdup.net/v1/graphql", { query });
+
+    return Number(quotesTotal[0]?.close) || 0;
+  },
   async getAllTokenAndQuotes() {
     const tokenObjkt = {};
     const query = `
