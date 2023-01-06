@@ -78,10 +78,10 @@
               <SwapRouteItem
                 :route="route"
                 :a-token="
-                  tokenList.find((t) => route.a.assetSlug === t.assetSlug)
+                  tokenList.find((t) => route.a?.assetSlug === t?.assetSlug)
                 "
                 :b-token="
-                  tokenList.find((t) => route.b.assetSlug === t.assetSlug)
+                  tokenList.find((t) => route.b?.assetSlug === t?.assetSlug)
                 "
               />
             </div>
@@ -100,10 +100,10 @@
               <SwapRouteItem
                 :route="route"
                 :a-token="
-                  tokenList.find((t) => route.a.assetSlug === t.assetSlug)
+                  tokenList.find((t) => route.a?.assetSlug === t?.assetSlug)
                 "
                 :b-token="
-                  tokenList.find((t) => route.b.assetSlug === t.assetSlug)
+                  tokenList.find((t) => route.b?.assetSlug === t?.assetSlug)
                 "
               />
             </div>

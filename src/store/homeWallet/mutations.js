@@ -40,9 +40,9 @@ export default {
   updateStakeLoading(state, value) {
     state.loadingStake = value;
   },
-  updatePriceFeed(state, value) {
-    state.priceFeed = value;
-  },
+  // updateFeed(state, value) {
+  //   state.feed = value;
+  // },
 
   updateNftsLoading(state, value) {
     state.loadingNfts = value;

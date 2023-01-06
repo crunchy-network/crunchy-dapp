@@ -44,7 +44,7 @@ export default {
   },
 };
 // get price data
-// convert to route pairs
+// convert to route pairsisLoading
 // store route pairs in state
 // get route pairs from state
 // use in swap form.
