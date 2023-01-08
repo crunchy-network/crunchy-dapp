@@ -10,7 +10,9 @@
       <div>
         <input type="number" />
       </div>
-      <el-button style="padding: 16px; color: #1ec37f" type="text"
+      <el-button
+        style="padding: 16px; color: #555cff; font-weight: 800"
+        type="text"
         >Use Max</el-button
       >
     </div>

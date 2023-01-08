@@ -11,7 +11,7 @@ import IFO from "./../components/IFO.vue";
 import IfoPixelPriv from "./../components/IfoPixelPriv.vue";
 import HomeWalletPage from "./../components/HomeWalletPage.vue";
 import IFOList from "./../components/IFOList.vue";
-import CrDAO from "./../components/CrDAO.vue";
+import CrnchyStaking from "./../components/CrnchyStaking.vue";
 import Swap from "./../components/Swap.vue";
 import TokenTracker from "./../components/TokenTracker.vue";
 import TokenTrackerItem from "./../components/TokenTrackerItem.vue";
@@ -65,7 +65,7 @@ const routes = [
 
   // { name: 'bakery', path: '/bakery', component: Bakery },
   { name: "fire-pit", path: "/fire-pit", component: FirePit },
-  { name: "cr-dao", path: "/cr-dao", component: CrDAO },
+  { name: "cr-dao", path: "/crnchy-staking", component: CrnchyStaking },
   { name: "swap", path: "/swap", component: Swap },
 ];
 
