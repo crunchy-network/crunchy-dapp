@@ -466,8 +466,14 @@ export default {
     this.fetchTokensTracked();
   },
 
+  mounted() {
+    setInterval(() => {
+      this.softLoadTokensTracked();
+    }, 1000 * 60 * 3);
+  },
+
   methods: {
-    ...mapActions(["fetchTokensTracked"]),
+    ...mapActions(["fetchTokensTracked", "softLoadTokensTracked"]),
     fmtNumber(val) {
       return numberFormat.shorthand(val);
     },
