@@ -23,21 +23,6 @@
           type="flex"
           align="middle"
         >
-          <el-col :sm="2" :lg="1">
-            <el-avatar
-              v-if="locker.token.isQuipuLp"
-              :src="logos.quipuswap"
-              fit="cover"
-              shape="circle"
-              :size="40"
-              style="
-                background: #fff;
-                position: relative;
-                border: 2px solid #f6cc5b;
-                vertical-align: middle;
-              "
-            ></el-avatar>
-          </el-col>
           <el-col :sm="8" :lg="6" style="font-weight: bold">
             <el-avatar
               shape="circle"
@@ -65,6 +50,25 @@
             XTZ/{{ locker.token.symbol }}
           </el-col>
 
+          <el-col :sm="2" :lg="5">
+            <template v-if="locker.token.isQuipuLp">
+              <el-avatar
+                :src="logos.quipuswap"
+                fit="cover"
+                shape="circle"
+                :size="40"
+                style="
+                  background: #fff;
+                  position: relative;
+                  border: 4px solid #fff;
+                  vertical-align: middle;
+                  margin-right: 14px;
+                "
+              ></el-avatar>
+              Quipuswap
+            </template>
+          </el-col>
+
           <el-col style="text-align: right" :sm="7" :lg="4">
             <span v-if="showUsd === false" style="margin-right: 6px"
               >{{ vueNumberFormat(locker.tvlTez) }} ꜩ</span
@@ -83,6 +87,9 @@
               effect="light"
             >
               <div slot="content">
+                <span style="font-weight: 600; padding-bottom: 8px"
+                  >{{ vueNumberFormat(locker.amountLocked) }} Tokens</span
+                ><br />
                 <span style="color: #1ec37f; font-weight: 600"
                   >{{
                     vueNumberFormat(locker.percentLocked, {
@@ -128,15 +135,15 @@
             }}</el-col
           >
 
-          <el-col
-            class="hidden-md-and-down"
-            style="text-align: right"
-            :span="4"
-            >{{ vueNumberFormat(locker.amountLocked) }}</el-col
-          >
-
           <el-col style="text-align: right" :sm="7" :lg="5">
-            {{ locker.timeUntilUnlocked | humanizeDuration }}
+            <template v-if="locker.isUnlocked">
+              <span style="color: #555cff; text-transform: uppercase"
+                >Complete</span
+              >
+            </template>
+            <template v-else>
+              {{ locker.timeUntilUnlocked | humanizeDuration }}
+            </template>
           </el-col>
         </el-row>
       </div>
@@ -150,7 +157,16 @@ import { mapState } from "vuex";
 export default {
   name: "LpLockerListingRow",
   components: {},
-  props: ["locker", "showUsd"],
+  props: {
+    locker: {
+      type: Object,
+      required: true,
+    },
+    showUsd: {
+      type: Boolean,
+      required: true,
+    },
+  },
   data() {
     return {
       localAbbrevTimeZone: new Date()

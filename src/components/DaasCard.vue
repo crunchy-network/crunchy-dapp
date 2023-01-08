@@ -1,5 +1,5 @@
 <template>
-  <el-card class="box-card" shadow="never" style="height: 100%; width: 100%">
+  <el-card class="box-card" shadow="always" style="height: 100%; width: 100%">
     <h2>DeFi-as-a-Service (DaaS)</h2>
     <p>
       Crunchy provides DeFi services and solutions on Tezos to projects and

@@ -2,12 +2,17 @@
   <div id="fire-pit">
     <nav-menu></nav-menu>
     <el-main style="margin-top: 90px">
-      <el-row :gutter="20" type="flex" style="flex-wrap: wrap; row-gap: 20px">
+      <el-row
+        :gutter="20"
+        type="flex"
+        justify="space-between"
+        style="flex-wrap: wrap; row-gap: 20px"
+      >
         <el-col :lg="16">
           <div class="grid-content" style="height: 100%">
             <el-card
               class="box-card fire-pit"
-              shadow="never"
+              shadow="always"
               style="height: 100%"
             >
               <h2>Fire Pit</h2>
@@ -27,7 +32,7 @@
                 >
                 <el-col :sm="16">
                   <el-link
-                    :href="`https://better-call.dev/${wallet.network}/${burnRecord.contract}`"
+                    :href="`https://tzkt.io/${burnRecord.contract}`"
                     target="_blank"
                     style="word-break: break-all"
                     >{{ burnRecord.contract }}
@@ -57,9 +62,9 @@
             </el-card>
           </div>
         </el-col>
-        <el-col :lg="8">
+        <el-col :lg="6">
           <div class="grid-content" style="height: 100%">
-            <DaasCard />
+            <CrunchBurned />
           </div>
         </el-col>
       </el-row>
@@ -97,7 +102,7 @@
       <el-row type="flex" class="farm-list" style="margin-top: 25px">
         <el-col :span="24">
           <div class="grid-content">
-            <el-card class="box-card">
+            <el-card shadow="always" class="box-card">
               <div class="responsive-table">
                 <div>
                   <el-table
@@ -114,13 +119,13 @@
                     <el-table-column label="Burned By">
                       <template slot-scope="scope">
                         <el-link
-                          :href="`https://tzkt.io/${scope.row.from}`"
+                          :href="`https://tzkt.io/${scope.row.from.address}`"
                           target="_blank"
                           >{{
                             $async(
-                              scope.row.fromDomain,
-                              `tez-domain-${scope.row.from}`
-                            ) || scope.row.from
+                              scope.row.from.domain,
+                              `tez-domain-${scope.row.from.address}`
+                            ) || scope.row.from.alias || scope.row.from.address
                           }}
                           <i class="far fa-external-link fa-icon-right"></i
                         ></el-link>
@@ -135,7 +140,7 @@
                         {{
                           vueNumberFormat(
                             Number.parseInt(scope.row.amount) /
-                              Math.pow(10, scope.row.token.decimals)
+                              Math.pow(10, scope.row.token.metadata.decimals)
                           )
                         }}
                       </template>
@@ -143,9 +148,9 @@
                     <el-table-column label="Token" width="280">
                       <template slot-scope="scope">
                         <el-link
-                          :href="`https://better-call.dev/${scope.row.token.network}/${scope.row.token.contract}`"
+                          :href="`https://tzkt.io/${scope.row.token.contract.address}`"
                           target="_blank"
-                          >{{ scope.row.token.name || scope.row.token.symbol }}
+                          >{{ scope.row.token.metadata.name || scope.row.token.metadata.symbol }}
                           <i class="far fa-external-link fa-icon-right"></i
                         ></el-link>
                       </template>
@@ -184,7 +189,7 @@
                     <el-table-column label="" width="110" align="right">
                       <template slot-scope="scope">
                         <el-link
-                          :href="`https://better-call.dev/${scope.row.token.network}/opg/${scope.row.hash}`"
+                          :href="`https://tzkt.io/${scope.row.hash}`"
                           target="_blank"
                           >View Op
                           <i class="far fa-external-link fa-icon-right"></i
@@ -203,15 +208,15 @@
 </template>
 
 <script>
-import DaasCard from "./DaasCard.vue";
 import { mapState, mapActions } from "vuex";
 import NavMenu from "./NavMenu.vue";
+import CrunchBurned from "./CrunchBurned.vue";
 
 export default {
   name: "FirePit",
   components: {
-    DaasCard,
     NavMenu,
+    CrunchBurned,
   },
   computed: {
     ...mapState(["burnRecord", "wallet"]),
@@ -241,6 +246,7 @@ export default {
 
 .fire-pit {
   position: relative;
+  overflow: hidden;
 
   &:before {
     position: absolute;

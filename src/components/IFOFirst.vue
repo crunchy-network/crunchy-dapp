@@ -1,5 +1,5 @@
 <template>
-  <el-card class="box-card" shadow="never" style="height: 100%; width: 100%">
+  <el-card class="box-card" shadow="always" style="height: 100%; width: 100%">
     <el-row style="margin: 40px">
       <div class="img-container">
         <img
@@ -23,7 +23,12 @@ import { importAll } from "../lib/JsonHelper";
 
 export default {
   name: "IFOFirstCard",
-  props: ["project"],
+  props: {
+    project: {
+      type: Object,
+      required: true,
+    },
+  },
   data: () => ({
     images: importAll(
       require.context("../assets/project_images", false, /\.(png|jpe?g|svg)$/)
@@ -60,6 +65,7 @@ p {
   align-items: center;
   width: 100%;
   height: 100px;
+  background: none;
 }
 .launch-date-container {
   margin-top: 30px;

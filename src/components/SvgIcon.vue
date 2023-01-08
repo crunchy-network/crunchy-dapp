@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable */
 function recursivelyRemoveFill(el) {
   if (!el) {
     return;

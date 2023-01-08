@@ -70,7 +70,12 @@ import { importAll } from "../lib/JsonHelper";
 export default {
   name: "IFOListRow",
   components: { IFOTimeBubble },
-  props: ["project"],
+  props: {
+    project: {
+      type: Object,
+      required: true,
+    },
+  },
   data: () => ({
     images: importAll(
       require.context("../assets/project_images", false, /\.(png|jpe?g|svg)$/)

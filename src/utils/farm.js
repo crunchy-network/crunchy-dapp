@@ -85,12 +85,12 @@ export default {
         "https://raw.githubusercontent.com/Plenty-DeFi/Plenty-Logo/main/PlentyTokenIcon.png";
     }
 
-    // LB
+    // LB (aka Sirius)
     if (meta.tokenAddress === "KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo") {
-      meta.symbol = "tzBTC";
-      meta.name = "tzBTC";
+      meta.symbol = "SIRS";
+      meta.name = "Sirius";
       meta.thumbnailUri =
-        "https://tzbtc.io/wp-content/uploads/2020/03/tzbtc_logo_single.svg";
+        "ipfs://bafkreia7eltusu666hfjuxyt2tvjiyu2skj53txz7e2ovmzh7yv4amfgua";
     }
 
     // USDtz
@@ -99,6 +99,26 @@ export default {
       meta.name = "USDtz";
       meta.thumbnailUri = "https://quipuswap.com/tokens/usdtz.png";
       meta.decimals = 6;
+    }
+
+    // Youves
+    if (meta.tokenAddress === "KT1XRPEPXbZK25r3Htzp2o1x7xdMMmfocKNW") {
+      // uBTC
+      if (meta.tokenId === 2) {
+        meta.thumbnailUri =
+          "https://app.youves.com/assets/img/symbols/ubtc.svg";
+      }
+    }
+
+    // SEXP
+    if (meta.tokenAddress === "KT1Kyc366SrSJ1camxByr363F9WAiHAaReMv") {
+      meta.thumbnailUri = "https://metadata.sexp.exchange/sexp_logo_v1.png";
+    }
+
+    // tdao
+    if (meta.tokenAddress === "KT1Cjx8hYwzaCAke6rLWoZBLp8w89VeAduAR") {
+      meta.thumbnailUri =
+        "ipfs://bafkreiffgj3yc7chn4wgytfhq2rvdg2eiuzdhsytlr5oyipe7zmnihfk6q";
     }
 
     return meta;

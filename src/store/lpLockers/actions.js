@@ -3,7 +3,7 @@ import teztools from "./../../utils/teztools";
 import coingecko from "./../../utils/coingecko";
 import ipfs from "./../../utils/ipfs";
 import farmUtils from "./../../utils/farm";
-import { getContract, getBatch } from "./../../utils/tezos";
+import { getContract, getWalletContract, getBatch } from "./../../utils/tezos";
 import merge from "deepmerge";
 import { BigNumber } from "bignumber.js";
 
@@ -36,6 +36,10 @@ export default {
   updateLpLocksTotalTvlTez({ commit, state }) {
     let total = 0;
     for (const id in state.data) {
+      if (state.data[id].active === false) {
+        continue;
+      }
+
       const tvl = Number(state.data[id].tvlTez);
       if (!Number.isNaN(tvl)) {
         total += Number(tvl);
@@ -56,7 +60,7 @@ export default {
       const locks = {};
       for (const x of lockStorage) {
         let l = merge(
-          { id: x.key, ...x.value },
+          { id: x.key, ...x.value, active: x.active },
           {
             contract: state.contract,
             token: {
@@ -110,6 +114,8 @@ export default {
           .div(BigNumber(10).pow(6))
           .toNumber();
 
+        const now = new Date();
+
         l = merge(l, {
           token: {
             ...tokenMeta,
@@ -124,7 +130,8 @@ export default {
           tvlTez: tvlTez,
           totalLiquidityTez: totalLiquidityTez,
           percentLocked: (amountLocked / tokenMeta.qptTokenSupply) * 100,
-          timeUntilUnlocked: new Date(l.lockEndTime) - new Date(),
+          timeUntilUnlocked: Math.max(new Date(l.lockEndTime) - now, 0),
+          isUnlocked: new Date(l.lockEndTime) <= now,
         });
 
         locks[x.key] = l;
@@ -165,7 +172,7 @@ export default {
 
   async createLpLock({ state, rootState }, params) {
     const locker = await getContract(state.contract);
-    const crunch = await getContract(state.crunchAddress);
+    const crnchy = await getContract(state.crnchyAddress);
     const lpToken = await getContract(params.lpToken.address);
 
     let amount = BigNumber(params.amount)
@@ -178,7 +185,7 @@ export default {
 
     const batch = await getBatch()
       .withContractCall(
-        crunch.methods.update_operators([
+        crnchy.methods.update_operators([
           {
             add_operator: {
               owner: rootState.wallet.pkh,
@@ -233,7 +240,7 @@ export default {
           : lpToken.methods.approve(state.contract, 0)
       )
       .withContractCall(
-        crunch.methods.update_operators([
+        crnchy.methods.update_operators([
           {
             remove_operator: {
               owner: rootState.wallet.pkh,
@@ -245,6 +252,18 @@ export default {
       );
 
     const tx = await batch.send();
+    return tx.confirmation();
+  },
+
+  async withdrawLp({ state }, params) {
+    const locker = await getWalletContract(state.contract);
+    const tx = await locker.methods.withdraw(params.lockId).send();
+    return tx.confirmation();
+  },
+
+  async withdrawLpProfit({ state }, params) {
+    const locker = await getWalletContract(state.contract);
+    const tx = await locker.methods.withdrawProfit(params.lockId).send();
     return tx.confirmation();
   },
 };

@@ -1,5 +1,5 @@
 <template>
-  <div style="margin-bottom: 120px">
+  <div :style="(!showMenu || !mobile) && 'margin-bottom: 150px'">
     <el-header
       id="nav-menu"
       style="
@@ -10,17 +10,23 @@
         right: 0;
         left: 0;
         z-index: 999;
-        display: flex;
+        /*display: flex;*/
         align-items: center;
-        border-bottom: 1.5px solid rgba(25, 27, 31, 0.1);
+        border-bottom: 1px solid #f2f2f2;
       "
     >
+      <Notice v-if="!showMenu || !mobile" />
       <el-row class="el-menu-row" type="flex" justify="space-between">
-        <div class="show-mobile" style="text-align: center; margin: 0 20px">
+        <div
+          v-if="!showMenu || !mobile"
+          class="show-mobile"
+          style="text-align: center; margin: 0 20px"
+        >
           <img src="../assets/logo_transparent_background.png" width="170" />
         </div>
         <button
-          :class="['show-mobile clear-btn', showMenu && ' close-btn']"
+          v-if="!showMenu || !mobile"
+          class="show-mobile clear-btn"
           style="
             color: #555cff;
             margin: 0 20px;
@@ -29,18 +35,38 @@
           "
           @click="toggleMenu"
         >
-          <i
-            style="font-size: 28px"
-            v-if="!showMenu"
-            class="fa-solid fa-bars-staggered"
-          ></i>
-          <i
-            v-if="showMenu"
-            style="font-size: 20px !important; width: unset !important"
-            class="fa-solid fa-xmark"
-          ></i>
+          <i style="font-size: 28px" class="fa-solid fa-bars-staggered"></i>
         </button>
         <div :class="[mobile && 'mobile-menu', showMenu && 'active']">
+          <div v-if="mobile && showMenu">
+            <Notice />
+            <el-row class="el-menu-row" type="flex" justify="space-between">
+              <div
+                class="show-mobile"
+                style="text-align: center; margin: 0 20px"
+              >
+                <img
+                  src="../assets/logo_transparent_background.png"
+                  width="170"
+                />
+              </div>
+              <button
+                :class="'show-mobile close-btn'"
+                style="
+                  color: #555cff;
+                  margin: 0 20px;
+                  width: 33px !important;
+                  height: 33px !important;
+                "
+                @click="toggleMenu"
+              >
+                <i
+                  style="font-size: 20px !important; width: unset !important"
+                  class="fa-solid fa-xmark"
+                ></i>
+              </button>
+            </el-row>
+          </div>
           <div>
             <el-menu
               ref="menu"
@@ -68,13 +94,34 @@
                 exact
                 active-class="is-active"
               >
-                <i v-if="mobile" class="fak fa-crunchy-home"></i>
+                <i v-if="mobile" class="fak fa-crunchy-home-alt"></i>
                 <span>Home</span>
               </router-link>
 
+              <router-link
+                tag="li"
+                class="el-menu-item"
+                :to="{ name: 'home-view-portfolio' }"
+                exact
+                active-class="is-active"
+              >
+                <i v-if="mobile" class="fak fa-light fa-coins"></i>
+                <span>Portfolio</span>
+              </router-link>
+
+              <router-link
+                tag="li"
+                class="el-menu-item"
+                to="/swap"
+                active-class="is-active"
+              >
+                <i v-if="mobile" class="fak fa-crunchy-swap-alt"></i>
+
+                <span>Swap</span>
+              </router-link>
               <el-submenu
-                :popper-append-to-body="false"
                 id="defi-menu"
+                :popper-append-to-body="false"
                 index="1"
                 :class="defiActive ? 'sub-is-active' : ''"
               >
@@ -117,7 +164,24 @@
                   </svg>
                   DeFi</template
                 >
-
+                <router-link
+                  tag="li"
+                  class="el-menu-item submenu-item"
+                  :to="{ name: 'farm-listing' }"
+                  active-class="is-active"
+                >
+                  <i class="fak fa-crunchy-farm-alt"></i>
+                  <span>Farms</span>
+                </router-link>
+                <router-link
+                  tag="li"
+                  class="el-menu-item submenu-item"
+                  :to="{ name: 'ifo-list' }"
+                  active-class="is-active"
+                >
+                  <i class="fak fa-light fa-farm"></i>
+                  <span>IFO</span>
+                </router-link>
                 <router-link
                   tag="li"
                   class="el-menu-item submenu-item"
@@ -126,35 +190,6 @@
                 >
                   <i class="fak fa-crunchy-locker"></i>
                   <span>Deep Freezers</span>
-                </router-link>
-
-                <router-link
-                  tag="li"
-                  class="el-menu-item submenu-item"
-                  :to="{ name: 'farm-listing' }"
-                  active-class="is-active"
-                >
-                  <i class="fak fa-crunchy-farm"></i>
-                  <span>Farms</span>
-                </router-link>
-
-                <router-link
-                  tag="li"
-                  class="el-menu-item submenu-item"
-                  :to="{ name: 'fire-pit' }"
-                  active-class="is-active"
-                >
-                  <i class="fas fa-fire-alt"></i>
-                  <span>Fire Pit</span>
-                </router-link>
-                <router-link
-                  tag="li"
-                  class="el-menu-item submenu-item"
-                  :to="{ name: 'ifo-list' }"
-                  active-class="is-active"
-                >
-                  <i class="fak fa-regular fa-farm"></i>
-                  <span>IFO</span>
                 </router-link>
                 <router-link
                   tag="li"
@@ -165,6 +200,15 @@
                   <i class="fak fa-crunchy-tez-alt"></i>
 
                   <span>WTZ</span>
+                </router-link>
+                <router-link
+                  tag="li"
+                  class="el-menu-item submenu-item"
+                  :to="{ name: 'fire-pit' }"
+                  active-class="is-active"
+                >
+                  <i class="fak fal fa-fire"></i>
+                  <span>Fire Pit</span>
                 </router-link>
               </el-submenu>
 
@@ -194,13 +238,19 @@
                   More</template
                 >
                 <el-menu-item class="submenu-item">
-                  <i style="color: #191b1f !important" class="fa-light fa-book"></i>
+                  <i
+                    style="color: #191b1f !important"
+                    class="fa-light fa-book"
+                  ></i>
                   <a href="https://docs.crunchy.network/" target="_blank">
                     Docs
                   </a>
                 </el-menu-item>
                 <el-menu-item class="submenu-item">
-                  <i style="color: #191b1f !important" class="fab fa-discord"></i>
+                  <i
+                    style="color: #191b1f !important"
+                    class="fab fa-discord"
+                  ></i>
                   <a
                     href="https://discord.com/invite/99UnxxgB46"
                     target="_blank"
@@ -209,7 +259,10 @@
                   </a>
                 </el-menu-item>
                 <el-menu-item class="submenu-item">
-                  <i style="color: #191b1f !important" class="fab fa-telegram"></i>
+                  <i
+                    style="color: #191b1f !important"
+                    class="fab fa-telegram"
+                  ></i>
                   <a href=" https://t.me/crunchy_network" target="_blank">
                     Telegram
                   </a>
@@ -224,6 +277,7 @@
               showMenu ? 'grid-content mobile active' : 'grid-content mobile'
             "
           >
+            <CRNCHY />
             <nav-wallet />
             <slot />
           </div>
@@ -239,6 +293,9 @@
             height: 100%;
           "
         >
+          <div>
+            <CRNCHY />
+          </div>
           <slot />
           <nav-wallet />
         </div>
@@ -248,10 +305,12 @@
 </template>
 
 <script>
+import CRNCHY from "./CRNCHY.vue";
 import NavWallet from "./NavWallet.vue";
+import Notice from "./Notice.vue";
 export default {
   name: "NavMenu",
-  components: { NavWallet },
+  components: { NavWallet, CRNCHY, Notice },
   data() {
     return {
       mobile: false,
@@ -299,7 +358,9 @@ export default {
     openSubmenu(index) {
       if (
         this.$route.name !== "home-view-wallet" &&
-        this.$route.name !== "home"
+        this.$route.name !== "home" &&
+        this.$route.name !== "home-view-portfolio" &&
+        this.$route.name === "token-tracker-item"
       ) {
         this.defiActive = true;
 
@@ -320,12 +381,13 @@ export default {
 
 .el-menu-row {
   border-right: none !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  border-bottom: none;
   margin: 0;
   align-items: center;
   min-width: 100%;
   min-height: 70px;
   background: #fff;
+  box-shadow: 0px 10px 16px rgba(21, 21, 52, 0.05);
 }
 
 .more_submenu .el-menu-item.submenu-item {
@@ -398,7 +460,7 @@ export default {
 @media (max-width: 991px) {
   .mobile-menu {
     position: fixed;
-    top: 70px;
+    top: 0px;
     bottom: 0;
     z-index: 200000;
     left: -200%;
@@ -412,7 +474,7 @@ export default {
     overflow-y: auto;
 
     > div:first-child {
-      margin-bottom: 120px;
+      margin-bottom: 50px;
     }
 
     &::-webkit-scrollbar {

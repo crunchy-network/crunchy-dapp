@@ -39,8 +39,8 @@ export default {
     },
   },
   props: {
-    date: null,
-    endDate: null,
+    date: { type: Date, required: true },
+    endDate: { type: Date, required: true },
   },
   data() {
     return {

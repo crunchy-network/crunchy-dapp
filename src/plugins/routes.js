@@ -1,7 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 // import Home from './../components/Home.vue'
-import LpLockerListing from "./../components/LpLockerListing.vue";
+import LpLocker from "./../components/LpLocker.vue";
 import LpLockerItem from "./../components/LpLockerItem.vue";
 import FarmListing from "./../components/FarmListing.vue";
 import FarmCreate from "./../components/FarmCreate.vue";
@@ -12,15 +12,23 @@ import IfoPixelPriv from "./../components/IfoPixelPriv.vue";
 import HomeWalletPage from "./../components/HomeWalletPage.vue";
 import IFOList from "./../components/IFOList.vue";
 import CrDAO from "./../components/CrDAO.vue";
+import Swap from "./../components/Swap.vue";
+import TokenTracker from "./../components/TokenTracker.vue";
+import TokenTrackerItem from "./../components/TokenTrackerItem.vue";
 // import Bakery from './../components/Bakery.vue'
 
 Vue.use(VueRouter);
 
 const routes = [
-  { name: "home", path: "/", component: HomeWalletPage },
+  { name: "home", path: "/", component: TokenTracker },
   {
     name: "home-view-wallet",
     path: "/wallet/:walletAddress",
+    component: HomeWalletPage,
+  },
+  {
+    name: "home-view-portfolio",
+    path: "/portfolio",
     component: HomeWalletPage,
   },
 
@@ -32,9 +40,15 @@ const routes = [
   },
 
   {
+    name: "token-tracker-item",
+    path: "/token/:tokenId",
+    component: TokenTrackerItem,
+  },
+
+  {
     name: "deep-freezer-listing",
     path: "/freezers",
-    component: LpLockerListing,
+    component: LpLocker,
   },
   {
     name: "deep-freezer-item",
@@ -52,7 +66,7 @@ const routes = [
   // { name: 'bakery', path: '/bakery', component: Bakery },
   { name: "fire-pit", path: "/fire-pit", component: FirePit },
   { name: "cr-dao", path: "/cr-dao", component: CrDAO },
-
+  { name: "swap", path: "/swap", component: Swap },
 ];
 
 export default new VueRouter({

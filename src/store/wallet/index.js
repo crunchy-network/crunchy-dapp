@@ -17,5 +17,8 @@ export default {
     getPkh(state) {
       return state.pkh;
     },
+    isWalletConnected(state) {
+      return state.connected;
+    },
   },
 };

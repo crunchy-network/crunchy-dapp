@@ -3,7 +3,7 @@
     <!-- Desktop -->
     <!-- <div class="hidden-sm-and-down"> -->
 
-    <el-container style="position: relative">
+    <el-container style="position: relative; justify-content: space-between">
       <div>
         <router-view></router-view>
       </div>
@@ -74,7 +74,7 @@ export default {
 </script>
 
 <style>
-html{
+html {
   overflow-x: hidden;
 }
 
@@ -100,9 +100,10 @@ body {
 
 .responsive-table {
   overflow-x: auto;
-   -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
+
 .responsive-table > div {
   min-width: max-content;
 }
@@ -129,6 +130,7 @@ h3 {
   justify-content: center;
   align-items: center;
   min-width: 100%;
+  height: 80px !important;
 }
 .el-footer i.fad {
   margin-right: 0 !important;
@@ -251,7 +253,7 @@ i.fa-icon-right {
 
 @media (min-width: 992px) {
   .el-submenu .el-menu--horizontal {
-    top: 65px !important;
+    top: 105px !important;
     position: fixed;
   }
 
@@ -328,6 +330,11 @@ header .grid-content button.el-button {
 .search-input .el-input__prefix {
   color: #191b1f;
 }
+
+#token-tracker .search-input .el-input__prefix {
+  color: #DCDFE6;
+}
+
 .search-input .el-input__inner,
 #farm-listing .search-input .el-input__inner {
   border-radius: 24px !important;
@@ -500,6 +507,14 @@ header .grid-content button.el-button {
 .el-tag--medium {
   border-radius: 16px !important;
 }
+
+#farm-listing .el-input__inner,
+#nft-wallet-view .el-input__inner {
+  border-radius: 24px !important;
+  color: #191b1f !important;
+  background: #fafafa !important;
+}
+
 .el-select__tags {
   left: 8px;
 }
@@ -525,6 +540,10 @@ header .grid-content button.el-button {
 
 .text-center {
   text-align: center;
+}
+
+.el-select-dropdown__item.selected {
+  color: #ff4d4b !important;
 }
 
 /* REPSONSIVE STYLE */

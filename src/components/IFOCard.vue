@@ -1,5 +1,5 @@
 <template>
-  <el-card class="box-card" shadow="never" style=" width: 100%">
+  <el-card class="box-card" shadow="always" style="width: 100%">
     <div style="margin: 40px">
       <h1>Initial Farm Offering (IFO)</h1>
       <p>

@@ -6,7 +6,7 @@
         <el-col :xs="24" :md="12"
           ><el-card
             class="grid-content box top-box box-card"
-            shadow="never"
+            shadow="always"
             style="min-height: 489px"
           >
             <div class="column-center">
@@ -43,6 +43,7 @@
           ><el-card
             v-loading="ifo.loading"
             class="grid-content box top-box swap-box box-card"
+            shadow="always"
           >
             <!-- <div class="column-center">
               <h1 class="swap-title">Token Swap Details</h1>
@@ -310,7 +311,7 @@
       </el-row> -->
       <el-row :gutter="40" style="margin-top: 1em">
         <el-col style="margin-bottom: 5px" :xs="24" :md="12">
-          <el-card class="grid-content box-card info-box">
+          <el-card class="grid-content box-card info-box" shadow="always">
             <div class="column-center">
               <h1 class="title">Pool Info</h1>
             </div>
@@ -377,7 +378,7 @@
           </el-card>
         </el-col>
         <el-col style="margin-bottom: 5px" :xs="24" :md="12">
-          <el-card class="grid-content box-card info-box">
+          <el-card class="grid-content box-card info-box" shadow="always">
             <div class="column-center">
               <h1 class="title">Token Information</h1>
             </div>
@@ -585,6 +586,9 @@ export default {
     this.fetchProject();
     this.refresh();
   },
+  mounted() {
+    this.showTimer();
+  },
   methods: {
     ...mapActions(["connectWallet", "loadIfoData", "stakeIfo", "harvestIfo"]),
 
@@ -642,9 +646,6 @@ export default {
       }
       this.form.visible = true;
     },
-  },
-  mounted() {
-    this.showTimer();
   },
 };
 </script>
