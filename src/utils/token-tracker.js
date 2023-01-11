@@ -288,17 +288,20 @@ export default {
       ) {
         bucket
         tvlUsd
+        tvl
         exchangeId
       }
       stats1mo(where: {tokenId: {_eq: $tokenId }}, distinct_on: bucket) {
         bucket
         tvlUsd
+        tvl
         tokenId
       }
       stats1w(distinct_on: bucket, where: {tokenId: {_eq: $tokenId }}) {
         bucket
         tokenId
         tvlUsd
+        tvl
       }
     }
     `;

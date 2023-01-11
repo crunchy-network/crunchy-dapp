@@ -107,7 +107,13 @@
         </div>
       </el-row>
 
-      <el-row type="flex" justify="space-between" align="middle" :gutter="10">
+      <el-row
+        type="flex"
+        justify="space-between"
+        align="middle"
+        style="flex-wrap: wrap; padding: 10px 0;"
+        :gutter="10"
+      >
         <div class="tab-wrapper tab-custom-element">
           <button
             class="tab-text"

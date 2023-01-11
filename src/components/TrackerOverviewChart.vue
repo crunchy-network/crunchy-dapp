@@ -73,7 +73,12 @@ export default {
   },
 
   computed: {
-    ...mapGetters(["getChartData", "getXtzUsdPrice", "getXtzUsdHistory"]),
+    ...mapGetters([
+      "getChartData",
+      "getXtzUsdPrice",
+      "getXtzUsdHistory",
+      "getShowUsd",
+    ]),
   },
   watch: {
     legendTab() {
@@ -92,6 +97,9 @@ export default {
     getXtzUsdHistory() {
       this.getPrices();
     },
+    getShowUsd() {
+      this.getPrices();
+    },
   },
   mounted() {
     this.sortTokenData();
@@ -108,12 +116,29 @@ export default {
           };
         }
       );
+      this.updatedChartData.tvlXtz.days1 = this.getChartData.tvl1Day.map(
+        (element) => {
+          return {
+            time: new Date(element.bucket).getTime(),
+            value: Number(element.tvl),
+          };
+        }
+      );
 
       this.updatedChartData.tvl.days7 = this.getChartData.tvl7Day.map(
         (element) => {
           return {
             time: new Date(element.bucket).getTime(),
             value: Number(element.tvlUsd),
+          };
+        }
+      );
+
+      this.updatedChartData.tvlXtz.days7 = this.getChartData.tvl7Day.map(
+        (element) => {
+          return {
+            time: new Date(element.bucket).getTime(),
+            value: Number(element.tvl),
           };
         }
       );
@@ -126,12 +151,28 @@ export default {
           };
         }
       );
+      this.updatedChartData.tvlXtz.days30 = this.getChartData.tvl30Day.map(
+        (element) => {
+          return {
+            time: new Date(element.bucket).getTime(),
+            value: Number(element.tvl),
+          };
+        }
+      );
 
       this.updatedChartData.tvl.all = this.getChartData.tvlAll.map(
         (element) => {
           return {
             time: new Date(element.bucket).getTime(),
             value: Number(element.tvlUsd),
+          };
+        }
+      );
+      this.updatedChartData.tvlXtz.all = this.getChartData.tvlAll.map(
+        (element) => {
+          return {
+            time: new Date(element.bucket).getTime(),
+            value: Number(element.tvl),
           };
         }
       );
@@ -145,7 +186,14 @@ export default {
           return {
             time: new Date(element.bucket).getTime(),
             value: Number(element.close) * timeUsdValue,
-            timeUsdValue,
+          };
+        });
+
+      this.updatedChartData.priceXtz.days1 =
+        this.getChartData.volumeAndPrice1Day.map((element) => {
+          return {
+            time: new Date(element.bucket).getTime(),
+            value: Number(element.close),
           };
         });
 
@@ -158,6 +206,14 @@ export default {
           return {
             time: new Date(element.bucket).getTime(),
             value: Number(element.xtzVolume) * timeUsdValue,
+          };
+        });
+
+      this.updatedChartData.volumeXtz.days1 =
+        this.getChartData.volumeAndPrice1Day.map((element) => {
+          return {
+            time: new Date(element.bucket).getTime(),
+            value: Number(element.xtzVolume),
           };
         });
 
@@ -183,6 +239,13 @@ export default {
             value: Number(element.xtzVolume) * timeUsdValue,
           };
         });
+      this.updatedChartData.volumeXtz.days7 =
+        this.getChartData.volumeAndPrice7Day.map((element) => {
+          return {
+            time: new Date(element.bucket).getTime(),
+            value: Number(element.xtzVolume),
+          };
+        });
 
       // this.updatedChartData.price.days30 =
       //   this.getChartData.volumeAndPrice30Day.map((element) => {
@@ -206,28 +269,32 @@ export default {
             value: Number(element.xtzVolume) * timeUsdValue,
           };
         });
-
-      this.updatedChartData.price.all = this.getChartData.allVolumeAndPrice.map(
-        (element) => {
-          const timeUsdValue = tokenTracker.binarySearch(
-            this.getXtzUsdHistory,
-            new Date(element.bucket).getTime()
-          );
+      this.updatedChartData.volumeXtz.days30 =
+        this.getChartData.volumeAndPrice30Day.map((element) => {
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.close) * timeUsdValue,
+            value: Number(element.xtzVolume),
           };
-        }
-      );
-      this.updatedChartData.volume.all =
+        });
+
+      // this.updatedChartData.price.all = this.getChartData.allVolumeAndPrice.map(
+      //   (element) => {
+      //     const timeUsdValue = tokenTracker.binarySearch(
+      //       this.getXtzUsdHistory,
+      //       new Date(element.bucket).getTime()
+      //     );
+      //     return {
+      //       time: new Date(element.bucket).getTime(),
+      //       value: Number(element.close) * timeUsdValue,
+      //     };
+      //   }
+      // );
+
+      this.updatedChartData.volumeXtz.all =
         this.getChartData.allVolumeAndPrice.map((element) => {
-          const timeUsdValue = tokenTracker.binarySearch(
-            this.getXtzUsdHistory,
-            new Date(element.bucket).getTime()
-          );
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.xtzVolume) * timeUsdValue,
+            value: Number(element.xtzVolume),
           };
         });
 
@@ -239,11 +306,17 @@ export default {
         if (this.legendTab === "tvl") {
           this.tokenData =
             this.duration === "1d"
-              ? this.updatedChartData.tvl.days1
+              ? !this.getShowUsd
+                ? this.updatedChartData.tvlXtz.days1
+                : this.updatedChartData.tvl.days1
               : this.duration === "7d"
-              ? this.updatedChartData.tvl.days7
+              ? !this.getShowUsd
+                ? this.updatedChartData.tvlXtz.days7
+                : this.updatedChartData.tvl.days7
               : this.duration === "30d"
-              ? this.updatedChartData.tvl.days30
+              ? !this.getShowUsd
+                ? this.updatedChartData.tvlXtz.days30
+                : this.updatedChartData.tvl.days30
               : this.duration === "all"
               ? this.updatedChartData.tvl.all
               : null;
@@ -252,26 +325,36 @@ export default {
         if (this.legendTab === "price") {
           this.tokenData =
             this.duration === "1d"
-              ? this.updatedChartData.price.days1
-              : this.duration === "7d"
-              ? this.updatedChartData.price.days7
-              : this.duration === "30d"
-              ? this.updatedChartData.price.days30
-              : this.duration === "all"
-              ? this.updatedChartData.price.all
-              : null;
+              ? !this.getShowUsd
+                ? this.updatedChartData.priceXtz.days1
+                : this.updatedChartData.price.days1
+              : // : this.duration === "7d"
+                // ? this.updatedChartData.price.days7
+                // : this.duration === "30d"
+                // ? this.updatedChartData.price.days30
+                // : this.duration === "all"
+                // ? this.updatedChartData.price.all
+                null;
         }
 
         if (this.legendTab === "volume") {
           this.tokenData =
             this.duration === "1d"
-              ? this.updatedChartData.volume.days1
+              ? !this.getShowUsd
+                ? this.updatedChartData.volumeXtz.days1
+                : this.updatedChartData.volume.days1
               : this.duration === "7d"
-              ? this.updatedChartData.volume.days7
+              ? !this.getShowUsd
+                ? this.updatedChartData.volumeXtz.days7
+                : this.updatedChartData.volume.days7
               : this.duration === "30d"
-              ? this.updatedChartData.volume.days30
+              ? !this.getShowUsd
+                ? this.updatedChartData.volumeXtz.days30
+                : this.updatedChartData.volume.days30
               : this.duration === "all"
-              ? this.updatedChartData.volume.all
+              ? !this.getShowUsd
+                ? this.updatedChartData.volumeXtz.all
+                : this.updatedChartData.volume.all
               : null;
         }
 
@@ -367,8 +450,10 @@ export default {
             toolTip.innerHTML = `<div style="color: ${"rgba( 38, 166, 154, 1)"}">${
               this.tokenTracked.symbol || this.tokenTracked.name
             }.</div><div style="font-size: 24px; margin: 4px 0px; color: ${"black"}">
-            $${this.formatNumShorthand(price).value}${
-              this.formatNumShorthand(price).suffix
+            ${this.getShowUsd ? "$" : ""}${
+              this.formatNumShorthand(price).value
+            }${this.formatNumShorthand(price).suffix}${
+              !this.getShowUsd ? "ꜩ" : ""
             }
             </div><div style="color: ${"black"}">
             ${dateStr}
