@@ -1,4 +1,4 @@
- <template>
+<template>
   <div id="token-tracker">
     <div id="chart"></div>
   </div>
@@ -38,13 +38,31 @@ export default {
           days30: [],
           all: [],
         },
+        priceXtz: {
+          days1: [],
+          days7: [],
+          days30: [],
+          all: [],
+        },
         volume: {
           days1: [],
           days7: [],
           days30: [],
           all: [],
         },
+        volumeXtz: {
+          days1: [],
+          days7: [],
+          days30: [],
+          all: [],
+        },
         tvl: {
+          days1: [],
+          days7: [],
+          days30: [],
+          all: [],
+        },
+        tvlXtz: {
           days1: [],
           days7: [],
           days30: [],

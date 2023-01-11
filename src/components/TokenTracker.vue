@@ -65,10 +65,10 @@
                     "
                   >
                     <price-format
-                      prefix="$"
                       :font-weight="700"
                       :font-size="24"
                       :value="getTrackerData.estimatedMktCap"
+                      :usd-value="getTrackerData.estimatedMktCapUsd"
                     />
                   </div>
                 </el-card>
@@ -95,10 +95,10 @@
                     "
                   >
                     <price-format
-                      prefix="$"
                       :font-weight="700"
                       :font-size="24"
                       :value="getTrackerData.total24hVolume"
+                      :usd-value="getTrackerData.total24hVolumeUsd"
                     />
                   </div>
                 </el-card>
@@ -160,7 +160,13 @@
             </el-col>
           </el-row>
 
-          <el-row style="margin-top: 30px">
+          <el-row
+            align="middle"
+            type="flex"
+            justify="space-between"
+            style="margin-top: 30px"
+            :gutter="10"
+          >
             <el-col :xs="12" :span="10">
               <div class="grid-content search-input">
                 <el-input
@@ -171,6 +177,9 @@
                 >
                 </el-input></div
             ></el-col>
+            <div>
+              <usd-xtz-switch :disabled="tokenTracker.loading"></usd-xtz-switch>
+            </div>
           </el-row>
         </el-col>
         <el-col class="hide-md" :span="5" style="text-align: right">
@@ -268,7 +277,7 @@
                         />
                         1d
                         <el-tooltip
-                          content="% Change in USD"
+                          :content="`% Change in ${getShowUsd ? 'USD' : 'XTZ'}`"
                           placement="top"
                           effect="light"
                         >
@@ -287,7 +296,7 @@
                         />
                         7d
                         <el-tooltip
-                          content="% Change in USD"
+                          :content="`% Change in ${getShowUsd ? 'USD' : 'XTZ'}`"
                           placement="top"
                           effect="light"
                         >
@@ -306,7 +315,7 @@
                         />
                         30d
                         <el-tooltip
-                          content="% Change in USD"
+                          :content="`% Change in ${getShowUsd ? 'USD' : 'XTZ'}`"
                           placement="top"
                           effect="light"
                         >
@@ -398,6 +407,7 @@ import numberFormat from "../utils/number-format";
 import PriceFormat from "./PriceFormat.vue";
 import _ from "lodash";
 import SortArrowIndicator from "./SortArrowIndicator.vue";
+import UsdXtzSwitch from "./UsdXtzSwitch.vue";
 
 export default {
   name: "TokenTracker",
@@ -406,6 +416,7 @@ export default {
     NavMenu,
     PriceFormat,
     SortArrowIndicator,
+    UsdXtzSwitch,
   },
   data() {
     return {
@@ -426,7 +437,7 @@ export default {
 
   computed: {
     ...mapState(["tokenTracker"]),
-    ...mapGetters(["getTrackerData", "getTokens"]),
+    ...mapGetters(["getTrackerData", "getTokens", "getShowUsd"]),
     sortedTokensTracked() {
       return _.orderBy(this.getTokens, [this.sort.key], [this.sort.rule]) || [];
     },

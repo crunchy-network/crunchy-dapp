@@ -81,16 +81,7 @@
         </a>
       </div>
       <div class="grid-content" style="text-align: right">
-        <el-switch
-          v-model="showUsd"
-          :disabled="homeWallet.loading"
-          style="margin-right: 24px"
-          active-color="#1EC37F"
-          inactive-color="#555CFF"
-          active-text="USD"
-          inactive-text="XTZ"
-        >
-        </el-switch>
+        <usd-xtz-switch :disabled="homeWallet.loading"> </usd-xtz-switch>
       </div>
     </el-row>
 
@@ -125,7 +116,7 @@
                   <el-col style="text-align: right" :span="2"
                     >1d
                     <el-tooltip
-                      content="% Change in XTZ"
+                      :content="`% Change in ${showUsd ? 'USD' : 'XTZ'}`"
                       placement="top"
                       effect="light"
                     >
@@ -135,7 +126,7 @@
                   <el-col style="text-align: right" :span="2"
                     >7d
                     <el-tooltip
-                      content="% Change in XTZ"
+                      :content="`% Change in ${showUsd ? 'USD' : 'XTZ'}`"
                       placement="top"
                       effect="light"
                     >
@@ -145,7 +136,7 @@
                   <el-col style="text-align: right" :span="2"
                     >30d
                     <el-tooltip
-                      content="% Change in XTZ"
+                      :content="`% Change in ${showUsd ? 'USD' : 'XTZ'}`"
                       placement="top"
                       effect="light"
                     >
@@ -243,6 +234,7 @@ import StakedWallet from "./StakedWallet.vue";
 import NftWalletView from "./NftWalletView.vue";
 import LiquidityWallet from "./LiquidityWallet.vue";
 import HomeWalletStats from "./HomeWalletStats.vue";
+import UsdXtzSwitch from "./UsdXtzSwitch.vue";
 
 export default {
   name: "HomeWallet",
@@ -252,12 +244,12 @@ export default {
     NftWalletView,
     HomeWalletStats,
     LiquidityWallet,
+    UsdXtzSwitch,
   },
   data() {
     return {
       activeTab: "wallet",
       tabledata: [],
-      showUsd: false,
       currentPage: 0,
       pages: 0,
       nextPage: 1,
@@ -285,7 +277,10 @@ export default {
   },
   computed: {
     ...mapState(["homeWallet"]),
-    ...mapGetters(["getPkh", "getAssets", "getStakedValues"]),
+    ...mapGetters(["getPkh", "getAssets", "getStakedValues", "getShowUsd"]),
+    showUsd() {
+      return this.getShowUsd;
+    },
   },
   watch: {
     getPkh() {

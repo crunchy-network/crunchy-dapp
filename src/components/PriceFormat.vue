@@ -4,8 +4,26 @@
   >
     {{
       vueNumberFormat(shortHand ? numShorthand().value : value, {
-        prefix: prefix,
-        suffix: suffix || shortHand ? `${numShorthand().suffix}${suffix}` : "",
+        prefix: customSetting
+          ? prefix
+          : !usdValue || !getShowUsd
+          ? prefix.replace("$", "")
+          : getShowUsd && prefix.includes("$")
+          ? prefix
+          : getShowUsd
+          ? "$"
+          : prefix,
+        suffix: `${shortHand && numShorthand().suffix}${
+          customSetting
+            ? suffix
+            : getShowUsd || !value
+            ? suffix.replace("ꜩ", "")
+            : !getShowUsd && suffix.includes("ꜩ")
+            ? suffix
+            : !getShowUsd
+            ? "ꜩ"
+            : suffix
+        }`,
         decimal: ".",
         thousand: ",",
         precision: handlePrecision(),
@@ -20,6 +38,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import numberFormat from "../utils/number-format";
 import NumberTooltip from "./NumberTooltip.vue";
 
@@ -67,10 +86,14 @@ export default {
       type: Number,
       default: null,
     },
-    showUsd: {
+    customSetting: {
       type: Boolean,
       default: false,
     },
+  },
+
+  computed: {
+    ...mapGetters(["getShowUsd"]),
   },
 
   mounted() {
@@ -81,25 +104,47 @@ export default {
     handlePrecision() {
       let precision = 2;
 
-      if (this.value < 0.0000000001 && this.value > 0) {
-        precision = 12;
-      } else if (this.value < 0.00000001 && this.value > 0) {
-        precision = 10;
-      } else if (this.value < 0.000001 && this.value > 0) {
-        precision = 8;
-      } else if (this.value < 0.0001 && this.value > 0) {
-        precision = 6;
-      } else if (this.value < 0.001 && this.value > 0) {
-        precision = 4;
-      } else {
-        precision = 2;
-      }
+      if (!this.getShowUsd) {
+        if (this.value < 0.0000000001 && this.value > 0) {
+          precision = 12;
+        } else if (this.value < 0.00000001 && this.value > 0) {
+          precision = 10;
+        } else if (this.value < 0.000001 && this.value > 0) {
+          precision = 8;
+        } else if (this.value < 0.0001 && this.value > 0) {
+          precision = 6;
+        } else if (this.value < 0.001 && this.value > 0) {
+          precision = 4;
+        } else {
+          precision = 2;
+        }
 
-      return this.value >= 1
-        ? 2
-        : this.precision > precision
-        ? this.precision
-        : precision;
+        return this.value >= 1
+          ? 2
+          : this.precision > precision
+          ? this.precision
+          : precision;
+      } else {
+        if (this.usdValue < 0.0000000001 && this.usdValue > 0) {
+          precision = 12;
+        } else if (this.usdValue < 0.00000001 && this.usdValue > 0) {
+          precision = 10;
+        } else if (this.usdValue < 0.000001 && this.usdValue > 0) {
+          precision = 8;
+        } else if (this.usdValue < 0.0001 && this.usdValue > 0) {
+          precision = 6;
+        } else if (this.usdValue < 0.001 && this.usdValue > 0) {
+          precision = 4;
+        } else {
+          precision = 2;
+        }
+
+        return this.usdValue >= 1
+          ? 2
+          : this.precision > precision
+          ? this.precision
+          : precision;
+      }
     },
 
     handleFontSize() {
@@ -109,7 +154,9 @@ export default {
     },
 
     numShorthand() {
-      return numberFormat.shorthand(this.showUsd ? this.usdValue : this.value);
+      return numberFormat.shorthand(
+        this.getShowUsd && this.usdValue ? this.usdValue : this.value
+      );
     },
   },
 };

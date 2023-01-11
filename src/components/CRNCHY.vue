@@ -22,12 +22,12 @@
     ></el-avatar>
     <price-format
       :value="currentPrice"
+      :usd-value="currentPriceUsd"
       color=" #191b1f"
       :font-size="16"
       :font-weight="500"
       line-height="24px"
       :precision="3"
-      prefix="$"
     />
   </el-card>
 </template>
@@ -42,12 +42,16 @@ export default {
   data() {
     return {
       price: 0,
+      priceUsd: 0,
       loading: false,
     };
   },
   computed: {
     currentPrice() {
       return this.price;
+    },
+    currentPriceUsd() {
+      return this.priceUsd;
     },
   },
 
@@ -70,7 +74,8 @@ export default {
           `${process.env.VUE_APP_CONTRACTS_CRNCHY}_0`
         );
 
-        this.price = xtzUsd * priceXTZ;
+        this.price = priceXTZ;
+        this.priceUsd = xtzUsd * priceXTZ;
       } catch (error) {
         console.log("\n\n------ begin:  ------");
         console.log("ERROR", error);
@@ -86,7 +91,8 @@ export default {
           `${process.env.VUE_APP_CONTRACTS_CRNCHY}_0`
         );
 
-        this.price = xtzUsd * priceXTZ;
+        this.price = priceXTZ;
+        this.priceUsd = xtzUsd * priceXTZ;
       } catch (error) {
         console.log("\n\n------ begin:  ------");
         console.log("ERROR", error);

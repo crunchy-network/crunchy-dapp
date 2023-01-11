@@ -76,10 +76,18 @@
                       item.symbol
                     }}</el-col>
                     <el-col style="text-align: right" :span="5">
-                      <price-format prefix="$" :value="item.lpPrice" />
+                      <price-format
+                        prefix="$"
+                        :value="item.lpPrice"
+                        :usd-value="item.lpPriceUsd"
+                      />
                     </el-col>
                     <el-col style="text-align: right" :span="5">
-                      <price-format prefix="$" :value="item.volume" />
+                      <price-format
+                        prefix="$"
+                        :value="item.volume"
+                        :usd-value="item.volumeUsd"
+                      />
                     </el-col>
                   </el-row>
                 </div>
