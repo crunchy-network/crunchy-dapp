@@ -80,9 +80,6 @@
           </svg>
         </a>
       </div>
-      <div class="grid-content" style="text-align: right">
-        <usd-xtz-switch :disabled="homeWallet.loading"> </usd-xtz-switch>
-      </div>
     </el-row>
 
     <div v-if="activeTab === 'wallet'">
@@ -234,7 +231,6 @@ import StakedWallet from "./StakedWallet.vue";
 import NftWalletView from "./NftWalletView.vue";
 import LiquidityWallet from "./LiquidityWallet.vue";
 import HomeWalletStats from "./HomeWalletStats.vue";
-import UsdXtzSwitch from "./UsdXtzSwitch.vue";
 
 export default {
   name: "HomeWallet",
@@ -244,7 +240,6 @@ export default {
     NftWalletView,
     HomeWalletStats,
     LiquidityWallet,
-    UsdXtzSwitch,
   },
   data() {
     return {

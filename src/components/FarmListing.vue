@@ -257,16 +257,6 @@
               </el-option-group>
             </el-select>
 
-            <el-divider direction="vertical"></el-divider>
-            <el-switch
-              v-model="showUsd"
-              style="margin-right: 24px"
-              active-color="#1EC37F"
-              inactive-color="#555CFF"
-              active-text="USD"
-              inactive-text="XTZ"
-            >
-            </el-switch>
             <el-button
               type="primary"
               plain
@@ -276,6 +266,7 @@
                 font-weight: bold;
                 padding-left: 48px;
                 padding-right: 48px;
+                margin-left: 5px;
               "
               @click="harvestAllFarms"
               >Harvest All</el-button
@@ -394,7 +385,7 @@
 
 <script>
 import _ from "lodash";
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
 import FarmListingRow from "./FarmListingRow.vue";
 import FarmStakeDialog from "./FarmStakeDialog.vue";
 import FarmUnstakeDialog from "./FarmUnstakeDialog.vue";
@@ -410,7 +401,6 @@ export default {
   },
   data() {
     return {
-      showUsd: false,
       activeTab: "allFarms",
       filterOptions: [
         {
@@ -460,6 +450,10 @@ export default {
   // },
   computed: {
     ...mapState(["wallet", "farms"]),
+    ...mapGetters(["getShowUsd"]),
+    showUsd() {
+      return this.getShowUsd;
+    },
     orderedFarms: function () {
       const farms =
         this.activeTab === "myFarms" ? this.farms.userData : this.farms.data;

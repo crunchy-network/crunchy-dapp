@@ -3,14 +3,14 @@ import mutations from "./mutations";
 
 export default {
   state: {
-    showUsd: false,
-    localStorage: "SHOW_USD_LOCAL_STORAGE_KEY",
+    showUsd: "XTZ",
+    ls_key: "SHOW_USD_LOCAL_STORAGE_KEY",
   },
   actions,
   mutations,
   getters: {
     getShowUsd(state) {
-      return state.showUsd;
+      return state.showUsd === "USD";
     },
   },
 };

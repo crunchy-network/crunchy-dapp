@@ -111,7 +111,7 @@
         type="flex"
         justify="space-between"
         align="middle"
-        style="flex-wrap: wrap; padding: 10px 0;"
+        style="flex-wrap: wrap; padding: 10px 0"
         :gutter="10"
       >
         <div class="tab-wrapper tab-custom-element">
@@ -130,7 +130,6 @@
             Markets
           </button>
         </div>
-        <usd-xtz-switch :disabled="getLoading"></usd-xtz-switch>
       </el-row>
 
       <TrackerOverview
@@ -152,14 +151,12 @@ import TrackerMarkets from "./TrackerMarkets.vue";
 import { mapActions, mapGetters, mapState } from "vuex";
 import numberFormat from "../utils/number-format";
 import PriceFormat from "./PriceFormat.vue";
-import UsdXtzSwitch from "./UsdXtzSwitch.vue";
 export default {
   components: {
     NavMenu,
     TrackerOverview,
     TrackerMarkets,
     PriceFormat,
-    UsdXtzSwitch,
   },
   data() {
     return {

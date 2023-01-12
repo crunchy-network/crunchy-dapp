@@ -1,19 +1,14 @@
 export default {
   toggleUsdXtzSwitch({ state, commit }, newValue) {
-    commit("updateShowUsd", newValue);
+    const value = newValue.toUpperCase();
+    commit("updateShowUsd", value);
 
-    if (newValue === true) {
-      localStorage.setItem(state.localStorage, "Yes");
-    } else {
-      localStorage.removeItem(state.localStorage);
-    }
+    localStorage.setItem(state.ls_key, value);
   },
 
   lsUsdState({ state, commit }) {
-    if (localStorage.getItem(state.localStorage) === "Yes") {
-      commit("updateShowUsd", true);
-    } else {
-      commit("updateShowUsd", false);
+    if (localStorage.getItem(state.ls_key)) {
+      commit("updateShowUsd", localStorage.getItem(state.ls_key));
     }
   },
 };

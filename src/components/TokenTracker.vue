@@ -177,9 +177,6 @@
                 >
                 </el-input></div
             ></el-col>
-            <div>
-              <usd-xtz-switch :disabled="tokenTracker.loading"></usd-xtz-switch>
-            </div>
           </el-row>
         </el-col>
         <el-col class="hide-md" :span="5" style="text-align: right">
@@ -407,7 +404,6 @@ import numberFormat from "../utils/number-format";
 import PriceFormat from "./PriceFormat.vue";
 import _ from "lodash";
 import SortArrowIndicator from "./SortArrowIndicator.vue";
-import UsdXtzSwitch from "./UsdXtzSwitch.vue";
 
 export default {
   name: "TokenTracker",
@@ -416,7 +412,6 @@ export default {
     NavMenu,
     PriceFormat,
     SortArrowIndicator,
-    UsdXtzSwitch,
   },
   data() {
     return {

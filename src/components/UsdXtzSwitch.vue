@@ -1,19 +1,26 @@
 <template>
-  <el-switch
-    v-model="usdXtzSwitch.showUsd"
-    :disabled="disabled"
-    style="margin-right: 24px"
-    active-color="#1EC37F"
-    inactive-color="#555CFF"
-    active-text="USD"
-    inactive-text="XTZ"
-    @change="toggleUsdXtzSwitch"
-  >
-  </el-switch>
+  <el-dropdown trigger="click" @command="toggleUsdXtzSwitch">
+    <span
+      style="color: #191b1f; font-size: 16px; font-weight: 600"
+      class="el-dropdown-link"
+    >
+      {{ getShowUsd ? "USD" : "XTZ" }}
+      <i style="color: #191b1f" class="el-icon-arrow-down el-icon--right"></i>
+    </span>
+
+    <el-dropdown-menu slot="dropdown" style="border-radius: 12px">
+      <el-dropdown-item class="xtz-usd-switch" command="xtz"
+        >XTZ</el-dropdown-item
+      >
+      <el-dropdown-item class="xtz-usd-switch" command="usd">
+        USD
+      </el-dropdown-item>
+    </el-dropdown-menu>
+  </el-dropdown>
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   name: "UsdXtzSwitch",
@@ -25,7 +32,6 @@ export default {
   },
   computed: {
     ...mapGetters(["getShowUsd"]),
-    ...mapState(["usdXtzSwitch"]),
   },
 
   mounted() {
@@ -38,4 +44,15 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style lang="scss">
+.el-dropdown-menu__item.xtz-usd-switch {
+  border-left: 4px solid transparent;
+  transition: 0.25s ease border-color;
+  color: #191b1f;
+  font-size: 16px;
+  font-weight: 600;
+}
+.el-dropdown-menu__item.xtz-usd-switch:hover {
+  border-left: 4px solid #555cff;
+}
+</style>
