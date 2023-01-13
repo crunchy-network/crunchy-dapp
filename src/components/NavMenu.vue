@@ -1,5 +1,5 @@
 <template>
-  <div :style="(!showMenu || !mobile) && 'margin-bottom: 150px'">
+  <div :style="showNotice ? ((!showMenu || !mobile) && 'margin-bottom: 150px') : 'margin-bottom: 100px'">
     <el-header
       id="nav-menu"
       style="
