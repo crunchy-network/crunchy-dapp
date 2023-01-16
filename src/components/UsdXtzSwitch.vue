@@ -5,7 +5,7 @@
     @command="toggleUsdXtzSwitch"
   >
     <span
-      style="color: #191b1f; font-size: 16px; font-weight: 600"
+      style="color: #555CFF; font-size: 16px; font-weight: 600"
       class="el-dropdown-link"
     >
       {{ getShowUsd ? "USD" : "XTZ" }}
