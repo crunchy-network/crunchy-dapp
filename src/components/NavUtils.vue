@@ -1,9 +1,9 @@
 <template>
   <el-row type="flex" align="middle" style="padding: 0 10px" :gutter="10">
-    <el-col>
+    <el-col style="padding: 0 10px">
       <crnchy-price />
     </el-col>
-    <el-col>
+    <el-col style="padding: 0 10px">
       <usd-xtz-switch />
     </el-col>
   </el-row>
