@@ -26,7 +26,7 @@
       :font-size="16"
       :font-weight="500"
       line-height="24px"
-      :precision="3"
+      :precision="4"
     />
   </el-card>
 </template>
