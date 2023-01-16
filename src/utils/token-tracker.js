@@ -52,31 +52,6 @@ async function queryXtzVolume() {
   return trade;
 }
 
-// async function queryTokenXtzPrice(tokenId) {
-//   const query = `
-//   query MyQuery {
-//     quotes15mNogaps(
-//       limit: 1
-//       order_by: {bucket: desc}
-//       where: {tokenId: {_eq: "${tokenId}"}}
-//     ) {
-//       close
-//       tokenId
-//       bucket
-//     }
-//   }`;
-
-//   const {
-//     data: {
-//       data: { quotes15mNogaps },
-//     },
-//   } = await axios.post("https://dex.dipdup.net/v1/graphql", {
-//     query,
-//   });
-
-//   return quotes15mNogaps[0].close;
-// }
-
 export default {
   async getQuotes() {
     const query = `
@@ -426,15 +401,6 @@ export default {
     });
 
     return token;
-  },
-
-  async calcTokenVolume(tokenId, xtzUsd) {
-    // const volumes = await queryTokenXtzVolume(tokenId);
-    // const volume = volumes?.reduce((prev, current) => {
-    //   return prev + Number(current.tezQty);
-    // }, 0);
-    // const volume24 = volume * xtzUsd || 0;
-    // return volume24;
   },
 
   async calculateTokenData(token, tokenFeed, allTokensMetadata, xtzUsd) {

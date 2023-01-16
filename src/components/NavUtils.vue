@@ -1,5 +1,5 @@
 <template>
-  <el-row type="flex" align="middle" style="margin: 0 0px" :gutter="10">
+  <el-row type="flex" align="middle" style="padding: 0 10px" :gutter="10">
     <el-col>
       <crnchy-price />
     </el-col>
