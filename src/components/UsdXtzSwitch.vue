@@ -1,5 +1,9 @@
 <template>
-  <el-dropdown trigger="click" @command="toggleUsdXtzSwitch">
+  <el-dropdown
+    style="cursor: pointer"
+    trigger="hover"
+    @command="toggleUsdXtzSwitch"
+  >
     <span
       style="color: #191b1f; font-size: 16px; font-weight: 600"
       class="el-dropdown-link"
