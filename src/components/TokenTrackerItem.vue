@@ -75,7 +75,8 @@
               :precision="4"
               :font-size="40"
               :line-height="'19px'"
-              :value="getTokenOverview.usdValue"
+              :value="getTokenOverview.currentPrice"
+              :usd-value="getTokenOverview.usdValue"
             >
               <span
                 style="font-weight: 600; font-size: 24px"
@@ -106,22 +107,30 @@
         </div>
       </el-row>
 
-      <div class="tab-wrapper tab-custom-element">
-        <button
-          class="tab-text"
-          :style="isActiveTab('overview')"
-          @click="setActiveTab('overview')"
-        >
-          Overview
-        </button>
-        <button
-          class="tab-text"
-          :style="isActiveTab('markets')"
-          @click="setActiveTab('markets')"
-        >
-          Markets
-        </button>
-      </div>
+      <el-row
+        type="flex"
+        justify="space-between"
+        align="middle"
+        style="flex-wrap: wrap; padding: 10px 0"
+        :gutter="10"
+      >
+        <div class="tab-wrapper tab-custom-element">
+          <button
+            class="tab-text"
+            :style="isActiveTab('overview')"
+            @click="setActiveTab('overview')"
+          >
+            Overview
+          </button>
+          <button
+            class="tab-text"
+            :style="isActiveTab('markets')"
+            @click="setActiveTab('markets')"
+          >
+            Markets
+          </button>
+        </div>
+      </el-row>
 
       <TrackerOverview
         v-if="activeTab === 'overview'"
@@ -143,7 +152,12 @@ import { mapActions, mapGetters, mapState } from "vuex";
 import numberFormat from "../utils/number-format";
 import PriceFormat from "./PriceFormat.vue";
 export default {
-  components: { NavMenu, TrackerOverview, TrackerMarkets, PriceFormat },
+  components: {
+    NavMenu,
+    TrackerOverview,
+    TrackerMarkets,
+    PriceFormat,
+  },
   data() {
     return {
       activeTab: "overview",

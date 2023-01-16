@@ -323,6 +323,25 @@ export default {
             .div(tokenClose?.monthClose)
             .times(100)
             .toNumber(),
+          /**
+           *Calculating % changes in Usd
+           */
+
+          priceChange1DayUsd: priceUsd
+            .minus(tokenClose?.dayCloseUsd)
+            .div(tokenClose?.dayCloseUsd)
+            .times(100)
+            .toNumber(),
+          priceChange7DayUsd: priceUsd
+            .minus(tokenClose?.weekCloseUsd)
+            .div(tokenClose?.weekCloseUsd)
+            .times(100)
+            .toNumber(),
+          priceChange30DayUsd: priceUsd
+            .minus(tokenClose?.monthCloseUsd)
+            .div(tokenClose?.monthCloseUsd)
+            .times(100)
+            .toNumber(),
           priceUsd: priceUsd.toNumber(),
           valueUsd: valueUsd.toNumber(),
           value: value.toNumber(),

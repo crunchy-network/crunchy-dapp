@@ -4,14 +4,13 @@
     shadow="never"
     style="border: 0"
     body-style="
-      display: flex;
-      align-items: center;
-      height: max-content;
-      width: fit-content;
-      margin-right: 20px;
-      row-gap: 5px;
-      padding: 0;
-    "
+        display: flex;
+        align-items: center;
+        height: max-content;
+        width: fit-content;
+        row-gap: 5px;
+        padding: 0;
+      "
   >
     <el-avatar
       src="https://fleek.ipfs.io/ipfs/bafkreifcxtpqojfllakxbhkmy5qfcur7izyyr2e7c6ukm7y43v3scgsszi"
@@ -22,12 +21,12 @@
     ></el-avatar>
     <price-format
       :value="currentPrice"
+      :usd-value="currentPriceUsd"
       color=" #191b1f"
       :font-size="16"
       :font-weight="500"
       line-height="24px"
       :precision="3"
-      prefix="$"
     />
   </el-card>
 </template>
@@ -42,6 +41,7 @@ export default {
   data() {
     return {
       price: 0,
+      priceUsd: 0,
       loading: false,
     };
   },
@@ -49,13 +49,13 @@ export default {
     currentPrice() {
       return this.price;
     },
+    currentPriceUsd() {
+      return this.priceUsd;
+    },
   },
 
   created() {
     this.getCrnchyPrice();
-  },
-
-  mounted() {
     setInterval(() => {
       this.softLoadCrnchyPrice();
     }, 1000 * 60 * 5);
@@ -70,7 +70,8 @@ export default {
           `${process.env.VUE_APP_CONTRACTS_CRNCHY}_0`
         );
 
-        this.price = xtzUsd * priceXTZ;
+        this.price = priceXTZ;
+        this.priceUsd = xtzUsd * priceXTZ;
       } catch (error) {
         console.log("\n\n------ begin:  ------");
         console.log("ERROR", error);
@@ -86,7 +87,8 @@ export default {
           `${process.env.VUE_APP_CONTRACTS_CRNCHY}_0`
         );
 
-        this.price = xtzUsd * priceXTZ;
+        this.price = priceXTZ;
+        this.priceUsd = xtzUsd * priceXTZ;
       } catch (error) {
         console.log("\n\n------ begin:  ------");
         console.log("ERROR", error);

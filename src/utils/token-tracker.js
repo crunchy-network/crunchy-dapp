@@ -288,17 +288,20 @@ export default {
       ) {
         bucket
         tvlUsd
+        tvl
         exchangeId
       }
       stats1mo(where: {tokenId: {_eq: $tokenId }}, distinct_on: bucket) {
         bucket
         tvlUsd
+        tvl
         tokenId
       }
       stats1w(distinct_on: bucket, where: {tokenId: {_eq: $tokenId }}) {
         bucket
         tokenId
         tvlUsd
+        tvl
       }
     }
     `;
@@ -329,6 +332,7 @@ export default {
       }
       statsTotal {
         tvlUsd
+        tvl
         exchangeId
         tokenId
       }
@@ -387,9 +391,14 @@ export default {
         }
       });
 
-      const tokenTvl =
+      const tokenTvlUsd =
         new BigNumber(
           statsTotal.find((quote) => quote.tokenId === tokenId)?.tvlUsd
+        ).toNumber() || 0;
+
+      const tokenTvl =
+        new BigNumber(
+          statsTotal.find((quote) => quote.tokenId === tokenId)?.tvl
         ).toNumber() || 0;
 
       tokenObjkt[element.id] = {
@@ -398,6 +407,7 @@ export default {
         currentPrice: Number(tokenQuotesTotal?.close),
         // allTimeLow: tokenQuotesTotal?.low || 0,
         tokenTvl,
+        tokenTvlUsd,
         volume24Xtz,
       };
     }
@@ -435,16 +445,23 @@ export default {
     const tokenMetadata = allTokensMetadata.find((el) => {
       return (
         el.token_address === token.tokenAddress &&
-        (el.token_id !== undefined ? el.token_id === (token.tokenId || 0) : true)
+        (el.token_id !== undefined
+          ? el.token_id === (token.tokenId || 0)
+          : true)
       );
     });
 
     const element = tokenPrice;
 
     if (element && tokenMetadata) {
-      element.thumbnailUri = ipfs.transformUri(tokenMetadata.thumbnail_uri || "https://static.thenounproject.com/png/796573-200.png");
+      element.thumbnailUri = ipfs.transformUri(
+        tokenMetadata.thumbnail_uri ||
+          "https://static.thenounproject.com/png/796573-200.png"
+      );
 
-      const currentPrice = element?.currentPrice || false;
+      const currentPrice =
+        new BigNumber(element?.currentPrice).toNumber() || false;
+      element.currentPrice = currentPrice;
 
       const price = new BigNumber(currentPrice);
       const priceUsd = price.times(xtzUsd);
@@ -454,7 +471,12 @@ export default {
         .div(new BigNumber(10).pow(tokenMetadata.decimals))
         .toNumber();
 
-      const mktCap = new BigNumber(element.calcSupply).times(element.usdValue);
+      element.mktCap = new BigNumber(element.calcSupply)
+        .times(element.currentPrice)
+        .toNumber();
+      element.mktCapUsd = new BigNumber(element.calcSupply)
+        .times(element.usdValue)
+        .toNumber();
 
       const change1Day = price
         .minus(element?.dayClose)
@@ -503,19 +525,27 @@ export default {
       element.change30DayUsd =
         change30DayUsd === Infinity ? 0 : change30DayUsd || 0;
 
-      element.mktCap = isNaN(mktCap.toNumber()) ? 0 : mktCap.toNumber();
-      element.volume24 = new BigNumber(element.volume24Xtz)
+      element.volume24 = new BigNumber(element.volume24Xtz).toNumber();
+      element.volume24Usd = new BigNumber(element.volume24Xtz)
         .times(xtzUsd)
         .toNumber();
 
       for (let index = 0; index < element?.exchanges.length; index++) {
         const market = element?.exchanges[index];
 
+        element.exchanges[index].lpPriceUsd =
+          Number(market.midPrice) * xtzUsd || 0;
+
         element.exchanges[index].lpPrice =
           Number(market.midPrice) * xtzUsd || 0;
 
         element.exchanges[index].symbol = `XTZ/${element.symbol}`;
-        element.exchanges[index].volume = Number(market.tradeVolume);
+        element.exchanges[index].volume = new BigNumber(
+          market.tradeVolume
+        ).toNumber();
+        element.exchanges[index].volumeUsd = new BigNumber(market.tradeVolume)
+          .times(xtzUsd)
+          .toNumber();
       }
 
       if (element.mktCap < 800000000 && element.mktCap > 0) return element;

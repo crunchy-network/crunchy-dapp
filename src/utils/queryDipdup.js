@@ -87,17 +87,28 @@ export default {
       dexIndexer.getAllTokens(),
     ]);
 
+    const updatedAllTokens = {};
+    allTokens?.forEach((value) => {
+      updatedAllTokens[`${value.token_address}_${value.token_id || 0}`] = value;
+    });
+
+    // console.log("\n\n------ begin:  ------");
+    // console.log(updatedAllTokens);
+    // console.log("------ end:  ------\n\n");
+
     for (let index = 0; index < token.length; index++) {
       const element = token[index];
-      if (index + 1 < allTokens.length) {
-        element.thumbnailUri = allTokens[index].thumbnail_uri;
-      }
+      const tokenMetadata = updatedAllTokens[element.id];
+      element.thumbnailUri =
+        tokenMetadata?.thumbnail_uri ||
+        element?.thumbnailUri ||
+        "https://static.thenounproject.com/png/796573-200.png";
 
-      element.thumbnailUri = element.thumbnailUri || "";
       const tokenVal = quotesTotal.find((val) => val.tokenId === element.id);
 
       tokenObjkt[element.id] = {
         ...element,
+        ...tokenMetadata,
         currentPrice: Number(tokenVal?.close),
       };
     }

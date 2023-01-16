@@ -54,14 +54,15 @@
                   <el-col>
                     <price-format
                       :precision="4"
-                      prefix="$"
                       :value="tokenTracked.mktCap"
+                      :usd-value="tokenTracked.mktCapUsd"
                     />
                   </el-col>
                   <el-col>
                     <price-format
                       :precision="4"
                       :value="tokenTracked.calcSupply"
+                      custom-setting
                     />
                   </el-col>
                   <el-col>{{ tokenTracked.order }}</el-col>
@@ -70,6 +71,7 @@
                       :precision="4"
                       prefix="$"
                       :value="tokenTracked.tokenTvl"
+                      :usd-value="tokenTracked.tokenTvlUsd"
                     />
                   </el-col>
                   <el-col style="text-align: right">
@@ -77,6 +79,7 @@
                       :precision="4"
                       prefix="$"
                       :value="tokenTracked.volume24"
+                      :usd-value="tokenTracked.volume24Usd"
                     />
                     <!-- {{
                       vueNumberFormat(

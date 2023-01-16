@@ -277,7 +277,7 @@
               showMenu ? 'grid-content mobile active' : 'grid-content mobile'
             "
           >
-            <CRNCHY />
+            <NavUtils />
             <nav-wallet />
             <slot />
           </div>
@@ -294,7 +294,7 @@
           "
         >
           <div>
-            <CRNCHY />
+            <NavUtils />
           </div>
           <slot />
           <nav-wallet />
@@ -305,12 +305,12 @@
 </template>
 
 <script>
-import CRNCHY from "./CRNCHY.vue";
+import NavUtils from "./NavUtils.vue";
 import NavWallet from "./NavWallet.vue";
 import Notice from "./Notice.vue";
 export default {
   name: "NavMenu",
-  components: { NavWallet, CRNCHY, Notice },
+  components: { NavWallet, NavUtils, Notice },
   data() {
     return {
       showNotice: false,
