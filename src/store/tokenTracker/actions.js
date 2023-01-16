@@ -7,13 +7,18 @@ import dexIndexer from "../../utils/dex-indexer";
 export default {
   async fetchTokensTracked({ commit, dispatch, state }) {
     if (state.tokenList.length < 1) {
-      commit("setTokenList", []);
       dispatch("_setTokenTracked");
     }
   },
 
-  async _setTokenTracked({ commit, state, dispatch }, id) {
-    commit("updateLoading", true);
+  async softLoadTokensTracked({ commit, dispatch, state }) {
+    if (state.tokenList.length < 1) {
+      dispatch("_setTokenTracked", { softLoad: true });
+    }
+  },
+
+  async _setTokenTracked({ commit, state, dispatch }, payload) {
+    !payload?.softLoad && commit("updateLoading", true);
     try {
       const allTokensMetadata = await dexIndexer.getAllTokens();
       const xtzUsd = await coingecko.getXtzUsdPrice();
@@ -48,8 +53,8 @@ export default {
     } catch (error) {
       console.log(error);
     } finally {
-      if (id) {
-        dispatch("updateChartAndOverview", id);
+      if (payload?.id) {
+        dispatch("updateChartAndOverview", payload?.id);
       }
       commit("updateLoading", false);
       dispatch("softCalcTokensData");
@@ -58,14 +63,18 @@ export default {
 
   async sortTokensTracked({ commit, state }, tokens) {
     const orderedTokens = _.orderBy(tokens, ["mktCap"], ["desc"]);
+    const tokenList = [];
     for (let index = 0; index < orderedTokens.length; index++) {
       const token = orderedTokens[index];
       token.order = index + 1;
       token.softCalcDone = true;
       // orderedTokens[index].order = index + 1;
       commit("updateTokenTracked", token);
-      commit("updateTokenList", token);
+      tokenList.push(token);
     }
+
+    commit("setTokenList", []);
+    commit("setTokenList", tokenList);
   },
 
   async softCalcTokensData({ commit, state }) {
@@ -82,14 +91,17 @@ export default {
     // }
   },
 
-  async fetchTokenTrackedWithId({ state, commit, dispatch }, id) {
+  async fetchTokenTrackedWithId({ state, commit, dispatch }, payload) {
     commit("cleanTokenOverview");
-    commit("updateLoadingOverview", true);
+    !payload?.softLoad && commit("updateLoadingOverview", true);
     try {
       if (state.tokenList.length < 1) {
-        dispatch("_setTokenTracked", id);
+        dispatch("_setTokenTracked", {
+          id: payload?.id,
+          softLoad: payload?.softLoad,
+        });
       } else {
-        dispatch("updateChartAndOverview", id);
+        dispatch("updateChartAndOverview", payload?.id);
       }
     } catch (error) {
       console.log(error);
