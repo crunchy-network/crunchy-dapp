@@ -1,145 +1,8 @@
 <template>
-  <div>
-    <el-card v-loading="loading" shadow="always">
-      <div class="responsive-table">
-        <div>
-          <el-row
-            type="flex"
-            align="middle"
-            style="
-              font-size: 14px;
-              font-weight: 600;
-              padding-bottom: 4px;
-              margin-bottom: 4px;
-              min-width: 900px;
-            "
-          >
-            <el-col :span="24">
-              <el-row align="middle" style="padding: 0 20px; color: #757679">
-                <div
-                  style="
-                    display: grid;
-                    grid-template-columns: repeat(7, 1fr);
-                    gap: 10px;
-                  "
-                >
-                  <el-col>Market Cap</el-col>
-                  <el-col>Total Supply</el-col>
-                  <el-col>Market Cap Rank</el-col>
-                  <el-col style="text-align: center">Total Value Locked</el-col>
-                  <el-col style="text-align: right">24h Trading Vol</el-col>
-                  <el-col style="text-align: right">All Time High</el-col>
-                  <el-col style="text-align: right">All Time Low</el-col>
-                </div>
-              </el-row>
-            </el-col>
-          </el-row>
-          <el-row
-            style="font-size: 14px; font-weight: 600"
-            type="flex"
-            align="top"
-          >
-            <el-col :span="24">
-              <div class="item-row">
-                <el-row
-                  class="farm-row"
-                  type="flex"
-                  align="middle"
-                  style="
-                    display: grid;
-                    grid-template-columns: repeat(7, 1fr);
-                    gap: 10px;
-                  "
-                >
-                  <el-col>
-                    <price-format
-                      :precision="4"
-                      :value="tokenTracked.mktCap"
-                      :usd-value="tokenTracked.mktCapUsd"
-                    />
-                  </el-col>
-                  <el-col>
-                    <price-format
-                      :precision="4"
-                      :value="tokenTracked.calcSupply"
-                      custom-setting
-                    />
-                  </el-col>
-                  <el-col>{{ tokenTracked.order }}</el-col>
-                  <el-col style="text-align: center">
-                    <price-format
-                      :precision="4"
-                      prefix="$"
-                      :value="tokenTracked.tokenTvl"
-                      :usd-value="tokenTracked.tokenTvlUsd"
-                    />
-                  </el-col>
-                  <el-col style="text-align: right">
-                    <price-format
-                      :precision="4"
-                      prefix="$"
-                      :value="tokenTracked.volume24"
-                      :usd-value="tokenTracked.volume24Usd"
-                    />
-                    <!-- {{
-                      vueNumberFormat(
-                        formatNumShorthand(tokenTracked.volume1Day).value,
-                        {
-                          prefix: "$",
-                          suffix: formatNumShorthand(tokenTracked.volume1Day)
-                            .suffix,
-                          decimal: ".",
-                          thousand: ",",
-                          precision: 2,
-                        }
-                      )
-                    }}
-
-                    <span
-                      style="font-size: 12px"
-                      :class="
-                        tokenTracked.volume1DayChange < 0
-                          ? 'n-change'
-                          : 'p-change'
-                      "
-                      >{{
-                        vueNumberFormat(tokenTracked.volume1DayChange, {
-                          prefix: "",
-                          suffix: "%",
-                          decimal: ".",
-                          thousand: ",",
-                          precision: 2,
-                        })
-                      }}</span
-                    > -->
-                  </el-col>
-                  <el-col style="text-align: right">
-                    <!-- <price-format
-                      prefix="$"
-                      :value="tokenTracked.allTimeHigh * getXtzUsdPrice"
-                      :precision="4"
-                    /> -->
-                    -
-                  </el-col>
-                  <el-col style="text-align: right">
-                    <!-- <price-format
-                      prefix="$"
-                      :value="tokenTracked.allTimeLow * getXtzUsdPrice"
-                      :precision="4"
-                    /> -->
-
-                    -
-                  </el-col>
-                </el-row>
-              </div>
-            </el-col>
-          </el-row>
-        </div>
-      </div>
-    </el-card>
+  <div style="height: 100%">
     <el-card
+      style="height: 100%"
       v-loading="loading || chartLoading"
-      style="margin-top: 24px"
       shadow="always"
     >
       <el-row
@@ -206,14 +69,12 @@
           </button>
         </div>
       </el-row>
-      <div ref="chartContainer">
-        <TrackerOverviewChart
-          :token-tracked="tokenTracked"
-          :duration="duration"
-          :legend-tab="legendTab"
-          :set-loading="setChartLoading"
-        />
-      </div>
+      <TrackerOverviewChart
+        :token-tracked="tokenTracked"
+        :duration="duration"
+        :legend-tab="legendTab"
+        :set-loading="setChartLoading"
+      />
     </el-card>
   </div>
 </template>
@@ -222,9 +83,8 @@
 import numberFormat from "../utils/number-format";
 import TrackerOverviewChart from "./TrackerOverviewChart.vue";
 import { mapGetters } from "vuex";
-import PriceFormat from "./PriceFormat.vue";
 export default {
-  components: { TrackerOverviewChart, PriceFormat },
+  components: { TrackerOverviewChart },
 
   props: {
     duration: {

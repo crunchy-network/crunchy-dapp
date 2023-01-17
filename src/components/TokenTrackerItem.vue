@@ -119,39 +119,23 @@
         </div>
       </el-row>
 
-      <el-row
-        type="flex"
-        justify="space-between"
-        align="middle"
-        style="flex-wrap: wrap; padding: 10px 0"
-        :gutter="10"
-      >
-        <div class="tab-wrapper tab-custom-element">
-          <button
-            class="tab-text"
-            :style="isActiveTab('overview')"
-            @click="setActiveTab('overview')"
-          >
-            Overview
-          </button>
-          <button
-            class="tab-text"
-            :style="isActiveTab('markets')"
-            @click="setActiveTab('markets')"
-          >
-            Markets
-          </button>
-        </div>
-      </el-row>
-
-      <TrackerOverview
-        v-if="activeTab === 'overview'"
-        :duration="duration"
-        :set-duration-tab="setDurationTab"
-        :token-tracked="getTokenOverview"
-        :loading="getLoading"
-      />
-      <TrackerMarkets v-if="activeTab === 'markets'" :loading="getLoading" />
+      <div>
+        <el-row type="flex" style="flex-wrap: wrap" :gutter="24">
+          <el-col :md="8">
+            <token-metrics />
+          </el-col>
+          <el-col :md="16">
+            <TrackerOverview
+              :duration="duration"
+              :set-duration-tab="setDurationTab"
+              :token-tracked="getTokenOverview"
+              :loading="getLoading"
+          /></el-col>
+        </el-row>
+        <el-col style="margin-top: 24px" :span="24">
+          <TrackerMarkets :loading="getLoading" />
+        </el-col>
+      </div>
     </el-main>
   </div>
 </template>
@@ -163,16 +147,17 @@ import TrackerMarkets from "./TrackerMarkets.vue";
 import { mapActions, mapGetters, mapState } from "vuex";
 import numberFormat from "../utils/number-format";
 import PriceFormat from "./PriceFormat.vue";
+import TokenMetrics from "./TokenMetrics.vue";
 export default {
   components: {
     NavMenu,
     TrackerOverview,
     TrackerMarkets,
     PriceFormat,
+    TokenMetrics,
   },
   data() {
     return {
-      activeTab: "overview",
       duration: "all",
     };
   },
@@ -232,24 +217,6 @@ export default {
     refresh() {
       this.fetchTokenTrackedWithId({ id: this.$route.params.tokenId });
     },
-    isActiveTab(tab) {
-      return (
-        this.activeTab === tab &&
-        " border-bottom: 3px solid #FF4D4B; color: #FF4D4B; font-weight: 700"
-      );
-    },
-
-    setActiveTab(tab = "") {
-      if (["overview", "markets"].includes(tab)) {
-        this.activeTab = tab;
-        this.$router.replace({
-          query: {
-            ...this.$route.query,
-            tab,
-          },
-        });
-      }
-    },
 
     setDurationTab(tab = "") {
       if (["1d", "7d", "30d", "all"].includes(tab)) {
@@ -264,7 +231,6 @@ export default {
     },
 
     handleChangeclass(asset, param, usdParam) {
-      console.log(asset);
       let className = "";
       if (this.getShowUsd) {
         className = asset[usdParam] < 0 ? "n-change" : "p-change";

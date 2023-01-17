@@ -31,7 +31,6 @@
           </el-row>
           <div v-for="(item, index) in markets" :key="index">
             <el-row
-              v-if="`${item.name}`.toLowerCase() === 'quipuswap'"
               style="font-size: 14px; font-weight: 600"
               type="flex"
               align="top"
@@ -115,10 +114,6 @@ export default {
   computed: {
     ...mapGetters(["getTokenOverview"]),
     markets() {
-      console.log("\n\n------ begin:  ------");
-      console.log(this.getTokenOverview.exchanges);
-      console.log("------ end:  ------\n\n");
-
       return this.getTokenOverview.exchanges;
     },
   },
@@ -140,6 +135,8 @@ export default {
 
         case "spicyswap":
           return "https://docs.spicyswap.xyz/img/spicy.png";
+        case "lb":
+          return "https://res.cloudinary.com/melvin-manni/image/upload/v1663433569/lcmsyxatxezrrcovuklr.png";
 
         default:
           return "";
@@ -147,6 +144,9 @@ export default {
     },
 
     capitalize(str) {
+      if (str === "lb") {
+        return "SIRS (Liquidity Baking)";
+      }
       return str.replace(/\b[a-z]/gi, function (char) {
         return char.toUpperCase();
       });

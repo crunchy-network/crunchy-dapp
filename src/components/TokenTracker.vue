@@ -474,11 +474,6 @@ export default {
       if (this.currentColumns[1]) {
         this.key = value ? this.currentColumns[1] : this.currentColumns[0];
       }
-
-      this.paginationHandler();
-      console.log("getShowUsd", value);
-      console.log("this.currentColumns", this.currentColumns);
-      console.log("this.key", this.key);
     },
   },
 

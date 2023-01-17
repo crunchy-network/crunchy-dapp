@@ -310,6 +310,7 @@ export default {
         tvl
         exchangeId
         tokenId
+        users
       }
       token {
         exchanges{
@@ -366,6 +367,11 @@ export default {
         }
       });
 
+      const holders =
+        new BigNumber(
+          statsTotal.find((quote) => quote.tokenId === tokenId)?.users
+        ).toNumber() || 0;
+
       const tokenTvlUsd =
         new BigNumber(
           statsTotal.find((quote) => quote.tokenId === tokenId)?.tvlUsd
@@ -384,6 +390,7 @@ export default {
         tokenTvl,
         tokenTvlUsd,
         volume24Xtz,
+        holders,
       };
     }
 
