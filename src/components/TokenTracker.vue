@@ -230,10 +230,10 @@
                     <el-col style="text-align: right" :span="4">
                       <div
                         class="wrap-sort-icon"
-                        @click="toggleColumSort('usdValue')"
+                        @click="toggleColumSort('cuurentPrice', 'usdValue')"
                       >
                         <sort-arrow-indicator
-                          v-if="sort.key === 'usdValue'"
+                          v-if="activeColumn('cuurentPrice', 'usdValue')"
                           :value="sort.rule"
                         />
                         Price
@@ -242,10 +242,10 @@
                     <el-col style="text-align: right" :span="4">
                       <div
                         class="wrap-sort-icon"
-                        @click="toggleColumSort('volume24')"
+                        @click="toggleColumSort('volume24', 'volume24Usd')"
                       >
                         <sort-arrow-indicator
-                          v-if="sort.key === 'volume24'"
+                          v-if="activeColumn('volume24', 'volume24Usd')"
                           :value="sort.rule"
                         />
                         24 Volume
@@ -254,10 +254,10 @@
                     <el-col style="text-align: right" :span="4">
                       <div
                         class="wrap-sort-icon"
-                        @click="toggleColumSort('mktCap')"
+                        @click="toggleColumSort('mktCap', 'mktCapUsd')"
                       >
                         <sort-arrow-indicator
-                          v-if="sort.key === 'mktCap'"
+                          v-if="activeColumn('mktCap', 'mktCapUsd')"
                           :value="sort.rule"
                         />
                         Mkt Cap
@@ -266,10 +266,10 @@
                     <el-col style="text-align: right" :span="2">
                       <div
                         class="wrap-sort-icon"
-                        @click="toggleColumSort('change1Day')"
+                        @click="toggleColumSort('change1Day', 'change1DayUsd')"
                       >
                         <sort-arrow-indicator
-                          v-if="sort.key === 'change1Day'"
+                          v-if="activeColumn('change1Day', 'change1DayUsd')"
                           :value="sort.rule"
                         />
                         1d
@@ -285,10 +285,10 @@
                     <el-col style="text-align: right" :span="2">
                       <div
                         class="wrap-sort-icon"
-                        @click="toggleColumSort('change7Day')"
+                        @click="toggleColumSort('change7Day', 'change7DayUsd')"
                       >
                         <sort-arrow-indicator
-                          v-if="sort.key === 'change7Day'"
+                          v-if="activeColumn('change7Day', 'change7DayUsd')"
                           :value="sort.rule"
                         />
                         7d
@@ -304,10 +304,12 @@
                     <el-col style="text-align: right" :span="2">
                       <div
                         class="wrap-sort-icon"
-                        @click="toggleColumSort('change30Day')"
+                        @click="
+                          toggleColumSort('change30Day', 'change30DayUsd')
+                        "
                       >
                         <sort-arrow-indicator
-                          v-if="sort.key === 'change30Day'"
+                          v-if="activeColumn('change30Day', 'change30DayUsd')"
                           :value="sort.rule"
                         />
                         30d
@@ -420,6 +422,7 @@ export default {
         key: "",
         rule: "",
       },
+      currentColumns: [],
       tabledata: [],
       showUsd: false,
       currentPage: 0,
@@ -465,6 +468,17 @@ export default {
       handler() {
         this.paginationHandler();
       },
+    },
+
+    getShowUsd(value) {
+      if (this.currentColumns[1]) {
+        this.key = value ? this.currentColumns[1] : this.currentColumns[0];
+      }
+
+      this.paginationHandler();
+      console.log("getShowUsd", value);
+      console.log("this.currentColumns", this.currentColumns);
+      console.log("this.key", this.key);
     },
   },
 
@@ -548,13 +562,19 @@ export default {
       this.prevPage = 0;
     },
 
-    toggleColumSort(column) {
-      if (this.sort.key === column) {
+    toggleColumSort(column, columnUsd) {
+      this.currentColumns = [column, columnUsd];
+      const key = !columnUsd ? column : this.getShowUsd ? columnUsd : column;
+      if (this.sort.key === key) {
         this.sort.rule = this.sort.rule === "asc" ? "desc" : "asc";
       } else {
-        this.sort.key = column;
+        this.sort.key = key;
         this.sort.rule = "desc";
       }
+    },
+    activeColumn(column, columnUsd) {
+      const key = !columnUsd ? column : this.getShowUsd ? columnUsd : column;
+      return this.sort.key === key;
     },
   },
 };

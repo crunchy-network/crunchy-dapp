@@ -3,6 +3,7 @@ import tokensToTrack from "../../tokensTracked.json";
 import _ from "lodash";
 import coingecko from "../../utils/coingecko";
 import dexIndexer from "../../utils/dex-indexer";
+import tzkt from "../../utils/tzkt";
 
 export default {
   async fetchTokensTracked({ commit, dispatch, state }) {
@@ -21,7 +22,7 @@ export default {
     !payload?.softLoad && commit("updateLoading", true);
     try {
       const allTokensMetadata = await dexIndexer.getAllTokens();
-      const xtzUsd = await coingecko.getXtzUsdPrice();
+      const xtzUsd = await tzkt.getXtzUsdPrice();
       const xtzUsdHistory = await coingecko.getXtzUsdHistory();
 
       commit("updateXtzUsdPrice", xtzUsd);

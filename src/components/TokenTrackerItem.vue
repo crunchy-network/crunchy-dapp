@@ -81,12 +81,24 @@
               <span
                 style="font-weight: 600; font-size: 24px"
                 :class="
-                  getTokenOverview.change1Day < 0 ? 'n-change' : 'p-change'
+                  handleChangeclass(
+                    getTokenOverview,
+                    'change1Day',
+                    'change1DayUsd'
+                  )
                 "
               >
                 {{
-                  getLoading
+                  getTokenOverview.contract === "tez"
                     ? "-"
+                    : getShowUsd
+                    ? vueNumberFormat(getTokenOverview.change1DayUsd, {
+                        prefix: "",
+                        suffix: "%",
+                        decimal: ".",
+                        thousand: ",",
+                        precision: 2,
+                      })
                     : vueNumberFormat(getTokenOverview.change1Day, {
                         prefix: "",
                         suffix: "%",
@@ -166,7 +178,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(["getTokenOverview"]),
+    ...mapGetters(["getTokenOverview", "getShowUsd"]),
     ...mapState(["tokenTracker"]),
     getLoading() {
       return this.tokenTracker.loading;
@@ -249,6 +261,18 @@ export default {
           },
         });
       }
+    },
+
+    handleChangeclass(asset, param, usdParam) {
+      console.log(asset);
+      let className = "";
+      if (this.getShowUsd) {
+        className = asset[usdParam] < 0 ? "n-change" : "p-change";
+      } else {
+        className = asset[param] < 0 ? "n-change" : "p-change";
+      }
+
+      return className;
     },
 
     formatNumShorthand(val) {

@@ -96,10 +96,6 @@ export default {
     ...mapGetters(["getShowUsd"]),
   },
 
-  mounted() {
-    console.log("tag", this.usdValue, "");
-  },
-
   methods: {
     handlePrecision() {
       let precision = 2;

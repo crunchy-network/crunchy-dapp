@@ -50,4 +50,11 @@ export default {
       ...params,
     });
   },
+  async getXtzUsdPrice() {
+    const {
+      data: { usd: xtzUsd },
+    } = await makeRequest("/v1/quotes/last");
+
+    return xtzUsd;
+  },
 };

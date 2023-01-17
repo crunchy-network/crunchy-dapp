@@ -32,8 +32,8 @@
 </template>
 
 <script>
-import coingecko from "../utils/coingecko";
 import queryDipdup from "../utils/queryDipdup";
+import tzkt from "../utils/tzkt";
 import PriceFormat from "./PriceFormat.vue";
 export default {
   name: "CrnchyPrice",
@@ -65,7 +65,7 @@ export default {
     async getCrnchyPrice() {
       this.loading = true;
       try {
-        const xtzUsd = await coingecko.getXtzUsdPrice();
+        const xtzUsd = await tzkt.getXtzUsdPrice();
         const priceXTZ = await queryDipdup.getTokenPriceXTZ(
           `${process.env.VUE_APP_CONTRACTS_CRNCHY}_0`
         );
@@ -82,7 +82,7 @@ export default {
     },
     async softLoadCrnchyPrice() {
       try {
-        const xtzUsd = await coingecko.getXtzUsdPrice();
+        const xtzUsd = await tzkt.getXtzUsdPrice();
         const priceXTZ = await queryDipdup.getTokenPriceXTZ(
           `${process.env.VUE_APP_CONTRACTS_CRNCHY}_0`
         );

@@ -1,6 +1,5 @@
 import axios from "axios";
 import BigNumber from "bignumber.js";
-import coingecko from "./coingecko";
 import ipfs from "./ipfs";
 // import teztools from "./teztools";
 import knownContracts from "../knownContracts.json";
@@ -191,7 +190,7 @@ export default {
       );
 
       // Fetch the currrent price of xtz in USD to multiply the price of tokens
-      const usdMul = await coingecko.getXtzUsdPrice();
+      const usdMul = await tzkt.getXtzUsdPrice();
 
       // Check if address has CRUNCH token , if the address doesnot, i will append the token data
 

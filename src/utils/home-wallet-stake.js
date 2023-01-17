@@ -1,6 +1,5 @@
 // import axios from "axios";
 import BigNumber from "bignumber.js";
-import coingecko from "./coingecko";
 import ipfs from "./ipfs";
 import queryDipdup from "./queryDipdup";
 // import teztools from "./teztools";
@@ -84,7 +83,7 @@ async function sumStake(userStake) {
     ) {
       const stakedPool =
         stake?.poolToken?.pairs[0].tvl / stake?.poolToken?.pairs[0].lptSupply;
-      const xtzUsd = await coingecko.getXtzUsdPrice();
+      const xtzUsd = await tzkt.getXtzUsdPrice();
 
       userStake[index].depositValue = stakedPool * stake?.depositAmount;
       if (isNaN(userStake[index].depositValue)) {
@@ -336,7 +335,7 @@ export default {
 
     const [poolToken, xtzUsd, { data: dataObjs }] = await Promise.all([
       queryDipdup.getTokenPriceAndData(`${gif.staking.gif.address}_0`),
-      await coingecko.getXtzUsdPrice(),
+      await tzkt.getXtzUsdPrice(),
       await tzkt.getContractBigMapKeys(
         process.env.VUE_APP_GIF_STAKE,
         "ledger",

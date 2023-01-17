@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<script>
+<script lang="js">
 import { createChart } from "lightweight-charts";
 import { mapGetters } from "vuex";
 import numberFormat from "../utils/number-format";
@@ -104,6 +104,7 @@ export default {
   mounted() {
     this.sortTokenData();
     this.getPrices();
+
   },
   methods: {
     sortTokenData() {
