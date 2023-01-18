@@ -1,7 +1,7 @@
 import tokenTracker from "../../utils/token-tracker";
 import tokensToTrack from "../../tokensTracked.json";
 import _ from "lodash";
-import coingecko from "../../utils/coingecko";
+// import coingecko from "../../utils/coingecko";
 import dexIndexer from "../../utils/dex-indexer";
 import tzkt from "../../utils/tzkt";
 
