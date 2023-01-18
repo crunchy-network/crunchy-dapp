@@ -25,11 +25,11 @@ export default {
       const xtzUsd = await tzkt.getXtzUsdPrice();
       // const xtzUsdHistory = await coingecko.getXtzUsdHistory();
       const xtzUsdHistory = await tzkt.getXtzUsdHistory();
-      const formattedXtzUsdHistory = []
+      const formattedXtzUsdHistory = [];
       for (let i = 0; i < xtzUsdHistory.length; i++) {
         const bucket = new Date(xtzUsdHistory[i][0]).getTime();
         const xtzUsdPrice = xtzUsdHistory[i][1].usd;
-        formattedXtzUsdHistory.push([bucket,xtzUsdPrice])
+        formattedXtzUsdHistory.push([bucket,xtzUsdPrice]);
       }
 
       commit("updateXtzUsdPrice", xtzUsd);
