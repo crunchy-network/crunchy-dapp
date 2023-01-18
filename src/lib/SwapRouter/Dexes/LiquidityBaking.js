@@ -13,7 +13,7 @@ const BURN_FEE = 0.1;
 
 const getSwapOutput = (input, pair) => {
   const inputAfterBurn = input * percentToDecimal(BURN_FEE);
-  const inputAfterFee = inputAfterBurn * percentToDecimal(BURN_FEE);
+  const inputAfterFee = inputAfterBurn * percentToDecimal(DEX_FEE);
   return getAmmSwapOutput(inputAfterFee, pair);
 };
 
