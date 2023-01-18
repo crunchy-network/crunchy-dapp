@@ -8,7 +8,7 @@ const {
 } = require("../utils.js");
 const { getAmmSwapOutput } = require("../SwapRates/amm");
 const { addTokenApprovalOperators } = require("../TokenTypes");
-const DEX_FEE = 0.1;
+const DEX_FEE = 0.2;
 
 const getSwapOutput = (input, pair) => {
   const inputAfterFee = input * percentToDecimal(DEX_FEE);
