@@ -14,7 +14,7 @@
         margin-bottom: 32px;
       "
     >
-      Tokenn Metrics
+      Token Metrics
     </h3>
     <el-row
       type="flex"
@@ -118,42 +118,6 @@
         </el-row>
       </el-col>
     </el-row>
-    <!-- <el-row
-            style="font-size: 14px; font-weight: 600"
-            type="flex"
-            align="top"
-          >
-            <el-col :span="24">
-              <div class="item-row">
-                <el-row
-                  class="farm-row"
-                  type="flex"
-                  align="middle"
-                  style="
-                    display: grid;
-                    grid-template-columns: repeat(7, 1fr);
-                    gap: 10px;
-                  "
-                >
-                  <el-col>
-                   
-                  </el-col>
-                  <el-col>
-                
-                  </el-col>
-                  <el-col></el-col>
-                  <el-col style="text-align: center">
-                  
-                  </el-col>
-                  <el-col style="text-align: right">
-                    
-                  </el-col>
-                  <el-col style="text-align: right"> - </el-col>
-                  <el-col style="text-align: right"> - </el-col>
-                </el-row>
-              </div>
-            </el-col>
-          </el-row> -->
   </el-card>
 </template>
 
