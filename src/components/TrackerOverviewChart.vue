@@ -526,6 +526,7 @@ export default {
   height: 400px;
   display: flex;
   justify-content: flex-start;
+  position: relative;
 }
 
 #token-tracker #token-chart-tooltip {

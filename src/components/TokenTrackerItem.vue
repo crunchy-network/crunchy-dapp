@@ -17,24 +17,14 @@
             text-decoration: none;
           "
         >
-          Tezos Token Tracker
+          <el-button
+            round
+            type="primary"
+            plain
+            icon="fa-sharp fa-solid fa-arrow-left"
+            >{{ " " }}BACK
+          </el-button>
         </router-link>
-        <i
-          style="font-size: 12px; color: #c0c4cc; margin: 0 5px"
-          class="fa-solid fa-angle-right"
-        ></i>
-        <span
-          disabled
-          type="text"
-          style="
-            font-weight: 600;
-            font-size: 16px;
-            color: #c0c4cc;
-            line-height: 24px;
-          "
-        >
-          {{ getTokenOverview.name || getTokenOverview.symbol }}
-        </span>
       </el-row>
 
       <el-row
