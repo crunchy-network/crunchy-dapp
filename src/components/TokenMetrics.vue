@@ -1,5 +1,6 @@
 <template>
   <el-card
+    id="token-metrics"
     v-loading="loading"
     shadow="always"
     body-style="padding-bottom: 50px"
@@ -14,7 +15,7 @@
         margin-bottom: 32px;
       "
     >
-      Tokenn Metrics
+      Token Metrics
     </h3>
     <el-row
       type="flex"
