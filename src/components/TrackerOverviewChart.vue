@@ -423,7 +423,8 @@ export default {
         const container = document.getElementById("chart");
         const toolTipWidth = 80;
         const toolTipMargin = 15;
-        const toolTipHeightSupport = 250;
+        const toolTipHeight = 80;
+        const toolTipHeightSupport = 100;
         // Create and style the tooltip html element
         const toolTip = document.createElement("div");
         toolTip.id = "token-chart-tooltip";
@@ -459,12 +460,25 @@ export default {
             </div><div style="color: ${"black"}">
             ${dateStr}
             </div>`;
-            const y = param.point.y;
-            let left = param.point.x + toolTipMargin;
-            if (left > container.clientWidth - toolTipWidth) {
-              left = param.point.x - toolTipMargin - toolTipWidth;
+            const mediaMaxWidth = 990;
+            const tokenMetrics = document.getElementById("token-metrics");
+            const tokenMetricsMargin = {};
+            if(window.innerWidth <= mediaMaxWidth) {
+              tokenMetricsMargin.offsetHeight = tokenMetrics.offsetHeight;
+              tokenMetricsMargin.offsetWidth = 0;
+            } else {
+              tokenMetricsMargin.offsetWidth = tokenMetrics.offsetWidth;
+              tokenMetricsMargin.offsetHeight = 0;
             }
-            const top = y + toolTipMargin + toolTipHeightSupport;
+            const y = param.point.y;
+            let left = param.point.x + toolTipMargin + tokenMetricsMargin.offsetWidth;
+            if (left > container.clientWidth - toolTipWidth) {
+              left = param.point.x + tokenMetricsMargin.offsetWidth - toolTipMargin - toolTipWidth;
+            }
+            let top = y + toolTipMargin + toolTipHeightSupport + tokenMetricsMargin.offsetHeight;
+            if (top > container.clientHeight - toolTipHeight) {
+              top = y + tokenMetricsMargin.offsetHeight - toolTipHeight - toolTipMargin;
+            }
             toolTip.style.left = left + "px";
             toolTip.style.top = top + "px";
           }

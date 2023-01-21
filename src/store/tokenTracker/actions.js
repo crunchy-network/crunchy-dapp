@@ -1,7 +1,7 @@
 import tokenTracker from "../../utils/token-tracker";
 import tokensToTrack from "../../tokensTracked.json";
 import _ from "lodash";
-import coingecko from "../../utils/coingecko";
+// import coingecko from "../../utils/coingecko";
 import dexIndexer from "../../utils/dex-indexer";
 import tzkt from "../../utils/tzkt";
 
@@ -23,10 +23,17 @@ export default {
     try {
       const allTokensMetadata = await dexIndexer.getAllTokens();
       const xtzUsd = await tzkt.getXtzUsdPrice();
-      const xtzUsdHistory = await coingecko.getXtzUsdHistory();
+      // const xtzUsdHistory = await coingecko.getXtzUsdHistory();
+      const xtzUsdHistory = await tzkt.getXtzUsdHistory();
+      const formattedXtzUsdHistory = [];
+      for (let i = 0; i < xtzUsdHistory.length; i++) {
+        const bucket = new Date(xtzUsdHistory[i][0]).getTime();
+        const xtzUsdPrice = xtzUsdHistory[i][1].usd;
+        formattedXtzUsdHistory.push([bucket,xtzUsdPrice]);
+      }
 
       commit("updateXtzUsdPrice", xtzUsd);
-      commit("updateXtzUsdHistory", xtzUsdHistory);
+      commit("updateXtzUsdHistory", formattedXtzUsdHistory);
 
       const tokenFeed = await tokenTracker.getTokenFeed();
 

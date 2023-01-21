@@ -57,4 +57,11 @@ export default {
 
     return xtzUsd;
   },
+  async getXtzUsdHistory() {
+    return makeRequest(
+      `/v1/statistics/daily?quote=usd&select.values=date,quote&date.gt=2022-01-01T00:00:00Z`
+    ).then((res) => {
+      return res.data;
+    });
+  },
 };
