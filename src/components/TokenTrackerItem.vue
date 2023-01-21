@@ -110,7 +110,7 @@
       </el-row>
 
       <div>
-        <el-row type="flex" style="flex-wrap: wrap" :gutter="24">
+        <el-row type="flex" style="flex-wrap: wrap; row-gap: 24px" :gutter="24">
           <el-col :md="8">
             <token-metrics />
           </el-col>

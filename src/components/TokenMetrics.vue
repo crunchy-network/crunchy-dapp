@@ -79,15 +79,11 @@
                   color: rgb(48, 49, 51);
                 "
               >
-                {{
-                  vueNumberFormat(getTokenOverview.holders, {
-                    decimal: ".",
-                    thousand: ",",
-                    precision: 0,
-                  })
-                }}
-              </p></el-col
-            >
+                <number-format
+                  :value="getTokenOverview.holders"
+                  :precision="2"
+                /></p
+            ></el-col>
           </el-col>
           <el-col :span="2">
             <div
@@ -122,7 +118,7 @@
             <el-col><el-divider direction="horizontal"></el-divider></el-col>
             <el-col style="text-align: right"
               >Total Supply
-              <price-format
+              <number-format
                 :precision="4"
                 :value="getTokenOverview.calcSupply"
                 custom-setting
@@ -145,10 +141,11 @@
 
 <script>
 import { mapGetters, mapState } from "vuex";
+import NumberFormat from "./NumberFormat.vue";
 import PriceFormat from "./PriceFormat.vue";
 export default {
   name: "TokenMetrics",
-  components: { PriceFormat },
+  components: { PriceFormat, NumberFormat },
 
   computed: {
     ...mapGetters(["getTokenOverview"]),

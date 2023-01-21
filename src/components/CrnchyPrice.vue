@@ -54,7 +54,7 @@ export default {
     },
   },
 
-  created() {
+  mounted() {
     this.getCrnchyPrice();
     setInterval(() => {
       this.softLoadCrnchyPrice();

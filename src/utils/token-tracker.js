@@ -310,7 +310,6 @@ export default {
         tvl
         exchangeId
         tokenId
-        users
       }
       token {
         exchanges{
@@ -367,11 +366,6 @@ export default {
         }
       });
 
-      const holders =
-        new BigNumber(
-          statsTotal.find((quote) => quote.tokenId === tokenId)?.users
-        ).toNumber() || 0;
-
       const tokenTvlUsd =
         new BigNumber(
           statsTotal.find((quote) => quote.tokenId === tokenId)?.tvlUsd
@@ -390,7 +384,6 @@ export default {
         tokenTvl,
         tokenTvlUsd,
         volume24Xtz,
-        holders,
       };
     }
 
@@ -398,6 +391,15 @@ export default {
   },
 
   async calcExchangeVolume(token, xtzUsd, xtzUsdHistory) {
+    const [address, tokenId] = token.id?.split("_");
+
+    const uri = `https://api.tzkt.io/v1/tokens?select=contract,tokenId,holdersCount&limit=10000&contract=${address}&tokenId=${tokenId}`;
+    await axios.get(uri).then((res) => {
+      console.log("\n\n------ begin:  ------");
+      console.log(res);
+      console.log("------ end:  ------\n\n");
+      token.holders = res.data[0] ? res.data[0].holdersCount : 0;
+    });
     token?.pairs?.forEach(async (pair, index) => {
       const volume = await getExchange24HrsVolume(pair.address);
       console.log("volume", volume);

@@ -42,7 +42,11 @@
           </el-col>
 
           <el-col style="text-align: right" :span="4">
-            <price-format :precision="4" :value="asset.balance" />
+            <number-format
+              :precision="4"
+              :value="asset.balance"
+              :custom-setting="true"
+            />
           </el-col>
           <el-col style="text-align: right" :span="4">
             <price-format
@@ -175,10 +179,11 @@
 
 <script>
 import { mapGetters } from "vuex";
+import NumberFormat from './NumberFormat.vue';
 import PriceFormat from "./PriceFormat.vue";
 export default {
   name: "PortfolioWalletRow",
-  components: { PriceFormat },
+  components: { PriceFormat, NumberFormat },
   props: {
     asset: { type: Object, required: true },
     showUsd: { type: Boolean, required: true },

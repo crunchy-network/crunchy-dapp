@@ -276,8 +276,8 @@ export default {
         const bal = new BigNumber(balances[i]?.balance);
         const balance = bal.div(
           new BigNumber(10).pow(
-            balances[i]?.token?.metadata?.decimals ||
-              decimals ||
+            decimals ||
+              balances[i]?.token?.metadata?.decimals ||
               (balances[i]?.token?.standard !== "fa1.2" ? 6 : 3)
           )
         );
