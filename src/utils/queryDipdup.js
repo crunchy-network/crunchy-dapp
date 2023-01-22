@@ -1,6 +1,6 @@
 import axios from "axios";
-import coingecko from "./coingecko";
 import dexIndexer from "./dex-indexer";
+import tzkt from "./tzkt";
 
 export default {
   async getTokenPriceAndData(tokenId) {
@@ -156,10 +156,9 @@ export default {
         },
       },
     ] = await Promise.all([
-      coingecko.getXtzUsdHistory({
-        vs_currency: "usd",
-        days: "60",
-        interval: "daily",
+      tzkt.getXtzUsdHistory({
+        limit: "60",
+        sort: "desc",
       }),
       axios.post("https://dex.dipdup.net/v1/graphql", {
         query: query(day1),
@@ -176,14 +175,14 @@ export default {
       const value = xtzUsdHistory[index];
 
       if (new Date(value[0]).toDateString() === day1) {
-        day1UsdPrice = value[1];
+        day1UsdPrice = value[1].usd;
       }
 
       if (new Date(value[0]).toDateString() === day7) {
-        day7UsdPrice = value[1];
+        day7UsdPrice = value[1].usd;
       }
       if (new Date(value[0]).toDateString() === day30) {
-        day30UsdPrice = value[1];
+        day30UsdPrice = value[1].usd;
       }
     }
 

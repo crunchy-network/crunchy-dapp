@@ -528,30 +528,31 @@ export default {
   },
 
   binarySearch(arr, target) {
+    const d = new Date(target);
     // Find the middle element of the array
     const mid = Math.floor(arr.length / 2);
 
     // If the target is less than the middle element, search the left half of the array
-    if (target < arr[mid][0]) {
+    if (d < new Date(arr[mid][0])) {
       // If the left half of the array is empty, return the index of the middle element
       if (mid === 0) {
-        return arr[mid][1];
+        return arr[mid][1]?.usd;
       } else {
-        return this.binarySearch(arr.slice(0, mid), target);
+        return this.binarySearch(arr.slice(0, mid), d);
       }
     }
     // If the target is greater than the middle element, search the right half of the array
-    else if (target > arr[mid][0]) {
+    else if (d > new Date(arr[mid][0])) {
       // If the right half of the array is empty, return the index of the middle element
       if (mid === arr.length - 1) {
-        return arr[mid][1];
+        return arr[mid][1]?.usd;
       } else {
-        return this.binarySearch(arr.slice(mid + 1), target);
+        return this.binarySearch(arr.slice(mid + 1), d);
       }
     }
     // If the target is equal to the middle element, return the index of the middle element
     else {
-      return arr[mid][1];
+      return arr[mid][1]?.usd;
     }
   },
 };

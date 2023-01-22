@@ -57,9 +57,9 @@ export default {
 
     return xtzUsd;
   },
-  async getXtzUsdHistory() {
+  async getXtzUsdHistory(param = { limit: 10000, sort: "asc" }) {
     return makeRequest(
-      `/v1/statistics/daily?quote=usd&select.values=date,quote&date.gt=2022-01-01T00:00:00Z`
+      `/v1/statistics/daily?quote=usd&select.values=date,quote&date.gt=2018-01-01T00:00:00Z&limit=${param.limit}&sort.${param.sort}=date`
     ).then((res) => {
       return res.data;
     });

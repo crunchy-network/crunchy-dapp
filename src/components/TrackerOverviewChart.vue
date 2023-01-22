@@ -430,7 +430,7 @@ export default {
         toolTip.id = "token-chart-tooltip";
         toolTip.style.background = "white";
         toolTip.style.color = "black";
-        toolTip.style.borderColor = "rgba( 38, 166, 154, 1)";
+        toolTip.style.borderColor = "#555CFF";
         container.appendChild(toolTip);
         // update tooltip
         chart.subscribeCrosshairMove((param) => {
@@ -449,9 +449,9 @@ export default {
             const price = Number(param.seriesPrices.get(areaSeries)).toFixed(
               this.handlePrecision(param.seriesPrices.get(areaSeries)).precision
             );
-            toolTip.innerHTML = `<div style="color: ${"rgba( 38, 166, 154, 1)"}">${
+            toolTip.innerHTML = `<div style="color:#555CFF">${
               this.tokenTracked.symbol || this.tokenTracked.name
-            }.</div><div style="font-size: 24px; margin: 4px 0px; color: ${"black"}">
+            }.</div><div style="font-size: 24px; margin: 0px 0px; color: ${"black"}">
             ${this.getShowUsd ? "$" : ""}${
               this.formatNumShorthand(price).value
             }${this.formatNumShorthand(price).suffix}${
@@ -540,7 +540,6 @@ export default {
   height: 400px;
   display: flex;
   justify-content: flex-start;
-  position: relative;
 }
 
 #token-tracker #token-chart-tooltip {

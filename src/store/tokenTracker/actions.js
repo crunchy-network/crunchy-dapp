@@ -25,15 +25,15 @@ export default {
       const xtzUsd = await tzkt.getXtzUsdPrice();
       // const xtzUsdHistory = await coingecko.getXtzUsdHistory();
       const xtzUsdHistory = await tzkt.getXtzUsdHistory();
-      const formattedXtzUsdHistory = [];
-      for (let i = 0; i < xtzUsdHistory.length; i++) {
-        const bucket = new Date(xtzUsdHistory[i][0]).getTime();
-        const xtzUsdPrice = xtzUsdHistory[i][1].usd;
-        formattedXtzUsdHistory.push([bucket,xtzUsdPrice]);
-      }
+      // const formattedXtzUsdHistory = [];
+      // for (let i = 0; i < xtzUsdHistory.length; i++) {
+      //   const bucket = new Date(xtzUsdHistory[i][0]).getTime();
+      //   const xtzUsdPrice = xtzUsdHistory[i][1].usd;
+      //   formattedXtzUsdHistory.push([bucket,xtzUsdPrice]);
+      // }
 
       commit("updateXtzUsdPrice", xtzUsd);
-      commit("updateXtzUsdHistory", formattedXtzUsdHistory);
+      commit("updateXtzUsdHistory", xtzUsdHistory);
 
       const tokenFeed = await tokenTracker.getTokenFeed();
 
