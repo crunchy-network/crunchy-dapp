@@ -1,6 +1,6 @@
 <template>
   <el-card
-    v-loading="isLoading"
+    v-loading="isLoading || formSubmitting"
     class="swap-form-main-box-card"
     shadow="always"
   >
@@ -161,6 +161,7 @@ export default {
   data: () => ({
     numFormatOpts: { decimal: ".", thousand: ",", prefix: "" },
     percentOptions: [25, 50, 75, 100],
+    formSubmitting: false,
     notifyDefaults: {
       duration: 10000,
       showClose: true,
@@ -423,6 +424,7 @@ export default {
       return amount;
     },
     async onSubmit() {
+      this.formSubmitting = true;
       var fee = [];
       if (this.getCurrentTrade.trades.length > 1) {
         fee = await buildRoutingFeeOperation(
@@ -453,6 +455,8 @@ export default {
         });
         const confirmation = await batchOp.confirmation();
         if (confirmation.completed) {
+          this.formSubmitting = false;
+
           this.$notify({
             message: this.getMessageVNode("Transaction Complete!", [
               "Transaction ",
@@ -463,6 +467,7 @@ export default {
             type: "success",
           });
         } else {
+          this.formSubmitting = false;
           console.log("confirmation", confirmation);
           this.$notify({
             message: this.getMessageVNode("Error", [
@@ -497,6 +502,7 @@ export default {
             type: "error",
           });
         }
+        this.formSubmitting = false;
       }
     },
     updateUrlParams(from, to) {
