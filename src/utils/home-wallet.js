@@ -6,6 +6,11 @@ import knownContracts from "../knownContracts.json";
 import tzkt from "./tzkt";
 import queryDipdup from "./queryDipdup";
 
+const SKIP_CONTRACTS = [
+  "KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo_0",
+  "KT1Rpviewjg82JgjGfAKFneSupjAR1kUhbza_0",
+];
+
 // const getTokenId = (priceObj, token) => {
 //   if (priceObj) {
 //     if (priceObj.tokenId !== undefined) {
@@ -241,30 +246,6 @@ export default {
         const priceObj = tokenData[tokenId];
 
         const tokenClose = queryDipdup.filterTokenClose(tokenId, tokensClose);
-
-        // if (!token) {
-        //   console.log("\n\n------ begin:  ------");
-        //   console.log(balances[i]);
-        //   console.log("------ end:  ------\n\n");
-        // }
-        // let priceFilter = prices.filter(
-        //   (val) => val.tokenAddress === balances[i]?.token?.contract?.address
-        // );
-
-        // if (priceFilter) {
-        //   if (balances[i]?.token?.metadata !== undefined) {
-        //     priceFilter = priceFilter.filter(
-        //       (val) => val.symbol === balances[i]?.token?.metadata?.symbol
-        //     );
-        //   } else if (balances[i]?.token?.tokenId !== undefined) {
-        //     priceFilter = priceFilter.filter(
-        //       (val) => val.tokenId.toString() === balances[i].token.tokenId
-        //     );
-        //   }
-        // }
-
-        // const priceObj = priceFilter.length ? priceFilter[0] : undefined;
-        // get current price of token
         const currentPrice = priceObj?.currentPrice || false;
         const tokenid = priceObj?.tokenId;
         // get token uri from prices :: This is because  balance does not return  some tokens thumbnail
@@ -349,8 +330,11 @@ export default {
           assetSlug,
           decimals: balances[i]?.token?.metadata?.decimals,
         };
+
         if (priceObj) {
-          assets.push(valObj);
+          if (!SKIP_CONTRACTS.includes(tokenId)) {
+            assets.push(valObj);
+          }
         }
       }
       const {

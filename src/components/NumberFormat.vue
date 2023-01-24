@@ -8,7 +8,7 @@
         suffix: `${shortHand && numShorthand().suffix}${suffix || ""}`,
         decimal: ".",
         thousand: ",",
-        precision: precision !== null ? precision : handlePrecision(),
+        precision: handlePrecision(),
       })
     }}
     <number-tooltip

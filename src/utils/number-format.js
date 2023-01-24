@@ -6,16 +6,15 @@ export default {
       return { value: number, suffix: "" };
     } else if (number < 1000000) {
       const value = number / 1000;
-      console.log(number);
-      console.log(value);
-      console.log("_______________");
       return { value, suffix: "K" };
     } else if (number < 1000000000) {
-      return { value: (number / 1000000).toFixed(decimal), suffix: "M" };
+      const value = number / 1000000;
+      return { value, suffix: "M" };
     } else if (number < 1000000000000) {
-      return { value: (number / 1000000000).toFixed(decimal), suffix: "B" };
+      const value = number / 1000000000;
+      return { value, suffix: "B" };
     } else {
-      return { value: (number / 1000000000000).toFixed(decimal), suffix: "T" };
+      return { value: number / 1000000000000, suffix: "T" };
     }
   },
 };
