@@ -25,11 +25,11 @@
                 <el-col :span="7">Exchange</el-col>
                 <el-col style="text-align: right" :span="5">Market</el-col>
                 <el-col style="text-align: right" :span="5">Price</el-col>
-                <el-col style="text-align: right" :span="5">Volume</el-col>
+                <el-col style="text-align: right" :span="5">24h Volume</el-col>
               </el-row>
             </el-col>
           </el-row>
-          <div v-for="(item, index) in markets" :key="index">
+          <div v-for="(item, index) in getTokenOverview.exchanges" :key="index">
             <el-row
               style="font-size: 14px; font-weight: 600"
               type="flex"
@@ -84,8 +84,8 @@
                     <el-col style="text-align: right" :span="5">
                       <price-format
                         prefix="$"
-                        :value="item.volume"
-                        :usd-value="item.volumeUsd"
+                        :value="item.volume24"
+                        :usd-value="item.volume24Usd"
                       />
                     </el-col>
                   </el-row>
@@ -113,8 +113,14 @@ export default {
   },
   computed: {
     ...mapGetters(["getTokenOverview"]),
-    markets() {
-      return this.getTokenOverview.exchanges;
+    // markets() {
+    //   return this.getTokenOverview.exchanges;
+    // },
+  },
+
+  watch: {
+    getTokenOverview(val) {
+      console.log(val);
     },
   },
 

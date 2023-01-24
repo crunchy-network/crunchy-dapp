@@ -121,12 +121,8 @@ export default {
   async updateChartAndOverview({ commit, dispatch, state }, id) {
     const token = state.tokensTracked[id];
     if (token) {
-      const updatedToken = await tokenTracker.calcExchangeVolume(
-        token,
-        state.xtzUsd,
-        state.xtzUsdHistory
-      );
-      commit("updateTokenOverview", updatedToken || {});
+      const updatedToken = await tokenTracker.calcHolders(token);
+      commit("updateTokenOverview", updatedToken);
       dispatch("fetchChartData", token.id);
     }
   },

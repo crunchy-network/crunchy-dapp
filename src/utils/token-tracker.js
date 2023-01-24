@@ -6,31 +6,6 @@ import queryDipdup from "./queryDipdup";
 const twentyFourHrs = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
 const fourtyEightHrs = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
 
-async function getExchange24HrsVolume(exchangeId) {
-  const query = `
-  query MyQuery {
-    quotes1dNogaps(
-      where: {exchangeId: {_eq: "${exchangeId}"}, bucket: {_gte: "${twentyFourHrs}"}}
-    ) {
-      exchangeId
-      xtzVolume
-      bucket
-    }
-  }
-  
-  `;
-
-  const {
-    data: {
-      data: { quotes1dNogaps },
-    },
-  } = await axios.post("https://dex.dipdup.net/v1/graphql", {
-    query,
-  });
-
-  return quotes1dNogaps;
-}
-
 async function queryXtzVolume() {
   const query = `
   query MyQuery {
@@ -38,6 +13,7 @@ async function queryXtzVolume() {
       tezQty
       timestamp
       tokenId
+      exchangeId
     }
   }`;
 
@@ -363,9 +339,17 @@ export default {
       tokensVolume.forEach((o) => {
         if (o.tokenId === tokenId) {
           volume24Xtz = new BigNumber(o.tezQty).plus(volume24Xtz).toNumber();
+          element.exchanges.forEach((e, index) => {
+            if (e.address === o.exchangeId) {
+              element.exchanges[index].volume24 = new BigNumber(
+                element.exchanges[index].volume24 || 0
+              )
+                .plus(o.tezQty)
+                .toNumber();
+            }
+          });
         }
       });
-
       const tokenTvlUsd =
         new BigNumber(
           statsTotal.find((quote) => quote.tokenId === tokenId)?.tvlUsd
@@ -390,23 +374,12 @@ export default {
     return tokenObjkt;
   },
 
-  async calcExchangeVolume(token, xtzUsd, xtzUsdHistory) {
+  async calcHolders(token) {
     const [address, tokenId] = token.id?.split("_");
 
     const uri = `https://api.tzkt.io/v1/tokens?select=contract,tokenId,holdersCount&limit=10000&contract=${address}&tokenId=${tokenId}`;
     await axios.get(uri).then((res) => {
-      console.log("\n\n------ begin:  ------");
-      console.log(res);
-      console.log("------ end:  ------\n\n");
       token.holders = res.data[0] ? res.data[0].holdersCount : 0;
-    });
-    token?.pairs?.forEach(async (pair, index) => {
-      const volume = await getExchange24HrsVolume(pair.address);
-      console.log("volume", volume);
-      token.pairs[index].volume24 =
-        volume?.reduce((prev, current) => {
-          return prev + Number(current.xtzVolume);
-        }, 0) * xtzUsd || 0;
     });
 
     return token;
@@ -515,10 +488,7 @@ export default {
           Number(market.midPrice) * xtzUsd || 0;
 
         element.exchanges[index].symbol = `XTZ/${element.symbol}`;
-        element.exchanges[index].volume = new BigNumber(
-          market.tradeVolume
-        ).toNumber();
-        element.exchanges[index].volumeUsd = new BigNumber(market.tradeVolume)
+        element.exchanges[index].volume24Usd = new BigNumber(market.volume24)
           .times(xtzUsd)
           .toNumber();
       }
