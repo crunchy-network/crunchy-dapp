@@ -1,100 +1,56 @@
 <template>
   <div>
-    <el-row type="flex" justify="space-between" :gutter="40">
-      <el-col :xs="24" :md="7">
-        <el-card v-loading="homeWallet.loading" class="top">
-          <h2 style="font-weight: 600; font-size: 16px; color: #fff">
-            Net Worth
-          </h2>
-
-          <h2 style="font-weight: 600; font-size: 28px; margin-bottom: 0">
-            {{
-              !showUsd
-                ? vueNumberFormat(homeWallet.netWorth, {
-                    prefix: "",
-                    suffix: " ꜩ",
-                    decimal: ".",
-                    thousand: ",",
-                    precision: 4,
-                  })
-                : vueNumberFormat(homeWallet.netWorthUsd, {
-                    prefix: "$",
-                    decimal: ".",
-                    thousand: ",",
-                    precision: 2,
-                  })
-            }}
-          </h2>
-        </el-card>
-      </el-col>
-
-      <el-col
-        style="
-          flex: 1;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        "
-      >
-        <el-divider direction="vertical"> </el-divider>
-      </el-col>
-      <el-col :xs="24" :md="7">
-        <el-card v-loading="homeWallet.loading" class="top">
-          <h2 style="font-weight: 600; font-size: 16px; color: #fff">
-            CRUNCH Balance
-          </h2>
-
-          <h2 style="font-weight: 600; font-size: 28px; margin-bottom: 0">
-            {{
-              vueNumberFormat(homeWallet.crunchBal, {
-                prefix: "",
-                decimal: ".",
-                thousand: ",",
-                precision: 4,
-              })
-            }}
-          </h2>
-        </el-card>
-      </el-col>
-      <el-col :xs="24" :md="7">
-        <el-card v-loading="homeWallet.loading" class="top">
-          <h2 style="font-weight: 600; font-size: 16px; color: #fff">
-            crDAO Balance
-          </h2>
-
-          <h2 style="font-weight: 600; font-size: 28px; margin-bottom: 0">
-            {{
-              vueNumberFormat(homeWallet.crDaoBal, {
-                prefix: "",
-                decimal: ".",
-                thousand: ",",
-                precision: 4,
-              })
-            }}
-          </h2>
-        </el-card>
-      </el-col>
-    </el-row>
-
+    <HomeWalletStats :loading="homeWallet.loading" :show-usd="showUsd" />
     <el-row
       style="
-        margin: 46px 0 32px 0;
+        margin: 46px 0 22px 0;
         border-bottom: 1.5px solid rgba(117, 118, 121, 0.1);
         align-items: center;
+        flex-wrap: wrap-reverse;
+        gap: 10px;
       "
       :gutter="20"
       type="flex"
       justify="space-between"
       align="bottom"
     >
-      <div class="tab-wrapper">
+      <el-select
+        v-model="activeTab"
+        class="tab-select-element"
+        placeholder="Select Tab"
+      >
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        >
+        </el-option>
+      </el-select>
+      <div class="tab-wrapper tab-custom-element">
         <button
           class="tab-text"
-          :style="isActiveTab('portfolio')"
-          @click="setActiveTab('portfolio')"
+          :style="isActiveTab('wallet')"
+          @click="setActiveTab('wallet')"
         >
-          Portfolio
+          Wallet
         </button>
+        <button
+          class="tab-text"
+          :style="isActiveTab('staking')"
+          @click="setActiveTab('staking')"
+        >
+          Staked
+        </button>
+
+        <button
+          class="tab-text"
+          :style="isActiveTab('liquidity')"
+          @click="setActiveTab('liquidity')"
+        >
+          Liquidity
+        </button>
+
         <button
           class="tab-text"
           :style="isActiveTab('nfts')"
@@ -102,39 +58,33 @@
         >
           NFTs
         </button>
-        <button
+
+        <a
           class="tab-text"
-          :style="isActiveTab('staked')"
-          @click="setActiveTab('staked')"
-        >
-          Staked
-        </button>
-        <button
-          class="tab-text"
-          disabled
-          :style="isActiveTab('history')"
-          @click="setActiveTab('history')"
+          style="color: #555cff; text-decoration: none"
+          :href="`https://tzkt.io/${$route.params.walletAddress || getPkh}`"
+          target="_blank"
         >
           History
-        </button>
-      </div>
-      <div class="grid-content" style="text-align: right">
-        <el-switch
-          v-model="showUsd"
-          :disabled="homeWallet.loading"
-          style="margin-right: 24px"
-          active-color="#1EC37F"
-          inactive-color="#F15D59"
-          active-text="USD"
-          inactive-text="XTZ"
-        >
-        </el-switch>
+          <svg
+            width="12"
+            height="13"
+            viewBox="0 0 12 13"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M6.85714 1.71408C6.85714 1.24077 7.24018 0.856934 7.71429 0.856934H11.1188C11.258 0.856934 11.3705 0.879969 11.4696 0.922023C11.5473 0.963541 11.6652 1.02488 11.7482 1.10604C11.7482 1.10738 11.7482 1.10872 11.7509 1.10979C11.917 1.2764 11.9759 1.4939 12 1.7114C12 1.71247 12 1.71327 12 1.71408V5.14265C12 5.61676 11.617 5.99979 11.1429 5.99979C10.6687 5.99979 10.2857 5.61676 10.2857 5.14265V3.78461L5.74821 8.31943C5.41339 8.65426 4.87232 8.65426 4.5375 8.31943C4.20268 7.98461 4.20268 7.44354 4.5375 7.10872L9.07232 2.57122H7.71429C7.24018 2.57122 6.85714 2.18738 6.85714 1.71408ZM0 3.42836C0 2.48149 0.767411 1.71408 1.71429 1.71408H4.28571C4.75982 1.71408 5.14286 2.09792 5.14286 2.57122C5.14286 3.04533 4.75982 3.42836 4.28571 3.42836H1.71429V11.1426H9.42857V8.57122C9.42857 8.09711 9.81161 7.71408 10.2857 7.71408C10.7598 7.71408 11.1429 8.09711 11.1429 8.57122V11.1426C11.1429 12.0882 10.3741 12.8569 9.42857 12.8569H1.71429C0.767411 12.8569 0 12.0882 0 11.1426V3.42836Z"
+              fill="#555CFF"
+            />
+          </svg>
+        </a>
       </div>
     </el-row>
 
-    <div v-if="activeTab === 'portfolio'">
-      <el-card v-loading="homeWallet.loading">
-        <div>
+    <div v-if="activeTab === 'wallet'">
+      <el-card v-loading="homeWallet.loading" shadow="always">
+        <div class="responsive-table">
           <div>
             <el-row
               type="flex"
@@ -146,6 +96,7 @@
                 border-bottom: 1px solid rgba(255, 255, 255, 0.3);
                 padding-bottom: 14px;
                 margin-bottom: 14px;
+                min-width: 900px;
               "
             >
               <el-col :span="24">
@@ -162,7 +113,7 @@
                   <el-col style="text-align: right" :span="2"
                     >1d
                     <el-tooltip
-                      content="% Change in XTZ"
+                      :content="`% Change in ${showUsd ? 'USD' : 'XTZ'}`"
                       placement="top"
                       effect="light"
                     >
@@ -172,7 +123,7 @@
                   <el-col style="text-align: right" :span="2"
                     >7d
                     <el-tooltip
-                      content="% Change in XTZ"
+                      :content="`% Change in ${showUsd ? 'USD' : 'XTZ'}`"
                       placement="top"
                       effect="light"
                     >
@@ -182,7 +133,7 @@
                   <el-col style="text-align: right" :span="2"
                     >30d
                     <el-tooltip
-                      content="% Change in XTZ"
+                      :content="`% Change in ${showUsd ? 'USD' : 'XTZ'}`"
                       placement="top"
                       effect="light"
                     >
@@ -201,12 +152,12 @@
               :show-usd="showUsd"
             />
             <row-pagination
-              :currentPage="currentPage"
-              :handleEnd="handleEnd"
-              :handleNextPage="handleNextPage"
-              :handlePrevPage="handlePrevPage"
-              :handleStart="handleStart"
-              :nextPage="nextPage"
+              :current-page="currentPage"
+              :handle-end="handleEnd"
+              :handle-next-page="handleNextPage"
+              :handle-prev-page="handlePrevPage"
+              :handle-start="handleStart"
+              :next-page="nextPage"
               :pages="pages"
             ></row-pagination>
           </div>
@@ -214,46 +165,72 @@
       </el-card>
     </div>
 
-    <div v-if="activeTab === 'nfts'">
-      <nft-wallet-view></nft-wallet-view>
-    </div>
-
-    <div v-if="activeTab === 'staked'">
+    <div v-if="activeTab === 'staking'">
       <staked-wallet :show-usd="showUsd"></staked-wallet>
+    </div>
+    <div v-if="activeTab === 'nfts'">
+      <NftWalletView />
+    </div>
+    <div v-if="activeTab === 'liquidity'">
+      <LiquidityWallet :show-usd="showUsd" />
     </div>
   </div>
 </template>
 
 <script>
 import { mapState, mapActions, mapGetters } from "vuex";
-import NftWalletView from "./NftWalletView.vue";
-// import HomeWalletTable from "./HomeWalletTable.vue";
 import PortfolioWalletRow from "./PortfolioWalletRow.vue";
-import RowPagination from "./RowPagination.vue";
 import StakedWallet from "./StakedWallet.vue";
+import NftWalletView from "./NftWalletView.vue";
+import LiquidityWallet from "./LiquidityWallet.vue";
+import HomeWalletStats from "./HomeWalletStats.vue";
+import RowPagination from "./RowPagination.vue";
+
 export default {
   name: "HomeWallet",
   components: {
     PortfolioWalletRow,
-    NftWalletView,
     StakedWallet,
+    NftWalletView,
+    HomeWalletStats,
+    LiquidityWallet,
     RowPagination,
   },
   data() {
     return {
-      activeTab: "staked",
+      activeTab: "wallet",
       tabledata: [],
-      showUsd: false,
       currentPage: 0,
       pages: 0,
       nextPage: 1,
       prevPage: 0,
       displayCount: 12,
+      options: [
+        {
+          value: "wallet",
+          label: "Wallet",
+        },
+        {
+          value: "staking",
+          label: "Staking",
+        },
+        {
+          value: "liquidity",
+          label: "Liquidity",
+        },
+        {
+          value: "nfts",
+          label: "NFTs",
+        },
+      ],
     };
   },
   computed: {
     ...mapState(["homeWallet"]),
-    ...mapGetters(["getPkh", "getAssets"]),
+    ...mapGetters(["getPkh", "getAssets", "getStakedValues", "getShowUsd"]),
+    showUsd() {
+      return this.getShowUsd;
+    },
   },
   watch: {
     getPkh() {
@@ -273,21 +250,23 @@ export default {
     this.refresh();
   },
   methods: {
-    ...mapActions(["loadWalletAsssets"]),
+    ...mapActions(["loadWalletAsssets", "loadStakeAssets", "loadAllLiquidity"]),
 
     refresh() {
       this.loadWalletAsssets(this.$route.params.walletAddress);
+      this.loadAllLiquidity(this.$route.params.walletAddress);
+      this.loadStakeAssets(this.$route.params.walletAddress);
     },
 
     isActiveTab(tab) {
       return (
         this.activeTab === tab &&
-        " border-bottom: 6px solid #F15D59; color: #F15D59"
+        " border-bottom: 3px solid #FF4D4B; color: #FF4D4B; font-weight: 700"
       );
     },
 
     setActiveTab(tab = "") {
-      if (["portfolio", "nfts", "staked", "history"].includes(tab)) {
+      if (["wallet", "staking", "liquidity", "nfts"].includes(tab)) {
         this.activeTab = tab;
       }
     },
@@ -365,15 +344,13 @@ export default {
 .tab-wrapper {
   display: flex;
   align-items: flex-start;
-  padding: 0 0 0 90px;
-  overflow: auto;
 }
 
 .tab-text {
   min-width: 100px;
   text-align: center;
-  padding: 5px 20px;
-  font-weight: 700;
+  padding: 2px 20px;
+  font-weight: 600;
   font-size: 16px;
   line-height: 24px;
   text-align: center;
@@ -383,11 +360,20 @@ export default {
   transition: 0.3s ease all;
   margin: 0;
   border: 0;
+  border-bottom: 3px solid transparent;
   background: transparent;
   &:disabled {
     color: rgba(156, 156, 156, 0.712);
     cursor: not-allowed;
   }
+}
+
+.divider {
+  opacity: 0.26;
+}
+
+.divider .el-divider.el-divider--horizontal {
+  margin: 0 !important;
 }
 
 #pagination {
@@ -411,5 +397,19 @@ export default {
 
 .el-input__inner {
   border-radius: 28px;
+}
+
+.tab-select-element {
+  display: none;
+  width: 100%;
+}
+@media (max-width: 600px) {
+  .tab-select-element {
+    display: block;
+  }
+
+  .tab-custom-element {
+    display: none;
+  }
 }
 </style>

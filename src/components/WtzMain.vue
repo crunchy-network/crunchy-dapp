@@ -1,6 +1,6 @@
 <template>
   <div id="wtz">
-    <el-header
+    <!-- <el-header
       style="
         position: fixed;
         height: 90px;
@@ -22,11 +22,12 @@
           </div>
         </el-col>
       </el-row>
-    </el-header>
+    </el-header> -->
+    <nav-menu></nav-menu>
 
     <el-main style="margin-top: 90px">
       <el-row :gutter="20" type="flex" align="bottom">
-        <el-col :span="16">
+        <el-col :span="24">
           <div class="grid-content">
             <h2 style="margin-top: 0; margin-bottom: 5px">
               Mint WTZ/Redeem XTZ
@@ -37,25 +38,12 @@
             >
           </div>
         </el-col>
-        <el-col :span="8">
-          <div class="grid-content" style="text-align: right">
-            <el-switch
-              v-model="showUsd"
-              style="margin-right: 24px"
-              active-color="#1EC37F"
-              inactive-color="#555CFF"
-              active-text="USD"
-              inactive-text="XTZ"
-            >
-            </el-switch>
-          </div>
-        </el-col>
       </el-row>
 
       <el-row :gutter="20" type="flex" align="top" style="margin-top: 25px">
         <el-col :span="16">
           <div class="grid-content">
-            <el-card class="box-card">
+            <el-card class="box-card" shadow="always">
               <el-form
                 ref="form"
                 v-loading.lock="wtz.loading"
@@ -316,7 +304,7 @@
             <h2 style="margin-top: 50px; margin-bottom: 30px">
               Recent WTZ Transactions
             </h2>
-            <el-card class="box-card" shadow="never">
+            <el-card class="box-card" shadow="always">
               <el-table
                 v-loading="wtz.loading"
                 :data="wtz.txs"
@@ -452,7 +440,7 @@
               v-if="showUsd === true"
               v-loading="wtz.loading"
               class="box-card"
-              shadow="never"
+              shadow="always"
               style="height: 100%"
             >
               <el-avatar
@@ -493,7 +481,7 @@
               v-if="showUsd === false"
               v-loading="wtz.loading"
               class="box-card"
-              shadow="never"
+              shadow="always"
               style="height: 100%"
             >
               <el-avatar
@@ -530,14 +518,16 @@
 </template>
 
 <script>
-import NavWallet from "./NavWallet.vue";
-import { mapState, mapActions } from "vuex";
+// import NavWallet from "./NavWallet.vue";
+import { mapState, mapActions, mapGetters } from "vuex";
 import { BigNumber } from "bignumber.js";
+import NavMenu from "./NavMenu.vue";
 
 export default {
   name: "WtzMain",
   components: {
-    NavWallet,
+    // NavWallet,
+    NavMenu,
   },
   data() {
     return {
@@ -548,11 +538,14 @@ export default {
         outputWtz: "",
       },
       mode: "mint",
-      showUsd: false,
     };
   },
   computed: {
     ...mapState(["wallet", "wtz"]),
+    ...mapGetters(["getShowUsd"]),
+    showUsd() {
+      return this.getShowUsd;
+    },
   },
   created() {
     this.refresh();

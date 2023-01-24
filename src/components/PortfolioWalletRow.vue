@@ -42,117 +42,125 @@
           </el-col>
 
           <el-col style="text-align: right" :span="4">
-            {{
-              vueNumberFormat(asset.balance, {
-                prefix: "",
-                decimal: ".",
-                thousand: ",",
-                precision: 4,
-              })
-            }}
+            <number-format
+              :precision="4"
+              :value="asset.balance"
+              :custom-setting="true"
+            />
           </el-col>
           <el-col style="text-align: right" :span="4">
-            {{
-              !showUsd
-                ? vueNumberFormat(asset.price, {
-                    prefix: "",
-                    suffix: " ꜩ",
-                    decimal: ".",
-                    thousand: ",",
-                    precision: 4,
-                  })
-                : vueNumberFormat(asset.priceUsd, {
-                    prefix: "$",
-                    decimal: ".",
-                    thousand: ",",
-                    precision: 2,
-                  })
-            }}
+            <price-format
+              :precision="4"
+              :show-usd="showUsd"
+              :usd-value="asset.priceUsd"
+              :value="asset.price"
+            />
           </el-col>
           <el-col style="text-align: right" :span="4">
-            {{
-              !showUsd
-                ? vueNumberFormat(asset.value, {
-                    prefix: "",
-                    suffix: " ꜩ",
-                    decimal: ".",
-                    thousand: ",",
-                    precision: 4,
-                  })
-                : vueNumberFormat(asset.valueUsd, {
-                    prefix: "$",
-                    decimal: ".",
-                    thousand: ",",
-                    precision: 2,
-                  })
-            }}
+            <price-format
+              :precision="4"
+              :show-usd="showUsd"
+              :usd-value="asset.valueUsd"
+              :value="asset.value"
+            />
           </el-col>
 
           <el-col
             style="text-align: right"
             :span="2"
-            :class="asset.priceChange1Day < 0 ? 'n-change' : 'p-change'"
+            :class="
+              handleChangeclass(asset, 'priceChange1Day', 'priceChange1DayUsd')
+            "
           >
             {{
-              asset.contract !== "tez"
-                ? vueNumberFormat(asset.priceChange1Day, {
+              asset.contract === "tez"
+                ? "-"
+                : getShowUsd
+                ? vueNumberFormat(asset.priceChange1DayUsd, {
                     prefix: "",
                     suffix: "%",
                     decimal: ".",
                     thousand: ",",
                     precision: 2,
                   })
-                : "-"
+                : vueNumberFormat(asset.priceChange1Day, {
+                    prefix: "",
+                    suffix: "%",
+                    decimal: ".",
+                    thousand: ",",
+                    precision: 2,
+                  })
             }}
           </el-col>
           <el-col
             style="text-align: right"
             :span="2"
-            :class="asset.priceChange7Day < 0 ? 'n-change' : 'p-change'"
+            :class="
+              handleChangeclass(asset, 'priceChange7Day', 'priceChange7DayUsd')
+            "
           >
             {{
-              asset.contract !== "tez"
-                ? vueNumberFormat(asset.priceChange7Day, {
+              asset.contract === "tez"
+                ? "-"
+                : getShowUsd
+                ? vueNumberFormat(asset.priceChange7DayUsd, {
                     prefix: "",
                     suffix: "%",
                     decimal: ".",
                     thousand: ",",
                     precision: 2,
                   })
-                : "-"
+                : vueNumberFormat(asset.priceChange7Day, {
+                    prefix: "",
+                    suffix: "%",
+                    decimal: ".",
+                    thousand: ",",
+                    precision: 2,
+                  })
             }}
           </el-col>
           <el-col
             style="text-align: right"
             :span="2"
-            :class="asset.priceChange30Day < 0 ? 'n-change' : 'p-change'"
+            :class="
+              handleChangeclass(
+                asset,
+                'priceChange30Day',
+                'priceChange30DayUsd'
+              )
+            "
           >
             {{
-              asset.contract !== "tez"
-                ? vueNumberFormat(asset.priceChange30Day, {
+              asset.contract === "tez"
+                ? "-"
+                : getShowUsd
+                ? vueNumberFormat(asset.priceChange30DayUsd, {
                     prefix: "",
                     suffix: "%",
                     decimal: ".",
                     thousand: ",",
                     precision: 2,
                   })
-                : "-"
+                : vueNumberFormat(asset.priceChange30Day, {
+                    prefix: "",
+                    suffix: "%",
+                    decimal: ".",
+                    thousand: ",",
+                    precision: 2,
+                  })
             }}
           </el-col>
 
           <el-col style="text-align: right" :span="2">
-            <a
+            <router-link
               v-if="asset.contract !== 'tez'"
-              :href="`https://quipuswap.com/swap?from=${
-                asset.contract +
-                (asset.tokenid === undefined ? '' : '_' + asset.tokenid)
-              }&to=tez`"
-              target="_blank"
+              tag="a"
+              :to="getToParams(asset)"
             >
               <el-button style="font-weight: 600" type="text">
                 <span style="color: #f15d59">TRADE</span>
               </el-button>
-            </a>
+            </router-link>
             <router-link
               v-if="asset.contract === 'tez'"
               tag="a"
@@ -170,9 +178,38 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+import NumberFormat from './NumberFormat.vue';
+import PriceFormat from "./PriceFormat.vue";
 export default {
   name: "PortfolioWalletRow",
-  props: ["asset", "showUsd"],
+  components: { PriceFormat, NumberFormat },
+  props: {
+    asset: { type: Object, required: true },
+    showUsd: { type: Boolean, required: true },
+  },
+  computed: {
+    ...mapGetters(["getShowUsd"]),
+  },
+  methods: {
+    getToParams(asset) {
+      const tokenId = asset.tokenid ? asset.tokenid : 0;
+      return {
+        name: "swap",
+        query: { from: "tez", to: `${asset.contract}_${tokenId}` },
+      };
+    },
+    handleChangeclass(asset, param, usdParam) {
+      let className = "";
+      if (this.getShowUsd) {
+        className = asset[usdParam] < 0 ? "n-change" : "p-change";
+      } else {
+        className = asset[param] < 0 ? "n-change" : "p-change";
+      }
+
+      return className;
+    },
+  },
 };
 </script>
 

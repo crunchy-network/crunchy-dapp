@@ -2,27 +2,56 @@
   <div id="app">
     <!-- Desktop -->
     <!-- <div class="hidden-sm-and-down"> -->
-    <div>
-      <NavMenu />
-    </div>
 
-    <el-container style="position: relative">
-      <router-view></router-view>
+    <el-container style="position: relative; justify-content: space-between">
+      <div>
+        <router-view></router-view>
+      </div>
+      <el-footer>
+        <div>
+          Copyright &copy; 2021 - 2022 Crunchy. Made with
+          <i class="fas fa-heart" style="color: #f64947; margin-left: 6px"></i>
+          <i
+            class="fas fa-grin-beam-sweat"
+            style="color: #555cff; margin-left: 6px"
+          ></i>
+          &amp; <i class="fas fa-grin-tears" style="color: #fece00"></i>
+          <div style="margin-top: 24px; font-size: 24px">
+            <a
+              href="https://github.com/crunchy-network"
+              target="_blank"
+              style="margin: 0 12px"
+              ><i class="fab fa-github"></i
+            ></a>
+            <a
+              href="https://twitter.com/CrunchyTez"
+              target="_blank"
+              style="margin: 0 12px"
+              ><i class="fab fa-twitter"></i
+            ></a>
+            <a
+              href="http://discord.crunchy.network"
+              target="_blank"
+              style="margin: 0 12px"
+              ><i class="fab fa-discord"></i
+            ></a>
+            <a
+              href="http://t.me/crunchy_network"
+              target="_blank"
+              style="margin: 0 12px"
+              ><i class="fab fa-telegram"></i
+            ></a>
+          </div>
+        </div>
+      </el-footer>
     </el-container>
     <!-- </div> -->
   </div>
 </template>
 
 <script>
-import NavMenu from "./components/NavMenu.vue";
-// import JoinDiscord from "./components/JoinDiscord.vue";
-
 export default {
   name: "App",
-  components: {
-    NavMenu,
-    // JoinDiscord,
-  },
   created() {
     this.$store.dispatch("checkWalletConnected");
   },
@@ -30,11 +59,19 @@ export default {
 </script>
 
 <style>
+html {
+  overflow-x: hidden;
+}
+
 html,
 body,
 .el-container {
   margin: 0;
-  height: 100%;
+  min-height: 100vh;
+}
+
+* {
+  font-family: "Poppins";
 }
 
 body {
@@ -43,8 +80,22 @@ body {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: top right;
+  width: 100%;
 }
 
+.responsive-table::-webkit-scrollbar {
+  display: none;
+}
+
+.responsive-table {
+  overflow-x: auto;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.responsive-table > div {
+  min-width: max-content;
+}
 /* FONT WEIGHTS */
 h1,
 h2,
@@ -63,6 +114,12 @@ h3 {
   margin-top: 100px;
   font-size: 16px;
   color: #999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-width: 100%;
+  height: 80px !important;
 }
 .el-footer i.fad {
   margin-right: 0 !important;
@@ -107,27 +164,11 @@ body {
   height: 100%;
 }
 
-body:after {
-  content: "beta";
-  position: fixed;
-  z-index: 999;
-  width: 80px;
-  height: 25px;
-  background: #f6f6f6;
-  top: 5px;
-  left: -22px;
-  text-align: center;
-  font-size: 12px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  font-weight: bold;
-  color: #999;
-  line-height: 27px;
-  -ms-transform: rotate(-45deg);
-  -webkit-transform: rotate(-45deg);
-  transform: rotate(-45deg);
-  box-shadow: 0 0px 12px 0 rgb(21 21 52 / 10%);
-  border: 1px solid #ebeef5;
+.page_width {
+  position: relative;
+  max-width: 1450px;
+  margin: 0 auto;
+  overflow-x: hidden;
 }
 
 i.fad {
@@ -243,6 +284,117 @@ i.fa-icon-right {
   color: #f15d59 !important;
 }
 
+.el-menu > .el-submenu .el-submenu__title {
+  color: #191b1f !important;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  display: flex;
+  align-items: center;
+  border: 0 !important;
+  padding: 20px 15px;
+  background: transparent !important;
+  max-height: 80px;
+}
+
+.el-menu > .el-submenu i {
+  color: #191b1f !important;
+  fill: #191b1f !important;
+}
+
+.el-menu > .el-submenu.sub-is-active .el-submenu__title {
+  color: #f15d59 !important;
+}
+
+.el-submenu .el-menu-item {
+  height: unset !important;
+  padding: 5px 15px !important;
+  padding-left: 10px !important;
+  display: flex;
+  align-items: center;
+}
+
+.el-menu--horizontal > .el-submenu .el-submenu__icon-arrow {
+  margin-right: 0 !important;
+}
+.nav-menu-wrapper > .el-menu-item,
+.nav-menu-wrapper > .el-submenu {
+  float: left !important;
+}
+.show-mobile {
+  display: none;
+}
+
+@media (min-width: 992px) {
+  .el-submenu .el-menu--horizontal {
+    top: 65px !important;
+    position: fixed;
+  }
+
+  .hide-desktop {
+    display: none;
+  }
+}
+/* Mobile Menu Setting */
+@media (max-width: 991px) {
+  .el-menu > .el-submenu .el-submenu__title {
+    padding: 10px 15px !important;
+  }
+
+  .el-submenu .el-menu-item {
+    padding-left: 30px !important;
+  }
+
+  .el-submenu__icon-arrow {
+    right: 0px !important;
+  }
+
+  .nav-menu-wrapper > .el-menu-item,
+  .nav-menu-wrapper > .el-submenu {
+    float: unset !important;
+  }
+  .show-mobile {
+    display: block;
+  }
+}
+
+header .grid-content button.el-button {
+  margin: 2px !important;
+}
+/* Mobile Menu Setting */
+.el-menu > .el-submenu .el-submenu__title i {
+  margin-right: 14px;
+  text-align: center;
+  vertical-align: middle;
+  margin-top: unset;
+}
+.el-popover.nav-wallet {
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 6px !important;
+}
+.el-popover.nav-wallet .el-popover__title {
+  color: rgb(29, 29, 29);
+}
+.el-menu--popup,
+.el-menu--inline {
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 6px !important;
+}
+.el-menu--inline {
+  border: none;
+}
+.el-menu--popup .el-menu-item,
+.el-menu--inline .el-menu-item {
+  font-size: 14px;
+  line-height: 20px;
+}
+.el-menu > .el-submenu .el-submenu__title:hover {
+  background: #9093991e !important;
+}
+.el-menu > .el-submenu .el-submenu__title.is-active {
+  color: #f15d59 !important;
+}
+
 #farm-listing .el-input__inner {
   border-radius: 24px !important;
   color: #191b1f !important;
@@ -252,6 +404,11 @@ i.fa-icon-right {
 .search-input .el-input__prefix {
   color: #191b1f;
 }
+
+#token-tracker .search-input .el-input__prefix {
+  color: #dcdfe6;
+}
+
 .search-input .el-input__inner,
 #farm-listing .search-input .el-input__inner {
   border-radius: 24px !important;
@@ -469,5 +626,37 @@ div.el-card__body {
 
 .text-center {
   text-align: center;
+}
+
+.el-select-dropdown__item.selected {
+  color: #ff4d4b !important;
+}
+
+/* REPSONSIVE STYLE */
+
+/* divider */
+.divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.divider .el-divider.el-divider--vertical {
+  height: 100% !important;
+  margin: 0 !important;
+}
+
+.divider .el-divider.el-divider--horizontal {
+  width: 100% !important;
+}
+
+@media (min-width: 991px) {
+  .divider .el-divider.el-divider--horizontal {
+    display: none;
+  }
+}
+@media (max-width: 991px) {
+  .divider .el-divider.el-divider--vertical {
+    display: none;
+  }
 }
 </style>

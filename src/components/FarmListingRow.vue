@@ -625,7 +625,7 @@
                   <el-link
                     v-if="farm.poolToken.isQuipuLp && isFa1(farm.poolToken)"
                     style="color: #555cff; font-weight: 600"
-                    :href="`https://quipuswap.com/invest/add-liquidity/${farm.poolToken.realTokenAddress}`"
+                    :href="`https://quipuswap.com/liquidity/add/tez-${farm.poolToken.realTokenAddress}`"
                     target="_blank"
                     >Get XTZ/{{ farm.poolToken.symbol }} LP
                     <i class="far fa-external-link fa-icon-right"></i
@@ -633,7 +633,7 @@
                   <el-link
                     v-if="farm.poolToken.isQuipuLp && isFa2(farm.poolToken)"
                     style="color: #555cff; font-weight: 600"
-                    :href="`https://quipuswap.com/invest/add-liquidity/${farm.poolToken.realTokenAddress}_${farm.poolToken.realTokenId}`"
+                    :href="`https://quipuswap.com/liquidity/add/tez-${farm.poolToken.realTokenAddress}_${farm.poolToken.realTokenId}`"
                     target="_blank"
                     >Get XTZ/{{ farm.poolToken.symbol }} LP
                     <i class="far fa-external-link fa-icon-right"></i
@@ -646,7 +646,7 @@
                       isFa1(farm.poolToken)
                     "
                     style="color: #555cff; font-weight: 600"
-                    :href="`https://quipuswap.com/swap?from=tez&to=${farm.poolToken.address}`"
+                    :href="`https://quipuswap.com/swap/tez-${farm.poolToken.address}`"
                     target="_blank"
                     >Buy {{ farm.poolToken.symbol }}
                     <i class="far fa-external-link fa-icon-right"></i
@@ -659,7 +659,7 @@
                       isFa2(farm.poolToken)
                     "
                     style="color: #555cff; font-weight: 600"
-                    :href="`https://quipuswap.com/swap?from=tez&to=${farm.poolToken.address}_${farm.poolToken.tokenId}`"
+                    :href="`https://quipuswap.com/swap/tez-${farm.poolToken.address}_${farm.poolToken.tokenId}`"
                     target="_blank"
                     >Buy {{ farm.poolToken.symbol }}
                     <i class="far fa-external-link fa-icon-right"></i
@@ -854,7 +854,16 @@ export default {
     CollapseTransition,
     // ICountUp
   },
-  props: ["farm", "showUsd"],
+  props: {
+    farm: {
+      type: Object,
+      required: true,
+    },
+    showUsd: {
+      type: Boolean,
+      required: true,
+    },
+  },
   data() {
     return {
       localAbbrevTimeZone: new Date()

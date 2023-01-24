@@ -1,27 +1,7 @@
 <template>
   <div id="farm-create" class="farm-create">
     <!-- class="hidden-sm-and-down" -->
-    <el-header
-      style="
-        position: fixed;
-        height: 90px;
-        top: 0;
-        left: 230px;
-        right: 0;
-        background: #fff;
-        z-index: 999;
-        border-bottom: 1px solid #e8e8e9;
-      "
-    >
-      <el-row type="flex" class="row-bg" justify="space-between">
-        <el-col :span="6"> </el-col>
-        <el-col :span="12">
-          <div class="grid-content" style="text-align: right">
-            <NavWallet />
-          </div>
-        </el-col>
-      </el-row>
-    </el-header>
+    <nav-menu></nav-menu>
 
     <!-- class="hidden-sm-and-down" -->
     <el-main style="margin-top: 90px">
@@ -46,8 +26,8 @@
             <div class="grid-content" style="height: 100%">
               <el-card
                 v-loading="loading"
-                class="box-card"
                 shadow="always"
+                class="box-card"
                 style="height: 100%"
               >
                 <el-alert
@@ -260,7 +240,7 @@
                   <el-select
                     v-model="form.serviceFeeId"
                     placeholder="Select Service Fee"
-                    style="width: 220px"
+                    style="width: 400px"
                   >
                     <el-option
                       v-for="item in serviceFees"
@@ -277,7 +257,7 @@
 
           <el-col :span="8">
             <div class="grid-content" style="height: 100%">
-              <el-card class="box-card" shadow="never" style="height: 100%">
+              <el-card class="box-card" shadow="always" style="height: 100%">
                 <h3 style="margin-top: 0">Farm Summary</h3>
                 <el-row
                   type="flex"
@@ -442,9 +422,11 @@
                     v-if="form.serviceFeeId && form.rewardTokenName"
                     :span="16"
                   >
-                    <div v-if="form.serviceFeeId === '0'">100 CRUNCH</div>
-                    <div v-if="form.serviceFeeId === '1'">1,000 CRUNCH</div>
-                    <div v-if="form.serviceFeeId === '2'">10,000 CRUNCH</div>
+                    <div v-if="form.serviceFeeId === '0'">10,000 CRNCHY</div>
+                    <div v-if="form.serviceFeeId === '1'">50,000 CRNCHY</div>
+                    <div v-if="form.serviceFeeId === '2'">100,000 CRNCHY</div>
+                    <div v-if="form.serviceFeeId === '3'">500,000 CRNCHY</div>
+
                     <div v-if="form.serviceFeeId === '0'">
                       {{ vueNumberFormat(form.rewardTokenAmount * 0.015) }}
                       {{ form.rewardTokenName }}
@@ -481,9 +463,11 @@
                     v-if="form.serviceFeeId && form.rewardTokenName"
                     :span="16"
                   >
-                    <div v-if="form.serviceFeeId === '0'">100 CRUNCH</div>
-                    <div v-if="form.serviceFeeId === '1'">1,000 CRUNCH</div>
-                    <div v-if="form.serviceFeeId === '2'">10,000 CRUNCH</div>
+                    <div v-if="form.serviceFeeId === '0'">10,000 CRNCHY</div>
+                    <div v-if="form.serviceFeeId === '1'">50,000 CRNCHY</div>
+                    <div v-if="form.serviceFeeId === '2'">100,000 CRNCHY</div>
+                    <div v-if="form.serviceFeeId === '3'">500,000 CRNCHY</div>
+
                     <div v-if="form.serviceFeeId === '0'">
                       {{ vueNumberFormat(form.rewardTokenAmount * 1.015) }}
                       {{ form.rewardTokenName }}
@@ -494,6 +478,10 @@
                     </div>
                     <div v-if="form.serviceFeeId === '2'">
                       {{ vueNumberFormat(form.rewardTokenAmount * 1.005) }}
+                      {{ form.rewardTokenName }}
+                    </div>
+                    <div v-if="form.serviceFeeId === '3'">
+                      {{ vueNumberFormat(form.rewardTokenAmount * 1) }}
                       {{ form.rewardTokenName }}
                     </div>
                   </el-col>
@@ -536,18 +524,18 @@
 
 <script>
 import _ from "lodash";
-import NavWallet from "./NavWallet.vue";
 import { mapState, mapActions } from "vuex";
 import ipfs from "./../utils/ipfs";
 import farmUtils from "./../utils/farm";
 import { getTokenMetadata } from "./../utils/tezos";
 import { BigNumber } from "bignumber.js";
 import { ValidationResult, validateContractAddress } from "@taquito/utils";
+import NavMenu from "./NavMenu.vue";
 
 export default {
   name: "FarmCreate",
   components: {
-    NavWallet,
+    NavMenu,
   },
   data() {
     var validateTokenAddress = (rule, value, callback) => {
@@ -613,9 +601,10 @@ export default {
         },
       },
       serviceFees: [
-        { value: "0", label: "100 CRUNCH + 1.5%" },
-        { value: "1", label: "1,000 CRUNCH + 1.0%" },
-        { value: "2", label: "10,000 CRUNCH + 0.5%" },
+        { value: "0", label: "10,000 CRNCHY + 1.5% of tokens" },
+        { value: "1", label: "50,000 CRNCHY + 1.0% of tokens" },
+        { value: "2", label: "100,000 CRNCHY + 0.5% of tokens" },
+        { value: "3", label: "500,000 CRNCHY + 0% of tokens" },
       ],
       rules: {
         poolTokenType: [{ required: true, message: "Select token type" }],
@@ -738,6 +727,8 @@ export default {
             serviceFeeMultiplier = 1.01;
           } else if (vm.form.serviceFeeId === "2") {
             serviceFeeMultiplier = 1.005;
+          } else if (vm.form.serviceFeeId === "3") {
+            serviceFeeMultiplier = 1;
           }
 
           const params = {

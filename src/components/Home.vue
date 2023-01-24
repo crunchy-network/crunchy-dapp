@@ -7,7 +7,7 @@
       <el-row :gutter="20" type="flex" style="margin-top: 35px">
         <el-col :span="16">
           <div class="grid-content" style="height: 100%">
-            <el-card class="box-card" shadow="never" style="height: 100%">
+            <el-card class="box-card" shadow="always" style="height: 100%">
               <h2>Crunchy.Network</h2>
               <el-alert
                 title="Crunchy.Network is in beta"

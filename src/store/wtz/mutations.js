@@ -20,7 +20,6 @@ export default {
   },
 
   updateWtzTransactions(state, txs) {
-    console.log("txs", txs);
     state.txs = txs;
   },
 };

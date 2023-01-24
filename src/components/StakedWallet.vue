@@ -3,8 +3,8 @@
     id="nft-wallet-view"
     style="min-height: 50vh; display: flex; flex-direction: column"
   >
-    <el-card>
-      <div>
+    <el-card v-loading="homeWallet.loadingStake" shadow="always">
+      <div class="responsive-table">
         <div>
           <el-row
             type="flex"
@@ -25,13 +25,14 @@
                 align="middle"
                 style="padding: 0 20px; color: #fff"
               >
-                <el-col :span="6">Protocol</el-col>
+                <el-col :span="4">Protocol</el-col>
+                <el-col style="text-align: right" :span="4"></el-col>
                 <el-col style="text-align: right" :span="4"
                   >Staked Value</el-col
                 >
-                <el-col style="text-align: right" :span="4">Claimable</el-col>
+                <el-col style="text-align: right" :span="4"></el-col>
                 <el-col style="text-align: right" :span="4">Total Value</el-col>
-                <el-col style="text-align: right" :span="6"></el-col>
+                <el-col style="text-align: right" :span="4"></el-col>
               </el-row>
             </el-col>
           </el-row>
@@ -44,12 +45,12 @@
           />
 
           <row-pagination
-            :currentPage="currentPage"
-            :handleEnd="handleEnd"
-            :handleNextPage="handleNextPage"
-            :handlePrevPage="handlePrevPage"
-            :handleStart="handleStart"
-            :nextPage="nextPage"
+            :current-page="currentPage"
+            :handle-end="handleEnd"
+            :handle-next-page="handleNextPage"
+            :handle-prev-page="handlePrevPage"
+            :handle-start="handleStart"
+            :next-page="nextPage"
             :pages="pages"
           ></row-pagination>
         </div>
@@ -59,12 +60,17 @@
 </template>
 
 <script>
-import RowPagination from "./RowPagination.vue";
+import { mapActions, mapGetters, mapState } from "vuex";
 import StakedWalletRow from "./StakedWalletRow.vue";
 export default {
-  components: { StakedWalletRow, RowPagination },
   name: "StakedWalletView",
-  props: ["showUsd"],
+  components: { StakedWalletRow },
+  props: {
+    showUsd: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
       currentPage: 0,
@@ -74,147 +80,43 @@ export default {
       tabledata: [],
       displayCount: 12,
 
-      farms: [
-        {
-          id: 0,
-          icon: "https://res.cloudinary.com/melvin-manni/image/upload/v1645283474/tvmz49wrjosa2vrpw2dw.svg",
-          protocol: "Crunchy",
-          stakedValue: 569.538837,
-          stakedValueUsd: 2100,
-          claimable: 60.552927,
-          claimableUsd: 220.21,
-          totalValue: 628.12815,
-          totalValueUsd: 2320.21,
-          stakes: [
-            {
-              stakedToken: "ASH/XTZ LP",
-              stakedValueUsd: 1500,
-              stakedValue: 408.724143,
-              claimableUsd: 200,
-              claimable: 55.056822,
-              totalValueUsd: 1700,
-              totalValue: 462.496623,
-            },
-            {
-              stakedToken: "CRUNCH",
-              stakedValue: 137.316273,
-              stakedValueUsd: 500,
-              claimable: 5.51353,
-              claimableUsd: 20,
-              totalValue: 142.786394,
-              totalValueUsd: 520,
-            },
-            {
-              stakedToken: "CRUNCH/XTZ LP",
-              stakedValue: 408.724143,
-              stakedValueUsd: 1500,
-              claimable: 55.056822,
-              claimableUsd: 200,
-              totalValue: 462.496623,
-              totalValueUsd: 1700,
-            },
-          ],
-        },
-
-        {
-          id: 0,
-          icon: "https://res.cloudinary.com/melvin-manni/image/upload/v1645292809/c1rutxlzllilmtuibcdo.png",
-          protocol: "Quipuswap",
-          stakedValue: 137.316273,
-          stakedValueUsd: 500,
-          claimable: 0.275718,
-          claimableUsd: 1,
-          totalValue: 137.58982,
-          totalValueUsd: 501,
-          stakes: [
-            {
-              stakedToken: "ASH/XTZ LP",
-              stakedValueUsd: 1500,
-              stakedValue: 408.724143,
-              claimableUsd: 200,
-              claimable: 55.056822,
-              totalValueUsd: 1700,
-              totalValue: 462.496623,
-            },
-            {
-              stakedToken: "CRUNCH",
-              stakedValue: 137.316273,
-              stakedValueUsd: 500,
-              claimable: 5.51353,
-              claimableUsd: 20,
-              totalValue: 142.786394,
-              totalValueUsd: 520,
-            },
-            {
-              stakedToken: "CRUNCH/XTZ LP",
-              stakedValue: 408.724143,
-              stakedValueUsd: 1500,
-              claimable: 55.056822,
-              claimableUsd: 200,
-              totalValue: 462.496623,
-              totalValueUsd: 1700,
-            },
-          ],
-        },
-
-        {
-          id: 0,
-          icon: "https://res.cloudinary.com/melvin-manni/image/upload/v1645292809/nstgjnest4jrhcsgwymf.png",
-          protocol: "Plenty",
-          stakedValue: 109.939757,
-          stakedValueUsd: 400,
-          claimable: 0.011028,
-          claimableUsd: 0.04,
-          totalValue: 109.950716,
-          totalValueUsd: 400.04,
-          stakes: [
-            {
-              stakedToken: "ASH/XTZ LP",
-              stakedValueUsd: 1500,
-              stakedValue: 408.724143,
-              claimableUsd: 200,
-              claimable: 55.056822,
-              totalValueUsd: 1700,
-              totalValue: 462.496623,
-            },
-            {
-              stakedToken: "CRUNCH",
-              stakedValue: 137.316273,
-              stakedValueUsd: 500,
-              claimable: 5.51353,
-              claimableUsd: 20,
-              totalValue: 142.786394,
-              totalValueUsd: 520,
-            },
-            {
-              stakedToken: "CRUNCH/XTZ LP",
-              stakedValue: 408.724143,
-              stakedValueUsd: 1500,
-              claimable: 55.056822,
-              claimableUsd: 200,
-              totalValue: 462.496623,
-              totalValueUsd: 1700,
-            },
-          ],
-        },
-      ],
+      farms: [],
     };
+  },
+  computed: {
+    ...mapState(["homeWallet"]),
+    ...mapGetters(["getStakes"]),
+  },
+  watch: {
+    getStakes() {
+      this.paginationHandler();
+    },
+
+    farms(newVal) {
+      this.paginationHandler();
+    },
+  },
+  created() {
+    setInterval(() => {
+      this.softUpdateStakeAssets(this.$route.params.walletAddress);
+    }, 1000 * 60 * 10);
   },
   mounted() {
     this.paginationHandler();
   },
   methods: {
+    ...mapActions(["softUpdateStakeAssets"]),
     paginationHandler() {
-      this.pages = Math.ceil(this.farms.length / this.displayCount);
+      this.pages = Math.ceil(this.getStakes.length / this.displayCount);
       this.handleVisibleData();
     },
 
     handleVisibleData() {
       const next = this.nextPage > this.pages ? this.pages : this.nextPage;
-      this.tabledata = this.farms.slice(
+      this.tabledata = this.getStakes.slice(
         (next - 1) * this.displayCount,
         this.nextPage * this.displayCount > this.farms.length
-          ? this.farms.length
+          ? this.getStakes.length
           : next * this.displayCount
       );
     },
