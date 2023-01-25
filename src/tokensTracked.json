@@ -221,4 +221,12 @@
     "description": "Hedgehoge",
     "name": "Hedgehoge"
   }
+  {
+    "symbol": "PLY",
+    "tokenAddress": "KT1JVjgXPMMSaa6FkzeJcgb8q9cUaLmwaJUX",
+    "tokenId": 0,
+    "decimals": 18,
+    "description": "Plenty PLY",
+    "name": "Plenty PLY"
+  }
  ]
