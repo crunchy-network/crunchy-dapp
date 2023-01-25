@@ -1,6 +1,5 @@
 import tzkt from "./../../utils/tzkt";
 import teztools from "./../../utils/teztools";
-import coingecko from "./../../utils/coingecko";
 import ipfs from "./../../utils/ipfs";
 import farmUtils from "./../../utils/farm";
 import { getContract, getWalletContract, getBatch } from "./../../utils/tezos";
@@ -9,7 +8,7 @@ import { BigNumber } from "bignumber.js";
 
 export default {
   async updateLpXtzUsdVwap({ commit }) {
-    return coingecko.getXtzUsdPrice().then((price) => {
+    return tzkt.getXtzUsdPrice().then((price) => {
       commit("updateLpXtzUsdVwap", price);
     });
   },

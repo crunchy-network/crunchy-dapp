@@ -1,8 +1,8 @@
 import axios from "axios";
-import coingecko from "../../utils/coingecko";
 import homeWallet from "../../utils/home-wallet";
 import homeWalletStake from "../../utils/home-wallet-stake";
 import queryDipdup from "../../utils/queryDipdup";
+import tzkt from "../../utils/tzkt";
 // import teztools from "../../utils/teztools";
 
 export default {
@@ -148,7 +148,7 @@ export default {
 
       const priceFeed = await queryDipdup.getAllTokenAndQuotes();
 
-      const xtzUsd = await coingecko.getXtzUsdPrice();
+      const xtzUsd = await tzkt.getXtzUsdPrice();
 
       const [quipuswap, vortex, plenty, spicyswap, sirius] = await Promise.all([
         homeWallet.getQuipuLp(balances, xtzUsd, priceFeed),
@@ -179,7 +179,7 @@ export default {
       );
 
       const priceFeed = await queryDipdup.getAllTokenAndQuotes();
-      const xtzUsd = await coingecko.getXtzUsdPrice();
+      const xtzUsd = await tzkt.getXtzUsdPrice();
 
       const [quipuswap, vortex, plenty, spicyswap, sirius] = await Promise.all([
         homeWallet.getQuipuLp(balances, xtzUsd, priceFeed),

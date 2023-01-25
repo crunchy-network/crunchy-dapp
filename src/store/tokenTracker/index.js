@@ -29,12 +29,18 @@ export default {
     getTrackerData(state) {
       return {
         tokensTracked: state.tokenList.length,
-        dexCovered: 1,
+        dexCovered: 2,
         total24hVolume: state.tokenList.reduce((prev, current) => {
           return prev + current.volume24;
         }, 0),
+        total24hVolumeUsd: state.tokenList.reduce((prev, current) => {
+          return prev + current.volume24Usd;
+        }, 0),
         estimatedMktCap: state.tokenList.reduce((prev, current) => {
           return prev + current.mktCap;
+        }, 0),
+        estimatedMktCapUsd: state.tokenList.reduce((prev, current) => {
+          return prev + current.mktCapUsd;
         }, 0),
       };
     },

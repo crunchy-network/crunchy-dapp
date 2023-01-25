@@ -80,18 +80,6 @@
           </svg>
         </a>
       </div>
-      <div class="grid-content" style="text-align: right">
-        <el-switch
-          v-model="showUsd"
-          :disabled="homeWallet.loading"
-          style="margin-right: 24px"
-          active-color="#1EC37F"
-          inactive-color="#555CFF"
-          active-text="USD"
-          inactive-text="XTZ"
-        >
-        </el-switch>
-      </div>
     </el-row>
 
     <div v-if="activeTab === 'wallet'">
@@ -125,7 +113,7 @@
                   <el-col style="text-align: right" :span="2"
                     >1d
                     <el-tooltip
-                      content="% Change in XTZ"
+                      :content="`% Change in ${showUsd ? 'USD' : 'XTZ'}`"
                       placement="top"
                       effect="light"
                     >
@@ -135,7 +123,7 @@
                   <el-col style="text-align: right" :span="2"
                     >7d
                     <el-tooltip
-                      content="% Change in XTZ"
+                      :content="`% Change in ${showUsd ? 'USD' : 'XTZ'}`"
                       placement="top"
                       effect="light"
                     >
@@ -145,7 +133,7 @@
                   <el-col style="text-align: right" :span="2"
                     >30d
                     <el-tooltip
-                      content="% Change in XTZ"
+                      :content="`% Change in ${showUsd ? 'USD' : 'XTZ'}`"
                       placement="top"
                       effect="light"
                     >
@@ -257,7 +245,6 @@ export default {
     return {
       activeTab: "wallet",
       tabledata: [],
-      showUsd: false,
       currentPage: 0,
       pages: 0,
       nextPage: 1,
@@ -285,7 +272,10 @@ export default {
   },
   computed: {
     ...mapState(["homeWallet"]),
-    ...mapGetters(["getPkh", "getAssets", "getStakedValues"]),
+    ...mapGetters(["getPkh", "getAssets", "getStakedValues", "getShowUsd"]),
+    showUsd() {
+      return this.getShowUsd;
+    },
   },
   watch: {
     getPkh() {

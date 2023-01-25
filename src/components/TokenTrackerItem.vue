@@ -17,24 +17,14 @@
             text-decoration: none;
           "
         >
-          Tezos Token Tracker
+          <el-button
+            round
+            type="primary"
+            plain
+            icon="fa-sharp fa-solid fa-arrow-left"
+            >{{ " " }}BACK
+          </el-button>
         </router-link>
-        <i
-          style="font-size: 12px; color: #c0c4cc; margin: 0 5px"
-          class="fa-solid fa-angle-right"
-        ></i>
-        <span
-          disabled
-          type="text"
-          style="
-            font-weight: 600;
-            font-size: 16px;
-            color: #c0c4cc;
-            line-height: 24px;
-          "
-        >
-          {{ getTokenOverview.name || getTokenOverview.symbol }}
-        </span>
       </el-row>
 
       <el-row
@@ -75,17 +65,30 @@
               :precision="4"
               :font-size="40"
               :line-height="'19px'"
-              :value="getTokenOverview.usdValue"
+              :value="getTokenOverview.currentPrice"
+              :usd-value="getTokenOverview.usdValue"
             >
               <span
                 style="font-weight: 600; font-size: 24px"
                 :class="
-                  getTokenOverview.change1Day < 0 ? 'n-change' : 'p-change'
+                  handleChangeclass(
+                    getTokenOverview,
+                    'change1Day',
+                    'change1DayUsd'
+                  )
                 "
               >
                 {{
-                  getLoading
+                  getTokenOverview.contract === "tez"
                     ? "-"
+                    : getShowUsd
+                    ? vueNumberFormat(getTokenOverview.change1DayUsd, {
+                        prefix: "",
+                        suffix: "%",
+                        decimal: ".",
+                        thousand: ",",
+                        precision: 2,
+                      })
                     : vueNumberFormat(getTokenOverview.change1Day, {
                         prefix: "",
                         suffix: "%",
@@ -106,31 +109,23 @@
         </div>
       </el-row>
 
-      <div class="tab-wrapper tab-custom-element">
-        <button
-          class="tab-text"
-          :style="isActiveTab('overview')"
-          @click="setActiveTab('overview')"
-        >
-          Overview
-        </button>
-        <button
-          class="tab-text"
-          :style="isActiveTab('markets')"
-          @click="setActiveTab('markets')"
-        >
-          Markets
-        </button>
+      <div>
+        <el-row type="flex" style="flex-wrap: wrap; row-gap: 24px" :gutter="24">
+          <el-col :md="8">
+            <token-metrics />
+          </el-col>
+          <el-col :md="16">
+            <TrackerOverview
+              :duration="duration"
+              :set-duration-tab="setDurationTab"
+              :token-tracked="getTokenOverview"
+              :loading="getLoading"
+          /></el-col>
+        </el-row>
+        <el-col style="margin-top: 24px" :span="24">
+          <TrackerMarkets :loading="getLoading" />
+        </el-col>
       </div>
-
-      <TrackerOverview
-        v-if="activeTab === 'overview'"
-        :duration="duration"
-        :set-duration-tab="setDurationTab"
-        :token-tracked="getTokenOverview"
-        :loading="getLoading"
-      />
-      <TrackerMarkets v-if="activeTab === 'markets'" :loading="getLoading" />
     </el-main>
   </div>
 </template>
@@ -142,17 +137,23 @@ import TrackerMarkets from "./TrackerMarkets.vue";
 import { mapActions, mapGetters, mapState } from "vuex";
 import numberFormat from "../utils/number-format";
 import PriceFormat from "./PriceFormat.vue";
+import TokenMetrics from "./TokenMetrics.vue";
 export default {
-  components: { NavMenu, TrackerOverview, TrackerMarkets, PriceFormat },
+  components: {
+    NavMenu,
+    TrackerOverview,
+    TrackerMarkets,
+    PriceFormat,
+    TokenMetrics,
+  },
   data() {
     return {
-      activeTab: "overview",
       duration: "all",
     };
   },
 
   computed: {
-    ...mapGetters(["getTokenOverview"]),
+    ...mapGetters(["getTokenOverview", "getShowUsd"]),
     ...mapState(["tokenTracker"]),
     getLoading() {
       return this.tokenTracker.loading;
@@ -169,12 +170,12 @@ export default {
   },
 
   created() {
-    setInterval(() => {
-      this.fetchTokenTrackedWithId({
-        id: this.$route.params.tokenId,
-        softLoad: true,
-      });
-    }, 1000 * 60 * 3);
+    // setInterval(() => {
+    //   this.fetchTokenTrackedWithId({
+    //     id: this.$route.params.tokenId,
+    //     softLoad: true,
+    //   });
+    // }, 1000 * 60 * 3);
     if (this.$route.query.tab) {
       this.activeTab = this.$route.query.tab;
     } else {
@@ -206,24 +207,6 @@ export default {
     refresh() {
       this.fetchTokenTrackedWithId({ id: this.$route.params.tokenId });
     },
-    isActiveTab(tab) {
-      return (
-        this.activeTab === tab &&
-        " border-bottom: 3px solid #FF4D4B; color: #FF4D4B; font-weight: 700"
-      );
-    },
-
-    setActiveTab(tab = "") {
-      if (["overview", "markets"].includes(tab)) {
-        this.activeTab = tab;
-        this.$router.replace({
-          query: {
-            ...this.$route.query,
-            tab,
-          },
-        });
-      }
-    },
 
     setDurationTab(tab = "") {
       if (["1d", "7d", "30d", "all"].includes(tab)) {
@@ -235,6 +218,17 @@ export default {
           },
         });
       }
+    },
+
+    handleChangeclass(asset, param, usdParam) {
+      let className = "";
+      if (this.getShowUsd) {
+        className = asset[usdParam] < 0 ? "n-change" : "p-change";
+      } else {
+        className = asset[param] < 0 ? "n-change" : "p-change";
+      }
+
+      return className;
     },
 
     formatNumShorthand(val) {

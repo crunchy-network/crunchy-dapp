@@ -27,7 +27,7 @@
 
     <el-main style="margin-top: 90px">
       <el-row :gutter="20" type="flex" align="bottom">
-        <el-col :span="16">
+        <el-col :span="24">
           <div class="grid-content">
             <h2 style="margin-top: 0; margin-bottom: 5px">
               Mint WTZ/Redeem XTZ
@@ -36,19 +36,6 @@
               >Just submit XTZ to start minting. Burn WTZ to redeem for
               XTZ.</span
             >
-          </div>
-        </el-col>
-        <el-col :span="8">
-          <div class="grid-content" style="text-align: right">
-            <el-switch
-              v-model="showUsd"
-              style="margin-right: 24px"
-              active-color="#1EC37F"
-              inactive-color="#555CFF"
-              active-text="USD"
-              inactive-text="XTZ"
-            >
-            </el-switch>
           </div>
         </el-col>
       </el-row>
@@ -532,7 +519,7 @@
 
 <script>
 // import NavWallet from "./NavWallet.vue";
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
 import { BigNumber } from "bignumber.js";
 import NavMenu from "./NavMenu.vue";
 
@@ -551,11 +538,14 @@ export default {
         outputWtz: "",
       },
       mode: "mint",
-      showUsd: false,
     };
   },
   computed: {
     ...mapState(["wallet", "wtz"]),
+    ...mapGetters(["getShowUsd"]),
+    showUsd() {
+      return this.getShowUsd;
+    },
   },
   created() {
     this.refresh();

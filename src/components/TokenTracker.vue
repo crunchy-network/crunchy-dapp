@@ -65,10 +65,10 @@
                     "
                   >
                     <price-format
-                      prefix="$"
                       :font-weight="700"
                       :font-size="24"
                       :value="getTrackerData.estimatedMktCap"
+                      :usd-value="getTrackerData.estimatedMktCapUsd"
                     />
                   </div>
                 </el-card>
@@ -95,10 +95,10 @@
                     "
                   >
                     <price-format
-                      prefix="$"
                       :font-weight="700"
                       :font-size="24"
                       :value="getTrackerData.total24hVolume"
+                      :usd-value="getTrackerData.total24hVolumeUsd"
                     />
                   </div>
                 </el-card>
@@ -160,7 +160,13 @@
             </el-col>
           </el-row>
 
-          <el-row style="margin-top: 30px">
+          <el-row
+            align="middle"
+            type="flex"
+            justify="space-between"
+            style="margin-top: 30px"
+            :gutter="10"
+          >
             <el-col :xs="12" :span="10">
               <div class="grid-content search-input">
                 <el-input
@@ -224,10 +230,10 @@
                     <el-col style="text-align: right" :span="4">
                       <div
                         class="wrap-sort-icon"
-                        @click="toggleColumSort('usdValue')"
+                        @click="toggleColumSort('cuurentPrice', 'usdValue')"
                       >
                         <sort-arrow-indicator
-                          v-if="sort.key === 'usdValue'"
+                          v-if="activeColumn('cuurentPrice', 'usdValue')"
                           :value="sort.rule"
                         />
                         Price
@@ -236,10 +242,10 @@
                     <el-col style="text-align: right" :span="4">
                       <div
                         class="wrap-sort-icon"
-                        @click="toggleColumSort('volume24')"
+                        @click="toggleColumSort('volume24', 'volume24Usd')"
                       >
                         <sort-arrow-indicator
-                          v-if="sort.key === 'volume24'"
+                          v-if="activeColumn('volume24', 'volume24Usd')"
                           :value="sort.rule"
                         />
                         24 Volume
@@ -248,10 +254,10 @@
                     <el-col style="text-align: right" :span="4">
                       <div
                         class="wrap-sort-icon"
-                        @click="toggleColumSort('mktCap')"
+                        @click="toggleColumSort('mktCap', 'mktCapUsd')"
                       >
                         <sort-arrow-indicator
-                          v-if="sort.key === 'mktCap'"
+                          v-if="activeColumn('mktCap', 'mktCapUsd')"
                           :value="sort.rule"
                         />
                         Mkt Cap
@@ -260,15 +266,15 @@
                     <el-col style="text-align: right" :span="2">
                       <div
                         class="wrap-sort-icon"
-                        @click="toggleColumSort('change1Day')"
+                        @click="toggleColumSort('change1Day', 'change1DayUsd')"
                       >
                         <sort-arrow-indicator
-                          v-if="sort.key === 'change1Day'"
+                          v-if="activeColumn('change1Day', 'change1DayUsd')"
                           :value="sort.rule"
                         />
                         1d
                         <el-tooltip
-                          content="% Change in USD"
+                          :content="`% Change in ${getShowUsd ? 'USD' : 'XTZ'}`"
                           placement="top"
                           effect="light"
                         >
@@ -279,15 +285,15 @@
                     <el-col style="text-align: right" :span="2">
                       <div
                         class="wrap-sort-icon"
-                        @click="toggleColumSort('change7Day')"
+                        @click="toggleColumSort('change7Day', 'change7DayUsd')"
                       >
                         <sort-arrow-indicator
-                          v-if="sort.key === 'change7Day'"
+                          v-if="activeColumn('change7Day', 'change7DayUsd')"
                           :value="sort.rule"
                         />
                         7d
                         <el-tooltip
-                          content="% Change in USD"
+                          :content="`% Change in ${getShowUsd ? 'USD' : 'XTZ'}`"
                           placement="top"
                           effect="light"
                         >
@@ -298,15 +304,17 @@
                     <el-col style="text-align: right" :span="2">
                       <div
                         class="wrap-sort-icon"
-                        @click="toggleColumSort('change30Day')"
+                        @click="
+                          toggleColumSort('change30Day', 'change30DayUsd')
+                        "
                       >
                         <sort-arrow-indicator
-                          v-if="sort.key === 'change30Day'"
+                          v-if="activeColumn('change30Day', 'change30DayUsd')"
                           :value="sort.rule"
                         />
                         30d
                         <el-tooltip
-                          content="% Change in USD"
+                          :content="`% Change in ${getShowUsd ? 'USD' : 'XTZ'}`"
                           placement="top"
                           effect="light"
                         >
@@ -414,6 +422,7 @@ export default {
         key: "",
         rule: "",
       },
+      currentColumns: [],
       tabledata: [],
       showUsd: false,
       currentPage: 0,
@@ -426,7 +435,7 @@ export default {
 
   computed: {
     ...mapState(["tokenTracker"]),
-    ...mapGetters(["getTrackerData", "getTokens"]),
+    ...mapGetters(["getTrackerData", "getTokens", "getShowUsd"]),
     sortedTokensTracked() {
       return _.orderBy(this.getTokens, [this.sort.key], [this.sort.rule]) || [];
     },
@@ -459,6 +468,12 @@ export default {
       handler() {
         this.paginationHandler();
       },
+    },
+
+    getShowUsd(value) {
+      if (this.currentColumns[1]) {
+        this.key = value ? this.currentColumns[1] : this.currentColumns[0];
+      }
     },
   },
 
@@ -542,13 +557,19 @@ export default {
       this.prevPage = 0;
     },
 
-    toggleColumSort(column) {
-      if (this.sort.key === column) {
+    toggleColumSort(column, columnUsd) {
+      this.currentColumns = [column, columnUsd];
+      const key = !columnUsd ? column : this.getShowUsd ? columnUsd : column;
+      if (this.sort.key === key) {
         this.sort.rule = this.sort.rule === "asc" ? "desc" : "asc";
       } else {
-        this.sort.key = column;
+        this.sort.key = key;
         this.sort.rule = "desc";
       }
+    },
+    activeColumn(column, columnUsd) {
+      const key = !columnUsd ? column : this.getShowUsd ? columnUsd : column;
+      return this.sort.key === key;
     },
   },
 };

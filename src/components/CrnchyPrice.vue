@@ -4,14 +4,13 @@
     shadow="never"
     style="border: 0"
     body-style="
-      display: flex;
-      align-items: center;
-      height: max-content;
-      width: fit-content;
-      margin-right: 20px;
-      row-gap: 5px;
-      padding: 0;
-    "
+        display: flex;
+        align-items: center;
+        height: max-content;
+        width: fit-content;
+        row-gap: 5px;
+        padding: 0;
+      "
   >
     <el-avatar
       src="https://fleek.ipfs.io/ipfs/bafkreifcxtpqojfllakxbhkmy5qfcur7izyyr2e7c6ukm7y43v3scgsszi"
@@ -22,19 +21,19 @@
     ></el-avatar>
     <price-format
       :value="currentPrice"
+      :usd-value="currentPriceUsd"
       color=" #191b1f"
       :font-size="16"
       :font-weight="500"
       line-height="24px"
-      :precision="3"
-      prefix="$"
+      :precision="4"
     />
   </el-card>
 </template>
 
 <script>
-import coingecko from "../utils/coingecko";
 import queryDipdup from "../utils/queryDipdup";
+import tzkt from "../utils/tzkt";
 import PriceFormat from "./PriceFormat.vue";
 export default {
   name: "CrnchyPrice",
@@ -42,6 +41,7 @@ export default {
   data() {
     return {
       price: 0,
+      priceUsd: 0,
       loading: false,
     };
   },
@@ -49,13 +49,13 @@ export default {
     currentPrice() {
       return this.price;
     },
-  },
-
-  created() {
-    this.getCrnchyPrice();
+    currentPriceUsd() {
+      return this.priceUsd;
+    },
   },
 
   mounted() {
+    this.getCrnchyPrice();
     setInterval(() => {
       this.softLoadCrnchyPrice();
     }, 1000 * 60 * 5);
@@ -65,12 +65,13 @@ export default {
     async getCrnchyPrice() {
       this.loading = true;
       try {
-        const xtzUsd = await coingecko.getXtzUsdPrice();
+        const xtzUsd = await tzkt.getXtzUsdPrice();
         const priceXTZ = await queryDipdup.getTokenPriceXTZ(
           `${process.env.VUE_APP_CONTRACTS_CRNCHY}_0`
         );
 
-        this.price = xtzUsd * priceXTZ;
+        this.price = priceXTZ;
+        this.priceUsd = xtzUsd * priceXTZ;
       } catch (error) {
         console.log("\n\n------ begin:  ------");
         console.log("ERROR", error);
@@ -81,12 +82,13 @@ export default {
     },
     async softLoadCrnchyPrice() {
       try {
-        const xtzUsd = await coingecko.getXtzUsdPrice();
+        const xtzUsd = await tzkt.getXtzUsdPrice();
         const priceXTZ = await queryDipdup.getTokenPriceXTZ(
           `${process.env.VUE_APP_CONTRACTS_CRNCHY}_0`
         );
 
-        this.price = xtzUsd * priceXTZ;
+        this.price = priceXTZ;
+        this.priceUsd = xtzUsd * priceXTZ;
       } catch (error) {
         console.log("\n\n------ begin:  ------");
         console.log("ERROR", error);

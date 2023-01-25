@@ -321,15 +321,6 @@
       </el-row>
 
       <el-tabs v-model="activeTab">
-        <el-switch
-          v-model="showUsd"
-          style="float: right; margin-right: 24px; margin-top: -48px"
-          active-color="#1EC37F"
-          inactive-color="#555CFF"
-          active-text="USD"
-          inactive-text="XTZ"
-        >
-        </el-switch>
         <el-tab-pane label="All Locks" name="all">
           <LpLockerListing
             :lockers="activeLockers"
@@ -351,7 +342,7 @@
 
 <script>
 import _ from "lodash";
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
 import LpLockerListing from "./LpLockerListing.vue";
 import LpLockerMyLockers from "./LpLockerMyLockers.vue";
 import LpLockerCreateDialog from "./LpLockerCreateDialog.vue";
@@ -368,13 +359,15 @@ export default {
   },
   data() {
     return {
-      showUsd: false,
       activeTab: "all",
     };
   },
   computed: {
     ...mapState(["wallet", "lpLockers"]),
-
+    ...mapGetters(["getShowUsd"]),
+    showUsd() {
+      return this.getShowUsd;
+    },
     myLockers: function () {
       const vm = this;
       return _.filter(this.lpLockers.data, (l) => l.owner === vm.wallet.pkh);
