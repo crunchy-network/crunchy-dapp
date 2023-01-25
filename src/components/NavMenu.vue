@@ -1,5 +1,11 @@
 <template>
-  <div :style="showNotice ? ((!showMenu || !mobile) && 'margin-bottom: 150px') : 'margin-bottom: 100px'">
+  <div
+    :style="
+      showNotice
+        ? (!showMenu || !mobile) && 'margin-bottom: 150px'
+        : 'margin-bottom: 100px'
+    "
+  >
     <el-header
       id="nav-menu"
       style="
@@ -12,8 +18,7 @@
         z-index: 999;
         /*display: flex;*/
         align-items: center;
-        border-bottom: 1px solid #f2f2f2;
-        background: #1f2128;
+        border-bottom: 1px solid rgba(140, 141, 143, 0.1);
       "
     >
       <Notice v-if="showNotice && (!showMenu || !mobile)" />
@@ -388,7 +393,7 @@ export default {
   align-items: center;
   min-width: 100%;
   min-height: 70px;
-  background: #fff;
+  /* background: #fff; */
   box-shadow: 0px 10px 16px rgba(21, 21, 52, 0.05);
 }
 
@@ -398,7 +403,7 @@ export default {
   }
 }
 .el-menu-item.submenu-item {
-  color: #ffffff;
+  color: #8c8d8f;
   font-weight: 500;
   font-size: 16px;
   i {
@@ -409,13 +414,13 @@ export default {
     vertical-align: middle;
   }
   a {
-    color: #ffffff;
+    color: #8c8d8f;
     font-weight: 500;
     text-decoration: none;
     padding: 0px;
   }
   &:hover {
-    background: #9093991e !important;
+    background: #909399 !important;
   }
   &.is-active {
     color: #f15d59 !important;
@@ -426,7 +431,7 @@ export default {
 }
 
 .nav-menu-wrapper > .el-menu-item {
-  color: #ffffff !important;
+  color: #8c8d8f !important;
   font-weight: 500;
   font-size: 16px;
   line-height: 24px;
@@ -506,7 +511,7 @@ export default {
     left: 0;
     right: 0;
     border-top: 1.5px solid rgba(25, 27, 31, 0.1);
-    background: #fff;
+    /* background: #fff; */
     height: 80px;
     transition: 0.45s ease all;
     &.active {

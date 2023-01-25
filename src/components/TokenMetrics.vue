@@ -18,7 +18,6 @@
         font-weight: 700;
         font-size: 16px;
         line-height: 24px;
-        color: #191b1f;
         margin-bottom: 32px;
       "
     >
@@ -47,17 +46,11 @@
           >
             <el-col
               >Market Cap Rank
-              <p
-                style="
-                  font-weight: 600;
-                  font-size: 14px;
-                  line-height: unset;
-                  margin: 0;
-                  color: rgb(48, 49, 51);
-                "
-              >
-                {{ getTokenOverview.order }}
-              </p>
+
+              <number-format
+                :value="getTokenOverview.order"
+                :precision="0"
+              ></number-format>
             </el-col>
             <el-col><el-divider direction="horizontal"></el-divider></el-col>
             <el-col

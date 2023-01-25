@@ -52,7 +52,7 @@ export default {
     },
     color: {
       type: String,
-      default: "#303133",
+      default: "#FFFFFF",
     },
     shortHand: {
       type: Boolean,
@@ -82,7 +82,11 @@ export default {
           precision = 2;
         }
       }
-      return precision;
+      return this.precision && this.precision < precision
+        ? this.precision
+        : this.precision === 0
+        ? 0
+        : precision;
     },
 
     handleFontSize() {

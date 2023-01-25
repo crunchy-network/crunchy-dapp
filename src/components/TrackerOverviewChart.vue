@@ -364,6 +364,13 @@ export default {
         document.getElementById("chart").innerHTML = "";
 
         var chart = createChart(document.getElementById("chart"), {
+          layout:{
+            background:{
+              // type: "solid",
+              color: "#191B1F",
+            },
+            textColor: "#FFFFFF",
+          },
           rightPriceScale: {
             visible: true,
             scaleMargins: {
@@ -382,10 +389,10 @@ export default {
           },
           grid: {
             vertLines: {
-              color: "#f0f3fa",
+              color: "rgba(240,243,250,0)",
             },
             horzLines: {
-              color: "#f0f3fa",
+              color: "rgba(255,255,255,.1)",
             },
           },
           crosshair: {

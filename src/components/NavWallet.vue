@@ -1,5 +1,5 @@
 <template>
-  <div style="display: inline-block">
+  <div id="nav-wallet-component" style="display: inline-block">
     <el-button
       v-if="wallet.connected === false"
       class="wallet-btn"
@@ -16,10 +16,10 @@
       trigger="hover"
     >
       <div>
-        <strong>{{
+        <strong style="font-size: 16px">{{
           `${(wallet.balance.toNumber() / 1000000).toFixed(3)} ꜩ`
         }}</strong>
-        <el-divider></el-divider>
+        <el-divider style="background: #ffffff19 !important"></el-divider>
         <el-row type="flex" align="middle" justify="space-between">
           <el-col :span="12">
             <el-button type="text" size="mini" round plain @click="changeWallet"
@@ -39,7 +39,7 @@
       </div>
       <el-button
         slot="reference"
-        style="background: transparent"
+        style="background: #35373d; border: 0"
         type="primary"
         round
       >
@@ -67,4 +67,9 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+.el-popover__title {
+  font-size: 14px !important;
+  color: #a3a4a5 !important;
+}
+</style>

@@ -76,7 +76,7 @@ body,
 
 body {
   background-color: #1f2128;
-  background-image: url("./assets/cover-bg.png");
+  /* background-image: url("./assets/cover-bg.png"); */
   background-repeat: no-repeat;
   background-size: cover;
   background-position: top right;
@@ -101,6 +101,7 @@ h1,
 h2,
 h3 {
   font-weight: 600 !important;
+  color: #fff;
 }
 .grid-content h2 + span {
   font-weight: 300 !important;
@@ -255,7 +256,7 @@ i.fa-icon-right {
 .el-popover.nav-wallet {
   color: rgb(255, 255, 255);
   background: rgba(31, 33, 40, 1) !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  border: 1px solid #ffffff19 !important;
   border-radius: 6px !important;
 }
 
@@ -369,7 +370,7 @@ header .grid-content button.el-button {
   margin-top: unset;
 }
 .el-popover.nav-wallet {
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  /* border: 1px solid rgba(255, 255, 255, 0.3) !important; */
   border-radius: 6px !important;
 }
 .el-popover.nav-wallet .el-popover__title {
@@ -410,10 +411,12 @@ header .grid-content button.el-button {
 }
 
 .search-input .el-input__inner,
+.el-input__inner,
 #farm-listing .search-input .el-input__inner {
   border-radius: 24px !important;
-  color: #191b1f !important;
-  background: #fff !important;
+  color: #fff !important;
+  background: transparent !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
 }
 .search-input .el-input input:focus {
   border-color: #555cff !important;
@@ -422,13 +425,13 @@ header .grid-content button.el-button {
 div.el-card__body {
   box-sizing: border-box;
   border-radius: 18px;
-  background: #1f2128;
+  background: #191b1f;
 }
 
 .el-card {
   border-radius: 18px !important;
-  background: #1f2128 !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  background: #191b1f !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
   background-color: rgba(21, 21, 52, 0.04) !important;
 }
 .el-card .el-alert {
@@ -658,5 +661,10 @@ div.el-card__body {
   .divider .el-divider.el-divider--vertical {
     display: none;
   }
+}
+
+/* #DART THEME */
+div.el-divider {
+  background: rgba(140, 141, 143, 0.3) !important;
 }
 </style>

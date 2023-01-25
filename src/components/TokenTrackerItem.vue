@@ -22,6 +22,7 @@
             type="primary"
             plain
             icon="fa-sharp fa-solid fa-arrow-left"
+            style="background: transparent"
             >{{ " " }}BACK
           </el-button>
         </router-link>
