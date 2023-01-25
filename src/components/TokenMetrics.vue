@@ -50,7 +50,7 @@
               <p
                 style="
                   font-weight: 600;
-                  font-size: 14px;
+                  font-size: 20px;
                   line-height: unset;
                   margin: 0;
                   color: rgb(48, 49, 51);
@@ -64,6 +64,7 @@
               >24h Trading Vol<price-format
                 :precision="4"
                 prefix="$"
+                :font-size="20"
                 :value="getTokenOverview.volume24"
                 :usd-value="getTokenOverview.volume24Usd"
             /></el-col>
@@ -80,6 +81,7 @@
                 "
               >
                 <number-format
+                  :font-size="20"
                   :value="getTokenOverview.holders"
                   :precision="2"
                 /></p
@@ -111,6 +113,7 @@
               >Market Cap
               <price-format
                 :precision="4"
+                :font-size="20"
                 :value="getTokenOverview.mktCap"
                 :usd-value="getTokenOverview.mktCapUsd"
               />
@@ -120,6 +123,7 @@
               >Total Supply
               <number-format
                 :precision="4"
+                :font-size="20"
                 :value="getTokenOverview.calcSupply"
                 custom-setting
             /></el-col>
@@ -128,6 +132,7 @@
               >DEX Tvl
               <price-format
                 :precision="4"
+                :font-size="20"
                 prefix="$"
                 :value="getTokenOverview.tokenTvl"
                 :usd-value="getTokenOverview.tokenTvlUsd"

@@ -170,12 +170,12 @@ export default {
   },
 
   created() {
-    setInterval(() => {
-      this.fetchTokenTrackedWithId({
-        id: this.$route.params.tokenId,
-        softLoad: true,
-      });
-    }, 1000 * 60 * 3);
+    // setInterval(() => {
+    //   this.fetchTokenTrackedWithId({
+    //     id: this.$route.params.tokenId,
+    //     softLoad: true,
+    //   });
+    // }, 1000 * 60 * 3);
     if (this.$route.query.tab) {
       this.activeTab = this.$route.query.tab;
     } else {
