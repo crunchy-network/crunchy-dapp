@@ -1,5 +1,5 @@
 <template>
-  <div :style="(!showMenu || !mobile) && 'margin-bottom: 150px'">
+  <div :style="showNotice ? ((!showMenu || !mobile) && 'margin-bottom: 150px') : 'margin-bottom: 100px'">
     <el-header
       id="nav-menu"
       style="
@@ -15,7 +15,7 @@
         border-bottom: 1px solid #f2f2f2;
       "
     >
-      <Notice v-if="!showMenu || !mobile" />
+      <Notice v-if="showNotice && (!showMenu || !mobile)" />
       <el-row class="el-menu-row" type="flex" justify="space-between">
         <div
           v-if="!showMenu || !mobile"
@@ -39,7 +39,7 @@
         </button>
         <div :class="[mobile && 'mobile-menu', showMenu && 'active']">
           <div v-if="mobile && showMenu">
-            <Notice />
+            <Notice v-if="showNotice" />
             <el-row class="el-menu-row" type="flex" justify="space-between">
               <div
                 class="show-mobile"
@@ -313,6 +313,7 @@ export default {
   components: { NavWallet, CRNCHY, Notice },
   data() {
     return {
+      showNotice: false,
       mobile: false,
       showMenu: false,
       windowWidth: window.innerWidth,

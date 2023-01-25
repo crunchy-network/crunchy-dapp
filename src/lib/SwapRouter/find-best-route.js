@@ -223,7 +223,7 @@ const findBestRoute = (
       percentToDecimal(slippageTolerance) ** (1 / routePairCombos[i].length);
     var tradeinput = inputAmount;
     if (routePairCombos[i].length > 1) {
-      if (routePairCombos[i][0].a.decimals !== 0) {
+      if (routePairCombos[i][0].a.decimals !== 0 && routingFee) {
         tradeinput = tradeinput * routingFee;
       }
     }
@@ -244,6 +244,7 @@ const findBestRoute = (
         trades,
       };
     }
+    console.log(bestRoute);
     if (outputAmount > bestRoute.outputAmount) {
       bestRoute = {
         ...bestRoute,
