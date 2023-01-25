@@ -163,7 +163,7 @@ p.small-title {
 .value {
   font-weight: 600;
   letter-spacing: -0.02em;
-  color: #000000;
+  /* color: #000000; */
 }
 
 h1.value {

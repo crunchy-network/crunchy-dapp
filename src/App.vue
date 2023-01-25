@@ -286,7 +286,7 @@ i.fa-icon-right {
 }
 
 .el-menu > .el-submenu .el-submenu__title {
-  color: #191b1f !important;
+  color: #8C8D8F !important;
   font-weight: 500;
   font-size: 16px;
   line-height: 24px;
@@ -299,8 +299,8 @@ i.fa-icon-right {
 }
 
 .el-menu > .el-submenu i {
-  color: #191b1f !important;
-  fill: #191b1f !important;
+  color: #8C8D8F !important;
+  fill: #8C8D8F !important;
 }
 
 .el-menu > .el-submenu.sub-is-active .el-submenu__title {
