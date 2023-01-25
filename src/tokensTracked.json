@@ -213,4 +213,20 @@
     "description": "Tether Token",
     "name": "Tether USD"
   }
-]
+  {
+    "symbol": "HEH",
+    "tokenAddress": "KT1G1cCRNBgQ48mVDjopHjEmTN5Sbtar8nn9",
+    "tokenId": 0,
+    "decimals": 6,
+    "description": "Hedgehoge",
+    "name": "Hedgehoge"
+  }
+  {
+    "symbol": "PLY",
+    "tokenAddress": "KT1JVjgXPMMSaa6FkzeJcgb8q9cUaLmwaJUX",
+    "tokenId": 0,
+    "decimals": 18,
+    "description": "Plenty PLY",
+    "name": "Plenty PLY"
+  }
+ ]
