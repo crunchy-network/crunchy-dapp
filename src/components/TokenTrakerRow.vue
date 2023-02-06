@@ -30,7 +30,7 @@
                   "
                 ></el-avatar>
                 <a
-                  style="color: #555cff; text-decoration: none"
+                  style="color: var(--color-primary); text-decoration: none"
                   target="_blank"
                   :href="`https://tzkt.io/${asset.address}/operations/`"
                 >

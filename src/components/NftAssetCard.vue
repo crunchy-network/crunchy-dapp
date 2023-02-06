@@ -96,7 +96,7 @@
                         line-height: 18px;
 
                         letter-spacing: -0.02em;
-                        color: #555cff;
+                        color: var(--color-primary);
                       "
                     >
                       {{ link.name }}
@@ -156,7 +156,7 @@
               style="
                 font-weight: 600 !important;
                 font-size: 12px;
-                color: #555cff;
+                color: var(--color-primary);
                 word-break: break-all;
                 margin-right: 3px;
                 margin: 0;

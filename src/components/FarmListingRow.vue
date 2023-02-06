@@ -370,7 +370,7 @@
           >
           <el-col
             v-else-if="farm.ended"
-            style="text-align: right; color: #555cff; text-transform: uppercase"
+            style="text-align: right; color: var(--color-primary); text-transform: uppercase"
             :span="3"
             >Complete</el-col
           >
@@ -508,7 +508,7 @@
                 </el-row>
                 <div style="margin-top: 16px">
                   <el-link
-                    style="color: #555cff; font-weight: 600"
+                    style="color: var(--color-primary); font-weight: 600"
                     :href="`https://better-call.dev/${wallet.network}/${farm.rewardToken.address}`"
                     target="_blank"
                     >View {{ farm.rewardToken.symbol }} Contract
@@ -606,7 +606,7 @@
                 <div style="margin-top: 16px">
                   <el-link
                     v-if="farm.poolToken.isLbLp"
-                    style="color: #555cff; font-weight: 600"
+                    style="color: var(--color-primary); font-weight: 600"
                     href="https://tzkt.io/KT1TxqZ8QtKvLu3V3JH7Gx58n7Co8pgtpQU5/dex"
                     target="_blank"
                     >Get XTZ/{{ farm.poolToken.symbol }} LP
@@ -614,7 +614,7 @@
                   ></el-link>
                   <el-link
                     v-if="farm.poolToken.isPlentyLp"
-                    style="color: #555cff; font-weight: 600"
+                    style="color: var(--color-primary); font-weight: 600"
                     :href="`https://www.plentydefi.com/liquidity/add?tokenA=${farm.poolToken.token1.symbol}&tokenB=${farm.poolToken.token2.symbol}`"
                     target="_blank"
                     >Get {{ farm.poolToken.token1.symbol }}/{{
@@ -624,7 +624,7 @@
                   ></el-link>
                   <el-link
                     v-if="farm.poolToken.isQuipuLp && isFa1(farm.poolToken)"
-                    style="color: #555cff; font-weight: 600"
+                    style="color: var(--color-primary); font-weight: 600"
                     :href="`https://quipuswap.com/liquidity/add/tez-${farm.poolToken.realTokenAddress}`"
                     target="_blank"
                     >Get XTZ/{{ farm.poolToken.symbol }} LP
@@ -632,7 +632,7 @@
                   ></el-link>
                   <el-link
                     v-if="farm.poolToken.isQuipuLp && isFa2(farm.poolToken)"
-                    style="color: #555cff; font-weight: 600"
+                    style="color: var(--color-primary); font-weight: 600"
                     :href="`https://quipuswap.com/liquidity/add/tez-${farm.poolToken.realTokenAddress}_${farm.poolToken.realTokenId}`"
                     target="_blank"
                     >Get XTZ/{{ farm.poolToken.symbol }} LP
@@ -645,7 +645,7 @@
                       farm.poolToken.isPlentyLp === false &&
                       isFa1(farm.poolToken)
                     "
-                    style="color: #555cff; font-weight: 600"
+                    style="color: var(--color-primary); font-weight: 600"
                     :href="`https://quipuswap.com/swap/tez-${farm.poolToken.address}`"
                     target="_blank"
                     >Buy {{ farm.poolToken.symbol }}
@@ -658,7 +658,7 @@
                       farm.poolToken.isPlentyLp === false &&
                       isFa2(farm.poolToken)
                     "
-                    style="color: #555cff; font-weight: 600"
+                    style="color: var(--color-primary); font-weight: 600"
                     :href="`https://quipuswap.com/swap/tez-${farm.poolToken.address}_${farm.poolToken.tokenId}`"
                     target="_blank"
                     >Buy {{ farm.poolToken.symbol }}
@@ -731,7 +731,7 @@
                   <strong
                     v-if="farm.ended"
                     style="
-                      color: #555cff;
+                      color: var(--color-primary);
                       font-size: 14px;
                       font-weight: 600;
                       text-transform: uppercase;

@@ -65,7 +65,7 @@
             plain
             round
             type="primary"
-            style="font-weight: bold; background: #fff; color: #555cff"
+            style="font-weight: bold; background: #fff; color: var(--color-primary)"
           >
             <i style="margin-right: 10px" class="far fa-external-link-alt"></i>
             Tzkt
@@ -74,7 +74,7 @@
             plain
             round
             type="primary"
-            style="font-weight: bold; background: #fff; color: #555cff"
+            style="font-weight: bold; background: #fff; color: var(--color-primary)"
           >
             <i style="margin-right: 10px" class="far fa-external-link-alt"></i>
             Quipuswap
@@ -257,7 +257,7 @@
         <el-col :xs="24" :sm="12" :lg="6">
           <div class="grid-content lp-locker-progress" style="height: 100%">
             <el-card class="box-card" shadow="always" style="height: 100%">
-              <el-avatar shape="circle" :size="48" style="background: #555cff">
+              <el-avatar shape="circle" :size="48" style="background: var(--color-primary)">
                 <img
                   src="./../assets/svg-icons/lock.svg"
                   style="width: 24px; height: 24px; padding: 12px"
@@ -268,7 +268,7 @@
                 type="circle"
                 :width="48"
                 :stroke-width="8"
-                color="#555CFF"
+                color="var(--color-primary)"
                 style="float: right"
               ></el-progress>
               <div
@@ -410,7 +410,7 @@
               </div>
               <div class="margin-right-50" style="height: max-content">
                 <h2 class="unlock-text-light">UNLOCK %</h2>
-                <h2 class="unlock-text" style="color: #555cff">0.57%</h2>
+                <h2 class="unlock-text" style="color: var(--color-primary)">0.57%</h2>
               </div>
 
               <div class="margin-right-50" style="height: max-content">
@@ -493,7 +493,7 @@
               </div>
               <div class="margin-right-50" style="height: max-content">
                 <h2 class="unlock-text-light">UNLOCK %</h2>
-                <h2 class="unlock-text" style="color: #555cff">0.57%</h2>
+                <h2 class="unlock-text" style="color: var(--color-primary)">0.57%</h2>
               </div>
 
               <div class="margin-right-50" style="height: max-content">
@@ -575,7 +575,7 @@
               </div>
               <div class="margin-right-50" style="height: max-content">
                 <h2 class="unlock-text-light">UNLOCK %</h2>
-                <h2 class="unlock-text" style="color: #555cff">0.57%</h2>
+                <h2 class="unlock-text" style="color: var(--color-primary)">0.57%</h2>
               </div>
 
               <div class="margin-right-50" style="height: max-content">
@@ -664,7 +664,7 @@ nav {
     color: #191b1f6b;
   }
   .router-link {
-    color: #555cff;
+    color: var(--color-primary);
     cursor: pointer;
   }
 

@@ -13,7 +13,7 @@
           <i class="fas fa-heart" style="color: #f64947; margin-left: 6px"></i>
           <i
             class="fas fa-grin-beam-sweat"
-            style="color: #555cff; margin-left: 6px"
+            style="color: var(--color-primary); margin-left: 6px"
           ></i>
           &amp; <i class="fas fa-grin-tears" style="color: #fece00"></i>
           <div style="margin-top: 24px; font-size: 24px">
@@ -69,11 +69,39 @@ export default {
   name: "App",
   created() {
     this.$store.dispatch("checkWalletConnected");
+    document.documentElement.setAttribute("data-theme", "light");
   },
 };
 </script>
 
 <style>
+@import url("./theme.variable.css");
+
+html[data-theme="dark"] {
+  --color-primary: #555cff;
+  --color-secondary: #f15d59;
+  --color-bg: #191b1f;
+  --color-text: #fff;
+  --color-submenu: #8c8d8f;
+  --input-bg: transparent;
+  --color-nav-item: #8c8d8f;
+  --table-dropdown-bg: rgba(241, 93, 89, 0.1);
+  --color-divider-bg: rgba(140, 141, 143, 0.3);
+  --color-text-secondary: rgba(255, 255, 255, 0.7);
+}
+
+html[data-theme="light"] {
+  --color-primary: #555cff;
+  --color-secondary: #f15d59;
+  --color-bg: #fff;
+  --color-text: #191b1f;
+  --color-submenu: #191b1f;
+  --input-bg: #fafafa;
+  --color-nav-item: #191b1f;
+  --table-dropdown-bg: #f6f6f6;
+  --color-text-secondary: #757679;
+}
+
 html {
   overflow-x: hidden;
 }
@@ -90,7 +118,7 @@ body,
 }
 
 body {
-  background: #fffafa;
+  background: var(--color-bg);
   width: 100%;
 }
 
@@ -112,6 +140,7 @@ h1,
 h2,
 h3 {
   font-weight: 600 !important;
+  color: var(--color-text);
 }
 .grid-content h2 + span {
   font-weight: 300 !important;
@@ -139,7 +168,7 @@ h3 {
   color: #999;
 }
 .el-footer a:hover {
-  color: #555cff;
+  color: var(--color-primary);
 }
 
 /* Chrome, Safari, Edge, Opera */
@@ -164,7 +193,7 @@ body {
   font-family: "Poppins", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #191b1f;
+  color: var(--color-text);
   height: 100%;
 }
 
@@ -196,22 +225,22 @@ i.fa-icon-right {
 }
 
 .el-header .el-input__prefix {
-  color: #191b1f;
+  color: var(--color-text);
 }
 .el-input--prefix .el-input__inner {
   padding-left: 40px !important;
 }
 .el-header .el-input input {
   border-radius: 24px;
-  color: #191b1f;
-  background: #fafafa;
+  color: var(--color-text);
+  background: var(--input-bg);
 }
 .el-header .el-input input:focus {
-  border-color: #555cff !important;
+  border-color: var(--color-primary) !important;
 }
 
 .el-menu > .el-submenu .el-submenu__title {
-  color: #191b1f !important;
+  color: var(--color-submenu) !important;
   font-weight: 500;
   font-size: 16px;
   line-height: 24px;
@@ -224,12 +253,12 @@ i.fa-icon-right {
 }
 
 .el-menu > .el-submenu i {
-  color: #191b1f !important;
-  fill: #191b1f !important;
+  color: var(--color-submenu) !important;
+  fill: var(--color-submenu) !important;
 }
 
 .el-menu > .el-submenu.sub-is-active .el-submenu__title {
-  color: #f15d59 !important;
+  color: var(--color-secondary) !important;
 }
 
 .el-submenu .el-menu-item {
@@ -332,7 +361,7 @@ header .grid-content button.el-button {
 }
 
 #token-tracker .search-input .el-input__prefix {
-  color: #DCDFE6;
+  color: #dcdfe6;
 }
 
 .search-input .el-input__inner,
@@ -342,7 +371,7 @@ header .grid-content button.el-button {
   background: #fff !important;
 }
 .search-input .el-input input:focus {
-  border-color: #555cff !important;
+  border-color: var(--color-primary) !important;
 }
 
 .el-card {
@@ -360,7 +389,7 @@ header .grid-content button.el-button {
   font-size: 16px !important;
 }
 .el-card h2 {
-  color: #191b1f;
+  color: --color-text;
   font-size: 20px;
   margin-top: 0;
 }
@@ -375,12 +404,12 @@ header .grid-content button.el-button {
 
 .farm-row {
   padding: 10px 20px;
-  background: #fff;
+  background: var(--color-bg);
   border-radius: 14px;
 }
 .farm-row:hover,
 .farm-row.expanded {
-  background: #f6f6f6;
+  background: var(--table-dropdown-bg);
 }
 .farm-row .el-avatar img {
   position: absolute;
@@ -428,7 +457,7 @@ header .grid-content button.el-button {
   text-align: center !important;
   text-transform: uppercase;
   font-weight: bold;
-  color: #555cff !important;
+  color: var(--color-primary) !important;
   border-radius: 12px !important;
   padding: 12px !important;
 }
@@ -521,7 +550,7 @@ header .grid-content button.el-button {
 .el-select__tags .el-tag.el-tag--info {
   background-color: white !important;
   border-color: #bbbeff;
-  color: #555cff;
+  color: var(--color-primary);
   border-radius: 16px;
 }
 .el-input__suffix {

@@ -47,7 +47,7 @@
                         font-size: 14px;
                         line-height: 19px;
                         letter-spacing: 0.02em;
-                        color: #555cff;
+                        color: var(--color-primary);
                         text-decoration: none;
                       "
                     >
@@ -226,7 +226,7 @@
                             "
                           ></el-avatar>
                         </div>
-                        <span style="color: #555cff">
+                        <span style="color: var(--color-primary)">
                           {{ position.token0.symbol }}/{{
                             position.token1.symbol
                           }}
@@ -265,7 +265,7 @@
                             "
                           ></el-avatar>
                         </div>
-                        <span style="color: #555cff">
+                        <span style="color: var(--color-primary)">
                           XTZ/{{ position.symbol }}
                         </span>
                       </el-row>
@@ -286,7 +286,7 @@
                             ></el-avatar>
                           </el-tooltip>
                         </div>
-                        <span style="color: #555cff">
+                        <span style="color: var(--color-primary)">
                           {{ position.symbol }}
                         </span>
                       </el-row>

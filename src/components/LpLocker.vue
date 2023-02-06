@@ -229,7 +229,7 @@
               shadow="always"
               style="height: 100%"
             >
-              <el-avatar shape="circle" :size="48" style="background: #555cff">
+              <el-avatar shape="circle" :size="48" style="background: var(--color-primary)">
                 <img
                   src="./../assets/svg-icons/lock.svg"
                   style="width: 24px; height: 24px; padding: 12px"
@@ -240,7 +240,7 @@
                 type="circle"
                 :width="48"
                 :stroke-width="8"
-                color="#555CFF"
+                color="var(--color-primary)"
                 style="float: right"
               ></el-progress>
               <div

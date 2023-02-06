@@ -13,7 +13,7 @@
             font-weight: 600;
             font-size: 16px;
             line-height: 24px;
-            color: #555cff;
+            color: var(--color-primary);
             text-decoration: none;
           "
         >
@@ -49,7 +49,7 @@
               "
             ></el-avatar>
             <a
-              style="color: #555cff; text-decoration: none; font-weight: 600"
+              style="color: var(--color-primary); text-decoration: none; font-weight: 600"
               target="_blank"
             >
               {{ getTokenOverview.name || getTokenOverview.symbol }} (${{

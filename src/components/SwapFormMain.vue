@@ -582,10 +582,10 @@ export default {
     border-color: #c0c4cc;
   }
   &:focus-within {
-    border-color: #555cff;
+    border-color: var(--color-primary);
   }
   &.active {
-    border-color: #555cff !important;
+    border-color: var(--color-primary) !important;
   }
   .token-usd-value {
     color: #757679;

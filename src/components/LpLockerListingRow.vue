@@ -137,7 +137,7 @@
 
           <el-col style="text-align: right" :sm="7" :lg="5">
             <template v-if="locker.isUnlocked">
-              <span style="color: #555cff; text-transform: uppercase"
+              <span style="color: var(--color-primary); text-transform: uppercase"
                 >Complete</span
               >
             </template>

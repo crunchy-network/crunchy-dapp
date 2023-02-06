@@ -136,7 +136,7 @@
                 <el-card class="box-card" shadow="always" style="height: 100%">
                   <h2
                     style="
-                      color: #191b1f;
+                      color: var(--color-text);
                       opacity: 0.4;
                       font-size: 14px;
                       margin: 0;

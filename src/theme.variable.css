@@ -1,0 +1,11 @@
+html[data-theme="dark"] {
+    --color-bg: #191b1f;
+    --color-text: #fff;
+    --color-submenu: #8C8D8F;
+  }
+  
+  html[data-theme="light"] {
+    --color-bg: #fff;
+    --color-text: #191b1f;
+    --color-submenu: #191b1f;
+  }

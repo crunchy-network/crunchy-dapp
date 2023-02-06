@@ -47,7 +47,7 @@
                         font-size: 14px;
                         line-height: 19px;
                         letter-spacing: 0.02em;
-                        color: #555cff;
+                        color: var(--color-primary);
                         text-decoration: none;
                       "
                     >
@@ -235,7 +235,7 @@
                         "
                       ></el-avatar>
                     </div>
-                    <span style="color: #555cff">
+                    <span style="color: var(--color-primary)">
                       XTZ/{{ stake.poolToken.symbol }}
                     </span>
                   </el-row>
@@ -270,7 +270,7 @@
                         "
                       ></el-avatar>
                     </div>
-                    <span style="color: #555cff">
+                    <span style="color: var(--color-primary)">
                       XTZ/{{ stake.poolToken.symbol }}
                     </span>
                   </el-row>
@@ -305,7 +305,7 @@
                         "
                       ></el-avatar>
                     </div>
-                    <span style="color: #555cff">
+                    <span style="color: var(--color-primary)">
                       {{ stake.poolToken.token1.symbol }}/{{
                         stake.poolToken.token2.symbol
                       }}
@@ -328,7 +328,7 @@
                         ></el-avatar>
                       </el-tooltip>
                     </div>
-                    <span style="color: #555cff">
+                    <span style="color: var(--color-primary)">
                       {{ stake.poolToken.symbol }}
                     </span>
                   </el-row>

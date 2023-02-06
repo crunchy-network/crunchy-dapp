@@ -143,7 +143,7 @@
               >
             </template>
             <template v-else-if="locker.isUnlocked">
-              <span style="color: #555cff; text-transform: uppercase"
+              <span style="color: var(--color-primary); text-transform: uppercase"
                 >Complete</span
               >
             </template>

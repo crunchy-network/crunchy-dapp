@@ -1,5 +1,11 @@
 <template>
-  <div :style="showNotice ? ((!showMenu || !mobile) && 'margin-bottom: 150px') : 'margin-bottom: 100px'">
+  <div
+    :style="
+      showNotice
+        ? (!showMenu || !mobile) && 'margin-bottom: 150px'
+        : 'margin-bottom: 100px'
+    "
+  >
     <el-header
       id="nav-menu"
       style="
@@ -28,7 +34,7 @@
           v-if="!showMenu || !mobile"
           class="show-mobile clear-btn"
           style="
-            color: #555cff;
+            color: var(--color-primary);
             margin: 0 20px;
             width: 33px !important;
             height: 33px !important;
@@ -53,7 +59,7 @@
               <button
                 :class="'show-mobile close-btn'"
                 style="
-                  color: #555cff;
+                  color: var(--color-primary);
                   margin: 0 20px;
                   width: 33px !important;
                   height: 33px !important;
@@ -521,7 +527,7 @@ export default {
 
   .close-btn {
     border: 1.5px solid rgba(255, 255, 255, 0.2);
-    background: #555cff !important;
+    background: var(--color-primary) !important;
     color: #fff !important;
     border-radius: 50%;
     display: flex;

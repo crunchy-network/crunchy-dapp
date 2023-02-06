@@ -10,7 +10,7 @@
         font-weight: 400 !important;
         font-size: 16px;
         margin: 5px 0 25px 0;
-        color: #757679;
+        color: var(--color-text-secondary);
       "
     >
       Manage your entire Tezos portfolio from one convenient place.
@@ -28,10 +28,12 @@
           text-align: center;
           font-weight: 400 !important;
           font-size: 14px;
-          color: #757679;
+          color: var(--color-text-secondary);
         "
       >
-        <span style="font-weight: 500; color: #191b1f">Disclaimer:</span>
+        <span style="font-weight: 500; color: var(--color-text)"
+          >Disclaimer:</span
+        >
         Information provided does not take into account the amount of liquidity
         available. Please make sure you check with the DEX you wish to trade at
         before making a trade.

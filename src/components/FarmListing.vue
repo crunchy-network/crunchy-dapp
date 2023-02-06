@@ -121,7 +121,7 @@
                   <el-avatar
                     shape="circle"
                     :size="48"
-                    style="background: #555cff"
+                    style="background: var(--color-primary)"
                   >
                     <img
                       src="./../assets/svg-icons/lock.svg"

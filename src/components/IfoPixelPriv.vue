@@ -692,9 +692,9 @@ a.social-link {
   font-size: 18px;
   letter-spacing: -0.02em;
   line-height: 15px;
-  color: #555cff;
+  color: var(--color-primary);
   padding: 0 7px;
-  border-right: 1px solid #555cff;
+  border-right: 1px solid var(--color-primary);
   text-decoration: none;
   &:last-child {
     border-right: 0px;

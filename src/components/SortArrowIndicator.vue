@@ -29,7 +29,7 @@ export default {
 
 <style lang="scss" scoped>
 i {
-  color: #555cff;
+  color: var(--color-primary);
   display: inline;
   transition: 0.3s ease all;
 }
