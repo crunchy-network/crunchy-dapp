@@ -46,21 +46,6 @@
       </el-footer>
     </el-container>
     <!-- </div> -->
-
-    <!-- Mobile -->
-    <!-- <div class="hidden-md-and-up">
-      <el-header style="position: fixed; height: 72px; top: 0; left: 0; right: 0; background: #fff; padding: 10px 20px !important; z-index: 999; border-bottom: 2px solid #f4f4f4; box-shadow: 0px 0px 24px rgba(21, 21, 52, 0.04);">
-        <el-row type="flex" align="middle" justify="space-between">
-          <el-col :span="12">
-            <img src="./assets/logo_transparent_background.png" height="48">
-          </el-col>
-          <el-col :span="6" style="text-align: right; color: #000;">
-            <i class="fal fa-bars"></i>
-          </el-col>
-        </el-row>
-      </el-header>
-      <router-view></router-view>
-    </div> -->
   </div>
 </template>
 
@@ -189,6 +174,13 @@ input[type="number"] {
   stroke: #fff;
 }
 
+.wallet-btn {
+  background: rgba(85, 92, 255, 0.04) !important;
+  border: 1.5px solid #ffffff !important;
+  border-radius: 24px !important;
+  color: #fff !important;
+}
+
 body {
   font-family: "Poppins", sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -237,6 +229,84 @@ i.fa-icon-right {
 }
 .el-header .el-input input:focus {
   border-color: var(--color-primary) !important;
+}
+.el-menu > .el-submenu .el-submenu__title {
+  color: #ffffff !important;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 24px;
+  display: flex;
+  align-items: center;
+  border: 0 !important;
+  padding: 40px 15px;
+  background: transparent !important;
+  max-height: 80px;
+}
+
+.nav-menu-wrapper > .el-menu-item,
+.nav-menu-wrapper > .el-submenu {
+  float: left !important;
+}
+
+.show-mobile {
+  display: none;
+}
+
+/* Mobile Menu Setting */
+@media (max-width: 992px) {
+  .el-menu > .el-submenu .el-submenu__title {
+    padding-top: 20px !important;
+    padding-bottom: 20px !important;
+  }
+  .nav-menu-wrapper > .el-menu-item,
+  .nav-menu-wrapper > .el-submenu {
+    float: unset !important;
+  }
+
+  .show-mobile {
+    display: block;
+  }
+}
+
+/* Mobile Menu Setting */
+
+.el-menu > .el-submenu .el-submenu__title i {
+  margin-right: 14px;
+  text-align: center;
+  vertical-align: middle;
+  color: #fff;
+}
+
+.el-popover.nav-wallet {
+  color: rgb(255, 255, 255);
+  background: rgba(31, 33, 40, 1) !important;
+  border: 1px solid #ffffff19 !important;
+  border-radius: 6px !important;
+}
+
+.el-popover.nav-wallet .el-popover__title {
+  color: rgb(196, 196, 196);
+}
+
+.el-menu--popup,
+.el-menu--inline {
+  background: rgba(31, 33, 40, 0.8) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 6px !important;
+}
+.el-menu--inline {
+  border: none;
+}
+
+.el-menu--popup .el-menu-item,
+.el-menu--inline .el-menu-item {
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.el-menu > .el-submenu .el-submenu__title:hover,
+.el-menu > .el-submenu .el-submenu__title.is-active {
+  color: #f15d59 !important;
 }
 
 .el-menu > .el-submenu .el-submenu__title {
@@ -324,7 +394,7 @@ header .grid-content button.el-button {
   margin-top: unset;
 }
 .el-popover.nav-wallet {
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  /* border: 1px solid rgba(255, 255, 255, 0.3) !important; */
   border-radius: 6px !important;
 }
 .el-popover.nav-wallet .el-popover__title {
@@ -365,17 +435,28 @@ header .grid-content button.el-button {
 }
 
 .search-input .el-input__inner,
+.el-input__inner,
 #farm-listing .search-input .el-input__inner {
   border-radius: 24px !important;
-  color: #191b1f !important;
-  background: #fff !important;
+  color: #fff !important;
+  background: transparent !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
 }
 .search-input .el-input input:focus {
   border-color: var(--color-primary) !important;
 }
 
+div.el-card__body {
+  box-sizing: border-box;
+  border-radius: 18px;
+  background: #191b1f;
+}
+
 .el-card {
   border-radius: 18px !important;
+  background: #191b1f !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background-color: rgba(21, 21, 52, 0.04) !important;
 }
 .el-card .el-alert {
   border-radius: 14px !important;
@@ -406,6 +487,9 @@ header .grid-content button.el-button {
   padding: 10px 20px;
   background: var(--color-bg);
   border-radius: 14px;
+}
+.farm-row * {
+  color: #fff;
 }
 .farm-row:hover,
 .farm-row.expanded {
@@ -601,5 +685,10 @@ header .grid-content button.el-button {
   .divider .el-divider.el-divider--vertical {
     display: none;
   }
+}
+
+/* #DART THEME */
+div.el-divider {
+  background: var(--color-divider-bg) !important;
 }
 </style>

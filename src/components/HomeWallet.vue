@@ -90,10 +90,10 @@
               type="flex"
               align="middle"
               style="
-                color: #757679;
+                color: #fff !important;
                 font-size: 14px;
                 font-weight: 600;
-                border-bottom: 2px solid #f4f4f4;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.3);
                 padding-bottom: 14px;
                 margin-bottom: 14px;
                 min-width: 900px;
@@ -104,7 +104,7 @@
                   :gutter="20"
                   type="flex"
                   align="middle"
-                  style="padding: 0 20px"
+                  style="padding: 0 20px; color: #fff !important"
                 >
                   <el-col :span="4">Asset</el-col>
                   <el-col style="text-align: right" :span="4">Balance</el-col>
@@ -151,62 +151,15 @@
               :asset="asset"
               :show-usd="showUsd"
             />
-            <div id="pagination">
-              <el-button
-                :disabled="currentPage === 0"
-                style="margin-right: 12px"
-                @click="handleStart"
-              >
-                <i class="fal fa-angle-left"></i>
-                <i class="fal fa-angle-left"></i>
-              </el-button>
-              <el-button :disabled="currentPage === 0" @click="handlePrevPage">
-                <i class="fal fa-angle-left"></i>
-              </el-button>
-
-              <h2
-                style="
-                  font-weight: 800;
-                  font-size: 14px;
-                  color: #191b1f;
-                  opacity: 0.5;
-                  margin: 0 19px;
-                "
-              >
-                {{
-                  vueNumberFormat(nextPage > pages ? pages : nextPage, {
-                    prefix: "",
-                    decimal: ".",
-                    thousand: ",",
-                    precision: 0,
-                  })
-                }}
-                out of
-                {{
-                  vueNumberFormat(pages, {
-                    prefix: "",
-                    decimal: ".",
-                    thousand: ",",
-                    precision: 0,
-                  })
-                }}
-              </h2>
-              <el-button
-                :disabled="nextPage + 1 > pages"
-                @click="handleNextPage"
-              >
-                <i class="fal fa-angle-right"></i>
-              </el-button>
-
-              <el-button
-                :disabled="nextPage + 1 > pages"
-                style="margin-left: 12px"
-                @click="handleEnd"
-              >
-                <i class="fal fa-angle-right"></i>
-                <i class="fal fa-angle-right"></i>
-              </el-button>
-            </div>
+            <row-pagination
+              :current-page="currentPage"
+              :handle-end="handleEnd"
+              :handle-next-page="handleNextPage"
+              :handle-prev-page="handlePrevPage"
+              :handle-start="handleStart"
+              :next-page="nextPage"
+              :pages="pages"
+            ></row-pagination>
           </div>
         </div>
       </el-card>
@@ -231,6 +184,7 @@ import StakedWallet from "./StakedWallet.vue";
 import NftWalletView from "./NftWalletView.vue";
 import LiquidityWallet from "./LiquidityWallet.vue";
 import HomeWalletStats from "./HomeWalletStats.vue";
+import RowPagination from "./RowPagination.vue";
 
 export default {
   name: "HomeWallet",
@@ -240,6 +194,7 @@ export default {
     NftWalletView,
     HomeWalletStats,
     LiquidityWallet,
+    RowPagination,
   },
   data() {
     return {
@@ -400,7 +355,7 @@ export default {
   line-height: 24px;
   text-align: center;
   text-transform: capitalize;
-  color: #757679;
+  color: rgb(255, 255, 255);
   cursor: pointer;
   transition: 0.3s ease all;
   margin: 0;
@@ -408,7 +363,7 @@ export default {
   border-bottom: 3px solid transparent;
   background: transparent;
   &:disabled {
-    color: #191b1f66;
+    color: rgba(156, 156, 156, 0.712);
     cursor: not-allowed;
   }
 }

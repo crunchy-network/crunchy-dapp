@@ -35,7 +35,7 @@
               >
                 {{ asset.asset }}
               </a>
-              <span v-if="asset.contract === 'tez'">
+              <span v-if="asset.contract === 'tez'" style="color: #f15d59">
                 {{ asset.asset }}
               </span>
             </el-row>
@@ -157,7 +157,10 @@
               tag="a"
               :to="getToParams(asset)"
             >
-              <el-button style="color: var(--color-primary); font-weight: 600" type="text">
+              <el-button
+                style="color: var(--color-primary); font-weight: 600"
+                type="text"
+              >
                 TRADE
               </el-button>
             </router-link>
@@ -166,7 +169,10 @@
               tag="a"
               :to="{ name: 'wtz' }"
             >
-              <el-button style="color: var(--color-primary); font-weight: 600" type="text">
+              <el-button
+                style="color: var(--color-primary); font-weight: 600"
+                type="text"
+              >
                 TRADE
               </el-button>
             </router-link>
@@ -179,7 +185,7 @@
 
 <script>
 import { mapGetters } from "vuex";
-import NumberFormat from './NumberFormat.vue';
+import NumberFormat from "./NumberFormat.vue";
 import PriceFormat from "./PriceFormat.vue";
 export default {
   name: "PortfolioWalletRow",

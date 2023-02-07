@@ -1,26 +1,25 @@
 <template>
-  <div style="display: inline-block">
+  <div id="nav-wallet-component" style="display: inline-block">
     <el-button
       v-if="wallet.connected === false"
-      type="success"
+      class="wallet-btn"
       round
-      plain
       @click="connectWallet"
       ><i class="fad fa-wallet"></i> Connect Wallet</el-button
     >
-
     <el-popover
       v-if="wallet.connected === true"
+      popper-class="nav-wallet"
       placement="bottom-end"
       title="My Wallet"
       width="300"
       trigger="hover"
     >
       <div>
-        <strong>{{
+        <strong style="font-size: 16px">{{
           `${(wallet.balance.toNumber() / 1000000).toFixed(3)} ꜩ`
         }}</strong>
-        <el-divider></el-divider>
+        <el-divider style="background: #ffffff19 !important"></el-divider>
         <el-row type="flex" align="middle" justify="space-between">
           <el-col :span="12">
             <el-button type="text" size="mini" round plain @click="changeWallet"
@@ -29,17 +28,21 @@
           </el-col>
           <el-col :span="12" style="text-align: right">
             <el-button
+              style="background: transparent"
               type="danger"
-              size="mini"
               round
-              plain
               @click="disconnectWallet"
               >Disconnect</el-button
             >
           </el-col>
         </el-row>
       </div>
-      <el-button slot="reference" type="primary" round plain>
+      <el-button
+        slot="reference"
+        style="background: #35373d; border: 0"
+        type="primary"
+        round
+      >
         {{
           $async(wallet.pkhDomain, `tez-domain-${wallet.pkh}`) ||
           `${wallet.pkh.substr(0, 6)}...${wallet.pkh.substr(-6)}`
@@ -64,4 +67,9 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+.el-popover__title {
+  font-size: 14px !important;
+  color: #a3a4a5 !important;
+}
+</style>

@@ -24,7 +24,8 @@
                   :size="40"
                   style="
                     position: relative;
-                    border: 4px solid #fff;
+                    border: 4px solid transparent;
+                    background: transparent;
                     vertical-align: middle;
                     margin-right: 10px;
                   "

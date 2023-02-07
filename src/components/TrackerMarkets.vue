@@ -9,9 +9,10 @@
             style="
               font-size: 14px;
               font-weight: 600;
-              padding-bottom: 4px;
-              margin-bottom: 4px;
+              padding-bottom: 24px;
+              margin-bottom: 24px;
               min-width: 900px;
+              border-bottom: 2px solid rgba(255, 255, 255, 0.05) !important;
             "
           >
             <el-col :span="24">

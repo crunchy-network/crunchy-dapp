@@ -47,14 +47,7 @@
             <el-col :sm="12" :md="6">
               <div class="grid-content" style="height: 100%">
                 <el-card class="box-card" shadow="always" style="height: 100%">
-                  <h2
-                    style="
-                      color: #191b1f;
-                      opacity: 0.4;
-                      font-size: 14px;
-                      margin: 0;
-                    "
-                  >
+                  <h2 style="color: #a3a4a5; font-size: 14px; margin: 0">
                     EST Total Mkt Cap
                   </h2>
                   <div
@@ -77,14 +70,7 @@
             <el-col :sm="12" :md="6">
               <div class="grid-content" style="height: 100%">
                 <el-card class="box-card" shadow="always" style="height: 100%">
-                  <h2
-                    style="
-                      color: #191b1f;
-                      opacity: 0.4;
-                      font-size: 14px;
-                      margin: 0;
-                    "
-                  >
+                  <h2 style="color: #a3a4a5; font-size: 14px; margin: 0">
                     24h Total Vol
                   </h2>
                   <div
@@ -107,17 +93,10 @@
             <el-col :sm="12" :md="6">
               <div class="grid-content" style="height: 100%">
                 <el-card class="box-card" shadow="always" style="height: 100%">
-                  <h2
-                    style="
-                      color: #191b1f;
-                      opacity: 0.4;
-                      font-size: 14px;
-                      margin: 0;
-                    "
-                  >
+                  <h2 style="color: #a3a4a5; font-size: 14px; margin: 0">
                     Tokens Tracked
                   </h2>
-                  <div
+                  <h2
                     style="
                       font-weight: 700;
                       font-size: 24px;
@@ -127,24 +106,17 @@
                     "
                   >
                     {{ getTrackerData.tokensTracked }}
-                  </div>
+                  </h2>
                 </el-card>
               </div>
             </el-col>
             <el-col :sm="12" :md="6">
               <div class="grid-content" style="height: 100%">
                 <el-card class="box-card" shadow="always" style="height: 100%">
-                  <h2
-                    style="
-                      color: var(--color-text);
-                      opacity: 0.4;
-                      font-size: 14px;
-                      margin: 0;
-                    "
-                  >
+                  <h2 style="color: #a3a4a5; font-size: 14px; margin: 0">
                     DEX’s Tracked
                   </h2>
-                  <div
+                  <h2
                     style="
                       font-weight: 700;
                       font-size: 24px;
@@ -154,7 +126,7 @@
                     "
                   >
                     {{ getTrackerData.dexCovered }}
-                  </div>
+                  </h2>
                 </el-card>
               </div>
             </el-col>
@@ -173,6 +145,7 @@
                   :value="tokenTracker.searchInput"
                   placeholder="Search tokens"
                   prefix-icon="fa-solid fa-magnifying-glass"
+                  style="background-color: transparent"
                   @input="updateSearchInput"
                 >
                 </el-input></div
@@ -642,6 +615,10 @@ export default {
   }
 }
 
+.header-row-wrap {
+  border-bottom: 2px solid rgba(255, 255, 255, 0.05) !important;
+}
+
 .header-row-wrap .wrap-sort-icon {
   color: #757679;
   font-size: 14px;
@@ -653,14 +630,14 @@ export default {
   cursor: pointer;
   width: 100%;
   height: 100%;
-
   &:hover {
-    color: #191b1f;
+    /* color: #191b1f; */
     transition: 0.2s ease-in-out color;
   }
 }
 .el-input__inner {
   border-radius: 28px;
+  /* background: transparent; */
 }
 
 .tab-select-element {

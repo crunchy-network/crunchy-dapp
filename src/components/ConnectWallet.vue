@@ -1,6 +1,6 @@
 <template>
   <div style="margin-top: 50px; max-width: 600px; min-height: 50vh">
-    <h2 style="text-align: center; margin-bottom: 0; color: #191b1f">
+    <h2 style="text-align: center; margin-bottom: 0; color: #fff">
       Crunchy DeFi Wallet
     </h2>
 
@@ -17,7 +17,7 @@
     </h2>
 
     <el-row type="flex" justify="center">
-      <el-button type="success" round plain @click="connectWallet"
+      <el-button class="wallet-btn" type="success" round @click="connectWallet"
         ><i class="fad fa-wallet"></i> Connect Wallet</el-button
       >
     </el-row>
