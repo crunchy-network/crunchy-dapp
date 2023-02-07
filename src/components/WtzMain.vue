@@ -501,7 +501,7 @@
               </div>
               <h2
                 style="
-                  color: #191b1f;
+                  color: var(--color-text);
                   opacity: 0.4;
                   font-size: 14px;
                   margin-bottom: 0px;

@@ -44,13 +44,17 @@
               :size="40"
               style="
                 position: relative;
-                border: 1px solid #fff;
+                border: 1px solid var(--bg-avatar);
                 vertical-align: middle;
                 margin-right: 10px;
               "
             ></el-avatar>
             <a
-              style="color: var(--color-primary); text-decoration: none; font-weight: 600"
+              style="
+                color: var(--color-primary);
+                text-decoration: none;
+                font-weight: 600;
+              "
               target="_blank"
             >
               {{ getTokenOverview.name || getTokenOverview.symbol }} (${{

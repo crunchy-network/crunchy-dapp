@@ -26,7 +26,8 @@
                   :size="40"
                   style="
                     position: relative;
-                    border: 4px solid #fff;
+                    border: 4px solid var(--bg-avatar);
+                        background: var(--bg-avatar);
                     vertical-align: middle;
                   "
                 >

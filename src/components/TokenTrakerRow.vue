@@ -24,7 +24,7 @@
                   :size="40"
                   style="
                     position: relative;
-                    border: 4px solid transparent;
+                    border: 4px solid var(--bg-avatar);
                     background: transparent;
                     vertical-align: middle;
                     margin-right: 10px;

@@ -73,6 +73,7 @@ html[data-theme="dark"] {
   --table-dropdown-bg: rgba(241, 93, 89, 0.1);
   --color-divider-bg: rgba(140, 141, 143, 0.3);
   --color-text-secondary: rgba(255, 255, 255, 0.7);
+  --bg-avatar: transparent;
 }
 
 html[data-theme="light"] {
@@ -85,6 +86,8 @@ html[data-theme="light"] {
   --color-nav-item: #191b1f;
   --table-dropdown-bg: #f6f6f6;
   --color-text-secondary: #757679;
+  --bg-avatar: #ffff;
+
 }
 
 html {

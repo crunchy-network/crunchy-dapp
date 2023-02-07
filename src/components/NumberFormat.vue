@@ -52,7 +52,7 @@ export default {
     },
     color: {
       type: String,
-      default: "#FFFFFF",
+      default: "var(--color-text)",
     },
     shortHand: {
       type: Boolean,

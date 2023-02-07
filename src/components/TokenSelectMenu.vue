@@ -44,7 +44,7 @@
               :src="asset.icon"
               :size="30"
               style="
-                background: #ffffff;
+                background: var(--bg-avatar);
                 font-size: 24px;
                 margin-right: 16px;
                 margin-left: 15px;
