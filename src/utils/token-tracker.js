@@ -28,6 +28,20 @@ async function queryXtzVolume() {
   return trade;
 }
 
+async function getPlentyPools() {
+  const uri = `https://api.analytics.plenty.network/analytics/pools`;
+  const res = await (await axios.get(uri)).data;
+
+  return res;
+}
+
+async function getPlentyTokens() {
+  const uri = `https://api.analytics.plenty.network/analytics/tokens`;
+  const res = await (await axios.get(uri)).data;
+
+  return res;
+}
+
 export default {
   async getQuotes() {
     const query = `
@@ -274,7 +288,7 @@ export default {
     };
   },
 
-  async getTokenFeed() {
+  async getTokenFeed(xtzUSD) {
     const query = `
      query MyQuery {
       quotesTotal(distinct_on: tokenId){
@@ -321,6 +335,49 @@ export default {
       queryDipdup.getTokensPriceClose(),
     ]);
 
+    const plentyTokens = await getPlentyTokens();
+    let plentyPools = await getPlentyPools();
+    plentyPools = plentyPools.map(function (obj) {
+      const baseSymbol = obj.symbol.split("/")[0];
+      const quoteSymbol = obj.symbol.split("/")[1];
+      const baseToken = plentyTokens.filter(
+        (token) => token.token.toLowerCase() === baseSymbol.toLowerCase()
+      );
+      const quoteToken = plentyTokens.filter(
+        (token) => token.token.toLowerCase() === quoteSymbol.toLowerCase()
+      );
+      const basePriceUSD = baseToken.length ? baseToken[0].price.value : null;
+      const quotePriceUSD = quoteToken.length ? quoteToken[0].price.value : null
+      return { 
+        address: obj.pool,
+        name: "plenty network",
+        symbol: obj.symbol,
+        volume24: obj.volume.value24H / xtzUSD,
+        baseSymbol: baseSymbol,
+        quoteSymbol: quoteSymbol,
+        basePrice: basePriceUSD / xtzUSD,
+        quotePrice: quotePriceUSD / xtzUSD,
+      };
+    });
+
+    token.forEach((t) => {
+      plentyPools.forEach(async (p) => {
+        if (
+          p.baseSymbol.toLowerCase() === t.symbol.toLowerCase() ||
+          p.quoteSymbol.toLowerCase() === t.symbol.toLowerCase()
+        ) {
+          const exchange = {
+            ...p,
+            midPrice: 
+              p.baseSymbol.toLowerCase() === t.symbol.toLowerCase()
+                ? p.basePrice
+                : p.quotePrice,
+          };
+          t.exchanges.push(exchange);
+        }
+      });
+    });
+
     const tokensVolume = await queryXtzVolume();
 
     const tokenObjkt = {};
@@ -336,6 +393,12 @@ export default {
 
       let volume24Xtz = 0;
 
+      element.exchanges.forEach((e, index) => {
+        if (e.name === "plenty network") {
+          volume24Xtz = new BigNumber(volume24Xtz).plus(e.volume24).toNumber();
+        }
+      });
+      
       tokensVolume.forEach((o) => {
         if (o.tokenId === tokenId) {
           volume24Xtz = new BigNumber(o.tezQty).plus(volume24Xtz).toNumber();
@@ -485,9 +548,12 @@ export default {
           Number(market.midPrice) * xtzUsd || 0;
 
         element.exchanges[index].lpPrice =
-          Number(market.midPrice) * xtzUsd || 0;
+          Number(market.midPrice)  || 0;
 
-        element.exchanges[index].symbol = `XTZ/${element.symbol}`;
+        element.exchanges[index].symbol =
+          market.name !== "plenty network"
+            ? `XTZ/${element.symbol}`
+            : market.symbol;
         element.exchanges[index].volume24Usd = new BigNumber(market.volume24)
           .times(xtzUsd)
           .toNumber();
