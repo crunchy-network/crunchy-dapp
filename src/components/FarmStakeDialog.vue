@@ -4,6 +4,7 @@
     :visible.sync="form.visible"
     width="380px"
     class="stake-dialog"
+    style="background: var(--bg-color)"
   >
     <p v-if="form.farm.poolToken.isQuipuLp">
       Stake XTZ/{{ form.farm.poolToken.symbol }} LP tokens to earn
@@ -58,7 +59,7 @@
         style="margin-bottom: 14px"
       >
         <el-input v-model="form.input" label="Stake Tokens">
-          <span v-if="form.farm.poolToken.isQuipuLp" slot="suffix"
+          <span v-if="form.farm.poolToken.isQuipuLp" slot="suffix" style=""
             >XTZ/{{ form.farm.poolToken.symbol }} LP</span
           >
           <span v-else slot="suffix">{{ form.farm.poolToken.symbol }}</span>
@@ -141,4 +142,8 @@ export default {
 <style lang="scss" scoped>
 @import "../crunchy-variables.scss";
 @import "~element-ui/packages/theme-chalk/src/common/var";
+
+p {
+  color: var(--color-text-secondary);
+}
 </style>

@@ -81,6 +81,7 @@
                   </el-avatar>
                   <div
                     style="
+                      color: var(--color-text);
                       font-size: 20px;
                       font-weight: 600;
                       margin-top: 14px;
@@ -99,8 +100,7 @@
                   </div>
                   <h2
                     style="
-                      color: #191b1f;
-                      opacity: 0.4;
+                      color: var(--color-text-light);
                       font-size: 12px;
                       margin-bottom: 0px;
                     "
@@ -130,6 +130,7 @@
                   </el-avatar>
                   <div
                     style="
+                      color: var(--color-text);
                       font-size: 20px;
                       font-weight: 600;
                       margin-top: 14px;
@@ -140,8 +141,7 @@
                   </div>
                   <h2
                     style="
-                      color: #191b1f;
-                      opacity: 0.4;
+                      color: var(--color-text-light);
                       font-size: 12px;
                       margin-bottom: 0px;
                     "
@@ -171,6 +171,7 @@
                   </el-avatar>
                   <div
                     style="
+                      color: var(--color-text);
                       font-size: 20px;
                       font-weight: 600;
                       margin-top: 14px;
@@ -188,8 +189,7 @@
                   </div>
                   <h2
                     style="
-                      color: #191b1f;
-                      opacity: 0.4;
+                      color: var(--color-text-light);
                       font-size: 12px;
                       margin-bottom: 0px;
                     "
@@ -210,7 +210,7 @@
           margin-top: 20px;
           flex-wrap: wrap;
           row-gap: 20px;
-          border-bottom: 1.5px solid rgba(117, 118, 121, 0.1);
+          border-bottom: 1.5px solid var(--color-table-header-border);
           padding-bottom: 2px;
         "
       >
@@ -296,10 +296,10 @@
                     type="flex"
                     align="middle"
                     style="
-                      color: #757679;
+                      color: var(--color-table-header);
                       font-size: 14px;
                       font-weight: 600;
-                      border-bottom: 2px solid #f4f4f4;
+                      border-bottom: 2px solid var(--color-table-header-border);
                       padding-bottom: 14px;
                       margin-bottom: 14px;
                     "
@@ -309,7 +309,10 @@
                         :gutter="20"
                         type="flex"
                         align="middle"
-                        style="padding: 0 20px"
+                        style="
+                          padding: 0 20px;
+                          color: var(--color-table-header);
+                        "
                       >
                         <el-col :span="7">Farm</el-col>
                         <el-col style="text-align: right" :span="4"
@@ -570,7 +573,7 @@ export default {
   line-height: 24px;
   text-align: center;
   text-transform: capitalize;
-  color: #757679;
+  color: var(--color-text-secondary);
   cursor: pointer;
   transition: 0.3s ease all;
   margin: 0;

@@ -7,7 +7,7 @@
         top: 0;
         left: 230px;
         right: 0;
-        background: #fff;
+        background: var(--color-bg);
         z-index: 999;
       "
     >
@@ -86,7 +86,7 @@ export default {
 
   p {
     font-size: 14px;
-    color: rgb(117, 118, 121);
+    color: var(--color-text-secondary-opaque);
   }
 }
 

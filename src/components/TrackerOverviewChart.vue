@@ -78,6 +78,7 @@ export default {
       "getXtzUsdPrice",
       "getXtzUsdHistory",
       "getShowUsd",
+      "getTheme"
     ]),
   },
   watch: {
@@ -98,6 +99,9 @@ export default {
       this.getPrices();
     },
     getShowUsd() {
+      this.getPrices();
+    },
+    getTheme() {
       this.getPrices();
     },
   },
@@ -367,9 +371,9 @@ export default {
           layout:{
             background:{
               // type: "solid",
-              color: "var(--bg-color)",
+              color: this.getTheme === "dark" ? "#191B1F" : "#fff",
             },
-            textColor: "var(--text-color)",
+            textColor: this.getTheme === "dark" ? "#fff" : "#191B1F",
           },
           rightPriceScale: {
             visible: true,
@@ -389,10 +393,10 @@ export default {
           },
           grid: {
             vertLines: {
-              color: "rgba(240,243,250,0)",
+              color: this.getTheme === 'dark'? "rgba(240,243,250,0)": "#f0f3fa",
             },
             horzLines: {
-              color: "rgba(255,255,255,.1)",
+              color: this.getTheme === 'dark' ? "rgba(255,255,255,.1)" : "#f0f3fa",
             },
           },
           crosshair: {

@@ -43,7 +43,10 @@
         >
           <i style="font-size: 28px" class="fa-solid fa-bars-staggered"></i>
         </button>
-        <div :class="[mobile && 'mobile-menu', showMenu && 'active']">
+        <div
+          style="background: var(--nav-bg)"
+          :class="[mobile && 'mobile-menu', showMenu && 'active']"
+        >
           <div v-if="mobile && showMenu">
             <Notice v-if="showNotice" />
             <el-row class="el-menu-row" type="flex" justify="space-between">
@@ -304,9 +307,9 @@
               showMenu ? 'grid-content mobile active' : 'grid-content mobile'
             "
           >
-            <NavUtils />
-            <nav-wallet />
-            <slot />
+            <NavUtils>
+              <slot />
+            </NavUtils>
           </div>
         </div>
         <div
@@ -321,10 +324,10 @@
           "
         >
           <div>
-            <NavUtils />
+            <NavUtils>
+              <slot />
+            </NavUtils>
           </div>
-          <slot />
-          <nav-wallet />
         </div>
       </el-row>
     </el-header>
@@ -333,11 +336,10 @@
 
 <script>
 import NavUtils from "./NavUtils.vue";
-import NavWallet from "./NavWallet.vue";
 import Notice from "./Notice.vue";
 export default {
   name: "NavMenu",
-  components: { NavWallet, NavUtils, Notice },
+  components: { NavUtils, Notice },
   data() {
     return {
       showNotice: false,
@@ -504,7 +506,6 @@ export default {
     padding-top: 10px;
     padding-bottom: 40px;
     transition: 0.45s ease all;
-    background: var(--nav-bg);
     border-right: 1.5px solid rgba(25, 27, 31, 0.1) !important;
     overflow-y: auto;
 

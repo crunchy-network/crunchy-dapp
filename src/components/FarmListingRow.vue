@@ -8,10 +8,10 @@
     <el-col :span="24">
       <div
         v-loading="farm.loading"
-        style="border: 1px solid #ebeef5; border-radius: 14px"
+        style="border: 1px solid var(--drop-border); border-radius: 14px"
         :style="[
           farm.rowExpanded
-            ? { borderColor: '#EBEEF5' }
+            ? { borderColor: 'var(--drop-border)' }
             : { borderColor: '#fff' },
         ]"
       >
@@ -441,11 +441,18 @@
               <el-col
                 v-if="wallet.connected"
                 :span="8"
-                style="padding: 10px 20px; border-right: 1px solid #ebeef5"
+                style="
+                  padding: 10px 20px;
+                  border-right: 1px solid var(--drop-border);
+                "
               >
                 <div style="margin-bottom: 8px">
                   <strong
-                    style="color: #757679; font-size: 14px; font-weight: 600"
+                    style="
+                      color: var(--color-text-secondary);
+                      font-size: 14px;
+                      font-weight: 600;
+                    "
                     >EST. {{ farm.rewardToken.symbol }} EARNED</strong
                   >
                 </div>
@@ -531,10 +538,14 @@
               <el-col
                 v-if="wallet.connected === false"
                 :span="8"
-                style="padding: 10px 20px; border-right: 1px solid #ebeef5"
+                style="
+                  padding: 10px 20px;
+                  border-right: 1px solid var(--drop-border);
+                "
               >
                 <div style="margin-bottom: 8px">
-                  <strong style="color: #757679; font-size: 14px"
+                  <strong
+                    style="color: var(--color-text-secondary); font-size: 14px"
                     >&nbsp;</strong
                   >
                 </div>
@@ -542,22 +553,37 @@
               <el-col
                 v-if="wallet.connected"
                 :span="8"
-                style="padding: 10px 20px; border-right: 1px solid #ebeef5"
+                style="
+                  padding: 10px 20px;
+                  border-right: 1px solid var(--drop-border);
+                "
               >
                 <div style="margin-bottom: 8px">
                   <strong
                     v-if="farm.poolToken.isQuipuLp || farm.poolToken.isLbLp"
-                    style="color: #757679; font-size: 14px; font-weight: 600"
+                    style="
+                      color: var(--color-text-secondary);
+                      font-size: 14px;
+                      font-weight: 600;
+                    "
                     >LP STAKED</strong
                   >
                   <strong
                     v-else-if="farm.poolToken.isPlentyLp"
-                    style="color: #757679; font-size: 14px; font-weight: 600"
+                    style="
+                      color: var(--color-text-secondary);
+                      font-size: 14px;
+                      font-weight: 600;
+                    "
                     >PLP STAKED</strong
                   >
                   <strong
                     v-else
-                    style="color: #757679; font-size: 14px; font-weight: 600"
+                    style="
+                      color: var(--color-text-secondary);
+                      font-size: 14px;
+                      font-weight: 600;
+                    "
                     >{{ farm.poolToken.symbol }} STAKED</strong
                   >
                 </div>
@@ -681,11 +707,18 @@
               <el-col
                 v-if="wallet.connected === false"
                 :span="8"
-                style="padding: 10px 20px; border-right: 1px solid #ebeef5"
+                style="
+                  padding: 10px 20px;
+                  border-right: 1px solid var(--drop-border);
+                "
               >
                 <div style="margin-bottom: 8px">
                   <strong
-                    style="color: #757679; font-size: 14px; font-weight: 600"
+                    style="
+                      color: var(--color-text-secondary);
+                      font-size: 14px;
+                      font-weight: 600;
+                    "
                     >START FARMING</strong
                   >
                 </div>
@@ -731,7 +764,7 @@
                   <strong
                     v-if="farm.started && !farm.ended"
                     style="
-                      color: #757679;
+                      color: var(--color-text-secondary);
                       font-size: 14px;
                       font-weight: 600;
                       text-transform: uppercase;

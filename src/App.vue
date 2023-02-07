@@ -54,7 +54,6 @@ export default {
   name: "App",
   created() {
     this.$store.dispatch("checkWalletConnected");
-    document.documentElement.setAttribute("data-theme", "light");
   },
 };
 </script>
@@ -89,6 +88,7 @@ html[data-theme="dark"] {
   --color-subtitle: rgba(255, 255, 255, 0.5);
   --bg-card: #191b1f;
   --color-input-border: rgba(255, 255, 255, 0.1);
+  --drop-border: rgba(255, 255, 255, 0.4);
 }
 
 html[data-theme="light"] {
@@ -120,6 +120,7 @@ html[data-theme="light"] {
   --color-subtitle: rgba(25, 27, 31, 0.5);
   --bg-card: #fff;
   --color-input-border: #dcdfe6;
+  --drop-border: #dcdfe6;
 }
 
 html {
@@ -135,6 +136,8 @@ body,
 
 * {
   font-family: "Poppins";
+  transition: 0.2s ease all;
+  /* color: var(--color-text); */
 }
 
 body {
@@ -467,7 +470,7 @@ header .grid-content button.el-button {
 }
 
 #token-tracker .search-input .el-input__prefix {
-  color:  var(--color-input-border);
+  color: var(--color-input-border);
 }
 
 .search-input .el-input__inner,
@@ -490,9 +493,10 @@ div.el-card__body {
 
 .el-card {
   border-radius: 18px !important;
-  background: #191b1f !important;
+  background: var(--bg-card) !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
   background-color: rgba(21, 21, 52, 0.04) !important;
+  color: var(--color-text);
 }
 .el-card .el-alert {
   border-radius: 14px !important;
@@ -506,7 +510,7 @@ div.el-card__body {
   font-size: 16px !important;
 }
 .el-card h2 {
-  color: --color-text;
+  color: var(--color-text);
   font-size: 20px;
   margin-top: 0;
 }
@@ -525,7 +529,7 @@ div.el-card__body {
   border-radius: 14px;
 }
 .farm-row * {
-  color: #fff;
+  color: var(--color-text);
 }
 .farm-row:hover,
 .farm-row.expanded {
@@ -584,6 +588,7 @@ div.el-card__body {
 
 .el-dialog {
   border-radius: 18px !important;
+  background: var(--color-bg) !important;
 }
 .el-dialog__header {
   padding-left: 30px !important;

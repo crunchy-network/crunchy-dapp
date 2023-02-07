@@ -12,6 +12,7 @@ import homeWallet from "./homeWallet";
 import swap from "./swap";
 import tokenTracker from "./tokenTracker";
 import usdXtzSwitch from "./usdXtzSwitch";
+import theme from "./theme";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -28,5 +29,6 @@ export default new Vuex.Store({
     homeWallet: homeWallet,
     swap: swap,
     tokenTracker: tokenTracker,
+    theme,
   },
 });

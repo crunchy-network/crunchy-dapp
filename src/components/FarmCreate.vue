@@ -293,7 +293,8 @@
                       :size="40"
                       style="
                         position: relative;
-                        border: 4px solid #fff;
+                        border: 4px solid var(--bg-avatar);
+                        background: var(--bg-avatar);
                         vertical-align: middle;
                         margin-left: -18px;
                         margin-right: 14px;
@@ -312,7 +313,8 @@
                       :size="40"
                       style="
                         position: relative;
-                        border: 4px solid #fff;
+                        border: 4px solid var(--bg-avatar);
+                        background: var(--bg-avatar);
                         vertical-align: middle;
                         margin-right: 14px;
                       "
@@ -339,7 +341,8 @@
                       :size="40"
                       style="
                         position: relative;
-                        border: 4px solid #fff;
+                        border: 4px solid var(--bg-avatar);
+                        background: var(--bg-avatar);
                         vertical-align: middle;
                         margin-right: 14px;
                       "

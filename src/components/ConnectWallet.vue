@@ -1,6 +1,6 @@
 <template>
   <div style="margin-top: 50px; max-width: 600px; min-height: 50vh">
-    <h2 style="text-align: center; margin-bottom: 0; color: #fff">
+    <h2 style="text-align: center; margin-bottom: 0; color: var(--color-text)">
       Crunchy DeFi Wallet
     </h2>
 
