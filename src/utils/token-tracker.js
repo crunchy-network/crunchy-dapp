@@ -288,7 +288,7 @@ export default {
     };
   },
 
-  async getTokenFeed() {
+  async getTokenFeed(xtzUSD) {
     const query = `
      query MyQuery {
       quotesTotal(distinct_on: tokenId){
@@ -346,21 +346,19 @@ export default {
       const quoteToken = plentyTokens.filter(
         (token) => token.token.toLowerCase() === quoteSymbol.toLowerCase()
       );
-      const basePrice = baseToken.length ? baseToken[0].price.value : null;
-      const quotePrice = quoteToken.length ? quoteToken[0].price.value : null
+      const basePriceUSD = baseToken.length ? baseToken[0].price.value : null;
+      const quotePriceUSD = quoteToken.length ? quoteToken[0].price.value : null
       return { 
         address: obj.pool,
         name: "plenty network",
         symbol: obj.symbol,
-        volume24: obj.volume.value24H,
+        volume24: obj.volume.value24H / xtzUSD,
         baseSymbol: baseSymbol,
         quoteSymbol: quoteSymbol,
-        price_base: basePrice,
-        price_quote: quotePrice,
+        basePrice: basePriceUSD / xtzUSD,
+        quotePrice: quotePriceUSD / xtzUSD,
       };
     });
-    
-    
 
     token.forEach((t) => {
       plentyPools.forEach(async (p) => {
@@ -372,8 +370,8 @@ export default {
             ...p,
             midPrice: 
               p.baseSymbol.toLowerCase() === t.symbol.toLowerCase()
-                ? p.price_base
-                : p.price_quote,
+                ? p.basePrice
+                : p.quotePrice,
           };
           t.exchanges.push(exchange);
         }
@@ -550,7 +548,7 @@ export default {
           Number(market.midPrice) * xtzUsd || 0;
 
         element.exchanges[index].lpPrice =
-          Number(market.midPrice) || 0;
+          Number(market.midPrice)  || 0;
 
         element.exchanges[index].symbol =
           market.name !== "plenty network"
