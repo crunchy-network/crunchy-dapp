@@ -35,7 +35,10 @@
       "
     >
       <el-col :span="24">
-        <el-row type="flex" style="color: #757679; height: 100%">
+        <el-row
+          type="flex"
+          style="color: var(--color-table-header); height: 100%"
+        >
           <el-col
             style="
               display: flex;
@@ -48,6 +51,7 @@
               >Market Cap Rank
 
               <number-format
+                :font-size="20"
                 :value="getTokenOverview.order"
                 :precision="0"
               ></number-format>
@@ -64,21 +68,12 @@
             <el-col><el-divider direction="horizontal"></el-divider></el-col>
             <el-col
               >Holders
-              <p
-                style="
-                  font-weight: 600;
-                  font-size: 14px;
-                  line-height: unset;
-                  margin: 0;
-                  color: rgb(48, 49, 51);
-                "
-              >
-                <number-format
-                  :font-size="20"
-                  :value="getTokenOverview.holders"
-                  :precision="2"
-                /></p
-            ></el-col>
+
+              <number-format
+                :font-size="20"
+                :value="getTokenOverview.holders"
+                :precision="2"
+            /></el-col>
           </el-col>
           <el-col :span="2">
             <div

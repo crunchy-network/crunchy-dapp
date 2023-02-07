@@ -60,20 +60,35 @@ export default {
 </script>
 
 <style>
-@import url("./theme.variable.css");
-
 html[data-theme="dark"] {
   --color-primary: #555cff;
   --color-secondary: #f15d59;
   --color-bg: #191b1f;
   --color-text: #fff;
+  --color-text-light: rgba(255, 255, 255, 0.6);
+  --color-text-lighter: rgba(255, 255, 255, 0.4);
   --color-submenu: #8c8d8f;
   --input-bg: transparent;
   --color-nav-item: #8c8d8f;
   --table-dropdown-bg: rgba(241, 93, 89, 0.1);
   --color-divider-bg: rgba(140, 141, 143, 0.3);
   --color-text-secondary: rgba(255, 255, 255, 0.7);
+  --color-text-secondary-opaque: rgba(255, 255, 255);
   --bg-avatar: transparent;
+  --color-border: rgba(255, 255, 255, 0.3);
+  --color-table-header-border: rgba(255, 255, 255, 0.05);
+  --color-table-header: rgba(255, 255, 255, 0.6);
+  --color-disabled: rgba(156, 156, 156, 0.712);
+  --color-stroke: #8c8d8f;
+  --color-fill: #8c8d8f;
+  --color-fill-revrse: #191b1f;
+  --nav-bg: #1f2128;
+  --hover-bg: #909399;
+  --color-title-light: #a3a4a5;
+  --color-link-text: var(--color-secondary);
+  --color-subtitle: rgba(255, 255, 255, 0.5);
+  --bg-card: #191b1f;
+  --color-input-border: rgba(255, 255, 255, 0.1);
 }
 
 html[data-theme="light"] {
@@ -81,13 +96,30 @@ html[data-theme="light"] {
   --color-secondary: #f15d59;
   --color-bg: #fff;
   --color-text: #191b1f;
+  --color-text-light: rgba(25, 27, 31, 0.6);
+  --color-text-lighter: rgba(25, 27, 31, 0.4);
   --color-submenu: #191b1f;
   --input-bg: #fafafa;
   --color-nav-item: #191b1f;
   --table-dropdown-bg: #f6f6f6;
+  --color-divider-bg: #dcdfe6;
   --color-text-secondary: #757679;
+  --color-text-secondary-opaque: #757679;
   --bg-avatar: #ffff;
-
+  --color-border: #f4f4f4;
+  --color-table-header-border: rgb(244, 244, 244);
+  --color-table-header: #757679;
+  --color-disabled: rgba(25, 27, 31, 0.4);
+  --color-stroke: #191b1f;
+  --color-fill: #191b1f;
+  --color-fill-revrse: #fff;
+  --nav-bg: #fff;
+  --hover-bg: #9093991e;
+  --color-title-light: rgba(25, 27, 31, 0.4);
+  --color-link-text: var(--color-primary);
+  --color-subtitle: rgba(25, 27, 31, 0.5);
+  --bg-card: #fff;
+  --color-input-border: #dcdfe6;
 }
 
 html {
@@ -108,6 +140,7 @@ body,
 body {
   background: var(--color-bg);
   width: 100%;
+  color: var(--color-text);
 }
 
 .responsive-table::-webkit-scrollbar {
@@ -173,8 +206,8 @@ input[type="number"] {
 
 .icon-white {
   font-size: 24px;
-  fill: #fff;
-  stroke: #fff;
+  fill: var(--color-text);
+  stroke: var(--color-text);
 }
 
 .wallet-btn {
@@ -425,25 +458,25 @@ header .grid-content button.el-button {
 
 #farm-listing .el-input__inner {
   border-radius: 24px !important;
-  color: #191b1f !important;
-  background: #fafafa !important;
+  color: var(--color-text) !important;
+  background: var(--input-bg) !important;
 }
 
 .search-input .el-input__prefix {
-  color: #191b1f;
+  color: var(--color-text);
 }
 
 #token-tracker .search-input .el-input__prefix {
-  color: #dcdfe6;
+  color:  var(--color-input-border);
 }
 
 .search-input .el-input__inner,
 .el-input__inner,
 #farm-listing .search-input .el-input__inner {
   border-radius: 24px !important;
-  color: #fff !important;
+  color: var(--color-text) !important;
   background: transparent !important;
-  border-color: rgba(255, 255, 255, 0.1) !important;
+  border-color: var(--color-input-border) !important;
 }
 .search-input .el-input input:focus {
   border-color: var(--color-primary) !important;
@@ -452,7 +485,7 @@ header .grid-content button.el-button {
 div.el-card__body {
   box-sizing: border-box;
   border-radius: 18px;
-  background: #191b1f;
+  background: var(--bg-card);
 }
 
 .el-card {

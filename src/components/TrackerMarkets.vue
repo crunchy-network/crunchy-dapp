@@ -12,7 +12,7 @@
               padding-bottom: 24px;
               margin-bottom: 24px;
               min-width: 900px;
-              border-bottom: 2px solid rgba(255, 255, 255, 0.05) !important;
+              border-bottom: 2px solid var(--table-header-border) !important;
             "
           >
             <el-col :span="24">

@@ -28,7 +28,7 @@
               </h2>
               <span
                 style="
-                  color: #8c8d8f;
+                  color: var(--color-subtitle);
                   font-weight: 400;
                   font-size: 16px;
                   line-height: 24px;
@@ -47,7 +47,13 @@
             <el-col :sm="12" :md="6">
               <div class="grid-content" style="height: 100%">
                 <el-card class="box-card" shadow="always" style="height: 100%">
-                  <h2 style="color: #a3a4a5; font-size: 14px; margin: 0">
+                  <h2
+                    style="
+                      color: var(--color-title-light);
+                      font-size: 14px;
+                      margin: 0;
+                    "
+                  >
                     EST Total Mkt Cap
                   </h2>
                   <div
@@ -70,7 +76,13 @@
             <el-col :sm="12" :md="6">
               <div class="grid-content" style="height: 100%">
                 <el-card class="box-card" shadow="always" style="height: 100%">
-                  <h2 style="color: #a3a4a5; font-size: 14px; margin: 0">
+                  <h2
+                    style="
+                      color: var(--color-title-light);
+                      font-size: 14px;
+                      margin: 0;
+                    "
+                  >
                     24h Total Vol
                   </h2>
                   <div
@@ -93,7 +105,13 @@
             <el-col :sm="12" :md="6">
               <div class="grid-content" style="height: 100%">
                 <el-card class="box-card" shadow="always" style="height: 100%">
-                  <h2 style="color: #a3a4a5; font-size: 14px; margin: 0">
+                  <h2
+                    style="
+                      color: var(--color-title-light);
+                      font-size: 14px;
+                      margin: 0;
+                    "
+                  >
                     Tokens Tracked
                   </h2>
                   <h2
@@ -113,7 +131,13 @@
             <el-col :sm="12" :md="6">
               <div class="grid-content" style="height: 100%">
                 <el-card class="box-card" shadow="always" style="height: 100%">
-                  <h2 style="color: #a3a4a5; font-size: 14px; margin: 0">
+                  <h2
+                    style="
+                      color: var(--color-title-light);
+                      font-size: 14px;
+                      margin: 0;
+                    "
+                  >
                     DEX’s Tracked
                   </h2>
                   <h2
@@ -171,7 +195,6 @@
                 align="middle"
                 class="header-row-wrap"
                 style="
-                  border-bottom: 2px solid #f4f4f4;
                   padding-bottom: 14px;
                   margin-bottom: 14px;
                   min-width: 900px;
@@ -304,65 +327,15 @@
                 :key="index"
                 :asset="token"
               />
-              <div id="pagination">
-                <el-button
-                  :disabled="currentPage === 0"
-                  style="margin-right: 12px"
-                  @click="handleStart"
-                >
-                  <i class="fal fa-angle-left"></i>
-                  <i class="fal fa-angle-left"></i>
-                </el-button>
-                <el-button
-                  :disabled="currentPage === 0"
-                  @click="handlePrevPage"
-                >
-                  <i class="fal fa-angle-left"></i>
-                </el-button>
-
-                <h2
-                  style="
-                    font-weight: 800;
-                    font-size: 14px;
-                    color: #191b1f;
-                    opacity: 0.5;
-                    margin: 0 19px;
-                  "
-                >
-                  {{
-                    vueNumberFormat(nextPage > pages ? pages : nextPage, {
-                      prefix: "",
-                      decimal: ".",
-                      thousand: ",",
-                      precision: 0,
-                    })
-                  }}
-                  out of
-                  {{
-                    vueNumberFormat(pages, {
-                      prefix: "",
-                      decimal: ".",
-                      thousand: ",",
-                      precision: 0,
-                    })
-                  }}
-                </h2>
-                <el-button
-                  :disabled="nextPage + 1 > pages"
-                  @click="handleNextPage"
-                >
-                  <i class="fal fa-angle-right"></i>
-                </el-button>
-
-                <el-button
-                  :disabled="nextPage + 1 > pages"
-                  style="margin-left: 12px"
-                  @click="handleEnd"
-                >
-                  <i class="fal fa-angle-right"></i>
-                  <i class="fal fa-angle-right"></i>
-                </el-button>
-              </div>
+              <row-pagination
+                :current-page="currentPage"
+                :handle-end="handleEnd"
+                :handle-next-page="handleNextPage"
+                :handle-prev-page="handlePrevPage"
+                :handle-start="handleStart"
+                :next-page="nextPage"
+                :pages="pages"
+              ></row-pagination>
             </div>
           </div>
         </el-card>
@@ -379,6 +352,7 @@ import numberFormat from "../utils/number-format";
 import PriceFormat from "./PriceFormat.vue";
 import _ from "lodash";
 import SortArrowIndicator from "./SortArrowIndicator.vue";
+import RowPagination from "./RowPagination.vue";
 
 export default {
   name: "TokenTracker",
@@ -387,6 +361,7 @@ export default {
     NavMenu,
     PriceFormat,
     SortArrowIndicator,
+    RowPagination,
   },
   data() {
     return {
@@ -583,7 +558,7 @@ export default {
   border-bottom: 3px solid transparent;
   background: transparent;
   &:disabled {
-    color: #191b1f66;
+    color: var(--color-disabled);
     cursor: not-allowed;
   }
 }
@@ -596,27 +571,8 @@ export default {
   margin: 0 !important;
 }
 
-#pagination {
-  margin-top: 32px;
-  padding: 20px 0 8px 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-top: 2px solid rgba(25, 27, 31, 0.05);
-  .el-button {
-    width: 42px;
-    height: 42px;
-    color: rgba(25, 27, 31, 0.5);
-    padding: 13px;
-    background: rgba(25, 27, 31, 0.04);
-    border: 1px solid rgba(25, 27, 31, 0.2);
-    box-sizing: border-box;
-    border-radius: 8px;
-  }
-}
-
 .header-row-wrap {
-  border-bottom: 2px solid rgba(255, 255, 255, 0.05) !important;
+  border-bottom: 2px solid var(--color-table-header-border) !important;
 }
 
 .header-row-wrap .wrap-sort-icon {
@@ -631,7 +587,7 @@ export default {
   width: 100%;
   height: 100%;
   &:hover {
-    /* color: #191b1f; */
+    color: var(--color-text);
     transition: 0.2s ease-in-out color;
   }
 }

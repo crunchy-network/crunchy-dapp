@@ -30,13 +30,13 @@
               ></el-avatar>
               <a
                 v-if="asset.contract !== 'tez'"
-                style="color: var(--color-primary); text-decoration: none"
+                style="color: var(--color-link-text); text-decoration: none"
                 target="_blank"
                 :href="`https://tzkt.io/${asset.contract}/operations/`"
               >
                 {{ asset.asset }}
               </a>
-              <span v-if="asset.contract === 'tez'" style="color: #f15d59">
+              <span v-if="asset.contract === 'tez'" style="color: var(--color-link-text);">
                 {{ asset.asset }}
               </span>
             </el-row>
@@ -159,7 +159,7 @@
               :to="getToParams(asset)"
             >
               <el-button
-                style="color: var(--color-primary); font-weight: 600"
+                style="color: var(--color-link-text); font-weight: 600"
                 type="text"
               >
                 TRADE
@@ -171,7 +171,7 @@
               :to="{ name: 'wtz' }"
             >
               <el-button
-                style="color: var(--color-primary); font-weight: 600"
+                style="color: var(--color-link-text); font-weight: 600"
                 type="text"
               >
                 TRADE

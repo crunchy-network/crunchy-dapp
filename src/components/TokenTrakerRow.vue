@@ -14,7 +14,7 @@
             type="flex"
             align="middle"
           >
-            <el-col :span="2"> {{ asset.order }} </el-col>
+            <el-col :span="2" style="color: var(--color-text)"> {{ asset.order }} </el-col>
             <el-col style="text-align: left" :span="4">
               <el-row type="flex" style="align-items: center">
                 <el-avatar

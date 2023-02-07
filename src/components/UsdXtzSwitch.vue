@@ -9,7 +9,7 @@
       class="el-dropdown-link"
     >
       {{ getShowUsd ? "USD" : "XTZ" }}
-      <i style="color: #555cff" class="el-icon-arrow-down el-icon--right"></i>
+      <i style="color: var(--color-primary)" class="el-icon-arrow-down el-icon--right"></i>
     </span>
 
     <el-dropdown-menu slot="dropdown" style="border-radius: 12px">

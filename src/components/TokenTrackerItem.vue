@@ -22,7 +22,6 @@
             type="primary"
             plain
             icon="fa-sharp fa-solid fa-arrow-left"
-            style="background: transparent"
             >{{ " " }}BACK
           </el-button>
         </router-link>
@@ -175,12 +174,6 @@ export default {
   },
 
   created() {
-    // setInterval(() => {
-    //   this.fetchTokenTrackedWithId({
-    //     id: this.$route.params.tokenId,
-    //     softLoad: true,
-    //   });
-    // }, 1000 * 60 * 3);
     if (this.$route.query.tab) {
       this.activeTab = this.$route.query.tab;
     } else {
@@ -253,38 +246,5 @@ export default {
 
 .p-change {
   color: $--color-success;
-}
-.tab-wrapper {
-  display: flex;
-  align-items: flex-start;
-  margin-bottom: 16px;
-  button:first-child {
-    padding-left: 0;
-  }
-  button:last-child {
-    padding-right: 0;
-  }
-}
-
-.tab-text {
-  min-width: 100px;
-  text-align: center;
-  padding: 2px 10px;
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 24px;
-  text-align: center;
-  text-transform: capitalize;
-  color: #757679;
-  cursor: pointer;
-  transition: 0.3s ease all;
-  margin: 0;
-  border: 0;
-  border-bottom: 3px solid rgba(117, 118, 121, 0.1);
-  background: transparent;
-  &:disabled {
-    color: #191b1f66;
-    cursor: not-allowed;
-  }
 }
 </style>

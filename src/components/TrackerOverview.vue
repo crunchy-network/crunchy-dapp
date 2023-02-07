@@ -205,7 +205,7 @@ export default {
   border: 0;
   background: transparent;
   &:disabled {
-    color: #191b1f66;
+    color: var(--color-disabled);
     cursor: not-allowed;
   }
 }

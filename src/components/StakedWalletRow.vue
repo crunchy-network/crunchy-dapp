@@ -4,8 +4,8 @@
     style="padding-bottom: 14px; font-size: 14px; font-weight: 600"
     :style="
       rowExpanded
-        ? 'border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 14px; margin-bottom: 24px;'
-        : 'border: 0px solid rgba(255, 255, 255, 0.3); border-radius: 14px; margin-bottom: 0px;'
+        ? 'border: 1px solid var(--color-border); border-radius: 14px; margin-bottom: 24px;'
+        : 'border: 0px solid var(--color-border); border-radius: 14px; margin-bottom: 0px;'
     "
     type="flex"
     align="top"
@@ -47,7 +47,7 @@
                         font-size: 14px;
                         line-height: 19px;
                         letter-spacing: 0.02em;
-                        color: var(--color-primary);
+                        color: var(--color-link-text);
                         text-decoration: none;
                       "
                     >
@@ -77,32 +77,6 @@
                 </el-col>
 
                 <el-col style="text-align: left" :span="4"></el-col>
-                <!-- 
-                <template aria-describedby="Claimable">
-                  <el-col v-if="!farm.lp" style="text-align: right" :span="4">
-                    {{
-                      farm.protocol === "Dogami"
-                        ? "N/A"
-                        : !showUsd
-                        ? vueNumberFormat(farm.claimable, {
-                            prefix: "",
-                            suffix: " ꜩ",
-                            decimal: ".",
-                            thousand: ",",
-                            precision: 4,
-                          })
-                        : vueNumberFormat(farm.claimableUsd, {
-                            prefix: "$",
-                            decimal: ".",
-                            thousand: ",",
-                            precision: 2,
-                          })
-                    }}
-                  </el-col>
-                  <el-col v-else style="text-align: right" :span="4">
-                    -
-                  </el-col>
-                </template> -->
                 <template aria-describedby=" Total Value">
                   <el-col v-if="farm.lp" style="text-align: right" :span="4">
                     {{
@@ -152,10 +126,12 @@
                     style="font-weight: bold"
                     @click="expandRow"
                   >
-                    <span style="color: #f15d59"> View Details </span>
+                    <span style="color: var(--color-link-text)">
+                      View Details
+                    </span>
 
                     <i
-                      style="color: #f15d59"
+                      style="color: var(--color-link-text)"
                       class="fas fa-chevron-down fa-icon-right"
                     ></i></el-button
                 ></el-col>
@@ -168,10 +144,12 @@
                     style="font-weight: bold"
                     @click="collapseRow"
                   >
-                    <span style="color: #f15d59"> Hide Details </span>
+                    <span style="color: var(--color-link-text)">
+                      Hide Details
+                    </span>
 
                     <i
-                      style="color: #f15d59"
+                      style="color: var(--color-link-text)"
                       class="fas fa-chevron-up fa-icon-right"
                     ></i></el-button
                 ></el-col>
@@ -185,7 +163,11 @@
               :gutter="20"
               type="flex"
               align="top"
-              style="padding: 10px 20px; color: #757679; font-size: 14px"
+              style="
+                padding: 10px 20px;
+                color: var(--color-table-header);
+                font-size: 14px;
+              "
             >
               <el-col :span="4"> Staked</el-col>
               <el-col style="text-align: right" :span="4">Amount Staked</el-col>
@@ -209,7 +191,7 @@
                 type="flex"
                 style="
                   padding: 10px 20px;
-                  color: #fff;
+                  color: var(--color-text);
                   font-size: 14px;
                   font-weight: 600;
                 "

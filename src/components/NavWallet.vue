@@ -19,7 +19,9 @@
         <strong style="font-size: 16px">{{
           `${(wallet.balance.toNumber() / 1000000).toFixed(3)} ꜩ`
         }}</strong>
-        <el-divider style="background: #ffffff19 !important"></el-divider>
+        <el-divider
+          style="background: var(--color-divider-bg) !important"
+        ></el-divider>
         <el-row type="flex" align="middle" justify="space-between">
           <el-col :span="12">
             <el-button type="text" size="mini" round plain @click="changeWallet"
@@ -28,7 +30,7 @@
           </el-col>
           <el-col :span="12" style="text-align: right">
             <el-button
-              style="background: transparent"
+              id="wallet-disconnect-btn"
               type="danger"
               round
               @click="disconnectWallet"
@@ -37,12 +39,7 @@
           </el-col>
         </el-row>
       </div>
-      <el-button
-        slot="reference"
-        style="background: #35373d; border: 0"
-        type="primary"
-        round
-      >
+      <el-button slot="reference" type="primary" round id="__wallet-btn">
         {{
           $async(wallet.pkhDomain, `tez-domain-${wallet.pkh}`) ||
           `${wallet.pkh.substr(0, 6)}...${wallet.pkh.substr(-6)}`
@@ -70,6 +67,16 @@ export default {
 <style lang="scss">
 .el-popover__title {
   font-size: 14px !important;
-  color: #a3a4a5 !important;
+  color: var(--color-title-light) !important;
+}
+
+html[data-theme="dark"] {
+  #disconnect-wallet-btn {
+    background: transparent !important;
+  }
+  #__wallet-btn {
+    background: #35373d;
+    border: 0;
+  }
 }
 </style>

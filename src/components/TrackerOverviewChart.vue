@@ -367,9 +367,9 @@ export default {
           layout:{
             background:{
               // type: "solid",
-              color: "#191B1F",
+              color: "var(--bg-color)",
             },
-            textColor: "#FFFFFF",
+            textColor: "var(--text-color)",
           },
           rightPriceScale: {
             visible: true,

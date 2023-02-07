@@ -90,10 +90,10 @@
               type="flex"
               align="middle"
               style="
-                color: #fff !important;
+                color: var(--color-secondary);
                 font-size: 14px;
                 font-weight: 600;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+                border-bottom: 1px solid var(--color-border);
                 padding-bottom: 14px;
                 margin-bottom: 14px;
                 min-width: 900px;
@@ -104,7 +104,7 @@
                   :gutter="20"
                   type="flex"
                   align="middle"
-                  style="padding: 0 20px; color: #fff !important"
+                  style="padding: 0 20px; color: var(--color-table-header)"
                 >
                   <el-col :span="4">Asset</el-col>
                   <el-col style="text-align: right" :span="4">Balance</el-col>
@@ -355,7 +355,7 @@ export default {
   line-height: 24px;
   text-align: center;
   text-transform: capitalize;
-  color: rgb(255, 255, 255);
+  color: var(--color-text-secondary-opaque);
   cursor: pointer;
   transition: 0.3s ease all;
   margin: 0;
@@ -363,7 +363,7 @@ export default {
   border-bottom: 3px solid transparent;
   background: transparent;
   &:disabled {
-    color: rgba(156, 156, 156, 0.712);
+    color: var(--color-disabled);
     cursor: not-allowed;
   }
 }

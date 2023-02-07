@@ -16,7 +16,7 @@
       style="
         font-weight: 800;
         font-size: 14px;
-        color: #fff;
+        color: var(--color-text);
         opacity: 0.9;
         margin: 0 19px;
       "

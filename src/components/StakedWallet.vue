@@ -13,7 +13,7 @@
               color: #fff;
               font-size: 14px;
               font-weight: 600;
-              border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+              border-bottom: 1px solid var(--color-border);
               padding-bottom: 14px;
               margin-bottom: 14px;
             "
@@ -23,7 +23,7 @@
                 :gutter="20"
                 type="flex"
                 align="middle"
-                style="padding: 0 20px; color: #fff"
+                style="padding: 0 20px; color: var(--color-table-header)"
               >
                 <el-col :span="4">Protocol</el-col>
                 <el-col style="text-align: right" :span="4"></el-col>

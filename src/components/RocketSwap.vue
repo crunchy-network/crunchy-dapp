@@ -364,7 +364,7 @@ export default {
   width: 100%;
 
   .el-form-item__label {
-    color: #a3a4a5;
+    color: var(--color-title-light);
   }
   .el-input .el-input__inner {
     border-radius: 10px;
