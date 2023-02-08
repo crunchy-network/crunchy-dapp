@@ -89,6 +89,10 @@ html[data-theme="dark"] {
   --bg-card: #191b1f;
   --color-input-border: rgba(255, 255, 255, 0.1);
   --drop-border: rgba(255, 255, 255, 0.4);
+  --nav-wallet-btn: #35373D;
+  --connect-wallet-color: #fff;
+  --connect-wallet-btn: var(--color-primary);
+  --nav-wallet-color: #fff;
 }
 
 html[data-theme="light"] {
@@ -121,6 +125,10 @@ html[data-theme="light"] {
   --bg-card: #fff;
   --color-input-border: #dcdfe6;
   --drop-border: #dcdfe6;
+  --nav-wallet-btn: #eeefff;
+  --nav-wallet-color: var(--color-primary);
+  --connect-wallet-btn: var(--color-primary);
+  --connect-wallet-color: #fff;
 }
 
 html {
@@ -214,10 +222,10 @@ input[type="number"] {
 }
 
 .wallet-btn {
-  background: rgba(85, 92, 255, 0.04) !important;
-  border: 1.5px solid #ffffff !important;
+  background: var(--connect-wallet-btn) !important;
+  border: 1.5px solid var(--connect-wallet-btn) !important;
   border-radius: 24px !important;
-  color: #fff !important;
+  color: var(--connect-wallet-color) !important;
 }
 
 body {
@@ -317,9 +325,9 @@ i.fa-icon-right {
 }
 
 .el-popover.nav-wallet {
-  color: rgb(255, 255, 255);
-  background: rgba(31, 33, 40, 1) !important;
-  border: 1px solid #ffffff19 !important;
+  color: var(--color-text);
+  background: var(--bg-card) !important;
+  border: 1px solid var(--color-input-border) !important;
   border-radius: 6px !important;
 }
 

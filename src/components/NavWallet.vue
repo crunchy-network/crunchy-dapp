@@ -39,7 +39,7 @@
           </el-col>
         </el-row>
       </div>
-      <el-button slot="reference" type="primary" round id="__wallet-btn">
+      <el-button id="__wallet-btn" slot="reference" type="primary" round>
         {{
           $async(wallet.pkhDomain, `tez-domain-${wallet.pkh}`) ||
           `${wallet.pkh.substr(0, 6)}...${wallet.pkh.substr(-6)}`
@@ -70,13 +70,12 @@ export default {
   color: var(--color-title-light) !important;
 }
 
-html[data-theme="dark"] {
-  #disconnect-wallet-btn {
-    background: transparent !important;
-  }
-  #__wallet-btn {
-    background: #35373d;
-    border: 0;
-  }
+#disconnect-wallet-btn {
+  background: transparent !important;
+}
+#__wallet-btn {
+  background: var(--nav-wallet-btn);
+  color: var(--nav-wallet-color) !important;
+  border: 0;
 }
 </style>
