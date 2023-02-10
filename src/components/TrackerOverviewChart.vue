@@ -113,7 +113,7 @@ export default {
         (element) => {
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.tvlUsd),
+            value: Number(element.aggregatedTvlUsd),
           };
         }
       );
@@ -121,7 +121,7 @@ export default {
         (element) => {
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.tvl),
+            value: Number(element.aggregatedTvl),
           };
         }
       );
@@ -130,7 +130,7 @@ export default {
         (element) => {
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.tvlUsd),
+            value: Number(element.aggregatedTvlUsd),
           };
         }
       );
@@ -139,7 +139,7 @@ export default {
         (element) => {
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.tvl),
+            value: Number(element.aggregatedTvl),
           };
         }
       );
@@ -148,7 +148,7 @@ export default {
         (element) => {
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.tvlUsd),
+            value: Number(element.aggregatedUsd),
           };
         }
       );
@@ -156,7 +156,7 @@ export default {
         (element) => {
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.tvl),
+            value: Number(element.aggregatedTvl),
           };
         }
       );
@@ -165,7 +165,7 @@ export default {
         (element) => {
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.tvlUsd),
+            value: Number(element.aggregatedTvlUsd),
           };
         }
       );
@@ -173,7 +173,7 @@ export default {
         (element) => {
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.tvl),
+            value: Number(element.aggregatedTvl),
           };
         }
       );
@@ -186,7 +186,7 @@ export default {
           );
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.close) * timeUsdValue,
+            value: Number(element.aggregatedClose) * timeUsdValue,
           };
         });
 
@@ -194,19 +194,20 @@ export default {
         this.getChartData.volumeAndPrice1Day.map((element) => {
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.close),
+            value: Number(element.aggregatedClose),
           };
         });
 
       this.updatedChartData.volume.days1 =
         this.getChartData.volumeAndPrice1Day.map((element) => {
+          // console.log(element);
           const timeUsdValue = tokenTracker.binarySearch(
             this.getXtzUsdHistory,
             new Date(element.bucket).getTime()
           );
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.xtzVolume) * timeUsdValue,
+            value: Number(element.aggregatedXtzVolume) * timeUsdValue,
           };
         });
 
@@ -214,7 +215,7 @@ export default {
         this.getChartData.volumeAndPrice1Day.map((element) => {
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.xtzVolume),
+            value: Number(element.aggregatedXtzVolume),
           };
         });
 
@@ -237,14 +238,14 @@ export default {
           );
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.xtzVolume) * timeUsdValue,
+            value: Number(element.aggregatedXtzVolume) * timeUsdValue,
           };
         });
       this.updatedChartData.volumeXtz.days7 =
         this.getChartData.volumeAndPrice7Day.map((element) => {
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.xtzVolume),
+            value: Number(element.aggregatedXtzVolume),
           };
         });
 
@@ -267,14 +268,14 @@ export default {
           );
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.xtzVolume) * timeUsdValue,
+            value: Number(element.aggregatedXtzVolume) * timeUsdValue,
           };
         });
       this.updatedChartData.volumeXtz.days30 =
         this.getChartData.volumeAndPrice30Day.map((element) => {
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.xtzVolume),
+            value: Number(element.aggregatedXtzVolume),
           };
         });
 
@@ -295,7 +296,7 @@ export default {
         this.getChartData.allVolumeAndPrice.map((element) => {
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.xtzVolume),
+            value: Number(element.aggregatedXtzVolume),
           };
         });
 
