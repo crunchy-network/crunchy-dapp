@@ -24,12 +24,13 @@
                 <el-col :span="2">#</el-col>
                 <el-col :span="7">Exchange</el-col>
                 <el-col style="text-align: right" :span="5">Market</el-col>
-                <el-col style="text-align: right" :span="5">Price</el-col>
+                <el-col style="text-align: right" :span="5">TVL</el-col>
                 <el-col style="text-align: right" :span="5">24h Volume</el-col>
+                <el-col style="text-align: right" :span="5">Price</el-col>
               </el-row>
             </el-col>
           </el-row>
-          <div v-for="(item, index) in getTokenOverview.exchanges" :key="index">
+          <div v-for="(item, index) in sortedExchanges" :key="index">
             <el-row
               style="font-size: 14px; font-weight: 600"
               type="flex"
@@ -77,8 +78,8 @@
                     <el-col style="text-align: right" :span="5">
                       <price-format
                         prefix="$"
-                        :value="item.lpPrice"
-                        :usd-value="item.lpPriceUsd"
+                        :value="item.tokenTvl"
+                        :usd-value="item.tokenTvlUsd"
                       />
                     </el-col>
                     <el-col style="text-align: right" :span="5">
@@ -88,6 +89,13 @@
                         :usd-value="item.volume24Usd"
                       />
                     </el-col>
+                    <el-col style="text-align: right" :span="5">
+                      <price-format
+                        prefix="$"
+                        :value="item.lpPrice"
+                        :usd-value="item.lpPriceUsd"
+                      />
+                    </el-col> 
                   </el-row>
                 </div>
               </el-col>
@@ -102,6 +110,7 @@
 <script>
 import { mapGetters } from "vuex";
 import PriceFormat from "./PriceFormat.vue";
+import _ from "lodash";
 export default {
   name: "TrackerMarkets",
   components: { PriceFormat },
@@ -113,6 +122,11 @@ export default {
   },
   computed: {
     ...mapGetters(["getTokenOverview"]),
+    sortedExchanges() {
+      return (
+        _.orderBy(this.getTokenOverview.exchanges, "tokenTvl", "desc") || []
+      );
+    },
     // markets() {
     //   return this.getTokenOverview.exchanges;
     // },
