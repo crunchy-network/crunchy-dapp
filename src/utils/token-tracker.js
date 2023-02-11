@@ -5,6 +5,9 @@ import queryDipdup from "./queryDipdup";
 
 const twentyFourHrs = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
 const fourtyEightHrs = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
+const oneDayInMiliSecond = 24 * 60 * 60 * 1000;
+const oneWeekInMiliSecond = oneDayInMiliSecond * 7;
+const oneMonthInMiliSecond = oneDayInMiliSecond * 30;
 const PLY_SYMBOL = "PLY";
 const PLY_TOKEN_ID = "KT1JVjgXPMMSaa6FkzeJcgb8q9cUaLmwaJUX_0";
 async function queryXtzVolume() {
@@ -64,59 +67,89 @@ function findElementWithSameDate(array, targetDate) {
 }
 
 function getAggregatedPriceAndVolume(quotesNogaps, token, xtzUSD) {
-  const aggregatedQuotesNoGaps = quotesNogaps.map((quote) => {
-    const price = findElementWithSameDate(token[0].price.history, quote.bucket);
-    const volume = findElementWithSameDate(
-      token[0].volume.history,
-      quote.bucket
-    );
-    quote.plentyClose = price ? Object.values(price)[0].c : 0;
-    quote.plentyXTZVolume = volume ? Object.values(volume)[0] / xtzUSD : 0;
-    quote.aggregatedClose = aggregate(
-      Number(quote.plentyClose),
-      Number(quote.close),
-      Number(quote.plentyXTZVolume),
-      Number(quote.xtzVolume)
-    );
-    quote.aggregatedXtzVolume =
-      Number(quote.plentyXTZVolume) + Number(quote.xtzVolume);
-    return quote;
-  });
-  return aggregatedQuotesNoGaps;
+  if (!Array.isArray(token)) {
+    quotesNogaps = quotesNogaps.map((quote) => {
+      quote.aggregatedClose = quote.close;
+      quote.aggregatedXtzVolume = quote.xtzVolume;
+      return quote;
+    });
+    return quotesNogaps;
+  } else {
+    const aggregatedQuotesNoGaps = quotesNogaps.map((quote) => {
+      const price = findElementWithSameDate(
+        token[0].price.history,
+        quote.bucket
+      );
+      const volume = findElementWithSameDate(
+        token[0].volume.history,
+        quote.bucket
+      );
+      quote.plentyClose = price ? Object.values(price)[0].c : 0;
+      quote.plentyXTZVolume = volume ? Object.values(volume)[0] / xtzUSD : 0;
+      quote.aggregatedClose = aggregate(
+        Number(quote.plentyClose),
+        Number(quote.close),
+        Number(quote.plentyXTZVolume),
+        Number(quote.xtzVolume)
+      );
+      quote.aggregatedXtzVolume =
+        Number(quote.plentyXTZVolume) + Number(quote.xtzVolume);
+      return quote;
+    });
+    return aggregatedQuotesNoGaps;
+  }
 }
 
 function getAggregatedTvl(stats, token, xtzUSD) {
-  const aggregatedStats = stats.map((stat) => {
-    const tvl = findElementWithSameDate(token[0].tvl.history, stat.bucket);
+  if (!Array.isArray(token)) {
+    stats = stats.map((stat) => {
+      stat.aggregatedTvl = stat.tvl;
+      stat.aggregatedTvlUsd = stat.tvl * xtzUSD;
+      return stat;
+    });
+    return stats;
+  } else {
+    const aggregatedStats = stats.map((stat) => {
+      const tvl = findElementWithSameDate(token[0].tvl.history, stat.bucket);
 
-    stat.plentyTvlUsd = tvl ? Object.values(tvl)[0] : 0;
-    stat.plentyTvl = tvl ? Object.values(tvl)[0] / xtzUSD : 0;
-    stat.aggregatedTvlUsd = Number(stat.plentyTvlUsd) + Number(stat.tvlUsd);
-    stat.aggregatedTvl = Number(stat.plentyTvl) + Number(stat.tvl);
-    return stat;
-  });
-  return aggregatedStats;
+      stat.plentyTvlUsd = tvl ? Object.values(tvl)[0] : 0;
+      stat.plentyTvl = tvl ? Object.values(tvl)[0] / xtzUSD : 0;
+      stat.aggregatedTvlUsd = Number(stat.plentyTvlUsd) + Number(stat.tvlUsd);
+      stat.aggregatedTvl = Number(stat.plentyTvl) + Number(stat.tvl);
+      return stat;
+    });
+    return aggregatedStats;
+  }
 }
 
-function getPlentyTokenPriceAndVolume(plentyToken, timeInterval) {
-  const aggregatedVolume1D = plentyToken[0].volume.history.map((element) => {
-    const dateString = Object.keys(element)[0];
-    const bucket = Number(dateString) * 1000;
-    return {
-      bucket: bucket,
-      aggregatedXtzVolume: Object.values(element)[0],
-    }
-  })
-  const aggregatedPriceAndVolume = aggregatedVolume1D.map((element) => {
-    const price = findElementWithSameDate(
-      plentyToken[0].price.history,
-      element.bucket
-    );
-    element.aggregatedClose = price ? Object.values(price)[0].c : 0;
-    return element;
-  })
-  console.log(aggregatedPriceAndVolume)
-  return aggregatedPriceAndVolume;
+function getPlentyTokenChartData(indexes, kind, timeInterval, xtzUSD) {
+  if (!Array.isArray(indexes)) {
+    indexes = indexes.map((index) => {
+      index.aggregatedTvl = index.tvl;
+      return index;
+    });
+    return indexes;
+  } else {
+    let currentBucket = 0;
+    let chartData = indexes.map((element) => {
+      const stringDate = Object.keys(element)[0];
+      const miliSecondDate = Number(stringDate) * 1000;
+      if (miliSecondDate - currentBucket >= timeInterval) {
+        currentBucket = miliSecondDate;
+        const obj = {};
+        obj[kind] =
+          kind === "aggregatedClose"
+            ? Number(Object.values(element)[0].c) / xtzUSD
+            : Number(Object.values(element)[0]) / xtzUSD;
+        obj.bucket = new Date(currentBucket).toISOString();
+        return obj;
+      } else {
+        return null;
+      }
+    });
+    chartData = chartData.filter((n) => n);
+    return chartData;
+  }
 }
 
 export default {
@@ -236,13 +269,72 @@ export default {
       xtzUSD
     );
 
+    let plyPriceAndVolumeChartData1d = [];
+    let plyPriceAndVolumeChartData1w = [];
+    let plyPriceAndVolumeChartData1mo = [];
+    if (tokenId === PLY_TOKEN_ID) {
+      const plyPriceChartData1d = getPlentyTokenChartData(
+        token[0].price.history,
+        "aggregatedClose",
+        oneDayInMiliSecond,
+        xtzUSD
+      );
+      const plyVolumeChartData1d = getPlentyTokenChartData(
+        token[0].volume.history,
+        "aggregatedXtzVolume",
+        oneDayInMiliSecond,
+        xtzUSD
+      );
+      plyPriceAndVolumeChartData1d = plyPriceChartData1d.map((item, i) =>
+        Object.assign({}, item, plyVolumeChartData1d[i])
+      );
+
+      const plyPriceChartData1w = getPlentyTokenChartData(
+        token[0].price.history,
+        "aggregatedClose",
+        oneWeekInMiliSecond,
+        xtzUSD
+      );
+      const plyVolumeChartData1w = getPlentyTokenChartData(
+        token[0].volume.history,
+        "aggregatedXtzVolume",
+        oneWeekInMiliSecond,
+        xtzUSD
+      );
+      plyPriceAndVolumeChartData1w = plyPriceChartData1w.map((item, i) =>
+        Object.assign({}, item, plyVolumeChartData1w[i])
+      );
+
+      const plyPriceChartData1mo = getPlentyTokenChartData(
+        token[0].price.history,
+        "aggregatedClose",
+        oneMonthInMiliSecond,
+        xtzUSD
+      );
+      const plyVolumeChartData1mo = getPlentyTokenChartData(
+        token[0].volume.history,
+        "aggregatedXtzVolume",
+        oneMonthInMiliSecond,
+        xtzUSD
+      );
+      plyPriceAndVolumeChartData1mo = plyPriceChartData1mo.map((item, i) =>
+        Object.assign({}, item, plyVolumeChartData1mo[i])
+      );
+    }
+
     return {
       quotes1d:
         tokenId === PLY_TOKEN_ID
-          ? getPlentyTokenPriceAndVolume(token)
+          ? plyPriceAndVolumeChartData1d
           : aggregatedQuotes1dNoGaps,
-      quotes1w: aggregatedQuotes1wNoGaps,
-      quotes1mo: aggregatedQuotes1moNoGaps,
+      quotes1w:
+        tokenId === PLY_TOKEN_ID
+          ? plyPriceAndVolumeChartData1w
+          : aggregatedQuotes1wNoGaps,
+      quotes1mo:
+        tokenId === PLY_TOKEN_ID
+          ? plyPriceAndVolumeChartData1mo
+          : aggregatedQuotes1moNoGaps,
     };
   },
 
@@ -309,7 +401,12 @@ export default {
       xtzUSD
     );
     if (tokenId === "KT1JVjgXPMMSaa6FkzeJcgb8q9cUaLmwaJUX_0") {
-      return getPlentyTokenPriceAndVolume(token)
+      return getPlentyTokenChartData(
+        token[0].volume.history,
+        "aggregatedXtzVolume",
+        oneDayInMiliSecond,
+        xtzUSD
+      );
     }
     return aggregatedQuotes1dNoGaps;
   },
@@ -409,16 +506,43 @@ export default {
       getPlentyTokens(symbol),
     ]);
 
+    let plyTvlChartData1d = [];
+    let plyTvlChartData1w = [];
+    let plyTvlChartData1mo = [];
+    if (tokenId === PLY_TOKEN_ID) {
+      plyTvlChartData1d = getPlentyTokenChartData(
+        token[0].tvl.history,
+        "aggregatedTvl",
+        oneDayInMiliSecond,
+        xtzUSD
+      );
+
+      plyTvlChartData1w = getPlentyTokenChartData(
+        token[0].tvl.history,
+        "aggregatedTvl",
+        oneWeekInMiliSecond,
+        xtzUSD
+      );
+
+      plyTvlChartData1mo = getPlentyTokenChartData(
+        token[0].tvl.history,
+        "aggregatedTvl",
+        oneMonthInMiliSecond,
+        xtzUSD
+      );
+    }
+
     const aggregatedTvl1Day = getAggregatedTvl(stats1d, token, xtzUSD);
     const aggregatedTvl30Day = getAggregatedTvl(stats1mo, token, xtzUSD);
     const aggregatedTvl7Day = getAggregatedTvl(stats1w, token, xtzUSD);
     const aggregatedTvlAll = getAggregatedTvl(stats1d, token, xtzUSD);
 
     return {
-      tvl1Day: aggregatedTvl1Day,
-      tvl30Day: aggregatedTvl30Day,
-      tvl7Day: aggregatedTvl7Day,
-      tvlAll: aggregatedTvlAll,
+      tvl1Day: tokenId === PLY_TOKEN_ID ? plyTvlChartData1d : aggregatedTvl1Day,
+      tvl30Day:
+        tokenId === PLY_TOKEN_ID ? plyTvlChartData1mo : aggregatedTvl30Day,
+      tvl7Day: tokenId === PLY_TOKEN_ID ? plyTvlChartData1w : aggregatedTvl7Day,
+      tvlAll: tokenId === PLY_TOKEN_ID ? plyTvlChartData1d : aggregatedTvlAll,
     };
   },
 
@@ -555,20 +679,14 @@ export default {
       );
 
       let volume24Xtz = 0;
+      let tokenTvl = 0;
+      let tokenTvlUsd = 0;
 
       tokensVolume.forEach((o) => {
         if (o.tokenId === tokenId) {
           volume24Xtz = new BigNumber(o.tezQty).plus(volume24Xtz).toNumber();
           element.exchanges.forEach((e, index) => {
             if (e.address === o.exchangeId) {
-              element.exchanges[index].tokenTvl =
-                new BigNumber(
-                  statsTotal.find((quote) => quote.tokenId === tokenId)?.tvl
-                ).toNumber() || 0;
-              element.exchanges[index].tokenTvlUsd =
-                new BigNumber(
-                  statsTotal.find((quote) => quote.tokenId === tokenId)?.tvlUsd
-                ).toNumber() || 0;
               element.exchanges[index].volume24 = new BigNumber(
                 element.exchanges[index].volume24 || 0
               )
@@ -579,23 +697,30 @@ export default {
         }
       });
 
-      let tokenTvlUsd =
-        new BigNumber(
-          statsTotal.find((quote) => quote.tokenId === tokenId)?.tvlUsd
-        ).toNumber() || 0;
+      // Calculate tvl for each exchange
+      statsTotal.forEach((s) => {
+        element.exchanges.forEach((e, index) => {
+          if(s.tokenId === tokenId && s.exchangeId === e.address) {
+            element.exchanges[index].tokenTvl =
+                new BigNumber(
+                  s?.tvl
+                ).toNumber() || 0;
+              element.exchanges[index].tokenTvlUsd =
+                new BigNumber(
+                  s?.tvlUsd
+                ).toNumber() || 0;
+          }
+        })
+      })
 
-      let tokenTvl =
-        new BigNumber(
-          statsTotal.find((quote) => quote.tokenId === tokenId)?.tvl
-        ).toNumber() || 0;
-
+      // Calculate total tvl and volume for each token
       element.exchanges.forEach((e, index) => {
+        tokenTvl = new BigNumber(tokenTvl).plus(e.tokenTvl).toNumber();
+        tokenTvlUsd = new BigNumber(tokenTvlUsd)
+          .plus(e.tokenTvl * xtzUSD)
+          .toNumber();
         if (e.name === "plenty network") {
           volume24Xtz = new BigNumber(volume24Xtz).plus(e.volume24).toNumber();
-          tokenTvl = new BigNumber(tokenTvl).plus(e.tokenTvl).toNumber();
-          tokenTvlUsd = new BigNumber(tokenTvlUsd)
-            .plus(e.tokenTvl * xtzUSD)
-            .toNumber();
         }
       });
 
