@@ -111,9 +111,13 @@ export default {
       this.setLoading(true);
       this.updatedChartData.tvl.days1 = this.getChartData.tvl1Day.map(
         (element) => {
+          const timeUsdValue = tokenTracker.binarySearch(
+            this.getXtzUsdHistory,
+            new Date(element.bucket).getTime() + 1000 * 60 * 60 * 24
+          );
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.aggregatedTvlUsd),
+            value: Number(element.aggregatedTvl) * timeUsdValue,
           };
         }
       );
@@ -128,9 +132,13 @@ export default {
 
       this.updatedChartData.tvl.days7 = this.getChartData.tvl7Day.map(
         (element) => {
+          const timeUsdValue = tokenTracker.binarySearch(
+            this.getXtzUsdHistory,
+            new Date(element.bucket).getTime() + 1000 * 60 * 60 * 24
+          );
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.aggregatedTvlUsd),
+            value: Number(element.aggregatedTvl) * timeUsdValue,
           };
         }
       );
@@ -146,9 +154,13 @@ export default {
 
       this.updatedChartData.tvl.days30 = this.getChartData.tvl30Day.map(
         (element) => {
+          const timeUsdValue = tokenTracker.binarySearch(
+            this.getXtzUsdHistory,
+            new Date(element.bucket).getTime() + 1000 * 60 * 60 * 24
+          );
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.aggregatedUsd),
+            value: Number(element.aggregatedTvl) * timeUsdValue,
           };
         }
       );
@@ -163,9 +175,13 @@ export default {
 
       this.updatedChartData.tvl.all = this.getChartData.tvlAll.map(
         (element) => {
+          const timeUsdValue = tokenTracker.binarySearch(
+            this.getXtzUsdHistory,
+            new Date(element.bucket).getTime() + 1000 * 60 * 60 * 24
+          );
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.aggregatedTvlUsd),
+            value: Number(element.aggregatedTvl) * timeUsdValue,
           };
         }
       );
