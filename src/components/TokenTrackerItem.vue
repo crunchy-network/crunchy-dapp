@@ -1,6 +1,10 @@
 <template>
   <div>
     <NavMenu />
+    <Banner
+      v-if="banner[getTokenOverview.symbol] !== undefined"
+      :banner="banner[getTokenOverview.symbol]"
+    />
     <!-- class="hidden-sm-and-down" -->
     <el-main class="page_width">
       <el-row type="flex" align="middle">
@@ -138,6 +142,8 @@ import { mapActions, mapGetters, mapState } from "vuex";
 import numberFormat from "../utils/number-format";
 import PriceFormat from "./PriceFormat.vue";
 import TokenMetrics from "./TokenMetrics.vue";
+import Banner from "./Banner";
+
 export default {
   components: {
     NavMenu,
@@ -145,10 +151,25 @@ export default {
     TrackerMarkets,
     PriceFormat,
     TokenMetrics,
+    Banner,
   },
   data() {
     return {
       duration: "all",
+      banner: {
+        PLENTY: {
+          symbol: "PLENTY",
+          announcement:
+            "PLENTY tokens are being migrated to the PLY token on Plenty Network. Details can be found",
+          link: "https://app.plenty.network/migrate"
+        },
+        WRAP: {
+          symbol: "WRAP",
+          announcement:
+            " WRAP tokens are being migrated to the PLY token on Plenty Network. Details can be found",
+          link: "https://app.plenty.network/migrate"
+        },
+      }
     };
   },
 
