@@ -21,7 +21,11 @@
       </div>
       <div id="announcement">
         {{ banner.announcement }}
-        <a :href="banner.link" target="_blank" style="text-decoration: none">
+        <a
+          :href="banner.link"
+          target="_blank"
+          style="text-decoration: none; color: #555CFF"
+        >
           here
         </a>
       </div>
