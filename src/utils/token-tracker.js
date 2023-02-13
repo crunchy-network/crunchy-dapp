@@ -84,10 +84,10 @@ function getAggregatedPriceAndVolume(quotesNogaps, token, xtzUSD) {
         token[0].volume.history,
         quote.bucket
       );
-      quote.plentyClose = price ? Object.values(price)[0].c : 0;
+      quote.plentyXTZClose = price ? Object.values(price)[0].c / xtzUSD : 0;
       quote.plentyXTZVolume = volume ? Object.values(volume)[0] / xtzUSD : 0;
       quote.aggregatedClose = aggregate(
-        Number(quote.plentyClose),
+        Number(quote.plentyXTZClose),
         Number(quote.close),
         Number(quote.plentyXTZVolume),
         Number(quote.xtzVolume)
