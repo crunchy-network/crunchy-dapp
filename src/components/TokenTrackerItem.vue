@@ -53,7 +53,12 @@
               "
             ></el-avatar>
             <a
-              style="color: #555cff; text-decoration: none; font-weight: 600"
+              style="
+                color: #555cff;
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 20px;
+              "
               target="_blank"
             >
               {{ getTokenOverview.name || getTokenOverview.symbol }} (${{
@@ -161,15 +166,15 @@ export default {
           symbol: "PLENTY",
           announcement:
             "PLENTY tokens are being migrated to the PLY token on Plenty Network. Details can be found",
-          link: "https://app.plenty.network/migrate"
+          link: "https://app.plenty.network/migrate",
         },
         WRAP: {
           symbol: "WRAP",
           announcement:
             " WRAP tokens are being migrated to the PLY token on Plenty Network. Details can be found",
-          link: "https://app.plenty.network/migrate"
+          link: "https://app.plenty.network/migrate",
         },
-      }
+      },
     };
   },
 
@@ -221,6 +226,7 @@ export default {
 
   mounted() {
     this.refresh();
+    window.scrollTo(0, 0);
   },
 
   methods: {
