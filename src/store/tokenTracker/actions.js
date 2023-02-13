@@ -127,7 +127,7 @@ export default {
   },
 
   async fetchChartData({ commit, state }, token) {
-    const xtzUsd = await tzkt.getXtzUsdPrice();
+    const xtzUsdHistory = await tzkt.getXtzUsdHistory();
     commit("updateChartDataLoading", true);
     const chartData = {};
     const exchangeId = state.tokensTracked[token.id].exchanges[0].address || "";
@@ -141,9 +141,18 @@ export default {
         allVolumeAndPrice,
         { tvl1Day, tvl7Day, tvl30Day, tvlAll },
       ] = await Promise.all([
-        tokenTracker.getPriceAndVolumeQuotes(token.id, token.symbol, xtzUsd),
-        tokenTracker.getAllQuotes1d(token.id, token.symbol, xtzUsd),
-        tokenTracker.getChartTvl(token.id, exchangeId, token.symbol, xtzUsd),
+        tokenTracker.getPriceAndVolumeQuotes(
+          token.id,
+          token.symbol,
+          xtzUsdHistory
+        ),
+        tokenTracker.getAllQuotes1d(token.id, token.symbol, xtzUsdHistory),
+        tokenTracker.getChartTvl(
+          token.id,
+          exchangeId,
+          token.symbol,
+          xtzUsdHistory
+        ),
       ]);
 
       chartData.allVolumeAndPrice = allVolumeAndPrice;
