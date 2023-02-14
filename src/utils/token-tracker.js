@@ -769,7 +769,12 @@ export default {
           (token) => {
             const contract = tokenQuotesTotal.tokenId.split("_")[0];
             const tokenId = tokenQuotesTotal.tokenId.split("_")[1];
-            return token.contract === contract && token.standard === "FA2" && token.tokenId === tokenId
+            return tokenId !== "0" ? 
+              (token.contract === contract && 
+              token.standard === "FA2" && 
+              token.tokenId === tokenId) :
+              (token.contract === contract 
+              && token.standard === "FA1.2")
           }
         );
         if(tokenOnPlenty !== undefined) {
