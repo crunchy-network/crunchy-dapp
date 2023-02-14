@@ -53,6 +53,7 @@
               "
             ></el-avatar>
             <a
+              class="token-header"
               style="
                 color: #555cff;
                 text-decoration: none;
@@ -307,6 +308,11 @@ export default {
   &:disabled {
     color: #191b1f66;
     cursor: not-allowed;
+  }
+}
+@media (max-width: 993px) {
+  .token-header{
+    font-size: 14px !important;
   }
 }
 </style>
