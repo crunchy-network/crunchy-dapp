@@ -55,7 +55,10 @@ function sameDay(d1, d2) {
 }
 
 function aggregate(num1, num2, index1, index2) {
-  return (num1 * index1 + num2 * index2) / (index1 + index2);
+  return (
+    (Number(num1) * Number(index1) + Number(num2) * Number(index2)) /
+    (Number(index1) + Number(index2))
+  );
 }
 
 function findElementWithSameDate(array, targetDate) {
@@ -122,10 +125,10 @@ function getAggregatedPriceAndVolume(quotesNogaps, token, xtzUsdHistory) {
       quote.plentyXTZClose = Object.values(price)[0].c / timeUsdValue;
       quote.plentyXTZVolume = Object.values(volume)[0] / timeUsdValue;
       quote.aggregatedClose = aggregate(
-        Number(quote.plentyXTZClose),
-        Number(quote.close),
-        Number(quote.plentyXTZVolume),
-        Number(quote.xtzVolume)
+        quote.plentyXTZClose,
+        quote.close,
+        quote.plentyXTZVolume,
+        quote.xtzVolume
       );
       quote.aggregatedXtzVolume =
         Number(quote.plentyXTZVolume) + Number(quote.xtzVolume);
@@ -133,10 +136,10 @@ function getAggregatedPriceAndVolume(quotesNogaps, token, xtzUsdHistory) {
       quote.plentyXTZClose = 0;
       quote.plentyXTZVolume = 0;
       quote.aggregatedClose = aggregate(
-        Number(quote.plentyXTZClose),
-        Number(quote.close),
-        Number(quote.plentyXTZVolume),
-        Number(quote.xtzVolume)
+        quote.plentyXTZClose,
+        quote.close,
+        quote.plentyXTZVolume,
+        quote.xtzVolume
       );
       quote.aggregatedXtzVolume =
         Number(quote.plentyXTZVolume) + Number(quote.xtzVolume);
@@ -745,9 +748,41 @@ export default {
       const element = token[index];
       const tokenId = element.id;
       const closes = queryDipdup.filterTokenClose(tokenId, tokensCloseData);
+      /**
+       *Calculate aggregated price 
+      weighted on tvl from Plenty and Quipu
+       */
+      let tokenTvl1Day = [];
       const tokenQuotesTotal = quotesTotal.find(
         (quote) => quote.tokenId === tokenId
       );
+      if (tokenQuotesTotal !== undefined) {
+        tokenTvl1Day = statsTotal.filter(
+          (stat) => {
+            return stat.tokenId === tokenQuotesTotal.tokenId
+          }
+        );
+        tokenQuotesTotal.tvl = tokenTvl1Day.reduce(
+          (totalTvl, exchange) => Number(totalTvl) + Number(exchange.tvl),
+        0);
+        const tokenOnPlenty = plentyTokens.find(
+          (token) => token.contract === tokenQuotesTotal.tokenId.split("_")[0]
+        );
+        if(tokenOnPlenty !== undefined) {
+          tokenQuotesTotal.plentyClose = tokenOnPlenty.price.value / xtzUSD;
+          tokenQuotesTotal.plentyTvl = tokenOnPlenty.tvl.value / xtzUSD;
+        } else {
+          tokenQuotesTotal.plentyClose = 0;
+          tokenQuotesTotal.plentyTvl = 0;
+        }
+        tokenQuotesTotal.aggregatedClose = aggregate(
+          tokenQuotesTotal.close,
+          tokenQuotesTotal.plentyClose,
+          tokenQuotesTotal.tvl,
+          tokenQuotesTotal.plentyTvl
+        );
+        
+      };
 
       let volume24Xtz = 0;
       let tokenTvl = 0;
@@ -768,7 +803,9 @@ export default {
         }
       });
 
-      // Calculate tvl for each exchange
+      /**
+       *Calculate tvl for each exchange
+       */
       statsTotal.forEach((s) => {
         element.exchanges.forEach((e, index) => {
           if (s.tokenId === tokenId && s.exchangeId === e.address) {
@@ -780,7 +817,9 @@ export default {
         });
       });
 
-      // Calculate total tvl and volume for each token
+      /**
+       *Calculate total tvl and volume for each token
+       */
       element.exchanges.forEach((e, index) => {
         tokenTvl = new BigNumber(tokenTvl).plus(e.tokenTvl).toNumber();
         tokenTvlUsd = new BigNumber(tokenTvlUsd)
@@ -794,7 +833,7 @@ export default {
       tokenObjkt[element.id] = {
         ...element,
         ...closes,
-        currentPrice: Number(tokenQuotesTotal?.close),
+        currentPrice: Number(tokenQuotesTotal?.aggregatedClose),
         // allTimeLow: tokenQuotesTotal?.low || 0,
         tokenTvl,
         tokenTvlUsd,
