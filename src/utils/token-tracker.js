@@ -3,7 +3,6 @@ import BigNumber from "bignumber.js";
 import ipfs from "./ipfs";
 import queryDipdup from "./queryDipdup";
 
-
 const day1 = new Date(new Date().setDate(new Date().getDate() - 1)).getTime();
 const day7 = new Date(new Date().setDate(new Date().getDate() - 7)).getTime();
 const day30 = new Date(new Date().setDate(new Date().getDate() - 30)).getTime();
@@ -683,8 +682,8 @@ export default {
     });
 
     /*
-    *Calculate PLY data and push to token list
-    */
+     *Calculate PLY data and push to token list
+     */
     const updatedPLY = PLY.map((obj) => {
       return {
         exchanges: [],
@@ -711,19 +710,10 @@ export default {
       new Date(day30).toISOString()
     );
 
-    const timeUsdValueDay1 = binarySearch(
-      xtzUsdHistory,
-      day1
-    );
-    const timeUsdValueDay7 = binarySearch(
-      xtzUsdHistory,
-      day7
-    );
-    const timeUsdValueDay30 = binarySearch(
-      xtzUsdHistory,
-      day30
-    );
-    
+    const timeUsdValueDay1 = binarySearch(xtzUsdHistory, day1);
+    const timeUsdValueDay7 = binarySearch(xtzUsdHistory, day7);
+    const timeUsdValueDay30 = binarySearch(xtzUsdHistory, day30);
+
     updatedPLY[0].dayCloseUsd = Object.values(price1Day)[0].c;
     updatedPLY[0].weekCloseUsd = Object.values(price7Day)[0].c;
     updatedPLY[0].monthCloseUsd = Object.values(price30Day)[0].c;
@@ -731,12 +721,11 @@ export default {
     updatedPLY[0].weekClose = updatedPLY[0].weekCloseUsd / timeUsdValueDay7;
     updatedPLY[0].monthClose = updatedPLY[0].monthCloseUsd / timeUsdValueDay30;
 
-    const currentPrice =
-        new BigNumber(PLY[0].price.value).toNumber() || false;
+    const currentPrice = new BigNumber(PLY[0].price.value).toNumber() || false;
     const price = new BigNumber(currentPrice);
     const priceXtz = new BigNumber(price.div(xtzUSD));
 
-    const change1Day = priceXtz 
+    const change1Day = priceXtz
       .minus(updatedPLY[0].dayClose)
       .div(updatedPLY[0].dayClose)
       .times(100)
@@ -752,7 +741,7 @@ export default {
       .times(100)
       .toNumber();
 
-      const change1DayUsd = price
+    const change1DayUsd = price
       .minus(updatedPLY[0].dayCloseUsd)
       .div(updatedPLY[0].dayCloseUsd)
       .times(100)
@@ -772,9 +761,12 @@ export default {
     updatedPLY[0].change7Day = change7Day === Infinity ? 0 : change7Day || 0;
     updatedPLY[0].change30Day = change30Day === Infinity ? 0 : change30Day || 0;
 
-    updatedPLY[0].change1DayUsd = change1DayUsd === Infinity ? 0 : change1DayUsd || 0;
-    updatedPLY[0].change7DayUsd = change7DayUsd === Infinity ? 0 : change7DayUsd || 0;
-    updatedPLY[0].change30DayUsd = change30DayUsd === Infinity ? 0 : change30DayUsd || 0;
+    updatedPLY[0].change1DayUsd =
+      change1DayUsd === Infinity ? 0 : change1DayUsd || 0;
+    updatedPLY[0].change7DayUsd =
+      change7DayUsd === Infinity ? 0 : change7DayUsd || 0;
+    updatedPLY[0].change30DayUsd =
+      change30DayUsd === Infinity ? 0 : change30DayUsd || 0;
 
     token.push(updatedPLY[0]);
 
@@ -852,13 +844,12 @@ export default {
           const contract = tokenQuotesTotal.tokenId.split("_")[0];
           const id = tokenQuotesTotal.tokenId.split("_")[1];
           return id !== "0"
-            ? (token.contract === contract &&
+            ? token.contract === contract &&
                 token.standard === "FA2" &&
-                token.tokenId === id)
-            : (token.contract === contract);
-            
+                String(token.tokenId) === String(id)
+            : token.contract === contract && 
+                String(token.tokenId) === String(id);
         });
-
         if (tokenOnPlenty !== undefined) {
           tokenQuotesTotal.plentyClose = tokenOnPlenty.price.value / xtzUSD;
           tokenQuotesTotal.plentyTvl = tokenOnPlenty.tvl.value / xtzUSD;
@@ -876,7 +867,6 @@ export default {
             tokenQuotesTotal.plentyTvl
           );
         }
-        
       }
 
       let volume24Xtz = 0;
