@@ -3,6 +3,10 @@ import BigNumber from "bignumber.js";
 import ipfs from "./ipfs";
 import queryDipdup from "./queryDipdup";
 
+
+const day1 = new Date(new Date().setDate(new Date().getDate() - 1)).getTime();
+const day7 = new Date(new Date().setDate(new Date().getDate() - 7)).getTime();
+const day30 = new Date(new Date().setDate(new Date().getDate() - 30)).getTime();
 const twentyFourHrs = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
 const fourtyEightHrs = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
 const oneDayInMiliSecond = 24 * 60 * 60 * 1000;
@@ -10,6 +14,7 @@ const oneWeekInMiliSecond = oneDayInMiliSecond * 7;
 const oneMonthInMiliSecond = oneDayInMiliSecond * 30;
 const PLY_SYMBOL = "PLY";
 const PLY_TOKEN_ID = "KT1JVjgXPMMSaa6FkzeJcgb8q9cUaLmwaJUX_0";
+
 async function queryXtzVolume() {
   const query = `
   query MyQuery {
@@ -619,7 +624,7 @@ export default {
     };
   },
 
-  async getTokenFeed(xtzUSD) {
+  async getTokenFeed(xtzUSD, xtzUsdHistory) {
     const query = `
      query MyQuery {
       quotesTotal(distinct_on: tokenId){
@@ -673,10 +678,14 @@ export default {
     ]);
 
     quotesTotal.push({
-      close: PLY[0].price.value,
+      close: PLY[0].price.value / xtzUSD,
       tokenId: `${PLY[0].contract}_0`,
     });
-    const updatedPLY = PLY.map(function (obj) {
+
+    /*
+    *Calculate PLY data and push to token list
+    */
+    const updatedPLY = PLY.map((obj) => {
       return {
         exchanges: [],
         address: obj.contract,
@@ -686,11 +695,86 @@ export default {
         tokenId: 0,
         symbol: obj.token,
         thumbnailUri: "",
-        change1Day: obj.price.change24H,
-        change7Day: obj.price.change7D,
-        change30Day: obj.price.change30D,
       };
     });
+
+    const price1Day = findElementWithSameDate(
+      PLY[0].price.history,
+      new Date(day1).toISOString()
+    );
+    const price7Day = findElementWithSameDate(
+      PLY[0].price.history,
+      new Date(day7).toISOString()
+    );
+    const price30Day = findElementWithSameDate(
+      PLY[0].price.history,
+      new Date(day30).toISOString()
+    );
+
+    const timeUsdValueDay1 = binarySearch(
+      xtzUsdHistory,
+      day1
+    );
+    const timeUsdValueDay7 = binarySearch(
+      xtzUsdHistory,
+      day7
+    );
+    const timeUsdValueDay30 = binarySearch(
+      xtzUsdHistory,
+      day30
+    );
+    
+    updatedPLY[0].dayCloseUsd = Object.values(price1Day)[0].c;
+    updatedPLY[0].weekCloseUsd = Object.values(price7Day)[0].c;
+    updatedPLY[0].monthCloseUsd = Object.values(price30Day)[0].c;
+    updatedPLY[0].dayClose = updatedPLY[0].dayCloseUsd / timeUsdValueDay1;
+    updatedPLY[0].weekClose = updatedPLY[0].weekCloseUsd / timeUsdValueDay7;
+    updatedPLY[0].monthClose = updatedPLY[0].monthCloseUsd / timeUsdValueDay30;
+
+    const currentPrice =
+        new BigNumber(PLY[0].price.value).toNumber() || false;
+    const price = new BigNumber(currentPrice);
+    const priceXtz = new BigNumber(price.div(xtzUSD));
+
+    const change1Day = priceXtz 
+      .minus(updatedPLY[0].dayClose)
+      .div(updatedPLY[0].dayClose)
+      .times(100)
+      .toNumber();
+    const change7Day = priceXtz
+      .minus(updatedPLY[0].weekClose)
+      .div(updatedPLY[0].weekClose)
+      .times(100)
+      .toNumber();
+    const change30Day = priceXtz
+      .minus(updatedPLY[0].monthClose)
+      .div(updatedPLY[0].monthClose)
+      .times(100)
+      .toNumber();
+
+      const change1DayUsd = price
+      .minus(updatedPLY[0].dayCloseUsd)
+      .div(updatedPLY[0].dayCloseUsd)
+      .times(100)
+      .toNumber();
+    const change7DayUsd = price
+      .minus(updatedPLY[0].weekCloseUsd)
+      .div(updatedPLY[0].weekCloseUsd)
+      .times(100)
+      .toNumber();
+    const change30DayUsd = price
+      .minus(updatedPLY[0].monthCloseUsd)
+      .div(updatedPLY[0].monthCloseUsd)
+      .times(100)
+      .toNumber();
+
+    updatedPLY[0].change1Day = change1Day === Infinity ? 0 : change1Day || 0;
+    updatedPLY[0].change7Day = change7Day === Infinity ? 0 : change7Day || 0;
+    updatedPLY[0].change30Day = change30Day === Infinity ? 0 : change30Day || 0;
+
+    updatedPLY[0].change1DayUsd = change1DayUsd === Infinity ? 0 : change1DayUsd || 0;
+    updatedPLY[0].change7DayUsd = change7DayUsd === Infinity ? 0 : change7DayUsd || 0;
+    updatedPLY[0].change30DayUsd = change30DayUsd === Infinity ? 0 : change30DayUsd || 0;
 
     token.push(updatedPLY[0]);
 
@@ -749,7 +833,7 @@ export default {
       const tokenId = element.id;
       const closes = queryDipdup.filterTokenClose(tokenId, tokensCloseData);
       /**
-       *Calculate aggregated price 
+      *Calculate aggregated price 
       weighted on tvl from Plenty and Quipu
        */
       let tokenTvl1Day = [];
@@ -757,41 +841,41 @@ export default {
         (quote) => quote.tokenId === tokenId
       );
       if (tokenQuotesTotal !== undefined) {
-        tokenTvl1Day = statsTotal.filter(
-          (stat) => {
-            return stat.tokenId === tokenQuotesTotal.tokenId
-          }
-        );
+        tokenTvl1Day = statsTotal.filter((stat) => {
+          return stat.tokenId === tokenQuotesTotal.tokenId;
+        });
         tokenQuotesTotal.tvl = tokenTvl1Day.reduce(
           (totalTvl, exchange) => Number(totalTvl) + Number(exchange.tvl),
-        0);
-        const tokenOnPlenty = plentyTokens.find(
-          (token) => {
-            const contract = tokenQuotesTotal.tokenId.split("_")[0];
-            const tokenId = tokenQuotesTotal.tokenId.split("_")[1];
-            return tokenId !== "0" ? 
-              (token.contract === contract && 
-              token.standard === "FA2" && 
-              token.tokenId === tokenId) :
-              (token.contract === contract 
-              && token.standard === "FA1.2")
-          }
+          0
         );
-        if(tokenOnPlenty !== undefined) {
+        const tokenOnPlenty = plentyTokens.find((token) => {
+          const contract = tokenQuotesTotal.tokenId.split("_")[0];
+          const id = tokenQuotesTotal.tokenId.split("_")[1];
+          return id !== "0"
+            ? (token.contract === contract &&
+                token.standard === "FA2" &&
+                token.tokenId === id)
+            : (token.contract === contract && token.standard === "FA1.2");
+        });
+        console.log(tokenOnPlenty)
+        if (tokenOnPlenty !== undefined) {
           tokenQuotesTotal.plentyClose = tokenOnPlenty.price.value / xtzUSD;
           tokenQuotesTotal.plentyTvl = tokenOnPlenty.tvl.value / xtzUSD;
         } else {
           tokenQuotesTotal.plentyClose = 0;
           tokenQuotesTotal.plentyTvl = 0;
         }
-        tokenQuotesTotal.aggregatedClose = aggregate(
-          tokenQuotesTotal.close,
-          tokenQuotesTotal.plentyClose,
-          tokenQuotesTotal.tvl,
-          tokenQuotesTotal.plentyTvl
-        );
-        
-      };
+        if (tokenQuotesTotal.tvl === 0) {
+          tokenQuotesTotal.aggregatedClose = tokenQuotesTotal.close;
+        } else {
+          tokenQuotesTotal.aggregatedClose = aggregate(
+            tokenQuotesTotal.close,
+            tokenQuotesTotal.plentyClose,
+            tokenQuotesTotal.tvl,
+            tokenQuotesTotal.plentyTvl
+          );
+        }
+      }
 
       let volume24Xtz = 0;
       let tokenTvl = 0;
@@ -925,34 +1009,33 @@ export default {
         element.change1Day = change1Day === Infinity ? 0 : change1Day || 0;
         element.change7Day = change7Day === Infinity ? 0 : change7Day || 0;
         element.change30Day = change30Day === Infinity ? 0 : change30Day || 0;
+
+        /**
+         *Calculating % changes in Usd
+         */
+        const change1DayUsd = priceUsd
+          .minus(element?.dayCloseUsd)
+          .div(element?.dayCloseUsd)
+          .times(100)
+          .toNumber();
+        const change7DayUsd = priceUsd
+          .minus(element?.weekCloseUsd)
+          .div(element?.weekCloseUsd)
+          .times(100)
+          .toNumber();
+        const change30DayUsd = priceUsd
+          .minus(element?.monthCloseUsd)
+          .div(element?.monthCloseUsd)
+          .times(100)
+          .toNumber();
+
+        element.change1DayUsd =
+          change1DayUsd === Infinity ? 0 : change1DayUsd || 0;
+        element.change7DayUsd =
+          change7DayUsd === Infinity ? 0 : change7DayUsd || 0;
+        element.change30DayUsd =
+          change30DayUsd === Infinity ? 0 : change30DayUsd || 0;
       }
-
-      /**
-       *Calculating % changes in Usd
-       */
-
-      const change1DayUsd = priceUsd
-        .minus(element?.dayCloseUsd)
-        .div(element?.dayCloseUsd)
-        .times(100)
-        .toNumber();
-      const change7DayUsd = priceUsd
-        .minus(element?.weekCloseUsd)
-        .div(element?.weekCloseUsd)
-        .times(100)
-        .toNumber();
-      const change30DayUsd = priceUsd
-        .minus(element?.monthCloseUsd)
-        .div(element?.monthCloseUsd)
-        .times(100)
-        .toNumber();
-
-      element.change1DayUsd =
-        change1DayUsd === Infinity ? 0 : change1DayUsd || 0;
-      element.change7DayUsd =
-        change7DayUsd === Infinity ? 0 : change7DayUsd || 0;
-      element.change30DayUsd =
-        change30DayUsd === Infinity ? 0 : change30DayUsd || 0;
 
       element.volume24 = new BigNumber(element.volume24Xtz).toNumber();
       element.volume24Usd = new BigNumber(element.volume24Xtz)

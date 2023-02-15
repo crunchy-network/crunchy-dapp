@@ -35,7 +35,7 @@ export default {
       commit("updateXtzUsdPrice", xtzUsd);
       commit("updateXtzUsdHistory", xtzUsdHistory);
 
-      const tokenFeed = await tokenTracker.getTokenFeed(xtzUsd);
+      const tokenFeed = await tokenTracker.getTokenFeed(xtzUsd, xtzUsdHistory);
 
       const tokens = [];
       for (let i = 0; i < tokensToTrack.length; i++) {

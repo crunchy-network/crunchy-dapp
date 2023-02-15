@@ -129,7 +129,7 @@ export default {
 
     const query = (bucket) => `
     query MyQuery {
-      quotes1dNogaps(where: {bucket: {_lte: "${bucket}"}}
+      quotes1dNogaps(where: {bucket: {_eq: "${bucket}"}}
       order_by: {bucket: desc}
       ) {
         average
