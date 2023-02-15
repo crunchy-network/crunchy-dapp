@@ -855,9 +855,10 @@ export default {
             ? (token.contract === contract &&
                 token.standard === "FA2" &&
                 token.tokenId === id)
-            : (token.contract === contract && token.standard === "FA1.2");
+            : (token.contract === contract);
+            
         });
-        console.log(tokenOnPlenty)
+
         if (tokenOnPlenty !== undefined) {
           tokenQuotesTotal.plentyClose = tokenOnPlenty.price.value / xtzUSD;
           tokenQuotesTotal.plentyTvl = tokenOnPlenty.tvl.value / xtzUSD;
@@ -875,6 +876,7 @@ export default {
             tokenQuotesTotal.plentyTvl
           );
         }
+        
       }
 
       let volume24Xtz = 0;
