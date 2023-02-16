@@ -74,6 +74,7 @@ export default {
 </script>
 
 <style>
+@import url("./theme.variables.css");
 html {
   overflow-x: hidden;
 }
@@ -90,7 +91,8 @@ body,
 }
 
 body {
-  background: #fffafa;
+  background: var(--background-color);
+  color: var(--primary-text) !important;
   width: 100%;
 }
 
@@ -112,6 +114,15 @@ h1,
 h2,
 h3 {
   font-weight: 600 !important;
+  color: var(--primary-text);
+}
+
+h4,
+h5,
+h6,
+p,
+div {
+  color: var(--primary-text);
 }
 .grid-content h2 + span {
   font-weight: 300 !important;
@@ -211,7 +222,7 @@ i.fa-icon-right {
 }
 
 .el-menu > .el-submenu .el-submenu__title {
-  color: #191b1f !important;
+  color: var(--nav-item) !important;
   font-weight: 500;
   font-size: 16px;
   line-height: 24px;
@@ -224,12 +235,12 @@ i.fa-icon-right {
 }
 
 .el-menu > .el-submenu i {
-  color: #191b1f !important;
-  fill: #191b1f !important;
+  color: var(--nav-item) !important;
+  fill: var(--nav-item) !important;
 }
 
 .el-menu > .el-submenu.sub-is-active .el-submenu__title {
-  color: #f15d59 !important;
+  color: var(--color-menu-active) !important;
 }
 
 .el-submenu .el-menu-item {
@@ -332,7 +343,7 @@ header .grid-content button.el-button {
 }
 
 #token-tracker .search-input .el-input__prefix {
-  color: #DCDFE6;
+  color: #dcdfe6;
 }
 
 .search-input .el-input__inner,
@@ -375,12 +386,12 @@ header .grid-content button.el-button {
 
 .farm-row {
   padding: 10px 20px;
-  background: #fff;
+  background: var(--background-card);
   border-radius: 14px;
 }
 .farm-row:hover,
 .farm-row.expanded {
-  background: #f6f6f6;
+  background: var(--table-row-hover);
 }
 .farm-row .el-avatar img {
   position: absolute;
@@ -543,7 +554,7 @@ header .grid-content button.el-button {
 }
 
 .el-select-dropdown__item.selected {
-  color: #ff4d4b !important;
+  color: var(--color-menu-active) !important;
 }
 
 /* REPSONSIVE STYLE */
@@ -572,5 +583,15 @@ header .grid-content button.el-button {
   .divider .el-divider.el-divider--vertical {
     display: none;
   }
+}
+
+/* THEME SPECIFIC */
+.el-card {
+  background: var(--background-card) !important;
+  border: var(--line-border) !important;
+}
+
+.el-divider {
+  background: var(--border-color) !important;
 }
 </style>

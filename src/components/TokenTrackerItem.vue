@@ -21,6 +21,11 @@
             round
             type="primary"
             plain
+            style="
+              background: var(--wallet-background) !important;
+              border: 0.5px solid #555cff;
+              color: var(--alt-btn-color) !important; ;
+            "
             icon="fa-sharp fa-solid fa-arrow-left"
             >{{ " " }}BACK
           </el-button>
@@ -49,7 +54,11 @@
               "
             ></el-avatar>
             <a
-              style="color: #555cff; text-decoration: none; font-weight: 600"
+              style="
+                color: var(--primary-text);
+                text-decoration: none;
+                font-weight: 600;
+              "
               target="_blank"
             >
               {{ getTokenOverview.name || getTokenOverview.symbol }} (${{

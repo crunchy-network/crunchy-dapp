@@ -76,7 +76,7 @@ export default {
     },
     color: {
       type: String,
-      default: "#303133",
+      default: "var(--primary-text)",
     },
     shortHand: {
       type: Boolean,

@@ -39,12 +39,22 @@
           </el-col>
         </el-row>
       </div>
-      <el-button slot="reference" type="primary" round plain>
+      <el-button
+        slot="reference"
+        style="
+          background: var(--background-wallet);
+          color: var(--wallet-color);
+          border: var(--wallet-border);
+        "
+        type="primary"
+        round
+        plain
+      >
         {{
           $async(wallet.pkhDomain, `tez-domain-${wallet.pkh}`) ||
           `${wallet.pkh.substr(0, 6)}...${wallet.pkh.substr(-6)}`
         }}
-        <i class="fad fa-angle-down fa-icon-right"></i>
+        <!-- <i class="fad fa-angle-down fa-icon-right"></i> -->
       </el-button>
     </el-popover>
   </div>

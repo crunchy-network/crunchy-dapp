@@ -36,7 +36,10 @@
       "
     >
       <el-col :span="24">
-        <el-row type="flex" style="color: #757679; height: 100%">
+        <el-row
+          type="flex"
+          style="color: var(--color-subheading-text); height: 100%"
+        >
           <el-col
             style="
               display: flex;
@@ -53,7 +56,6 @@
                   font-size: 20px;
                   line-height: unset;
                   margin: 0;
-                  color: rgb(48, 49, 51);
                 "
               >
                 {{ getTokenOverview.order }}
