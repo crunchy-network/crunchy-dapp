@@ -1,12 +1,11 @@
 import tzkt from "./../../utils/tzkt";
 import tzdomains from "./../../utils/tezos-domains";
-import coingecko from "./../../utils/coingecko";
 import { getWalletContract } from "./../../utils/tezos";
 import { BigNumber } from "bignumber.js";
 
 export default {
   async updateWtzXtzUsdVwap({ commit }) {
-    return coingecko.getXtzUsdPrice().then((price) => {
+    return tzkt.getXtzUsdPrice().then((price) => {
       commit("updateWtzXtzUsdVwap", price);
     });
   },

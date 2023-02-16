@@ -11,10 +11,12 @@ import ifoPixelPriv from "./ifoPixelPriv";
 import homeWallet from "./homeWallet";
 import swap from "./swap";
 import tokenTracker from "./tokenTracker";
+import usdXtzSwitch from "./usdXtzSwitch";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   modules: {
+    usdXtzSwitch: usdXtzSwitch,
     lpLockers: lpLockers,
     farms: farms,
     burnRecord: burnRecord,

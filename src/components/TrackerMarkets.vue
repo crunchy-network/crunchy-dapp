@@ -24,14 +24,14 @@
                 <el-col :span="2">#</el-col>
                 <el-col :span="7">Exchange</el-col>
                 <el-col style="text-align: right" :span="5">Market</el-col>
+                <el-col style="text-align: right" :span="5">TVL</el-col>
+                <el-col style="text-align: right" :span="5">24h Volume</el-col>
                 <el-col style="text-align: right" :span="5">Price</el-col>
-                <el-col style="text-align: right" :span="5">Volume</el-col>
               </el-row>
             </el-col>
           </el-row>
-          <div v-for="(item, index) in markets" :key="index">
+          <div v-for="(item, index) in sortedExchanges" :key="index">
             <el-row
-              v-if="`${item.name}`.toLowerCase() === 'quipuswap'"
               style="font-size: 14px; font-weight: 600"
               type="flex"
               align="top"
@@ -76,11 +76,26 @@
                       item.symbol
                     }}</el-col>
                     <el-col style="text-align: right" :span="5">
-                      <price-format prefix="$" :value="item.lpPrice" />
+                      <price-format
+                        prefix="$"
+                        :value="item.tokenTvl"
+                        :usd-value="item.tokenTvlUsd"
+                      />
                     </el-col>
                     <el-col style="text-align: right" :span="5">
-                      <price-format prefix="$" :value="item.volume" />
+                      <price-format
+                        prefix="$"
+                        :value="item.volume24"
+                        :usd-value="item.volume24Usd"
+                      />
                     </el-col>
+                    <el-col style="text-align: right" :span="5">
+                      <price-format
+                        prefix="$"
+                        :value="item.lpPrice"
+                        :usd-value="item.lpPriceUsd"
+                      />
+                    </el-col> 
                   </el-row>
                 </div>
               </el-col>
@@ -95,6 +110,7 @@
 <script>
 import { mapGetters } from "vuex";
 import PriceFormat from "./PriceFormat.vue";
+import _ from "lodash";
 export default {
   name: "TrackerMarkets",
   components: { PriceFormat },
@@ -106,19 +122,26 @@ export default {
   },
   computed: {
     ...mapGetters(["getTokenOverview"]),
-    markets() {
-      console.log("\n\n------ begin:  ------");
-      console.log(this.getTokenOverview.exchanges);
-      console.log("------ end:  ------\n\n");
+    sortedExchanges() {
+      return (
+        _.orderBy(this.getTokenOverview.exchanges, "tokenTvl", "desc") || []
+      );
+    },
+    // markets() {
+    //   return this.getTokenOverview.exchanges;
+    // },
+  },
 
-      return this.getTokenOverview.exchanges;
+  watch: {
+    getTokenOverview(val) {
+      console.log(val);
     },
   },
 
   methods: {
     handleDexUri(dex = "") {
       switch (dex?.toLowerCase()) {
-        case "plenty":
+        case "plenty network":
           return "https://res.cloudinary.com/melvin-manni/image/upload/v1645292809/nstgjnest4jrhcsgwymf.png";
 
         case "quipuswap":
@@ -132,6 +155,8 @@ export default {
 
         case "spicyswap":
           return "https://docs.spicyswap.xyz/img/spicy.png";
+        case "lb":
+          return "https://res.cloudinary.com/melvin-manni/image/upload/v1663433569/lcmsyxatxezrrcovuklr.png";
 
         default:
           return "";
@@ -139,6 +164,9 @@ export default {
     },
 
     capitalize(str) {
+      if (str === "lb") {
+        return "SIRS (Liquidity Baking)";
+      }
       return str.replace(/\b[a-z]/gi, function (char) {
         return char.toUpperCase();
       });

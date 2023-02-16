@@ -1,11 +1,12 @@
 export default {
   transformUri(uri) {
-    uri = uri.replace("ipfs://", "https://ipfs.fleek.co/ipfs/");
+    const gateway = "https://nftstorage.link/ipfs/";
+    uri = uri.replace("ipfs://", gateway);
     uri = uri.replace(
       "https://gateway.pinata.cloud/ipfs/",
-      "https://ipfs.fleek.co/ipfs/"
+      gateway
     );
-    uri = uri.replace("https://ipfs.io/ipfs/", "https://ipfs.fleek.co/ipfs/");
+    uri = uri.replace("https://ipfs.io/ipfs/", gateway);
     return uri;
   },
 };
