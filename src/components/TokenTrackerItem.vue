@@ -1,6 +1,10 @@
 <template>
   <div>
     <NavMenu />
+    <Banner
+      v-if="banner[getTokenOverview.symbol] !== undefined"
+      :banner="banner[getTokenOverview.symbol]"
+    />
     <!-- class="hidden-sm-and-down" -->
     <el-main class="page_width">
       <el-row type="flex" align="middle">
@@ -49,7 +53,13 @@
               "
             ></el-avatar>
             <a
-              style="color: #555cff; text-decoration: none; font-weight: 600"
+              class="token-header"
+              style="
+                color: #555cff;
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 20px;
+              "
               target="_blank"
             >
               {{ getTokenOverview.name || getTokenOverview.symbol }} (${{
@@ -138,6 +148,8 @@ import { mapActions, mapGetters, mapState } from "vuex";
 import numberFormat from "../utils/number-format";
 import PriceFormat from "./PriceFormat.vue";
 import TokenMetrics from "./TokenMetrics.vue";
+import Banner from "./Banner";
+
 export default {
   components: {
     NavMenu,
@@ -145,10 +157,25 @@ export default {
     TrackerMarkets,
     PriceFormat,
     TokenMetrics,
+    Banner,
   },
   data() {
     return {
       duration: "all",
+      banner: {
+        PLENTY: {
+          symbol: "PLENTY",
+          announcement:
+            "PLENTY tokens are being migrated to the PLY token on Plenty Network. Details can be found",
+          link: "https://app.plenty.network/migrate",
+        },
+        WRAP: {
+          symbol: "WRAP",
+          announcement:
+            " WRAP tokens are being migrated to the PLY token on Plenty Network. Details can be found",
+          link: "https://app.plenty.network/migrate",
+        },
+      },
     };
   },
 
@@ -200,6 +227,7 @@ export default {
 
   mounted() {
     this.refresh();
+    window.scrollTo(0, 0);
   },
 
   methods: {
@@ -280,6 +308,11 @@ export default {
   &:disabled {
     color: #191b1f66;
     cursor: not-allowed;
+  }
+}
+@media (max-width: 993px) {
+  .token-header{
+    font-size: 14px !important;
   }
 }
 </style>
