@@ -13,7 +13,6 @@
             font-weight: 600;
             font-size: 16px;
             line-height: 24px;
-            color: var(--color-primary);
             text-decoration: none;
           "
         >
@@ -50,7 +49,7 @@
             ></el-avatar>
             <a
               style="
-                color: var(--color-primary);
+                color: var(--color-text);
                 text-decoration: none;
                 font-weight: 600;
               "

@@ -28,7 +28,7 @@
               </h2>
               <span
                 style="
-                  color: var(--color-subtitle);
+                  color: var(--color-subheading-text);
                   font-weight: 400;
                   font-size: 16px;
                   line-height: 24px;
@@ -49,7 +49,7 @@
                 <el-card class="box-card" shadow="always" style="height: 100%">
                   <h2
                     style="
-                      color: var(--color-title-light);
+                      color: var(--color-subheading-text);
                       font-size: 14px;
                       margin: 0;
                     "
@@ -78,7 +78,7 @@
                 <el-card class="box-card" shadow="always" style="height: 100%">
                   <h2
                     style="
-                      color: var(--color-title-light);
+                      color: var(--color-subheading-text);
                       font-size: 14px;
                       margin: 0;
                     "
@@ -107,7 +107,7 @@
                 <el-card class="box-card" shadow="always" style="height: 100%">
                   <h2
                     style="
-                      color: var(--color-title-light);
+                      color: var(--color-subheading-text);
                       font-size: 14px;
                       margin: 0;
                     "
@@ -133,7 +133,7 @@
                 <el-card class="box-card" shadow="always" style="height: 100%">
                   <h2
                     style="
-                      color: var(--color-title-light);
+                      color: var(--color-subheading-text);
                       font-size: 14px;
                       margin: 0;
                     "
@@ -205,7 +205,10 @@
                     :gutter="20"
                     type="flex"
                     align="middle"
-                    style="padding: 0 20px"
+                    style="
+                      padding: 0 20px;
+                      color: var(--color-subheading-text) !important;
+                    "
                   >
                     <el-col :span="2">#</el-col>
 
@@ -523,109 +526,85 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import "../crunchy-variables.scss";
 @import "~element-ui/packages/theme-chalk/src/common/var";
 
-.el-divider--vertical {
-  height: 120% !important;
-}
-
-.el-card.top {
-  box-shadow: unset !important;
-  padding-left: 20px;
-}
-
-.tab-wrapper {
-  display: flex;
-  align-items: flex-start;
-}
-
-.tab-text {
-  min-width: 100px;
-  text-align: center;
-  padding: 2px 20px;
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 24px;
-  text-align: center;
-  text-transform: capitalize;
-  color: #757679;
-  cursor: pointer;
-  transition: 0.3s ease all;
-  margin: 0;
-  border: 0;
-  border-bottom: 3px solid transparent;
-  background: transparent;
-  &:disabled {
-    color: var(--color-disabled);
-    cursor: not-allowed;
+#token-tracker {
+  .el-divider--vertical {
+    height: 120% !important;
   }
-}
 
-.divider {
-  opacity: 0.26;
-}
-
-.divider .el-divider.el-divider--horizontal {
-  margin: 0 !important;
-}
-
-.header-row-wrap {
-  border-bottom: 2px solid var(--color-table-header-border) !important;
-}
-
-.header-row-wrap .wrap-sort-icon {
-  color: #757679;
-  font-size: 14px;
-  font-weight: 600;
-  align-items: center;
-  background: transparent;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  width: 100%;
-  height: 100%;
-  &:hover {
-    color: var(--color-text);
-    transition: 0.2s ease-in-out color;
+  .el-card.top {
+    box-shadow: unset !important;
+    padding-left: 20px;
   }
-}
-.el-input__inner {
-  border-radius: 28px;
-  /* background: transparent; */
-}
 
-.tab-select-element {
-  display: none;
-  width: 100%;
-}
+  .divider {
+    opacity: 0.26;
+  }
 
-.show-md {
-  display: none;
-}
+  .divider .el-divider.el-divider--horizontal {
+    margin: 0 !important;
+  }
 
-.hide-md {
-  display: block;
-}
+  .header-row-wrap {
+    border-bottom: 2px solid var(--color-table-header-border) !important;
+  }
 
-@media (max-width: 993px) {
+  .header-row-wrap .wrap-sort-icon {
+    color: var(--color-subheading-text) !important;
+    font-size: 14px;
+    font-weight: 600;
+    align-items: center;
+    background: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    &:hover {
+      color: var(--color-text);
+      transition: 0.2s ease-in-out color;
+    }
+  }
+  .el-input__inner {
+    border-radius: 28px !important;
+    border: var(--line-border) !important;
+    /* background: transparent; */
+  }
+
+  .tab-select-element {
+    display: none;
+    width: 100%;
+  }
+
   .show-md {
-    display: block;
+    display: none;
   }
 
   .hide-md {
-    display: none;
-  }
-}
-
-@media (max-width: 600px) {
-  .tab-select-element {
     display: block;
   }
 
-  .tab-custom-element {
-    display: none;
+  @media (max-width: 993px) {
+    .show-md {
+      display: block;
+    }
+
+    .hide-md {
+      display: none;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .tab-select-element {
+      display: block;
+    }
+
+    .tab-custom-element {
+      display: none;
+    }
   }
 }
 </style>

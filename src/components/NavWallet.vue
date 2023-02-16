@@ -74,8 +74,8 @@ export default {
   background: transparent !important;
 }
 #__wallet-btn {
-  background: var(--nav-wallet-btn);
-  color: var(--nav-wallet-color) !important;
-  border: 0;
+  background: var(--background-color) !important;
+  color: var(--color-text) !important;
+  border: var(--line-border);
 }
 </style>

@@ -60,10 +60,21 @@ export default {
 
 <style>
 html[data-theme="dark"] {
-  --color-primary: #555cff;
+  /* --color-primary: #555cff; */
   --color-secondary: #f15d59;
   --color-bg: #191b1f;
   --color-text: #fff;
+  --color-main-heading: #fff;
+  --color-subheading-text: #8c8d8f;
+  --color-menu-inactive: #8c8d8f;
+  --color-menu-active: #ff4d4b;
+  --line-border: 1px solid rgba(255, 255, 255, 0.1);
+  --color-alt-btn: #1ec37f;
+  --background-color: #1f2128;
+  --background-card: #1f2128;
+  --background-information-card: #FFEECC;
+
+  /*  */
   --color-text-light: rgba(255, 255, 255, 0.6);
   --color-text-lighter: rgba(255, 255, 255, 0.4);
   --color-submenu: #8c8d8f;
@@ -89,17 +100,28 @@ html[data-theme="dark"] {
   --bg-card: #191b1f;
   --color-input-border: rgba(255, 255, 255, 0.1);
   --drop-border: rgba(255, 255, 255, 0.4);
-  --nav-wallet-btn: #35373D;
+  --nav-wallet-btn: #35373d;
   --connect-wallet-color: #fff;
   --connect-wallet-btn: var(--color-primary);
   --nav-wallet-color: #fff;
 }
 
 html[data-theme="light"] {
-  --color-primary: #555cff;
+  /* --color-primary: #555cff; */
   --color-secondary: #f15d59;
   --color-bg: #fff;
   --color-text: #191b1f;
+  --color-main-heading: #191b1f;
+  --color-subheading-text: #757679;
+  --color-menu-inactive: #757679;
+  --color-menu-active: #ff4d4b;
+  --line-border: 1px solid rgba(25, 27, 31, 0.1);
+  --color-alt-btn: #1ec37f;
+  --background-color: #fff;
+  --background-card: #fff;
+  --background-information-card: #FFEECC;
+
+  /*  */
   --color-text-light: rgba(25, 27, 31, 0.6);
   --color-text-lighter: rgba(25, 27, 31, 0.4);
   --color-submenu: #191b1f;

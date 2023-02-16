@@ -426,7 +426,7 @@ export default {
   }
 }
 .el-menu-item.submenu-item {
-  color: var(--color-nav-item);
+  color: var(--color-menu-inactive);
   font-weight: 500;
   font-size: 16px;
   i {
@@ -438,7 +438,7 @@ export default {
     vertical-align: middle;
   }
   a {
-    color: var(--color-nav-item);
+    color: var(--color-menu-inactive);
     font-weight: 500;
     text-decoration: none;
     padding: 0px;
@@ -453,15 +453,15 @@ export default {
     }
   }
   &.is-active {
-    color: #f15d59 !important;
+    color: var(--color-menu-active) !important;
     i {
-      color: #f15d59 !important;
+      color: var(--color-menu-active) !important;
     }
   }
 }
 
 .nav-menu-wrapper > .el-menu-item {
-  color: var(--color-nav-item) !important;
+  color: var(--color-menu-inactive) !important;
   font-weight: 500;
   font-size: 16px;
   line-height: 24px;
@@ -487,7 +487,7 @@ export default {
     background: #9093991e !important;
   }
   &.is-active {
-    color: #f15d59 !important;
+    color: var(--color-menu-active) !important;
   }
 }
 .el-divider--vertical {

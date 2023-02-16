@@ -8,6 +8,10 @@ import router from "./plugins/routes.js";
 import store from "./store";
 import { AsyncFilterMixin } from "@tygr/vue-async-filter";
 import humanizeDuration from "humanize-duration";
+import Element from "element-ui";
+import "./element-variables.scss";
+
+Vue.use(Element);
 
 Vue.use(VueNumberFormat, {
   prefix: "",
