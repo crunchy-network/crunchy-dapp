@@ -30,12 +30,9 @@
   { "symbol": "SPI", "name": "Spice Token", "decimals": 6, "tokenId": 0, "tokenAddress": "KT1CS2xKGHNPTauSh5Re4qE3N9PCfG5u4dPx" },
   { "symbol": "GOT", "name": "GOeureka", "decimals": 8, "tokenId": 0, "tokenAddress": "KT1GioMCKwRyWoQpdrwxvsPVEsFJkkLyquVZ" },
   { "symbol": "MYH", "name": "MoneyHero", "decimals": 8, "tokenId": 0, "tokenAddress": "KT1BB1uMwVvJ1M3vVHXWALs1RWdgTp1rnXTR" },
-  { "symbol": "SEB", "name": "Sebuh.net ", "decimals": 2, "tokenId": 0, "tokenAddress": "KT1981tPmXh4KrUQKZpQKb55kREX7QGJcF3E" },
   { "symbol": "RSAL", "name": "Red Salsa", "decimals": 0, "tokenId": 0, "tokenAddress": "KT19ovJhcsUn4YU8Q5L3BGovKSixfbWcecEA" },
   { "symbol": "TCOIN", "name": "TCOIN", "decimals": 8, "tokenAddress": "KT1GorwGk5WXLUc3sEWrmPLQBSekmYrtz1sn" },
   { "symbol": "UP", "tokenAddress": "KT1TgmD7kXQzofpuc9VbTRMdZCS2e6JDuTtc", "decimals": 0, "name": "Upsorber" },
-  { "symbol": "NATAS", "tokenAddress": "KT1GaEvbD4zA3pHs7mv3grpuqR1KGtjXAEDe", "tokenId": 0, "decimals": 0, "name": "NaTaS" },
-  { "symbol": "DeMN", "tokenAddress": "KT1GBgCd5dk7v4TSzWvtk1X64TxMyG4r7eRX", "tokenId": 0, "decimals": 8, "name": "DeMN" },
   { "symbol": "apUSDC", "tokenAddress": "KT1UG6PdaKoJcc3yD6mkFVfxnS1uJeW3cGeX", "tokenId": 2, "decimals": 6, "name": "Allbridge Wrapped Polygon USDC" },
   {
     "symbol": "uBTC",
@@ -50,14 +47,6 @@
     "tokenId": 0,
     "decimals": 6,
     "name": "Lugh Euro pegged stablecoin"
-  },
-  {
-    "symbol": "GONZ",
-    "tokenAddress": "KT1RTsRfBxLf6egtsXrQX1CcXCqKL3XwpuFT",
-    "tokenId": 0,
-    "decimals": 6,
-    "description": "This token is created by DoctaGonz for the purpose of building da future of NFT markets on Tezos. For more information, follow @DoctaGonz on Twitter.",
-    "name": "DoctaGonz"
   },
   {
     "symbol": "MTRIA",
