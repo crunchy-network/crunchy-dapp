@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const makeQuery = async (query) => {
-  return axios.post("https://dex-indexer-hasura.onrender.com/v1/graphql", {
+  return axios.post("https://dex-indexer.crunchy.network/v1/graphql", {
     query,
   });
 };
