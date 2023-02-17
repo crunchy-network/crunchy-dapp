@@ -3,7 +3,7 @@ import mutations from "./mutations";
 
 export default {
   state: {
-    currentTheme: "light",
+    currentTheme: "dark",
     ls_key: "THEME_LOCAL_STORAGE_KEY",
   },
   actions,
