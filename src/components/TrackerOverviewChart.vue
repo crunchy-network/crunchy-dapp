@@ -115,9 +115,13 @@ export default {
       this.setLoading(true);
       this.updatedChartData.tvl.days1 = this.getChartData.tvl1Day.map(
         (element) => {
+          const timeUsdValue = tokenTracker.binarySearch(
+            this.getXtzUsdHistory,
+            new Date(element.bucket).getTime() + 1000 * 60 * 60 * 24
+          );
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.tvlUsd),
+            value: Number(element.aggregatedTvl) * timeUsdValue,
           };
         }
       );
@@ -125,16 +129,20 @@ export default {
         (element) => {
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.tvl),
+            value: Number(element.aggregatedTvl),
           };
         }
       );
 
       this.updatedChartData.tvl.days7 = this.getChartData.tvl7Day.map(
         (element) => {
+          const timeUsdValue = tokenTracker.binarySearch(
+            this.getXtzUsdHistory,
+            new Date(element.bucket).getTime() + 1000 * 60 * 60 * 24
+          );
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.tvlUsd),
+            value: Number(element.aggregatedTvl) * timeUsdValue,
           };
         }
       );
@@ -143,16 +151,20 @@ export default {
         (element) => {
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.tvl),
+            value: Number(element.aggregatedTvl),
           };
         }
       );
 
       this.updatedChartData.tvl.days30 = this.getChartData.tvl30Day.map(
         (element) => {
+          const timeUsdValue = tokenTracker.binarySearch(
+            this.getXtzUsdHistory,
+            new Date(element.bucket).getTime() + 1000 * 60 * 60 * 24
+          );
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.tvlUsd),
+            value: Number(element.aggregatedTvl) * timeUsdValue,
           };
         }
       );
@@ -160,16 +172,20 @@ export default {
         (element) => {
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.tvl),
+            value: Number(element.aggregatedTvl),
           };
         }
       );
 
       this.updatedChartData.tvl.all = this.getChartData.tvlAll.map(
         (element) => {
+          const timeUsdValue = tokenTracker.binarySearch(
+            this.getXtzUsdHistory,
+            new Date(element.bucket).getTime() + 1000 * 60 * 60 * 24
+          );
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.tvlUsd),
+            value: Number(element.aggregatedTvl) * timeUsdValue,
           };
         }
       );
@@ -177,7 +193,7 @@ export default {
         (element) => {
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.tvl),
+            value: Number(element.aggregatedTvl),
           };
         }
       );
@@ -190,7 +206,7 @@ export default {
           );
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.close) * timeUsdValue,
+            value: Number(element.aggregatedClose) * timeUsdValue,
           };
         });
 
@@ -198,19 +214,20 @@ export default {
         this.getChartData.volumeAndPrice1Day.map((element) => {
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.close),
+            value: Number(element.aggregatedClose),
           };
         });
 
       this.updatedChartData.volume.days1 =
         this.getChartData.volumeAndPrice1Day.map((element) => {
+          // console.log(element);
           const timeUsdValue = tokenTracker.binarySearch(
             this.getXtzUsdHistory,
             new Date(element.bucket).getTime()
           );
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.xtzVolume) * timeUsdValue,
+            value: Number(element.aggregatedXtzVolume) * timeUsdValue,
           };
         });
 
@@ -218,7 +235,7 @@ export default {
         this.getChartData.volumeAndPrice1Day.map((element) => {
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.xtzVolume),
+            value: Number(element.aggregatedXtzVolume),
           };
         });
 
@@ -241,14 +258,14 @@ export default {
           );
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.xtzVolume) * timeUsdValue,
+            value: Number(element.aggregatedXtzVolume) * timeUsdValue,
           };
         });
       this.updatedChartData.volumeXtz.days7 =
         this.getChartData.volumeAndPrice7Day.map((element) => {
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.xtzVolume),
+            value: Number(element.aggregatedXtzVolume),
           };
         });
 
@@ -271,14 +288,14 @@ export default {
           );
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.xtzVolume) * timeUsdValue,
+            value: Number(element.aggregatedXtzVolume) * timeUsdValue,
           };
         });
       this.updatedChartData.volumeXtz.days30 =
         this.getChartData.volumeAndPrice30Day.map((element) => {
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.xtzVolume),
+            value: Number(element.aggregatedXtzVolume),
           };
         });
 
@@ -299,7 +316,19 @@ export default {
         this.getChartData.allVolumeAndPrice.map((element) => {
           return {
             time: new Date(element.bucket).getTime(),
-            value: Number(element.xtzVolume),
+            value: Number(element.aggregatedXtzVolume),
+          };
+        });
+      
+      this.updatedChartData.volume.all =
+        this.getChartData.allVolumeAndPrice.map((element) => {
+          const timeUsdValue = tokenTracker.binarySearch(
+            this.getXtzUsdHistory,
+            new Date(element.bucket).getTime()
+          );
+          return {
+            time: new Date(element.bucket).getTime(),
+            value: Number(element.aggregatedXtzVolume) * timeUsdValue,
           };
         });
 

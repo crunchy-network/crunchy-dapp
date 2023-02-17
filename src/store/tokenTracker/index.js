@@ -29,7 +29,7 @@ export default {
     getTrackerData(state) {
       return {
         tokensTracked: state.tokenList.length,
-        dexCovered: 2,
+        dexCovered: 3,
         total24hVolume: state.tokenList.reduce((prev, current) => {
           return prev + current.volume24;
         }, 0),

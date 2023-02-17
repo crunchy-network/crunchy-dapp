@@ -35,7 +35,7 @@ export default {
       commit("updateXtzUsdPrice", xtzUsd);
       commit("updateXtzUsdHistory", xtzUsdHistory);
 
-      const tokenFeed = await tokenTracker.getTokenFeed();
+      const tokenFeed = await tokenTracker.getTokenFeed(xtzUsd, xtzUsdHistory);
 
       const tokens = [];
       for (let i = 0; i < tokensToTrack.length; i++) {
@@ -80,7 +80,6 @@ export default {
       commit("updateTokenTracked", token);
       tokenList.push(token);
     }
-
     commit("setTokenList", []);
     commit("setTokenList", tokenList);
   },
@@ -123,14 +122,15 @@ export default {
     if (token) {
       const updatedToken = await tokenTracker.calcHolders(token);
       commit("updateTokenOverview", updatedToken);
-      dispatch("fetchChartData", token.id);
+      dispatch("fetchChartData", token);
     }
   },
 
-  async fetchChartData({ commit, state }, tokenId) {
+  async fetchChartData({ commit, state }, token) {
+    const xtzUsdHistory = await tzkt.getXtzUsdHistory();
     commit("updateChartDataLoading", true);
     const chartData = {};
-    const exchangeId = state.tokensTracked[tokenId].exchanges[0].address || "";
+    const exchangeId = state.tokensTracked[token.id].exchanges[0].address || "";
     try {
       const [
         {
@@ -141,9 +141,18 @@ export default {
         allVolumeAndPrice,
         { tvl1Day, tvl7Day, tvl30Day, tvlAll },
       ] = await Promise.all([
-        tokenTracker.getPriceAndVolumeQuotes(tokenId),
-        tokenTracker.getAllQuotes1d(tokenId),
-        tokenTracker.getChartTvl(tokenId, exchangeId),
+        tokenTracker.getPriceAndVolumeQuotes(
+          token.id,
+          token.symbol,
+          xtzUsdHistory
+        ),
+        tokenTracker.getAllQuotes1d(token.id, token.symbol, xtzUsdHistory),
+        tokenTracker.getChartTvl(
+          token.id,
+          exchangeId,
+          token.symbol,
+          xtzUsdHistory
+        ),
       ]);
 
       chartData.allVolumeAndPrice = allVolumeAndPrice;
