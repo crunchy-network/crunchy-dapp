@@ -12,5 +12,8 @@ export default {
     getTheme(state) {
       return state.currentTheme;
     },
+    isDarkTheme(state) {
+      return state.currentTheme === "dark";
+    },
   },
 };

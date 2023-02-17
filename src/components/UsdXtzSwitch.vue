@@ -52,7 +52,7 @@ export default {
 .el-dropdown-menu__item.xtz-usd-switch {
   border-left: 4px solid transparent;
   transition: 0.25s ease border-color;
-  color: #191b1f;
+  color: var(--primary-text);
   font-size: 16px;
   font-weight: 600;
 }

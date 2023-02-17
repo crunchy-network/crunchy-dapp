@@ -29,7 +29,7 @@
           class="show-mobile"
           style="text-align: center; margin: 0 20px"
         >
-          <img src="../assets/logo_transparent_background.png" width="170" />
+          <logo width="170" />
         </div>
         <button
           v-if="!showMenu || !mobile"
@@ -52,10 +52,7 @@
                 class="show-mobile"
                 style="text-align: center; margin: 0 20px"
               >
-                <img
-                  src="../assets/logo_transparent_background.png"
-                  width="170"
-                />
+                <Logo width="170" />
               </div>
               <button
                 :class="'show-mobile close-btn'"
@@ -85,10 +82,7 @@
             >
               <el-menu-item v-if="!mobile">
                 <div style="text-align: center">
-                  <img
-                    src="../assets/logo_transparent_background.png"
-                    width="170"
-                  />
+                  <Logo width="170" />
                 </div>
               </el-menu-item>
               <el-menu-item v-if="!mobile">
@@ -330,13 +324,14 @@
 </template>
 
 <script>
+import Logo from "./Logo.vue";
 import NavUtils from "./NavUtils.vue";
 import NavWallet from "./NavWallet.vue";
 import Notice from "./Notice.vue";
 import ToggleTheme from "./ToggleTheme.vue";
 export default {
   name: "NavMenu",
-  components: { NavWallet, NavUtils, Notice, ToggleTheme },
+  components: { NavWallet, NavUtils, Notice, ToggleTheme, Logo },
   data() {
     return {
       showNotice: false,
@@ -419,13 +414,14 @@ export default {
 
   .more_submenu .el-menu-item.submenu-item {
     &.is-active {
-      color: #909399 !important;
+      color: var(--color-subheading-text) !important;
     }
   }
   .el-menu-item.submenu-item {
     color: var(--nav-item);
     font-weight: 500;
     font-size: 16px;
+    background: var(--background-card);
     i {
       margin-right: 14px;
       width: 24px;

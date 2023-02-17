@@ -17,6 +17,7 @@ html[data-theme="dark"] {
   --wallet-border: 1px solid var(--border-color);
   --table-row-hover: #282a30;
   --alt-btn-color: #fff;
+  --logo-text-color: #fff;
 }
 
 html[data-theme="light"] {
@@ -38,9 +39,10 @@ html[data-theme="light"] {
   --wallet-border: 1px solid #555cff;
   --table-row-hover: #f3f3f3;
   --alt-btn-color: #555cff;
+  --logo-text-color: #e51b23;
 }
 
-html[data-theme="dark"] .el-avatar.el-avatar--circle {
+/* html[data-theme="dark"] .el-avatar.el-avatar--circle {
   background-color: transparent !important;
   border-color: transparent !important;
-}
+} */

@@ -309,11 +309,21 @@ header .grid-content button.el-button {
   margin-top: unset;
 }
 .el-popover.nav-wallet {
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  border: var(--line-color) !important;
   border-radius: 6px !important;
 }
+.el-dropdown-menu,
+.el-popover {
+  background-color: var(--background-card) !important;
+  border: var(--line-border) !important;
+  color: var(--primary-text) !important;
+}
+.el-popover__title {
+  color: var(--color-subheading-text) !important;
+}
+
 .el-popover.nav-wallet .el-popover__title {
-  color: rgb(29, 29, 29);
+  color: var(--primary-text);
 }
 .el-menu--popup,
 .el-menu--inline {
@@ -337,8 +347,8 @@ header .grid-content button.el-button {
 
 #farm-listing .el-input__inner {
   border-radius: 24px !important;
-  color: #191b1f !important;
-  background: #fafafa !important;
+  color: var(--primary-text) !important;
+  background: transparent !important;
 }
 
 .search-input .el-input__prefix {
@@ -596,5 +606,10 @@ header .grid-content button.el-button {
 
 .el-divider {
   background: var(--border-color) !important;
+}
+
+.el-menu.el-menu--popup {
+  background-color: var(--background-card) !important;
+  border: var(--line-border) !important;
 }
 </style>
