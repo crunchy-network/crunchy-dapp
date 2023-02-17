@@ -117,11 +117,14 @@ h3 {
   color: var(--primary-text);
 }
 
+p {
+  margin: 0;
+}
+
 h4,
 h5,
 h6,
-p,
-div {
+p {
   color: var(--primary-text);
 }
 .grid-content h2 + span {

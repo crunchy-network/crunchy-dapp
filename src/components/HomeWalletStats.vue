@@ -148,7 +148,7 @@ export default {
 p.title {
   font-weight: 600;
   font-size: 16px;
-  color: #757679;
+  color: var(--color-subheading-text);
   letter-spacing: -0.02em;
 }
 
@@ -157,13 +157,13 @@ p.small-title {
   font-size: 14px;
   line-height: 21px;
   letter-spacing: -0.02em;
-  color: #757679;
+  color: var(--color-subheading-text);
 }
 
 .value {
   font-weight: 600;
   letter-spacing: -0.02em;
-  color: #000000;
+  color: var(--primary-text);
 }
 
 h1.value {

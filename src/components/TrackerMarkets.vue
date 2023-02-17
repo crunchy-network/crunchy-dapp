@@ -19,7 +19,7 @@
                 :gutter="20"
                 type="flex"
                 align="middle"
-                style="padding: 0 20px; color: #757679"
+                style="padding: 0 20px; color: var(--color-subheading-text)"
               >
                 <el-col :span="2">#</el-col>
                 <el-col :span="7">Exchange</el-col>
@@ -71,9 +71,9 @@
                         </a>
                       </el-row></el-col
                     >
-                    <el-col style="text-align: right" :span="5">{{
-                      item.symbol
-                    }}</el-col>
+                    <el-col style="text-align: right" :span="5"
+                      ><p>{{ item.symbol }}</p></el-col
+                    >
                     <el-col style="text-align: right" :span="5">
                       <price-format
                         prefix="$"

@@ -496,8 +496,8 @@ export default {
       padding-top: 10px;
       padding-bottom: 40px;
       transition: 0.45s ease all;
-      background: #fff;
-      border-right: 1.5px solid rgba(25, 27, 31, 0.1) !important;
+      background: var(--background-color);
+      border-right: var(--line-border) !important;
       overflow-y: auto;
 
       > div:first-child {
@@ -530,8 +530,8 @@ export default {
       align-items: center;
       left: 0;
       right: 0;
-      border-top: 1.5px solid rgba(25, 27, 31, 0.1);
-      background: #fff;
+      border-top: var(--line-border);
+      background: var(--background-color);
       height: 80px;
       transition: 0.45s ease all;
       &.active {
@@ -546,7 +546,7 @@ export default {
     }
 
     .close-btn {
-      border: 1.5px solid rgba(255, 255, 255, 0.2);
+      border: 0 !important;
       background: #555cff !important;
       color: #fff !important;
       border-radius: 50%;

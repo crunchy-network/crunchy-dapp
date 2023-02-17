@@ -10,12 +10,18 @@
     </div>
     <div class="row">
       <span>Slippage Tolerance</span>
-      <span style="display: flex; justify-content: right; min-height: 26px">
+      <span
+        class="slippage-button-wrapper"
+        style="display: flex; justify-content: right; min-height: 26px"
+      >
         <el-button
           v-for="value in toleranceOptions"
           :key="value"
           plain
-          class="slippage-button"
+          :class="[
+            'slippage-button',
+            { active: getSwapForm.slippageTolerance === value },
+          ]"
           :type="getSwapForm.slippageTolerance === value ? 'primary' : 'info'"
           @click="
             () => {
@@ -128,7 +134,7 @@ export default {
   data: () => ({
     toleranceOptions: [0.5, 1],
     customSlippage: "",
-    impactColor: "#757679",
+    impactColor: "var(color-subheading-text)",
   }),
 
   computed: {
@@ -189,7 +195,7 @@ export default {
     },
     getPriceImpact() {
       const impact = calculatePriceImpact(this.getCurrentTrade);
-      this.impactColor = impact > 5 ? "#FF4D4B" : "#757679";
+      this.impactColor = impact > 5 ? "#FF4D4B" : "var(--color-menu-inactiv)";
       if (!impact) return "";
       return `${impact}%`;
     },
@@ -204,7 +210,7 @@ export default {
   margin: 0px 16px;
   margin-top: 16px;
   .row {
-    color: #757679;
+    color: var(--color-subheading-text);
     width: 100%;
     font-weight: 500;
     padding: 6px 0;
@@ -212,17 +218,27 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #e8e8e9;
+    border-bottom: var(--line-border);
     &.last {
       border-bottom: none;
     }
   }
 }
+
 .slippage-button {
   padding: 2px;
   width: 33px;
   font-size: 10px;
+  border: var(--line-border) !important;
+  background: var(--background-color) !important;
+  color: var(--color-subheading-text) !important;
+
+  &.active {
+    border-color: var(--link-btn-color) !important;
+    color: var(--link-btn-color) !important;
+  }
 }
+
 .custom-slippage-tolerance {
   width: 33px;
   .el-input__inner {
@@ -246,12 +262,12 @@ export default {
 .swap-route-label {
   font-size: 11px;
   width: 50px;
-  color: #757679;
-  border: 1px solid #e8e8e9;
+  color: var(--color-subheading-text);
+  /* border: var(--line-border); */
   border-radius: 16px;
   padding: 4px;
   text-align: center;
-  background: #fff;
+  background: var(--background-color);
   z-index: 1;
 }
 
@@ -265,7 +281,7 @@ export default {
     left: 5px;
     right: 5px;
     bottom: 50%;
-    border-bottom: 2px solid #e8e8e9;
+    border-bottom: var(--line-border);
     z-index: 0;
   }
 }
