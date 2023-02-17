@@ -2,11 +2,11 @@
   <div class="bottom-section">
     <div class="row">
       <span>Routing Fee</span>
-      <span>{{ routingFee }}%</span>
+      <span style="color: var(--primary-text)" >{{ routingFee }}%</span>
     </div>
     <div class="row">
       <span>Rate</span>
-      <span>{{ getSwapRate() }}</span>
+      <span style="color: var(--primary-text)" >{{ getSwapRate() }}</span>
     </div>
     <div class="row">
       <span>Slippage Tolerance</span>
@@ -47,7 +47,7 @@
     </div>
     <div class="row">
       <span> Minimum Received</span>
-      <span> {{ getCurrentTrade.outputWithSlippage }}</span>
+      <span style="color: var(--primary-text)"> {{ getCurrentTrade.outputWithSlippage }}</span>
     </div>
     <div class="row">
       <span>Price Impact</span>
@@ -55,14 +55,16 @@
     </div>
     <div class="row last">
       <span>Swap Route</span>
-      <span v-if="numRoutes === 1 && numHops === 1">1 route / 1 hop</span>
-      <span v-else-if="numRoutes === 1 && numHops > 1"
-        >1 route / {{ numHops }} hops</span
-      >
-      <span v-else-if="numRoutes > 1"
-        >{{ numRoutes }} routes / {{ numHops }} hops</span
-      >
-      <span v-else>~</span>
+      <div style="color: var(--link-btn-color)">
+        <span v-if="numRoutes === 1 && numHops === 1">1 route / 1 hop</span>
+        <span v-else-if="numRoutes === 1 && numHops > 1"
+          >1 route / {{ numHops }} hops</span
+        >
+        <span v-else-if="numRoutes > 1"
+          >{{ numRoutes }} routes / {{ numHops }} hops</span
+        >
+        <span v-else>~</span>
+      </div>
     </div>
 
     <div v-if="getCurrentTrade.trades">
