@@ -141,7 +141,7 @@
 
                     <template v-if="mode === 'burn'">
                       <el-avatar
-                        src="https://ipfs.fleek.co/ipfs/bafybeidwsid6fvv4vxbqja7er3b4exsht5r7umv6hpz7rc3ujg7xilhwv4"
+                        src="https://nftstorage.link/ipfs/bafybeidwsid6fvv4vxbqja7er3b4exsht5r7umv6hpz7rc3ujg7xilhwv4"
                         shape="circle"
                         :size="38"
                         style="position: absolute; top: 0; right: 10px"
@@ -231,7 +231,7 @@
 
                     <template v-if="mode === 'mint'">
                       <el-avatar
-                        src="https://ipfs.fleek.co/ipfs/bafybeidwsid6fvv4vxbqja7er3b4exsht5r7umv6hpz7rc3ujg7xilhwv4"
+                        src="https://nftstorage.link/ipfs/bafybeidwsid6fvv4vxbqja7er3b4exsht5r7umv6hpz7rc3ujg7xilhwv4"
                         shape="circle"
                         :size="38"
                         style="position: absolute; top: 0; right: 10px"
