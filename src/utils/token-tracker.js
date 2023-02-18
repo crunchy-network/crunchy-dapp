@@ -13,6 +13,14 @@ const oneWeekInMiliSecond = oneDayInMiliSecond * 7;
 const oneMonthInMiliSecond = oneDayInMiliSecond * 30;
 const PLY_SYMBOL = "PLY";
 const PLY_TOKEN_ID = "KT1JVjgXPMMSaa6FkzeJcgb8q9cUaLmwaJUX_0";
+const TRACKED_MARKETS_NAME = {
+  plentyNetwork: {
+    name: "plenty network",
+  },
+  spicyswap: {
+    name: "spicyswap",
+  },
+};
 
 async function queryXtzVolume() {
   const query = `
@@ -45,6 +53,27 @@ async function getPlentyPools() {
 
 async function getPlentyTokens(symbol = "") {
   const uri = `https://api.analytics.plenty.network/analytics/tokens/${symbol}?priceHistory=day`;
+  const res = await (await axios.get(uri)).data;
+
+  return res;
+}
+
+async function getSpicyTokenDailyMetrics(tag = "") {
+  const uri = `https://spicyb.sdaotools.xyz/api/rest/TokenDailyMetrics?_ilike=${tag}`;
+  const res = await (await axios.get(uri)).data;
+
+  return res;
+}
+
+async function getSpicyTokens() {
+  const uri = `https://spicyb.sdaotools.xyz/api/rest/TokenList`;
+  const res = await (await axios.get(uri)).data;
+
+  return res;
+}
+
+async function getSpicyPools() {
+  const uri = `https://spicyb.sdaotools.xyz/api/rest/PoolListAll`;
   const res = await (await axios.get(uri)).data;
 
   return res;
@@ -666,6 +695,8 @@ export default {
       plentyTokens,
       PLY,
       plentyPools,
+      spicyTokens,
+      spicyPools,
     ] = await Promise.all([
       axios.post("https://dex.dipdup.net/v1/graphql", {
         query,
@@ -674,6 +705,8 @@ export default {
       getPlentyTokens(),
       getPlentyTokens(PLY_SYMBOL),
       getPlentyPools(),
+      getSpicyTokens(),
+      getSpicyPools(),
     ]);
 
     quotesTotal.push({
@@ -770,6 +803,9 @@ export default {
 
     token.push(updatedPLY[0]);
 
+    /*
+     *Format plenty pools and spicy pools for integration
+     */
     const updatedPlentyPools = plentyPools.map(function (obj) {
       const baseSymbol = obj.symbol.split("/")[0];
       const quoteSymbol = obj.symbol.split("/")[1];
@@ -786,7 +822,7 @@ export default {
 
       return {
         address: obj.pool,
-        name: "plenty network",
+        name: TRACKED_MARKETS_NAME.plentyNetwork.name,
         symbol: obj.symbol,
         volume24: obj.volume.value24H / xtzUSD,
         baseSymbol: baseSymbol,
@@ -797,6 +833,55 @@ export default {
         tokenTvlUsd: obj.tvl.value,
       };
     });
+
+    let updatedSpicyPools = spicyPools.pair_info.map(function (obj) {
+      const baseSymbol = token.filter((element) => {
+        const tokenId = obj.token0.split(":")[1];
+        obj.token0Id = obj.token0.replace(":", "_");
+        if (tokenId === "null") {
+          obj.token0Id = obj.token0Id.replace("null", "0");
+        }
+        return element.id === obj.token0Id;
+      })[0]?.symbol;
+
+      const quoteSymbol = token.filter((element) => {
+        const tokenId = obj.token1.split(":")[1];
+        obj.token1Id = obj.token1.replace(":", "_");
+        if (tokenId === "null") {
+          obj.token1Id = obj.token1Id.replace("null", "0");
+        }
+        return element.id === obj.token1Id;
+      })[0]?.symbol;
+
+      const poolSymbol = baseSymbol + "/" + quoteSymbol;
+
+      if (poolSymbol.includes("undefined")) {
+        return null;
+      } else {
+        const baseToken = spicyTokens.tokens.filter(
+          (token) => token.symbol.toLowerCase() === baseSymbol.toLowerCase()
+        );
+        const quoteToken = spicyTokens.tokens.filter(
+          (token) => token.symbol.toLowerCase() === quoteSymbol.toLowerCase()
+        );
+        return {
+          address: obj.contract,
+          name: TRACKED_MARKETS_NAME.spicyswap.name,
+          symbol: poolSymbol,
+          volume24: obj.pairDayData_aggregate.aggregate.sum.dailyvolumextz,
+          volume24Usd: obj.pairDayData_aggregate.aggregate.sum.dailyvolumeusd,
+          baseSymbol: baseSymbol,
+          quoteSymbol: quoteSymbol,
+          basePrice: baseToken[0].derivedxtz,
+          quotePrice: quoteToken[0].derivedxtz,
+          tokenTvl: obj.totalstakedfarmxtz,
+          tokenTvlUsd: obj.totalstakedfarmusd,
+        };
+      }
+    });
+    updatedSpicyPools = updatedSpicyPools.filter((n) => n);
+
+    console.log(updatedSpicyPools);
 
     token.forEach((t) => {
       updatedPlentyPools.forEach(async (p) => {
@@ -814,7 +899,24 @@ export default {
           t.exchanges.push(exchange);
         }
       });
+      updatedSpicyPools.forEach(async (p) => {
+        if (
+          p.baseSymbol.toLowerCase() === t.symbol.toLowerCase() ||
+          p.quoteSymbol.toLowerCase() === t.symbol.toLowerCase()
+        ) {
+          const exchange = {
+            ...p,
+            midPrice:
+              p.baseSymbol.toLowerCase() === t.symbol.toLowerCase()
+                ? p.basePrice
+                : p.quotePrice,
+          };
+          t.exchanges.push(exchange);
+        }
+      });
     });
+
+    console.log(token);
 
     const tokensVolume = await queryXtzVolume();
 
@@ -847,7 +949,7 @@ export default {
             ? token.contract === contract &&
                 token.standard === "FA2" &&
                 String(token.tokenId) === String(id)
-            : token.contract === contract && 
+            : token.contract === contract &&
                 String(token.tokenId) === String(id);
         });
         if (tokenOnPlenty !== undefined) {
@@ -910,7 +1012,7 @@ export default {
         tokenTvlUsd = new BigNumber(tokenTvlUsd)
           .plus(e.tokenTvl * xtzUSD)
           .toNumber();
-        if (e.name === "plenty network") {
+        if (e.name === TRACKED_MARKETS_NAME.plentyNetwork.name) {
           volume24Xtz = new BigNumber(volume24Xtz).plus(e.volume24).toNumber();
         }
       });
@@ -1042,10 +1144,9 @@ export default {
 
         element.exchanges[index].lpPrice = Number(market.midPrice) || 0;
 
-        element.exchanges[index].symbol =
-          market.name !== "plenty network"
-            ? `XTZ/${element.symbol}`
-            : market.symbol;
+        element.exchanges[index].symbol = TRACKED_MARKETS_NAME[market.name]
+          ? market.symbol
+          : `XTZ/${element.symbol}`;
         element.exchanges[index].volume24Usd = new BigNumber(market.volume24)
           .times(xtzUsd)
           .toNumber();
