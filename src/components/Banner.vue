@@ -140,5 +140,6 @@ export default {
   #dot {
     left: 43.83%;
     right: 45.83%;
-  
+  }
+}
 </style>
