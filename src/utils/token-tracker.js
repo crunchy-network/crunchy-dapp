@@ -1021,11 +1021,11 @@ export default {
           name: TRACKED_MARKETS_NAME.spicyswap.name,
           symbol: poolSymbol,
           volume24:
-            obj.pairHourData_aggregate.aggregate.sum.hourlyvolumextz !== "null"
+            obj.pairHourData_aggregate.aggregate.sum.hourlyvolumextz !== null
               ? obj.pairHourData_aggregate.aggregate.sum.hourlyvolumextz
               : 0,
           volume24Usd:
-            obj.pairHourData_aggregate.aggregate.sum.hourlyvolumeusd !== "null"
+            obj.pairHourData_aggregate.aggregate.sum.hourlyvolumeusd !== null
               ? obj.pairHourData_aggregate.aggregate.sum.hourlyvolumeusd
               : 0,
           baseSymbol: baseSymbol,
