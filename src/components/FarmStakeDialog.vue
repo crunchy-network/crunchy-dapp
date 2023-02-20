@@ -24,13 +24,13 @@
         class="current-balance"
         style="
           border-radius: 22px;
-          background: #ffeecc;
+          background: var(--background-information-card);
           padding: 12px 20px;
           margin-bottom: 18px;
         "
       >
         <el-row type="flex" align="middle" justify="space-between">
-          <el-col :span="8" style="font-size: 12px">BALANCE</el-col>
+          <el-col :span="8" style="font-size: 12px; color: #191b1f;">BALANCE</el-col>
           <el-col
             :span="16"
             style="color: #303133; font-weight: bold; text-align: right"

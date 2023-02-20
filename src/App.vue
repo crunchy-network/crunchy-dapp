@@ -88,6 +88,7 @@ body,
 
 * {
   font-family: "Poppins";
+  transition: 0.1s ease all;
 }
 
 body {
@@ -178,7 +179,7 @@ body {
   font-family: "Poppins", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #191b1f;
+  color: var(--primary-text);
   height: 100%;
 }
 
@@ -210,15 +211,16 @@ i.fa-icon-right {
 }
 
 .el-header .el-input__prefix {
-  color: #191b1f;
+  color: var(--primary-text);
 }
 .el-input--prefix .el-input__inner {
   padding-left: 40px !important;
 }
 .el-header .el-input input {
   border-radius: 24px;
-  color: #191b1f;
-  background: #fafafa;
+  color: var(--primary-text);
+  background: transparent;
+  border: var(--line-border);
 }
 .el-header .el-input input:focus {
   border-color: #555cff !important;
@@ -352,7 +354,7 @@ header .grid-content button.el-button {
 }
 
 .search-input .el-input__prefix {
-  color: #191b1f;
+  color: var(--primary-text);
 }
 
 #token-tracker .search-input .el-input__prefix {
@@ -362,8 +364,9 @@ header .grid-content button.el-button {
 .search-input .el-input__inner,
 #farm-listing .search-input .el-input__inner {
   border-radius: 24px !important;
-  color: #191b1f !important;
-  background: #fff !important;
+  color: var(--primary-text) !important;
+  background: transparent !important;
+  border: var(--line-border);
 }
 .search-input .el-input input:focus {
   border-color: #555cff !important;
@@ -384,7 +387,7 @@ header .grid-content button.el-button {
   font-size: 16px !important;
 }
 .el-card h2 {
-  color: #191b1f;
+  color: var(--primary-text);
   font-size: 20px;
   margin-top: 0;
 }
@@ -535,8 +538,9 @@ header .grid-content button.el-button {
 #farm-listing .el-input__inner,
 #nft-wallet-view .el-input__inner {
   border-radius: 24px !important;
-  color: #191b1f !important;
-  background: #fafafa !important;
+  color: var(--primary-text) !important;
+  background: transparent !important;
+  border: var(--line-border);
 }
 
 .el-select__tags {
@@ -608,8 +612,76 @@ header .grid-content button.el-button {
   background: var(--border-color) !important;
 }
 
-.el-menu.el-menu--popup {
+.el-menu.el-menu--popup,
+.el-select-dropdown,
+.el-dialog {
   background-color: var(--background-card) !important;
   border: var(--line-border) !important;
+}
+
+.el-dialog__title {
+  color: var(--color-subheading-text) !important;
+}
+
+body .el-row {
+  color: var(--primary-text);
+}
+
+body .el-table,
+.el-table * {
+  background-color: var(--background-card) !important;
+}
+
+.el-card,
+.el-table__body-wrapper {
+  color: var(--primary-text) !important;
+}
+
+body .el-table__body td {
+  border: 0 !important;
+}
+
+body .el-table__header th,
+.el-table th.is-leaf {
+  border-bottom: var(--line-border) !important;
+  color: var(--color-subheading-text) !important;
+}
+
+body .el-table .el-link {
+  color: var(--color-subheading-text) !important;
+}
+
+body .el-table .el-link:hover {
+  color: var(--link-btn-color) !important;
+  text-decoration: none !important;
+}
+
+.el-progress__text {
+  color: var(--color-subheading-text) !important;
+}
+
+.el-tabs__nav-wrap::after {
+  background: var(--border-color) !important;
+  height: 1px !important;
+}
+
+html[data-theme="dark"] .el-loading-mask {
+  background: rgba(25, 27, 31, 0.9);
+}
+
+html[data-theme="dark"] .el-avatar {
+  border-color: transparent !important;
+  border-width: 0 !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: transparent;
+  box-sizing: border-box;
+}
+
+html[data-theme="dark"] .el-avatar img {
+  top: unset;
+  left: unset;
 }
 </style>

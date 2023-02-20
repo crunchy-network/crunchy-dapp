@@ -25,7 +25,7 @@
             </h2>
             <span
               style="
-                color: #8c8d8f;
+                color: var(--color-subheading-text);
                 font-weight: 400;
                 font-size: 16px;
                 line-height: 24px;
@@ -79,7 +79,7 @@
                     style="font-size: 24px; float: right"
                   >
                   </el-avatar>
-                  <div
+                  <p
                     style="
                       font-size: 20px;
                       font-weight: 600;
@@ -96,11 +96,10 @@
                         precision: 0,
                       })
                     }}</span>
-                  </div>
+                  </p>
                   <h2
                     style="
-                      color: #191b1f;
-                      opacity: 0.4;
+                      color: var(--color-subheading-text);
                       font-size: 12px;
                       margin-bottom: 0px;
                     "
@@ -128,7 +127,7 @@
                       style="width: 24px; height: 24px; padding: 12px"
                     />
                   </el-avatar>
-                  <div
+                  <p
                     style="
                       font-size: 20px;
                       font-weight: 600;
@@ -137,11 +136,10 @@
                     "
                   >
                     {{ vueNumberFormat(farms.totalTvlTez) }} ꜩ
-                  </div>
+                  </p>
                   <h2
                     style="
-                      color: #191b1f;
-                      opacity: 0.4;
+                      color: var(--color-subheading-text);
                       font-size: 12px;
                       margin-bottom: 0px;
                     "
@@ -169,7 +167,7 @@
                       style="width: 24px; height: 24px; padding: 12px"
                     />
                   </el-avatar>
-                  <div
+                  <p
                     style="
                       font-size: 20px;
                       font-weight: 600;
@@ -185,11 +183,10 @@
                         precision: 2,
                       })
                     }}
-                  </div>
+                  </p>
                   <h2
                     style="
-                      color: #191b1f;
-                      opacity: 0.4;
+                      color: var(--color-subheading-text);
                       font-size: 12px;
                       margin-bottom: 0px;
                     "
@@ -296,10 +293,9 @@
                     type="flex"
                     align="middle"
                     style="
-                      color: #757679;
                       font-size: 14px;
                       font-weight: 600;
-                      border-bottom: 2px solid #f4f4f4;
+                      border-bottom: var(--line-border);
                       padding-bottom: 14px;
                       margin-bottom: 14px;
                     "
@@ -309,7 +305,10 @@
                         :gutter="20"
                         type="flex"
                         align="middle"
-                        style="padding: 0 20px"
+                        style="
+                          padding: 0 20px;
+                          color: var(--color-subheading-text) !important;
+                        "
                       >
                         <el-col :span="7">Farm</el-col>
                         <el-col style="text-align: right" :span="4"
@@ -548,57 +547,68 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 #farm-listing {
   position: relative;
   width: 100%;
   max-width: 1450px;
   margin: 0 auto;
-}
 
-.tab-wrapper {
-  display: flex;
-  align-items: flex-start;
-}
-
-.tab-wrapper button {
-  min-width: max-content;
-  text-align: center;
-  padding: 2px 4px;
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 24px;
-  text-align: center;
-  text-transform: capitalize;
-  color: #757679;
-  cursor: pointer;
-  transition: 0.3s ease all;
-  margin: 0;
-  border: 0;
-  border-bottom: 3px solid transparent;
-  background: transparent;
-  margin-right: 7px;
-}
-
-.tab-wrapper button.active {
-  border-bottom: 3px solid #ff4d4b;
-  color: #ff4d4b;
-  font-weight: 700;
-}
-
-@media (max-width: 450px) {
-  .grid-content-filter {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    /* align-items: center; */
-    row-gap: 10px;
+  input.el-input__inner,
+  .search-input .el-input__inner {
+    border-radius: 28px;
+    background: var(--background-color) !important;
+    color: var(--primary-text) !important;
+    border: var(--line-border) !important;
+    &::placeholder {
+      color: var(--color-subheading-text) !important;
+    }
   }
 
-  .grid-content-filter .el-divider {
+  .tab-wrapper {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .tab-wrapper button {
+    min-width: max-content;
+    text-align: center;
+    padding: 2px 4px;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    text-transform: capitalize;
+    color: var(--color-menu-inactive);
+    cursor: pointer;
+    transition: 0.3s ease all;
     margin: 0;
-    width: 100% !important;
-    height: 1px !important;
+    border: 0;
+    border-bottom: 3px solid transparent;
+    background: transparent;
+    margin-right: 7px;
+  }
+
+  .tab-wrapper button.active {
+    border-bottom: 3px solid var(--color-menu-active);
+    color: var(--color-menu-active);
+    font-weight: 700;
+  }
+
+  @media (max-width: 450px) {
+    .grid-content-filter {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      /* align-items: center; */
+      row-gap: 10px;
+    }
+
+    .grid-content-filter .el-divider {
+      margin: 0;
+      width: 100% !important;
+      height: 1px !important;
+    }
   }
 }
 </style>

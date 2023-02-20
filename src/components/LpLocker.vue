@@ -23,7 +23,7 @@
             </h2>
             <span
               style="
-                color: #8c8d8f;
+                color: var(--color-subheading-text);
                 font-weight: 400;
                 font-size: 16px;
                 line-height: 24px;
@@ -84,8 +84,7 @@
               </div>
               <h2
                 style="
-                  color: #191b1f;
-                  opacity: 0.4;
+                  color: var(--color-subheading-text);
                   font-size: 12px;
                   margin-bottom: 0px;
                 "
@@ -120,8 +119,7 @@
               </div>
               <h2
                 style="
-                  color: #191b1f;
-                  opacity: 0.4;
+                  color: var(--color-subheading-text);
                   font-size: 12px;
                   margin-bottom: 0px;
                 "
@@ -164,8 +162,7 @@
               </div>
               <h2
                 style="
-                  color: #191b1f;
-                  opacity: 0.4;
+                  color: var(--color-subheading-text);
                   font-size: 12px;
                   margin-bottom: 0px;
                 "
@@ -210,8 +207,7 @@
               </div>
               <h2
                 style="
-                  color: #191b1f;
-                  opacity: 0.4;
+                  color: var(--color-subheading-text);
                   font-size: 12px;
                   margin-bottom: 0px;
                 "
@@ -255,8 +251,7 @@
               </div>
               <h2
                 style="
-                  color: #191b1f;
-                  opacity: 0.4;
+                  color: var(--color-subheading-text);
                   font-size: 12px;
                   margin-bottom: 0px;
                 "
@@ -307,8 +302,7 @@
               </div>
               <h2
                 style="
-                  color: #191b1f;
-                  opacity: 0.4;
+                  color: var(--color-subheading-text);
                   font-size: 12px;
                   margin-bottom: 0px;
                 "
@@ -443,13 +437,13 @@ export default {
   .el-tabs__item {
     font-size: 16px;
     font-weight: 600;
-    color: $--color-text-gray;
+    color: var(--color-menu-inactive);
     &.is-active {
-      color: $--color-danger;
+      color: var(--color-menu-active);
     }
   }
   .el-tabs__active-bar {
-    background-color: $--color-danger;
+    background-color: var(--color-menu-active);
     height: 3px;
   }
   .el-tabs__nav-wrap::after {

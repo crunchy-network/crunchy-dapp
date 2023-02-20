@@ -34,9 +34,15 @@
                   <el-link
                     :href="`https://tzkt.io/${burnRecord.contract}`"
                     target="_blank"
-                    style="word-break: break-all"
+                    style="
+                      word-break: break-all;
+                      color: var(--color-subheading-text);
+                    "
                     >{{ burnRecord.contract }}
-                    <i class="far fa-external-link fa-icon-right"></i
+                    <i
+                      style="color: var(--link-btn-color)"
+                      class="far fa-external-link fa-icon-right"
+                    ></i
                   ></el-link>
                 </el-col>
               </el-row>
@@ -54,8 +60,12 @@
                   <el-link
                     href="https://app.tezos.domains/domain/burner.crunchy.tez"
                     target="_blank"
+                    style="color: var(--color-subheading-text)"
                     >burner.crunchy.tez
-                    <i class="far fa-external-link fa-icon-right"></i
+                    <i
+                      style="color: var(--link-btn-color)"
+                      class="far fa-external-link fa-icon-right"
+                    ></i
                   ></el-link>
                 </el-col>
               </el-row>
@@ -108,7 +118,10 @@
                   <el-table
                     v-loading="burnRecord.loading"
                     :data="burnRecord.records"
-                    style="width: 100%"
+                    style="
+                      width: 100%;
+                      background-color: var(--background-card) !important;
+                    "
                   >
                     <el-table-column
                       prop="level"
@@ -125,7 +138,9 @@
                             $async(
                               scope.row.from.domain,
                               `tez-domain-${scope.row.from.address}`
-                            ) || scope.row.from.alias || scope.row.from.address
+                            ) ||
+                            scope.row.from.alias ||
+                            scope.row.from.address
                           }}
                           <i class="far fa-external-link fa-icon-right"></i
                         ></el-link>
@@ -150,7 +165,10 @@
                         <el-link
                           :href="`https://tzkt.io/${scope.row.token.contract.address}`"
                           target="_blank"
-                          >{{ scope.row.token.metadata.name || scope.row.token.metadata.symbol }}
+                          >{{
+                            scope.row.token.metadata.name ||
+                            scope.row.token.metadata.symbol
+                          }}
                           <i class="far fa-external-link fa-icon-right"></i
                         ></el-link>
                       </template>
@@ -262,7 +280,7 @@ export default {
 
   p {
     font-size: 14px;
-    color: rgb(117, 118, 121);
+    color: var(--color-subheading-text);
   }
 }
 

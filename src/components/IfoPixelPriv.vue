@@ -45,7 +45,7 @@
                 Telegram
               </a>
             </div>
-            <p>
+            <p style="color: var(--color-subheading-text) !important">
               Pixel is bringing gamification to NFTs and Defi. Their first
               project, PixelPotus.com, is an early collectable on Tezos and has
               been in the top 5 on DappRadar for months. The Pixel Debates TCG
@@ -645,7 +645,7 @@ export default {
 }
 
 .box {
-  border: 1px solid rgba(25, 27, 31, 0.1);
+  border: var(--line-border);
   box-sizing: border-box;
   border-radius: 18px;
   padding: 35px 45px;
@@ -711,7 +711,7 @@ p {
   font-weight: 300;
   line-height: 21px;
   letter-spacing: 0.02em;
-  color: #757679;
+  color: var(--color-subheading-text);
   margin: 0;
 }
 
@@ -757,14 +757,14 @@ p.mid {
   font-size: 14px;
   line-height: 21px;
   letter-spacing: -0.02em;
-  color: #757679;
+  color: var(--color-subheading-text);
 }
 
 .line {
   max-width: 100%;
   flex: 1;
   height: 1px;
-  background: #e8e9e9;
+  background: var(--border-color);
 }
 
 .tier-box {
@@ -796,7 +796,7 @@ p.mid {
 }
 
 .detail-row .data-col p {
-  color: rgba(117, 118, 121, 0.6);
+  color: var(--color-subheading-text);
   font-weight: 800;
   font-size: 12px;
   text-align: left;
@@ -804,7 +804,7 @@ p.mid {
 
 .detail-row .data-col:nth-child(2) p {
   text-align: right;
-  color: #757679;
+  color: var(--color-subheading-text);
   font-weight: 700;
   font-size: 14px;
 }

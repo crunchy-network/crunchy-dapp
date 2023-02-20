@@ -296,7 +296,9 @@
           >
             <NavUtils />
             <nav-wallet />
-            <toggle-theme />
+            <div style="margin-left: 16px">
+              <toggle-theme />
+            </div>
             <slot />
           </div>
         </div>
@@ -316,7 +318,9 @@
           </div>
           <slot />
           <nav-wallet />
-          <toggle-theme />
+          <div style="margin-left: 16px">
+            <toggle-theme />
+          </div>
         </div>
       </el-row>
     </el-header>
