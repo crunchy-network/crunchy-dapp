@@ -684,4 +684,8 @@ html[data-theme="dark"] .el-avatar img {
   top: unset;
   left: unset;
 }
+
+html[data-theme="dark"] .el-card.is-always-shadow {
+  box-shadow: 0 0px 12px 0 rgba(255, 255, 255 / 5%) !important;
+}
 </style>
