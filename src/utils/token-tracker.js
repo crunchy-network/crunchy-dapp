@@ -73,7 +73,9 @@ async function getSpicyTokens() {
 }
 
 async function getSpicyPools() {
-  const uri = `https://spicyb.sdaotools.xyz/api/rest/PoolListAll`;
+  const uri = `https://spicyb.sdaotools.xyz/api/rest/PoolListAll?hour_agg_start=${Math.floor(
+    day1 / 1000
+  )}`;
   const res = await (await axios.get(uri)).data;
 
   return res;
@@ -1018,8 +1020,14 @@ export default {
           address: obj.contract,
           name: TRACKED_MARKETS_NAME.spicyswap.name,
           symbol: poolSymbol,
-          volume24: obj.pairHourData_aggregate.aggregate.sum.hourlyvolumextz,
-          volume24Usd: obj.pairHourData_aggregate.aggregate.sum.hourlyvolumeusd,
+          volume24:
+            obj.pairHourData_aggregate.aggregate.sum.hourlyvolumextz !== "null"
+              ? obj.pairHourData_aggregate.aggregate.sum.hourlyvolumextz
+              : 0,
+          volume24Usd:
+            obj.pairHourData_aggregate.aggregate.sum.hourlyvolumeusd !== "null"
+              ? obj.pairHourData_aggregate.aggregate.sum.hourlyvolumeusd
+              : 0,
           baseSymbol: baseSymbol,
           quoteSymbol: quoteSymbol,
           basePrice: baseToken[0].tokenDayData[0].last_price,
@@ -1132,17 +1140,17 @@ export default {
         const arr = [
           {
             num: tokenQuotesTotal.spicyClose,
-            index: tokenQuotesTotal.spicyTvl
+            index: tokenQuotesTotal.spicyTvl,
           },
           {
             num: tokenQuotesTotal.plentyClose,
-            index: tokenQuotesTotal.plentyTvl
+            index: tokenQuotesTotal.plentyTvl,
           },
           {
             num: tokenQuotesTotal.close,
-            index: tokenQuotesTotal.tvl
+            index: tokenQuotesTotal.tvl,
           },
-        ]
+        ];
 
         tokenQuotesTotal.aggregatedClose = aggregateMultiple(arr);
       }
@@ -1321,9 +1329,10 @@ export default {
 
         element.exchanges[index].lpPrice = Number(market.midPrice) || 0;
 
-        element.exchanges[index].symbol = TRACKED_MARKETS_NAME[market.name]
-          ? market.symbol
-          : `XTZ/${element.symbol}`;
+        element.exchanges[index].symbol =
+          market.name === "plenty network" || market.name === "spicyswap"
+            ? market.symbol
+            : `XTZ/${element.symbol}`;
         element.exchanges[index].volume24Usd = new BigNumber(market.volume24)
           .times(xtzUsd)
           .toNumber();
