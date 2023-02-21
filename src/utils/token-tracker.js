@@ -1196,7 +1196,7 @@ export default {
         tokenTvlUsd = new BigNumber(tokenTvlUsd)
           .plus(e.tokenTvl * xtzUSD)
           .toNumber();
-        if (e.name === TRACKED_MARKETS_NAME.plentyNetwork.name) {
+        if (e.name === TRACKED_MARKETS_NAME.plentyNetwork.name || e.name === TRACKED_MARKETS_NAME.spicyswap.name) {
           volume24Xtz = new BigNumber(volume24Xtz).plus(e.volume24).toNumber();
         }
       });
