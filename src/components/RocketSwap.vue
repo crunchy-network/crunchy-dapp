@@ -111,7 +111,7 @@
                 <el-col :span="10" style="position: relative">
                   <h3 style="margin: 0; margin-bottom: 8px">Get CRUNCH</h3>
                   <el-avatar
-                    src="https://ipfs.fleek.co/ipfs/bafybeienhhbxz53n3gtg7stjou2zs3lmhupahwovv2kxwh5uass3bc5xzq"
+                    src="https://nftstorage.link/ipfs/bafybeienhhbxz53n3gtg7stjou2zs3lmhupahwovv2kxwh5uass3bc5xzq"
                     shape="circle"
                     :size="38"
                     style="position: absolute; top: 0; right: 10px"
@@ -255,7 +255,7 @@
                 <el-col :span="10" style="position: relative">
                   <h3 style="margin: 0; margin-bottom: 8px">Get CRUNCH</h3>
                   <el-avatar
-                    src="https://ipfs.fleek.co/ipfs/bafybeienhhbxz53n3gtg7stjou2zs3lmhupahwovv2kxwh5uass3bc5xzq"
+                    src="https://nftstorage.link/ipfs/bafybeienhhbxz53n3gtg7stjou2zs3lmhupahwovv2kxwh5uass3bc5xzq"
                     shape="circle"
                     :size="38"
                     style="position: absolute; top: 0; right: 10px"

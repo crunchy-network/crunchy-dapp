@@ -95,7 +95,7 @@
                 active-class="is-active"
               >
                 <i v-if="mobile" class="fak fa-crunchy-home-alt"></i>
-                <span>Home</span>
+                <span>Tokens</span>
               </router-link>
 
               <router-link

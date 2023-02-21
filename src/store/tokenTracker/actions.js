@@ -131,6 +131,10 @@ export default {
     commit("updateChartDataLoading", true);
     const chartData = {};
     const exchangeId = state.tokensTracked[token.id].exchanges[0].address || "";
+    token.spicyId = token.id.replace(":", "_");
+    if (token.standard === "fa12") {
+      token.spicyId = token.spicyId.replace("0", "null");
+    }
     try {
       const [
         {
@@ -142,12 +146,19 @@ export default {
         { tvl1Day, tvl7Day, tvl30Day, tvlAll },
       ] = await Promise.all([
         tokenTracker.getPriceAndVolumeQuotes(
+          token.spicyId,
           token.id,
           token.symbol,
           xtzUsdHistory
         ),
-        tokenTracker.getAllQuotes1d(token.id, token.symbol, xtzUsdHistory),
+        tokenTracker.getAllQuotes1d(
+          token.spicyId,
+          token.id,
+          token.symbol,
+          xtzUsdHistory
+        ),
         tokenTracker.getChartTvl(
+          token.spicyId,
           token.id,
           exchangeId,
           token.symbol,
