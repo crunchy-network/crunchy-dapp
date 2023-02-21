@@ -10,7 +10,6 @@
   { "symbol": "tzBTC", "name": "tzBTC", "decimals": 8, "tokenAddress": "KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn" },
   { "symbol": "uUSD", "name": "youves uUSD", "decimals": 12, "tokenId": 0, "tokenAddress": "KT1XRPEPXbZK25r3Htzp2o1x7xdMMmfocKNW" },
   { "symbol": "YOU", "name": "youves YOU Governance", "decimals": 12, "tokenId": 0, "tokenAddress": "KT1Xobej4mc6XgEjDoJoHtTKgbD1ELMvcQuL" },
-  { "symbol": "ANTI", "name": "Anti token", "decimals": 3, "tokenAddress": "KT1MsktCnwfS1nGZmf8QbaTpZ8euVijWdmkC" },
   { "symbol": "SMAK", "name": "Smartlink", "decimals": 3, "tokenAddress": "KT1TwzD6zV3WeJ39ukuqxcfK2fJCnhvrdN1X" },
   { "symbol": "kUSD", "name": "Kolibri USD", "decimals": 18, "tokenAddress": "KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV" },
   { "symbol": "PLENTY", "name": "Plenty DAO", "decimals": 18, "tokenAddress": "KT1GRSvLoikDsXujKgZPsGLX8k8VvR2Tq95b" },
