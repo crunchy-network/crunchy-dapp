@@ -8,11 +8,11 @@
     <el-col :span="24">
       <div
         v-loading="locker.loading"
-        style="border: 1px solid #ebeef5; border-radius: 14px"
+        style="border: var(--line-border); border-radius: 14px"
         :style="[
           locker.rowExpanded
-            ? { borderColor: '#EBEEF5' }
-            : { borderColor: '#fff' },
+            ? { borderColor: 'transparent' }
+            : { borderColor: 'var(--border-color)' },
         ]"
       >
         <el-row

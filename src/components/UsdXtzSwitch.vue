@@ -5,11 +5,11 @@
     @command="toggleUsdXtzSwitch"
   >
     <span
-      style="color: #555CFF; font-size: 16px; font-weight: 600"
+      style="color: #555cff; font-size: 16px; font-weight: 600"
       class="el-dropdown-link"
     >
       {{ getShowUsd ? "USD" : "XTZ" }}
-      <i style="color: #555CFF" class="el-icon-arrow-down el-icon--right"></i>
+      <i style="color: #555cff" class="el-icon-arrow-down el-icon--right"></i>
     </span>
 
     <el-dropdown-menu slot="dropdown" style="border-radius: 12px">
@@ -52,11 +52,16 @@ export default {
 .el-dropdown-menu__item.xtz-usd-switch {
   border-left: 4px solid transparent;
   transition: 0.25s ease border-color;
-  color: var(--primary-text);
+  color: var(--nav-item) !important;
+  /* color: var(--primary-text); */
   font-size: 16px;
   font-weight: 600;
 }
 .el-dropdown-menu__item.xtz-usd-switch:hover {
-  border-left: 4px solid #555cff;
+  background: #9093991e !important;
+}
+
+.el-dropdown-menu__item.xtz-usd-switch.selected {
+  color: var(--primary-text) !important;
 }
 </style>

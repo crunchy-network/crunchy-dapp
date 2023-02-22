@@ -599,6 +599,10 @@ export default {
 @import "../crunchy-variables.scss";
 @import "~element-ui/packages/theme-chalk/src/common/var";
 
+html[data-theme="dark"] #wtz .el-input.is-disabled .el-input__inner {
+  background: var(--background-color) !important;
+}
+
 #wtz {
   position: relative;
   width: 100%;
@@ -613,11 +617,12 @@ export default {
   }
 
   .el-input.is-disabled .el-input__inner {
-    color: #191b1f;
-    border-color: #f6f6f6;
+    color: var(--primary-text);
+    border-color: var(--border-color);
   }
+
   .el-input.is-disabled .el-input__suffix {
-    color: #191b1f;
+    color: var(--primary-text);
     font-weight: bold;
   }
 

@@ -101,6 +101,9 @@
                 font-weight: bold;
                 padding-left: 48px;
                 padding-right: 48px;
+                background: var(--color-alt-btn);
+                color: #fff;
+                border: 0;
               "
               @click="refresh"
               >Refresh</el-button

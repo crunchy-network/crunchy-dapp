@@ -95,7 +95,7 @@
                         :value="item.lpPrice"
                         :usd-value="item.lpPriceUsd"
                       />
-                    </el-col> 
+                    </el-col>
                   </el-row>
                 </div>
               </el-col>

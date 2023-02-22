@@ -554,6 +554,11 @@ export default {
       align-items: center;
       justify-content: center;
     }
+
+    .el-menu--popup,
+    .el-menu--inline {
+      border: 0 !important;
+    }
   }
 }
 </style>

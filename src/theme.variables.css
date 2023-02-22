@@ -1,13 +1,13 @@
 html[data-theme="dark"] {
   --primary-text: #fff;
   --color-main-heading: #fff;
-  --color-subheading-text: #8c8d8f;
+  --color-subheading-text: #97989A;
   --color-menu-inactive: #8c8d8f;
   --color-menu-active: #ff4d4b;
   --line-border: 1px solid rgba(255, 255, 255, 0.1);
   --link-btn-color: #555cff;
   --color-alt-btn: #1ec37f;
-  --background-color: #1f2128;
+  --background-color: #303135;
   --background-card: #191b1f;
   --background-information-card: #ffeecc;
   --nav-item: #8c8d8f;

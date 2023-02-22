@@ -264,6 +264,9 @@
                 padding-left: 48px;
                 padding-right: 48px;
                 margin-left: 5px;
+                background: var(--color-alt-btn);
+                color: #fff;
+                border: 1px solid var(--color-alt-btn);
               "
               @click="harvestAllFarms"
               >Harvest All</el-button

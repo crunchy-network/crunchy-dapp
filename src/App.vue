@@ -688,4 +688,16 @@ html[data-theme="dark"] .el-avatar img {
 html[data-theme="dark"] .el-card.is-always-shadow {
   box-shadow: 0 0px 12px 0 rgba(255, 255, 255 / 5%) !important;
 }
+
+.el-select-dropdown__item {
+  color: var(--nav-item) !important;
+  background: var(--background-card) !important;
+}
+.el-select-dropdown__item:hover {
+  background: #9093991e !important;
+}
+
+.el-select-dropdown__item.selected {
+  color: var(--primary-text) !important;
+}
 </style>

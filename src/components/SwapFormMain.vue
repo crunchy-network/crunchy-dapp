@@ -109,18 +109,7 @@
         >
       </div>
       <div :style="`${getPkh ? 'display: none;' : ''}`">
-        <el-button
-          type="success"
-          style="
-            border-radius: 20px;
-            width: 340px;
-            max-width: 100%;
-            margin: auto;
-            font-weight: 700;
-          "
-          @click="connectWallet"
-          >Connect Wallet</el-button
-        >
+        <connect-button />
       </div>
     </div>
     <div
@@ -151,10 +140,11 @@ import { buildRoutingFeeOperation } from "../utils/routing-fee";
 import { buildOperationParams } from "../lib/SwapRouter";
 import { Tezos } from "../utils/tezos";
 import * as signalR from "@microsoft/signalr";
+import ConnectButton from './ConnectButton.vue';
 
 export default {
   name: "SwapFormMain",
-  components: { TokenSelectMenu },
+  components: { TokenSelectMenu, ConnectButton },
   props: {
     tokenList: { type: Array, required: true },
   },

@@ -1,13 +1,6 @@
 <template>
   <div style="display: inline-block">
-    <el-button
-      v-if="wallet.connected === false"
-      type="success"
-      round
-      plain
-      @click="connectWallet"
-      ><i class="fad fa-wallet"></i> Connect Wallet</el-button
-    >
+    <connect-button v-if="wallet.connected === false" />
 
     <el-popover
       v-if="wallet.connected === true"
@@ -62,8 +55,10 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
+import ConnectButton from "./ConnectButton.vue";
 
 export default {
+  components: { ConnectButton },
   name: "NavWallet",
   computed: {
     ...mapState(["wallet"]),

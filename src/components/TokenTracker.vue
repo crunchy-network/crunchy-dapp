@@ -173,6 +173,7 @@
                   :value="tokenTracker.searchInput"
                   placeholder="Search tokens"
                   prefix-icon="fa-solid fa-magnifying-glass"
+                  class="el-card is-always-shadow"
                   @input="updateSearchInput"
                 >
                 </el-input></div

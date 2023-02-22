@@ -271,19 +271,7 @@
               </div>
 
               <div style="width: 100%; margin-top: 18px">
-                <el-button
-                  v-if="wallet.connected === false"
-                  type="success"
-                  style="
-                    border-radius: 10px;
-                    font-weight: bold;
-                    width: 100%;
-                    padding: 12px 20px;
-                    color: #ffffff;
-                  "
-                  @click="connectWallet"
-                  >Connect Wallet</el-button
-                >
+                <connect-button v-if="wallet.connected === false" />
                 <!-- <el-button v-else :disabled="!live" type="primary" @click="showStakeDialog" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px;">FARM</el-button> -->
                 <el-button
                   v-else
@@ -543,10 +531,11 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import { gatherAllProjectJsonFiles, importAll } from "../lib/JsonHelper";
+import ConnectButton from './ConnectButton.vue';
 import NavMenu from "./NavMenu.vue";
 export default {
   name: "IFO",
-  components: { NavMenu },
+  components: { NavMenu, ConnectButton },
   data: () => ({
     project: null,
     images: importAll(

@@ -508,12 +508,7 @@
               @click="onSubmit"
               >Create Farm</el-button
             >
-            <el-button
-              v-if="wallet.connected === false"
-              type="success"
-              style="border-radius: 10px; font-weight: bold"
-              @click="connectWallet"
-              >Connect Wallet</el-button
+            <connect-button v-if="wallet.connected === false" />
             >
           </el-col>
         </el-row>
@@ -531,11 +526,13 @@ import { getTokenMetadata } from "./../utils/tezos";
 import { BigNumber } from "bignumber.js";
 import { ValidationResult, validateContractAddress } from "@taquito/utils";
 import NavMenu from "./NavMenu.vue";
+import ConnectButton from "./ConnectButton.vue";
 
 export default {
   name: "FarmCreate",
   components: {
     NavMenu,
+    ConnectButton,
   },
   data() {
     var validateTokenAddress = (rule, value, callback) => {
