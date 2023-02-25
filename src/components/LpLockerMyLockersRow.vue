@@ -161,6 +161,7 @@
               <el-button
                 type="primary"
                 icon="fak fa-crunchy-more-alt"
+                class="_more-btn"
                 plain
                 circle
               ></el-button>
@@ -260,6 +261,15 @@ export default {
         width: 14px;
       }
     }
+  }
+}
+
+html[data-theme="dark"] ._more-btn {
+  border: 1px solid #555cff !important;
+  background: transparent !important;
+  &:hover {
+    background: #eeefff !important;
+    color: #555cff;
   }
 }
 </style>

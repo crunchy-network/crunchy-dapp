@@ -16,7 +16,13 @@
         <el-divider></el-divider>
         <el-row type="flex" align="middle" justify="space-between">
           <el-col :span="12">
-            <el-button type="text" size="mini" round plain @click="changeWallet"
+            <el-button
+              type="text"
+              size="mini"
+              class="switch-button"
+              round
+              plain
+              @click="changeWallet"
               >Switch Account</el-button
             >
           </el-col>
@@ -24,6 +30,7 @@
             <el-button
               type="danger"
               size="mini"
+              class="disconnect-button"
               round
               plain
               @click="disconnectWallet"
@@ -58,8 +65,8 @@ import { mapState, mapActions } from "vuex";
 import ConnectButton from "./ConnectButton.vue";
 
 export default {
-  components: { ConnectButton },
   name: "NavWallet",
+  components: { ConnectButton },
   computed: {
     ...mapState(["wallet"]),
   },
@@ -69,4 +76,16 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+html[data-theme="dark"] .switch-button {
+  border: 1px solid #555cff;
+}
+html[data-theme="dark"] .disconnect-button {
+  background-color: transparent !important;
+  border: 1px solid var(--color-menu-active);
+  color: var(--color-menu-active);
+  &:hover {
+    background-color: #feeded !important;
+  }
+}
+</style>

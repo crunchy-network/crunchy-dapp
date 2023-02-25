@@ -1,7 +1,7 @@
 <template>
   <svg
-    :width="width"
-    :height="height"
+    :width="149"
+    :height="25"
     viewBox="0 0 149 25"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -41,14 +41,14 @@
 export default {
   name: "LogoComponent",
   props: {
-    width: {
-      type: Number,
-      default: 149,
-    },
-    height: {
-      type: Number,
-      default: 25,
-    },
+    // width: {
+    //   type: Number,
+    //   default: 149,
+    // },
+    // height: {
+    //   type: Number,
+    //   default: 25,
+    // },
     fill: {
       type: String,
       default: "var(--logo-text-color)",

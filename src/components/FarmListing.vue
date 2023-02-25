@@ -281,6 +281,7 @@
               :value="farms.searchInput"
               placeholder="Search farms and pools"
               prefix-icon="fad fa-search"
+              class="el-card is-always-shadow"
               @input="updateSearchInput"
             >
             </el-input></div

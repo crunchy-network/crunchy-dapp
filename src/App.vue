@@ -429,7 +429,7 @@ header .grid-content button.el-button {
 }
 
 .el-tooltip__popper.is-light {
-  border: 1px solid #ebeef5 !important;
+  border: var(--line-border) !important;
   font-weight: bold;
   color: #757679 !important;
   border-radius: 12px !important;
@@ -502,7 +502,7 @@ header .grid-content button.el-button {
   font-size: 12px !important;
 }
 .el-dialog__headerbtn {
-  border: 1px solid #ebeef5 !important;
+  border: var(--line-border) !important;
   border-radius: 50% !important;
   height: 42px !important;
   width: 42px !important;
@@ -620,7 +620,7 @@ header .grid-content button.el-button {
 }
 
 .el-dialog__title {
-  color: var(--color-subheading-text) !important;
+  color: var(--primary-text) !important;
 }
 
 body .el-row {
@@ -686,18 +686,83 @@ html[data-theme="dark"] .el-avatar img {
 }
 
 html[data-theme="dark"] .el-card.is-always-shadow {
-  box-shadow: 0 0px 12px 0 rgba(255, 255, 255 / 5%) !important;
+  box-shadow: 0 0px 12px 0 rgba(0, 0, 0, 0.25) !important;
 }
 
-.el-select-dropdown__item {
+html[data-theme="dark"] .el-tooltip__popper.is-light {
+  background: var(--background-card) !important;
+  color: var(--primary-text) !important;
+}
+
+html[data-theme="dark"] ._info-card {
+  background: #303135 !important;
+  color: #ffffff;
+}
+
+html[data-theme="dark"] ._info-card ._info-card__title {
+  color: #97989a;
+}
+
+html[data-theme="dark"] ._action-btn {
+  background: #2a2c33;
+  color: #d4d5d6;
+}
+
+.el-select-dropdown__item,
+.el-dropdown-menu__item {
   color: var(--nav-item) !important;
   background: var(--background-card) !important;
 }
-.el-select-dropdown__item:hover {
+.el-select-dropdown__item:hover,
+.el-dropdown-menu__item:hover {
   background: #9093991e !important;
 }
 
-.el-select-dropdown__item.selected {
+.el-select-dropdown__item.selected,
+.el-dropdown-menu__item.selected {
+  color: var(--primary-text) !important;
+}
+
+html[data-theme="dark"] .el-button.is-disabled {
+  position: relative;
+  overflow: hidden;
+  /* background-color: unset; */
+}
+html[data-theme="dark"] .el-button.is-disabled::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -1px;
+  right: -1px;
+  content: "";
+  background: #000000c5;
+}
+
+.el-picker-panel,
+.el-picker-panel__footer {
+  background: var(--background-card) !important;
+  border: var(--line-border) !important;
+  color: var(--primary-text) !important;
+}
+
+.el-date-table td.available {
+  color: var(--primary-text) !important;
+}
+
+.el-date-table td.in-range div {
+  background-color: #9093991e !important;
+}
+
+.el-picker-panel__icon-btn,
+.el-date-picker__header-label,
+.el-date-range-picker .el-picker-panel__content,
+.el-date-table td.next-month,
+.el-date-table td.prev-month {
+  color: var(--color-subheading-text) !important;
+}
+
+input{
+  background: var(--background-card) !important;
   color: var(--primary-text) !important;
 }
 </style>

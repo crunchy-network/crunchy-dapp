@@ -1,13 +1,13 @@
 html[data-theme="dark"] {
   --primary-text: #fff;
   --color-main-heading: #fff;
-  --color-subheading-text: #97989A;
+  --color-subheading-text: #8c8d8f;
   --color-menu-inactive: #8c8d8f;
   --color-menu-active: #ff4d4b;
   --line-border: 1px solid rgba(255, 255, 255, 0.1);
   --link-btn-color: #555cff;
   --color-alt-btn: #1ec37f;
-  --background-color: #303135;
+  --background-color: #1f2128;
   --background-card: #191b1f;
   --background-information-card: #ffeecc;
   --nav-item: #8c8d8f;
@@ -29,7 +29,7 @@ html[data-theme="light"] {
   --line-border: 1px solid rgba(25, 27, 31, 0.1);
   --link-btn-color: #555cff;
   --color-alt-btn: #1ec37f;
-  --background-color: #fff;
+  --background-color: #FFFBFB;
   --background-card: #fff;
   --background-information-card: #ffeecc;
   --nav-item: #191b1f;

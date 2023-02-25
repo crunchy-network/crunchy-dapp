@@ -174,6 +174,11 @@
                   placeholder="Search tokens"
                   prefix-icon="fa-solid fa-magnifying-glass"
                   class="el-card is-always-shadow"
+                  style="
+                    border-radius: 24px !important;
+                    border: 0 !important;
+                    background: var(--background-card) !important;
+                  "
                   @input="updateSearchInput"
                 >
                 </el-input></div
@@ -634,13 +639,23 @@ export default {
       transition: 0.2s ease-in-out color;
     }
   }
+
   input.el-input__inner {
     border-radius: 28px;
-    background: var(--background-color) !important;
+    /* background: var(--background-color) !important; */
     color: var(--primary-text) !important;
     border: var(--line-border) !important;
+    transition: 0.13s ease border-color;
     &::placeholder {
       color: var(--color-subheading-text) !important;
+    }
+
+    &:hover {
+      border-color: var(--primary-text) !important;
+    }
+
+    &:focus {
+      border-color: #555cff !important;
     }
   }
 

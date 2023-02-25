@@ -103,7 +103,7 @@
                         </el-input>
                       </el-form-item>
                       <div
-                        class="current-balance"
+                        class="current-balance _info-card"
                         style="
                           border-radius: 22px;
                           background: #ffeecc;
@@ -118,13 +118,13 @@
                           <el-col
                             :span="8"
                             style="color: #8c8477; font-size: 12px"
+                            class="_info-card__title"
                             >BALANCE</el-col
                           >
                           <el-col
                             :span="16"
                             style="
                               font-size: 12px;
-                              color: #303133;
                               font-weight: 600;
                               text-align: right;
                             "

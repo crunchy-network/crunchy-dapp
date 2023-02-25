@@ -58,7 +58,7 @@
         :gutter="20"
         style="margin-bottom: 50px; flex-wrap: wrap; row-gap: 20px"
       >
-        <el-col :sm="12" :md="8" :lg="4">
+        <el-col :sm="12" :md="8">
           <div class="grid-content" style="height: 100%">
             <el-card
               v-loading="lpLockers.loading"
@@ -94,7 +94,7 @@
             </el-card>
           </div>
         </el-col>
-        <el-col :sm="12" :md="8" :lg="4">
+        <el-col :sm="12" :md="8">
           <div class="grid-content" style="height: 100%">
             <el-card
               v-loading="lpLockers.loading"
@@ -129,7 +129,7 @@
             </el-card>
           </div>
         </el-col>
-        <el-col :sm="12" :md="8" :lg="4">
+        <el-col :sm="12" :md="8">
           <div class="grid-content" style="height: 100%">
             <el-card
               v-loading="lpLockers.loading"
@@ -173,7 +173,7 @@
           </div>
         </el-col>
 
-        <el-col :sm="12" :md="8" :lg="4">
+        <el-col :sm="12" :md="8">
           <div class="grid-content lp-locker-progress" style="height: 100%">
             <el-card
               v-loading="lpLockers.loading"
@@ -217,7 +217,7 @@
             </el-card>
           </div>
         </el-col>
-        <el-col :sm="12" :md="8" :lg="4">
+        <el-col :sm="12" :md="8">
           <div class="grid-content lp-locker-progress" style="height: 100%">
             <el-card
               v-loading="lpLockers.loading"
@@ -261,7 +261,7 @@
             </el-card>
           </div>
         </el-col>
-        <el-col :sm="12" :md="8" :lg="4">
+        <el-col :sm="12" :md="8">
           <div class="grid-content lp-locker-progress" style="height: 100%">
             <el-card
               v-loading="lpLockers.loading"

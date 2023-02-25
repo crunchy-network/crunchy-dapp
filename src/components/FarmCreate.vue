@@ -34,6 +34,7 @@
                   title="Helpful Tip"
                   type="info"
                   description="Search for tokens instead of looking up the contract info. All tokens on QuipuSwap will come up in the search."
+                  class="_info-card"
                   :closable="false"
                   style="margin-bottom: 18px"
                 >
@@ -223,6 +224,7 @@
                     type="info"
                     plain
                     style="border-radius: 10px; padding: 10px 12px"
+                    class="_action-btn"
                     @click="addBonus(index)"
                     ><i class="fas fa-plus"></i
                   ></el-button>
@@ -231,6 +233,7 @@
                     type="info"
                     plain
                     style="border-radius: 10px; padding: 10px 12px"
+                    class="_action-btn"
                     @click="removeBonus(index)"
                     ><i class="fas fa-minus"></i
                   ></el-button>

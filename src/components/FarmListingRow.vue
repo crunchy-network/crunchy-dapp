@@ -932,8 +932,4 @@ export default {
 @import "../crunchy-variables.scss";
 @import "~element-ui/packages/theme-chalk/src/common/var";
 
-html[data-theme="dark"] ._action-btn {
-  background: #2a2c33;
-  color: #d4d5d6;
-}
 </style>
