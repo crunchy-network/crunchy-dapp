@@ -378,25 +378,6 @@ export default {
   margin: 0 !important;
 }
 
-#pagination {
-  margin-top: 32px;
-  padding: 20px 0 8px 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-top: 2px solid rgba(25, 27, 31, 0.05);
-  .el-button {
-    width: 42px;
-    height: 42px;
-    color: rgba(25, 27, 31, 0.5);
-    padding: 13px;
-    background: rgba(25, 27, 31, 0.04);
-    border: 1px solid rgba(25, 27, 31, 0.2);
-    box-sizing: border-box;
-    border-radius: 8px;
-  }
-}
-
 .el-input__inner {
   border-radius: 28px;
 }
