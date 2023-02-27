@@ -115,4 +115,31 @@ export default {
 
   color: #000000;
 }
+@media (max-width: 993px) {
+  #outline {
+    width: 800px;
+    height: 70px;
+  }
+}
+
+@media (max-width: 600px) {
+  #outline {
+    width: 350px;
+  }
+  #announcement {
+    font-size: 12px;
+    height: 45px;
+  }
+  #wrapper {
+    left: 8px;
+  }
+  #exclaimation-mark {
+    left: 44.88%;
+    right: 47.88%;
+  }
+  #dot {
+    left: 43.83%;
+    right: 45.83%;
+  }
+}
 </style>

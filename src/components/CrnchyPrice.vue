@@ -14,7 +14,7 @@
       "
   >
     <el-avatar
-      src="https://fleek.ipfs.io/ipfs/bafkreifcxtpqojfllakxbhkmy5qfcur7izyyr2e7c6ukm7y43v3scgsszi"
+      src="https://nftstorage.link/ipfs/bafkreifcxtpqojfllakxbhkmy5qfcur7izyyr2e7c6ukm7y43v3scgsszi"
       fit="cover"
       shape="circle"
       :size="30"
