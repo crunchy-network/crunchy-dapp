@@ -142,7 +142,7 @@ export default {
     handleDexUri(dex = "") {
       switch (dex?.toLowerCase()) {
         case "plenty network":
-          return "https://res.cloudinary.com/melvin-manni/image/upload/v1645292809/nstgjnest4jrhcsgwymf.png";
+          return "https://res.cloudinary.com/melvin-manni/image/upload/v1677417526/nstgjnest4jrhcsgwymf.png";
 
         case "quipuswap":
           return "https://res.cloudinary.com/melvin-manni/image/upload/v1645292809/c1rutxlzllilmtuibcdo.png";

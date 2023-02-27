@@ -18,6 +18,8 @@ html[data-theme="dark"] {
   --table-row-hover: #282a30;
   --alt-btn-color: #fff;
   --logo-text-color: #fff;
+  --pagination-color: #e8e8e8;
+  --pagination-background: rgba(232, 232, 232, 0.04);
 }
 
 html[data-theme="light"] {
@@ -29,7 +31,7 @@ html[data-theme="light"] {
   --line-border: 1px solid rgba(25, 27, 31, 0.1);
   --link-btn-color: #555cff;
   --color-alt-btn: #1ec37f;
-  --background-color: #FFFBFB;
+  --background-color: #fffbfb;
   --background-card: #fff;
   --background-information-card: #ffeecc;
   --nav-item: #191b1f;
@@ -40,6 +42,8 @@ html[data-theme="light"] {
   --table-row-hover: #f3f3f3;
   --alt-btn-color: #555cff;
   --logo-text-color: #e51b23;
+  --pagination-color: #757679;
+  --pagination-background: rgba(117, 118, 121, 0.04);
 }
 
 /* html[data-theme="dark"] .el-avatar.el-avatar--circle {

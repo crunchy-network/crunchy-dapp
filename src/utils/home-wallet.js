@@ -51,7 +51,7 @@ const generateObjktQuery = (contractList) => {
 
 const getOBJKTCollections = async (contractList) => {
   const query = generateObjktQuery(JSON.stringify(contractList));
-  const response = await axios.post("https://data.objkt.com/v2/graphql", {
+  const response = await axios.post("https://data.objkt.com/v3/graphql", {
     query,
   });
 

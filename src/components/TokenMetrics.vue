@@ -18,7 +18,6 @@
         font-weight: 700;
         font-size: 16px;
         line-height: 24px;
-        color: #191b1f;
         margin-bottom: 32px;
       "
     >

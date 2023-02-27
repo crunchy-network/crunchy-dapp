@@ -84,7 +84,7 @@ export default {
           dex: "Plenty",
           isPlentyLp: true,
           thumbnailUri:
-            "https://res.cloudinary.com/melvin-manni/image/upload/v1645292809/nstgjnest4jrhcsgwymf.png",
+            "https://res.cloudinary.com/melvin-manni/image/upload/v1677417526/nstgjnest4jrhcsgwymf.png",
           positionsCount: "2",
           totalValue: 400.4,
           totalValueUsd: 744.95326,

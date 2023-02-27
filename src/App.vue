@@ -728,6 +728,8 @@ html[data-theme="dark"] .el-button.is-disabled {
   overflow: hidden;
   /* background-color: unset; */
 }
+
+
 html[data-theme="dark"] .el-button.is-disabled::before {
   position: absolute;
   top: 0;
@@ -735,7 +737,7 @@ html[data-theme="dark"] .el-button.is-disabled::before {
   left: -1px;
   right: -1px;
   content: "";
-  background: #000000c5;
+  /* background: #000000c5; */
 }
 
 .el-picker-panel,
@@ -761,7 +763,7 @@ html[data-theme="dark"] .el-button.is-disabled::before {
   color: var(--color-subheading-text) !important;
 }
 
-input{
+input {
   background: var(--background-card) !important;
   color: var(--primary-text) !important;
 }

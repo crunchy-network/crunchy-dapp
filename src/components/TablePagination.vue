@@ -69,7 +69,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss">
 #pagination {
   margin-top: 32px;
   padding: 20px 0 8px 0;
@@ -77,15 +77,26 @@ export default {
   justify-content: center;
   align-items: center;
   border-top: 2px solid var(--border-color);
-}
-#pagination .el-button {
-  width: 42px;
-  height: 42px;
-  color: var(--color-subheading-text);
-  padding: 13px;
-  background: var(--color-background);
-  border: 1px solid var(--border-color);
-  box-sizing: border-box;
-  border-radius: 8px;
+
+  .el-button {
+    width: 42px;
+    height: 42px;
+    color: var(--primary-text);
+    padding: 13px;
+    background: var(--pagination-background);
+    border: 1px solid var(--pagination-color);
+    box-sizing: border-box;
+    border-radius: 8px;
+  }
+
+  .el-button.is-disabled {
+    /* border: 1px solid var(--pagination-color-disabled);
+    background: var(--pagination-background-disabled);
+    color: var(--pagination-color-disabled); */
+    opacity: 0.4;
+    &::before {
+      background: transparent !important;
+    }
+  }
 }
 </style>
