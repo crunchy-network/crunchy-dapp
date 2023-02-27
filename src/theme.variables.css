@@ -20,6 +20,8 @@ html[data-theme="dark"] {
   --logo-text-color: #fff;
   --pagination-color: #e8e8e8;
   --pagination-background: rgba(232, 232, 232, 0.04);
+  --portfolio-vector: #fff;
+  --portfolio-vector-bg: #8c8d8f;
 }
 
 html[data-theme="light"] {
@@ -44,6 +46,8 @@ html[data-theme="light"] {
   --logo-text-color: #e51b23;
   --pagination-color: #757679;
   --pagination-background: rgba(117, 118, 121, 0.04);
+  --portfolio-vector: #191b1f;
+  --portfolio-vector-bg: #fff;
 }
 
 /* html[data-theme="dark"] .el-avatar.el-avatar--circle {

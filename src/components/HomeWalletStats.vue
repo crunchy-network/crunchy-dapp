@@ -113,15 +113,17 @@
       </el-card>
     </el-col>
     <el-col class="vector" :md="10">
-      <img src="../assets/home-wallet.svg" alt="" />
+      <portfolio-vector :width="'100%'" />
     </el-col>
   </el-row>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import PortfolioVector from "./PortfolioVector.vue";
 
 export default {
+  components: { PortfolioVector },
   name: "HomeWalletStats",
   props: {
     loading: {
