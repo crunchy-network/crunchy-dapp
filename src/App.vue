@@ -726,19 +726,19 @@ html[data-theme="dark"] ._action-btn {
 html[data-theme="dark"] .el-button.is-disabled {
   position: relative;
   overflow: hidden;
+  opacity: 0.4;
   /* background-color: unset; */
 }
 
-
-html[data-theme="dark"] .el-button.is-disabled::before {
-  position: absolute;
+/* html[data-theme="dark"] .el-button.is-disabled::before { */
+/* position: absolute;
   top: 0;
   bottom: 0;
   left: -1px;
   right: -1px;
   content: "";
-  /* background: #000000c5; */
-}
+  background: #0000001e; */
+/* } */
 
 .el-picker-panel,
 .el-picker-panel__footer {
