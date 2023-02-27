@@ -21,7 +21,9 @@ html[data-theme="dark"] {
   --pagination-color: #e8e8e8;
   --pagination-background: rgba(232, 232, 232, 0.04);
   --portfolio-vector: #fff;
-  --portfolio-vector-bg: #8c8d8f;
+  --portfolio-vector-bg: #696969;
+  --portfolio-vector-banner: #529AA4;
+  --portfolio-vector-banner-stroke: #026C7F
 }
 
 html[data-theme="light"] {
@@ -48,6 +50,9 @@ html[data-theme="light"] {
   --pagination-background: rgba(117, 118, 121, 0.04);
   --portfolio-vector: #191b1f;
   --portfolio-vector-bg: #fff;
+  --portfolio-vector-banner: #76E5F4;
+  --portfolio-vector-banner-stroke: #00C3E5
+
 }
 
 /* html[data-theme="dark"] .el-avatar.el-avatar--circle {
