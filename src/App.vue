@@ -767,4 +767,13 @@ input {
   background: var(--background-card) !important;
   color: var(--primary-text) !important;
 }
+
+/* customs */
+
+._with-bg-image .el-card__body {
+  background: url("./assets/taco-card-bg.png");
+  background-repeat: no-repeat;
+  background-size: 25%;
+  background-position: 96% 95%;
+}
 </style>

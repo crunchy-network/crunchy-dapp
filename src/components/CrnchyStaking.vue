@@ -5,28 +5,28 @@
     <el-main>
       <el-row class="main-row" :gutter="40" type="flex" style="flex-wrap: wrap">
         <el-col :md="17">
-          <el-row type="flex" justify="space-between" align="center">
+          <el-row type="flex" justify="space-between" align="middle">
             <div>
-              <h2
-                style="
-                  font-weight: 600;
-                  font-size: 24px;
-                  color: #191b1f;
-                  margin: 0;
-                "
-              >
+              <h2 style="font-weight: 600; font-size: 24px; margin: 0">
                 CRNCHY Staking Dashboard
               </h2>
               <h2
                 style="
                   font-weight: 300;
                   font-size: 16px;
-                  color: #191b1f;
-                  opacity: 0.5;
+                  color: var(--color-subheading-text);
                   margin: 0;
                 "
               >
-                The current participation status of CRNCHY stakers.
+                The current participation status of CRNCHY stakers. Rewards are
+                accrued over a 7 day cycle and then claimable the following 7
+                day cycle.
+                <a
+                  ref="link"
+                  style="color: var(--link-btn-color); text-decoration: none"
+                  href="#"
+                  >Read more</a
+                >
               </h2>
             </div>
             <div>
@@ -39,6 +39,7 @@
                   align-items: center;
                   border-radius: 24px;
                   padding: 10px 20px;
+                  width: max-content;
                 "
                 round
                 type="primary"
@@ -94,11 +95,10 @@
               style="margin-top: 20px; flex-wrap: wrap"
             >
               <el-col :span="24" :md="12" :lg="6">
-                <el-card class="box-card" shadow="never" style="height: 100%">
+                <el-card class="box-card" style="height: 100%">
                   <h2
                     style="
-                      color: #191b1f;
-                      opacity: 0.4;
+                      color: var(--color-subheading-text);
                       font-size: 14px;
                       margin-bottom: 5px;
                     "
@@ -135,8 +135,7 @@
                   </el-row>
                   <h2
                     style="
-                      color: #191b1f;
-                      opacity: 0.4;
+                      color: var(--color-subheading-text);
                       font-size: 16px;
                       margin-bottom: 0px;
                     "
@@ -146,11 +145,10 @@
                 </el-card>
               </el-col>
               <el-col :span="24" :md="12" :lg="6">
-                <el-card class="box-card" shadow="never" style="height: 100%">
+                <el-card class="box-card" style="height: 100%">
                   <h2
                     style="
-                      color: #191b1f;
-                      opacity: 0.4;
+                      color: var(--color-subheading-text);
                       font-size: 14px;
                       margin-bottom: 5px;
                     "
@@ -189,8 +187,7 @@
 
                   <h2
                     style="
-                      color: #191b1f;
-                      opacity: 0.4;
+                      color: var(--color-subheading-text);
                       font-size: 16px;
                       margin-bottom: 0px;
                     "
@@ -201,11 +198,10 @@
               </el-col>
               <el-col :span="24" :md="12" :lg="6">
                 <div class="grid-content" style="height: 100%">
-                  <el-card class="box-card" shadow="never" style="height: 100%">
+                  <el-card class="box-card" style="height: 100%">
                     <h2
                       style="
-                        color: #191b1f;
-                        opacity: 0.4;
+                        color: var(--color-subheading-text);
                         font-size: 14px;
                         margin-bottom: 5px;
                       "
@@ -246,11 +242,10 @@
 
               <el-col :span="24" :md="12" :lg="6">
                 <div class="grid-content" style="height: 100%">
-                  <el-card class="box-card" shadow="never" style="height: 100%">
+                  <el-card class="box-card" style="height: 100%">
                     <h2
                       style="
-                        color: #191b1f;
-                        opacity: 0.4;
+                        color: var(--color-subheading-text);
                         font-size: 14px;
                         margin-bottom: 5px;
                       "
@@ -289,18 +284,18 @@
           </div>
 
           <div>
-            <el-card
-              class="box-card"
-              shadow="never"
-              style="flex: 1; margin-top: 16px"
+            <el-row
+              class="staking-details-row"
+              style="flex-wrap: wrap"
+              :gutter="40"
+              type="flex"
             >
-              <el-row
-                class="staking-details-row"
-                style="flex-wrap: wrap"
-                :gutter="20"
-                type="flex"
-              >
-                <el-col :md="10">
+              <el-col :md="12">
+                <el-card
+                  style="height: 100%"
+                  class="_with-bg-image"
+                  body-style="height: 100%; display: flex; flex-direction: column; box-sizing: border-box;"
+                >
                   <h2
                     style="
                       font-weight: 700 !important;
@@ -318,8 +313,7 @@
                     <el-col :span="12">
                       <h2
                         style="
-                          color: rgba(25, 27, 31, 0.4);
-
+                          color: var(--color-subheading-text);
                           font-size: 12px;
                           font-weight: 600;
                           margin-bottom: 0px;
@@ -332,7 +326,7 @@
                           effect="light"
                         >
                           <i
-                            style="color: rgba(25, 27, 31, 1)"
+                            style="color: var(--primary-text)"
                             class="fas fa-question-circle"
                           ></i>
                         </el-tooltip>
@@ -363,28 +357,40 @@
                     </el-col>
                   </el-row>
 
-                  <div style="margin-top: 30px"></div>
-                  <el-row style="margin-top: auto" type="flex" justify="center">
-                    <el-button
-                      round
-                      plain
-                      type="primary"
-                      style="
-                        background: #fff;
-                        color: #555cff;
-                        font-weight: 700;
-                        min-width: 160px;
-                      "
-                      >Unstake
-                    </el-button>
-                  </el-row>
-                </el-col>
-                <el-col class="divider" :md="1">
-                  <el-divider direction="vertical"></el-divider>
-                  <el-divider direction="horizontal"></el-divider>
-                </el-col>
-
-                <el-col :md="13">
+                  <div style="margin-top: auto">
+                    <el-row
+                      style="margin-top: auto"
+                      type="flex"
+                      justify="center"
+                      :gutter="24"
+                    >
+                      <el-button
+                        round
+                        plain
+                        type="primary"
+                        style="
+                          background: #eeefff;
+                          color: #555cff;
+                          font-weight: 700;
+                          text-transform: uppercase;
+                        "
+                        >Un-stake
+                      </el-button>
+                      <el-button
+                        round
+                        type="primary"
+                        style="font-weight: 700; text-transform: uppercase"
+                        >stake
+                      </el-button>
+                    </el-row>
+                  </div>
+                </el-card>
+              </el-col>
+              <el-col :md="12">
+                <el-card
+                  style="height: 100%"
+                  body-style="height: 100%; display: flex; flex-direction: column; box-sizing: border-box;"
+                >
                   <h2
                     style="
                       font-weight: 700 !important;
@@ -481,7 +487,7 @@
                           effect="light"
                         >
                           <i
-                            style="color: rgba(25, 27, 31, 1)"
+                            style="color: var(--primary-text)"
                             class="fas fa-question-circle"
                           ></i>
                         </el-tooltip>
@@ -563,32 +569,28 @@
                     <el-button
                       round
                       type="primary"
-                      style="font-weight: 700; min-width: 160px"
-                      >Claim
+                      style="
+                        font-weight: 700;
+                        min-width: 160px;
+                        text-transform: uppercase;
+                      "
+                      >Claim Rewards
                     </el-button>
                   </el-row>
-                </el-col>
-              </el-row>
-            </el-card>
+                </el-card>
+              </el-col>
+            </el-row>
           </div>
         </el-col>
         <el-col :md="7">
           <el-card
             class="box-card"
-            shadow="never"
             style="flex: 1; display: flex; flex-direction: column"
             body-style="flex: 1;display: flex;
               flex-direction: column;"
           >
             <div style="margin-top: 16px">
-              <h2
-                style="
-                  font-weight: 600;
-                  font-size: 16px;
-                  color: #191b1f;
-                  margin: 0;
-                "
-              >
+              <h2 style="font-weight: 600; font-size: 16px; margin: 0">
                 Stake CRNCHY
               </h2>
               <h2
@@ -597,8 +599,7 @@
                   font-size: 14px;
                   line-height: 22px;
                   letter-spacing: 0.02em;
-                  color: #191b1f;
-                  opacity: 0.5;
+                  color: var(--color-subheading-text);
                 "
               >
                 Stake CRNCHY to earn farm rewards and crVOTE to participate in
@@ -611,7 +612,7 @@
                 type="text"
                 :style="
                   stakeTab === 'stake' &&
-                  'border-bottom-color: #FF5555; color: #FF5555;'
+                  'border-bottom-color: var(--color-menu-active); color: var(--color-menu-active);'
                 "
                 @click="switchStakeTab('stake')"
               >
@@ -622,7 +623,7 @@
                 type="text"
                 :style="
                   stakeTab === 'restake' &&
-                  'border-bottom-color: #FF5555; color: #FF5555;'
+                  'border-bottom-color: var(--color-menu-active); color: var(--color-menu-active);'
                 "
                 @click="switchStakeTab('restake')"
               >
@@ -692,13 +693,13 @@ export default {
 }
 
 .stake-text_small {
-  color: rgba(25, 27, 31, 0.4);
+  color: var(--color-subheading-text);
   font-size: 12px;
   font-weight: 700 !important;
   margin-bottom: 0px;
 }
 .stake-text_big {
-  color: rgba(25, 27, 31, 1);
+  color: var(--primary-text);
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 0px;
@@ -708,7 +709,7 @@ export default {
   font-weight: 700;
   width: max-content;
   padding: 0;
-  color: #191b1f;
+  color: var(--color-menu-inactive);
   font-size: 14px;
   transition: 0.3s ease color;
   border-radius: 0;

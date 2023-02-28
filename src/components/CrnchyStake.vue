@@ -18,7 +18,7 @@
     </div>
 
     <div style="margin-top: 16px">
-      <h2 style="color: rgba(25, 27, 31, 0.6)">Lock Time</h2>
+      <h2 style="color: var(--color-subheading-text)">Lock Time</h2>
     </div>
 
     <el-row style="margin-top: 10px" :gutter="8">
@@ -80,7 +80,7 @@
     </div>
 
     <div style="margin-top: 16px">
-      <h2 style="color: rgba(25, 27, 31, 0.6)">You Will Receive</h2>
+      <h2 style="color: var(--color-subheading-text)">You Will Receive</h2>
     </div>
 
     <el-row
@@ -91,11 +91,11 @@
     >
       <div class="row">
         <small> crVOTE: </small>
-        <h2 style="color: #191b1f">123.1234</h2>
+        <h2 style="color: var(--primary-text)">123.1234</h2>
       </div>
       <div class="row">
         <small>Staking Power:</small>
-        <h2 style="color: #191b1f">12.2%</h2>
+        <h2 style="color: var(--primary-text)">12.2%</h2>
       </div>
     </el-row>
 
@@ -149,7 +149,7 @@ small {
   padding: 10px 16px;
 
   h2 {
-    color: #191b1f;
+    color: var(--primary-text);
     font-weight: 600;
   }
 }
@@ -161,7 +161,7 @@ small {
 
   /* identical to box height, or 119% */
   letter-spacing: 0.02em;
-  color: #191b1f;
+  color: var(--primary-text);
   margin-top: 10px;
   width: 100%;
   display: flex;
