@@ -1,13 +1,39 @@
 <template>
   <div>
-    <div style="transition: 0.45s ease all" class="_balance">
-      <p>Staked Balance:</p>
+    <div>
+      <h2
+        style="
+          font-weight: 600;
+          font-size: 16px;
+          margin: 0;
+          color: var(--primary-text);
+        "
+      >
+        Re-Stake CRNCHY
+      </h2>
+      <h2
+        style="
+          font-weight: 300 !important;
+          font-size: 14px;
+          line-height: 22px;
+          letter-spacing: 0.02em;
+          color: var(--color-subheading-text);
+        "
+      >
+        You can re-stake your CRNCHY for an extended period of time.
+      </h2>
+    </div>
+    <div
+      style="transition: 0.45s ease all; margin: 32px 0"
+      class="_balance _info-card"
+    >
+      <p class="_info-card__title">Staked Balance:</p>
 
       <h2>5.2</h2>
     </div>
 
-    <div style="margin-top: 13px">
-      <h2 style="color: rgba(25, 27, 31, 0.6)">Extend Lock Time</h2>
+    <div style="margin-bottom: 16`px">
+      <h2 style="color: var(--color-subheading-text)">Extend Lock Time</h2>
     </div>
 
     <el-row style="margin-top: 32px" :gutter="8">
@@ -64,12 +90,12 @@
       </el-col>
     </el-row>
 
-    <div class="lock-display">
+    <div style="margin: 10px  0 32px 0" class="lock-display">
       <small> Unlocks: 12 June 2026 14:23 UTC </small>
     </div>
 
-    <div style="margin-top: 40px">
-      <h2 style="color: rgba(25, 27, 31, 0.6)">You Will Have</h2>
+    <div style="margin-bottom: 10px">
+      <h2 style="color: var(--color-subheading-text)">You Will Have</h2>
     </div>
 
     <el-row
@@ -80,15 +106,15 @@
     >
       <div class="row">
         <small> crVOTE: </small>
-        <h2 style="color: #191b1f">123.1234</h2>
+        <h2 style="color: var(--primary-text)">123.1234</h2>
       </div>
       <div class="row">
         <small>Staking Power:</small>
-        <h2 style="color: #191b1f">12.2%</h2>
+        <h2 style="color: var(--primary-text)">12.2%</h2>
       </div>
     </el-row>
 
-    <el-row style="margin-top: 50px" type="flex" justify="center">
+    <el-row style="margin-top: 48px" type="flex" justify="center">
       <el-button round type="primary" style="min-width: 50%">
         Re-Stake
       </el-button>
@@ -126,7 +152,8 @@ small {
   font-size: 12px;
   line-height: 19px;
   letter-spacing: 0.02em;
-  color: #606266;
+  margin-right: 5px;
+  color: var(--color-subheading-text);
 }
 
 ._balance {
@@ -140,7 +167,7 @@ small {
   padding: 10px 16px;
 
   h2 {
-    color: #191b1f;
+    color: var(--primary-text);
     font-weight: 600;
   }
 }
@@ -152,7 +179,7 @@ small {
 
   /* identical to box height, or 119% */
   letter-spacing: 0.02em;
-  color: #191b1f;
+  color: var(--primary-text);
   margin-top: 10px;
   width: 100%;
   display: flex;

@@ -1,6 +1,7 @@
 <template>
   <h2
     :style="`font-weight: ${fontWeight} !important; font-size: ${handleFontSize()}px !important; line-height: ${lineHeight}; color: ${color};`"
+    :class="className"
   >
     {{
       vueNumberFormat(shortHand ? numShorthand().value : value, {
@@ -15,7 +16,7 @@
       :number="value.toString()"
       :dp="0.00000001"
     ></number-tooltip>
-    
+
     <slot />
   </h2>
 </template>
@@ -62,6 +63,10 @@ export default {
     precision: {
       type: Number,
       default: null,
+    },
+    className: {
+      type: String,
+      default: "",
     },
   },
 

@@ -1,24 +1,46 @@
 <template>
   <div style="transition: 0.45s ease all">
-    <div class="_balance">
-      <p>Wallet Balance:</p>
+    <div style="margin-bottom: 16px">
+      <h2
+        style="
+          font-weight: 600;
+          font-size: 16px;
+          margin: 0;
+          color: var(--primary-text);
+        "
+      >
+        Stake CRNCHY
+      </h2>
+      <h2
+        style="
+          font-weight: 300 !important;
+          font-size: 14px;
+          line-height: 22px;
+          letter-spacing: 0.02em;
+          color: var(--color-subheading-text);
+        "
+      >
+        Stake CRNCHY to earn farm rewards and crVOTE to participate in DAO
+        votes. If you already have staked CRNCHY, you must stake past your
+        original stake date.
+      </h2>
+    </div>
+    <!-- <div class="_balance _info-card">
+      <p class="_info-card__title">Wallet Balance:</p>
 
       <h2>5.2</h2>
-    </div>
+    </div> -->
 
     <div class="_input">
       <div>
-        <input type="number" />
+        <crnchy-stake-dropdown />
       </div>
-      <el-button
-        style="padding: 16px; color: #555cff; font-weight: 800"
-        type="text"
-        >Use Max</el-button
-      >
     </div>
 
     <div style="margin-top: 16px">
-      <h2 style="color: var(--color-subheading-text)">Lock Time</h2>
+      <h2 style="color: var(--color-subheading-text); font-size: 14px">
+        Select a Lock Time
+      </h2>
     </div>
 
     <el-row style="margin-top: 10px" :gutter="8">
@@ -75,11 +97,11 @@
       </el-col>
     </el-row>
 
-    <div class="lock-display">
+    <div class="lock-display" style="margin-top: 16px">
       <small> Unlocks: 12 June 2026 14:23 UTC </small>
     </div>
 
-    <div style="margin-top: 16px">
+    <div style="margin-top: 24px; margin-bottom: 10px">
       <h2 style="color: var(--color-subheading-text)">You Will Receive</h2>
     </div>
 
@@ -99,15 +121,17 @@
       </div>
     </el-row>
 
-    <el-row style="margin-top: 24px" type="flex" justify="center">
+    <el-row style="margin-top: 32px" type="flex" justify="center">
       <el-button round type="primary" style="min-width: 50%"> Stake </el-button>
     </el-row>
   </div>
 </template>
 
 <script>
+import CrnchyStakeDropdown from "./CrnchyStakeDropdown.vue";
 export default {
   name: "CrDaoStake",
+  components: { CrnchyStakeDropdown },
   data() {
     return {
       time: "",
@@ -135,7 +159,8 @@ small {
   font-size: 12px;
   line-height: 19px;
   letter-spacing: 0.02em;
-  color: #606266;
+  color: var(--color-subheading-text);
+  margin-right: 5px;
 }
 
 ._balance {
