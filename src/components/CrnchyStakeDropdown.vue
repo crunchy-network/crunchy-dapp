@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="text-align: right; padding-right: 18px;">
+    <div style="text-align: right; padding-right: 18px">
       <p
         style="
           font-weight: 500;
@@ -92,7 +92,9 @@ export default {
           (t) => t?.assetSlug === this.inputToken?.assetSlug
         );
         if (!inputToken) {
-          inputToken = this.tokenList.find((t) => t?.assetSlug === "tez");
+          inputToken = this.tokenList.find(
+            (t) => t?.assetSlug === "KT1914CUZ7EegAFPbfgQMRkw8Uz5mYkEz2ui_0"
+          );
         }
         this.inputToken = inputToken;
       }
@@ -100,7 +102,9 @@ export default {
 
     handleDefaults() {
       if (this.inputToken.asset === undefined) {
-        const tez = this.tokenList.find((t) => t?.assetSlug === "tez");
+        const tez = this.tokenList.find(
+          (t) => t?.assetSlug === "KT1914CUZ7EegAFPbfgQMRkw8Uz5mYkEz2ui_0"
+        );
         this.inputToken = tez;
       }
     },

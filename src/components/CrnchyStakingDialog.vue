@@ -51,7 +51,7 @@ export default {
   data() {
     return {
       visible: true,
-      stakeTab: "restake",
+      stakeTab: "stake",
     };
   },
 
