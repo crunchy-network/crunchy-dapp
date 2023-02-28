@@ -3,15 +3,39 @@
     :style="`font-weight: ${fontWeight} !important; font-size: ${handleFontSize()}px !important; line-height: ${lineHeight}; color: ${color};`"
   >
     {{
-      vueNumberFormat(shortHand ? numShorthand().value : value, {
-        prefix: prefix,
-        suffix: suffix || shortHand ? `${numShorthand().suffix}${suffix}` : "",
+      vueNumberFormat(shortHand ? numShorthand().value : numValue(), {
+        prefix: customSetting
+          ? prefix
+          : (!usdValue && usdValue !== 0) || !getShowUsd
+          ? prefix.replace("$", "")
+          : getShowUsd && prefix.includes("$")
+          ? prefix
+          : getShowUsd
+          ? "$"
+          : prefix,
+        suffix: `${shortHand && numShorthand().suffix}${
+          customSetting
+            ? suffix
+            : getShowUsd || (!value && value !== 0)
+            ? suffix.replace("ꜩ", "")
+            : !getShowUsd && suffix.includes("ꜩ")
+            ? suffix
+            : !getShowUsd
+            ? "ꜩ"
+            : suffix
+        }`,
         decimal: ".",
         thousand: ",",
         precision: handlePrecision(),
       })
     }}
     <number-tooltip
+      v-if="!getShowUsd"
+      :number="value.toString()"
+      :dp="0.00000001"
+    ></number-tooltip>
+    <number-tooltip
+      v-else
       :number="value.toString()"
       :dp="0.00000001"
     ></number-tooltip>
@@ -20,6 +44,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import numberFormat from "../utils/number-format";
 import NumberTooltip from "./NumberTooltip.vue";
 
@@ -57,7 +82,7 @@ export default {
     },
     color: {
       type: String,
-      default: "#303133",
+      default: "var(--primary-text)",
     },
     shortHand: {
       type: Boolean,
@@ -67,39 +92,61 @@ export default {
       type: Number,
       default: null,
     },
-    showUsd: {
+    customSetting: {
       type: Boolean,
       default: false,
     },
   },
 
-  mounted() {
-    console.log("tag", this.usdValue, "");
+  computed: {
+    ...mapGetters(["getShowUsd"]),
   },
 
   methods: {
     handlePrecision() {
       let precision = 2;
 
-      if (this.value < 0.0000000001 && this.value > 0) {
-        precision = 12;
-      } else if (this.value < 0.00000001 && this.value > 0) {
-        precision = 10;
-      } else if (this.value < 0.000001 && this.value > 0) {
-        precision = 8;
-      } else if (this.value < 0.0001 && this.value > 0) {
-        precision = 6;
-      } else if (this.value < 0.001 && this.value > 0) {
-        precision = 4;
-      } else {
-        precision = 2;
-      }
+      if (!this.getShowUsd) {
+        if (this.value < 0.0000000001 && this.value > 0) {
+          precision = 12;
+        } else if (this.value < 0.00000001 && this.value > 0) {
+          precision = 10;
+        } else if (this.value < 0.000001 && this.value > 0) {
+          precision = 8;
+        } else if (this.value < 0.0001 && this.value > 0) {
+          precision = 6;
+        } else if (this.value < 0.001 && this.value > 0) {
+          precision = 4;
+        } else {
+          precision = 2;
+        }
 
-      return this.value >= 1
-        ? 2
-        : this.precision > precision
-        ? this.precision
-        : precision;
+        return this.value >= 1
+          ? 2
+          : this.precision > precision
+          ? this.precision
+          : precision;
+      } else {
+        if (this.usdValue < 0.0000000001 && this.usdValue > 0) {
+          precision = 12;
+        } else if (this.usdValue < 0.00000001 && this.usdValue > 0) {
+          precision = 10;
+        } else if (this.usdValue < 0.000001 && this.usdValue > 0) {
+          precision = 8;
+        } else if (this.usdValue < 0.0001 && this.usdValue > 0) {
+          precision = 6;
+        } else if (this.usdValue < 0.001 && this.usdValue > 0) {
+          precision = 4;
+        } else {
+          precision = 2;
+        }
+
+        return this.usdValue >= 1
+          ? 2
+          : this.precision > precision
+          ? this.precision
+          : precision;
+      }
     },
 
     handleFontSize() {
@@ -109,7 +156,17 @@ export default {
     },
 
     numShorthand() {
-      return numberFormat.shorthand(this.showUsd ? this.usdValue : this.value);
+      return numberFormat.shorthand(
+        this.getShowUsd && (this.usdValue || this.usdValue === 0)
+          ? this.usdValue
+          : this.value
+      );
+    },
+
+    numValue() {
+      return this.getShowUsd && (this.usdValue || this.usdValue === 0)
+        ? this.usdValue
+        : this.value;
     },
   },
 };

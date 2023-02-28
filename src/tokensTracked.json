@@ -10,7 +10,6 @@
   { "symbol": "tzBTC", "name": "tzBTC", "decimals": 8, "tokenAddress": "KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn" },
   { "symbol": "uUSD", "name": "youves uUSD", "decimals": 12, "tokenId": 0, "tokenAddress": "KT1XRPEPXbZK25r3Htzp2o1x7xdMMmfocKNW" },
   { "symbol": "YOU", "name": "youves YOU Governance", "decimals": 12, "tokenId": 0, "tokenAddress": "KT1Xobej4mc6XgEjDoJoHtTKgbD1ELMvcQuL" },
-  { "symbol": "ANTI", "name": "Anti token", "decimals": 3, "tokenAddress": "KT1MsktCnwfS1nGZmf8QbaTpZ8euVijWdmkC" },
   { "symbol": "SMAK", "name": "Smartlink", "decimals": 3, "tokenAddress": "KT1TwzD6zV3WeJ39ukuqxcfK2fJCnhvrdN1X" },
   { "symbol": "kUSD", "name": "Kolibri USD", "decimals": 18, "tokenAddress": "KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV" },
   { "symbol": "PLENTY", "name": "Plenty DAO", "decimals": 18, "tokenAddress": "KT1GRSvLoikDsXujKgZPsGLX8k8VvR2Tq95b" },
@@ -30,12 +29,9 @@
   { "symbol": "SPI", "name": "Spice Token", "decimals": 6, "tokenId": 0, "tokenAddress": "KT1CS2xKGHNPTauSh5Re4qE3N9PCfG5u4dPx" },
   { "symbol": "GOT", "name": "GOeureka", "decimals": 8, "tokenId": 0, "tokenAddress": "KT1GioMCKwRyWoQpdrwxvsPVEsFJkkLyquVZ" },
   { "symbol": "MYH", "name": "MoneyHero", "decimals": 8, "tokenId": 0, "tokenAddress": "KT1BB1uMwVvJ1M3vVHXWALs1RWdgTp1rnXTR" },
-  { "symbol": "SEB", "name": "Sebuh.net ", "decimals": 2, "tokenId": 0, "tokenAddress": "KT1981tPmXh4KrUQKZpQKb55kREX7QGJcF3E" },
   { "symbol": "RSAL", "name": "Red Salsa", "decimals": 0, "tokenId": 0, "tokenAddress": "KT19ovJhcsUn4YU8Q5L3BGovKSixfbWcecEA" },
   { "symbol": "TCOIN", "name": "TCOIN", "decimals": 8, "tokenAddress": "KT1GorwGk5WXLUc3sEWrmPLQBSekmYrtz1sn" },
   { "symbol": "UP", "tokenAddress": "KT1TgmD7kXQzofpuc9VbTRMdZCS2e6JDuTtc", "decimals": 0, "name": "Upsorber" },
-  { "symbol": "NATAS", "tokenAddress": "KT1GaEvbD4zA3pHs7mv3grpuqR1KGtjXAEDe", "tokenId": 0, "decimals": 0, "name": "NaTaS" },
-  { "symbol": "DeMN", "tokenAddress": "KT1GBgCd5dk7v4TSzWvtk1X64TxMyG4r7eRX", "tokenId": 0, "decimals": 8, "name": "DeMN" },
   { "symbol": "apUSDC", "tokenAddress": "KT1UG6PdaKoJcc3yD6mkFVfxnS1uJeW3cGeX", "tokenId": 2, "decimals": 6, "name": "Allbridge Wrapped Polygon USDC" },
   {
     "symbol": "uBTC",
@@ -50,14 +46,6 @@
     "tokenId": 0,
     "decimals": 6,
     "name": "Lugh Euro pegged stablecoin"
-  },
-  {
-    "symbol": "GONZ",
-    "tokenAddress": "KT1RTsRfBxLf6egtsXrQX1CcXCqKL3XwpuFT",
-    "tokenId": 0,
-    "decimals": 6,
-    "description": "This token is created by DoctaGonz for the purpose of building da future of NFT markets on Tezos. For more information, follow @DoctaGonz on Twitter.",
-    "name": "DoctaGonz"
   },
   {
     "symbol": "MTRIA",
@@ -212,5 +200,21 @@
     "decimals": 6,
     "description": "Tether Token",
     "name": "Tether USD"
+  },
+  {
+    "symbol": "HEH",
+    "tokenAddress": "KT1G1cCRNBgQ48mVDjopHjEmTN5Sbtar8nn9",
+    "tokenId": 0,
+    "decimals": 6,
+    "description": "Hedgehoge",
+    "name": "Hedgehoge"
+  },
+  {
+    "symbol": "PLY",
+    "tokenAddress": "KT1JVjgXPMMSaa6FkzeJcgb8q9cUaLmwaJUX",
+    "tokenId": 0,
+    "decimals": 18,
+    "description": "Plenty PLY",
+    "name": "Plenty PLY"
   }
-]
+ ]

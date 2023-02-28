@@ -1,10 +1,10 @@
 <template>
   <el-card
-    v-loading="isLoading"
+    v-loading="isLoading || formSubmitting"
     class="swap-form-main-box-card"
     shadow="always"
   >
-    <span class="swap-header"> SWAP </span>
+    <span class="swap-header" style="color: var(--primary-text)"> SWAP </span>
     <div class="from-section">
       <span> From</span>
       <span v-if="shouldShowBalance()"
@@ -109,18 +109,7 @@
         >
       </div>
       <div :style="`${getPkh ? 'display: none;' : ''}`">
-        <el-button
-          type="success"
-          style="
-            border-radius: 20px;
-            width: 340px;
-            max-width: 100%;
-            margin: auto;
-            font-weight: 700;
-          "
-          @click="connectWallet"
-          >Connect Wallet</el-button
-        >
+        <connect-button />
       </div>
     </div>
     <div
@@ -151,16 +140,18 @@ import { buildRoutingFeeOperation } from "../utils/routing-fee";
 import { buildOperationParams } from "../lib/SwapRouter";
 import { Tezos } from "../utils/tezos";
 import * as signalR from "@microsoft/signalr";
+import ConnectButton from './ConnectButton.vue';
 
 export default {
   name: "SwapFormMain",
-  components: { TokenSelectMenu },
+  components: { TokenSelectMenu, ConnectButton },
   props: {
     tokenList: { type: Array, required: true },
   },
   data: () => ({
     numFormatOpts: { decimal: ".", thousand: ",", prefix: "" },
     percentOptions: [25, 50, 75, 100],
+    formSubmitting: false,
     notifyDefaults: {
       duration: 10000,
       showClose: true,
@@ -423,6 +414,7 @@ export default {
       return amount;
     },
     async onSubmit() {
+      this.formSubmitting = true;
       var fee = [];
       if (this.getCurrentTrade.trades.length > 1) {
         fee = await buildRoutingFeeOperation(
@@ -453,6 +445,8 @@ export default {
         });
         const confirmation = await batchOp.confirmation();
         if (confirmation.completed) {
+          this.formSubmitting = false;
+
           this.$notify({
             message: this.getMessageVNode("Transaction Complete!", [
               "Transaction ",
@@ -463,6 +457,7 @@ export default {
             type: "success",
           });
         } else {
+          this.formSubmitting = false;
           console.log("confirmation", confirmation);
           this.$notify({
             message: this.getMessageVNode("Error", [
@@ -497,6 +492,7 @@ export default {
             type: "error",
           });
         }
+        this.formSubmitting = false;
       }
     },
     updateUrlParams(from, to) {
@@ -551,7 +547,7 @@ export default {
 }
 
 .swap-header {
-  color: black;
+  color: var(--primary-text);
   font-size: 16;
   font-weight: 600;
 }
@@ -560,7 +556,7 @@ export default {
     font-size: 12px;
     font-weight: 500;
   }
-  color: #757679;
+  color: var(--color-subheading-text);
   margin: 12px 20px 2px 20px;
   display: flex;
   justify-content: space-between;
@@ -569,7 +565,7 @@ export default {
 .asset-selection {
   border-radius: 18px;
   flex-wrap: wrap;
-  border: 1px solid rgba(25, 27, 31, 0.1);
+  border: var(--line-border);
   padding: 16px 20px;
   box-shadow: 0 0px 12px 0 rgba(21, 21, 52, 0.05) !important;
   &:hover {
@@ -582,7 +578,7 @@ export default {
     border-color: #555cff !important;
   }
   .token-usd-value {
-    color: #757679;
+    color: var(--color-subheading-text);
     font-weight: 500;
     position: absolute;
     font-size: 12px;
@@ -673,8 +669,8 @@ export default {
 .tooltip .tooltiptext {
   visibility: hidden;
   width: 120px;
-  background-color: white;
-  color: #757679;
+  background-color: var(--background-card);
+  color: var(--color-subheading-text);
   border: 1px solid rgba(25, 27, 31, 0.1);
 
   text-align: left;

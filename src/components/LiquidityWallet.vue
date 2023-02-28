@@ -10,10 +10,9 @@
             type="flex"
             align="middle"
             style="
-              color: #757679;
               font-size: 14px;
               font-weight: 600;
-              border-bottom: 2px solid #f4f4f4;
+              border-bottom: var(--line-border);
               padding-bottom: 14px;
               margin-bottom: 14px;
             "
@@ -23,7 +22,7 @@
                 :gutter="20"
                 type="flex"
                 align="middle"
-                style="padding: 0 20px"
+                style="padding: 0 20px; color: var(--color-subheading-text)"
               >
                 <el-col :span="4">DEX</el-col>
                 <el-col style="text-align: right" :span="4"></el-col>
@@ -42,59 +41,15 @@
             :lp="lp"
           />
 
-          <div id="pagination">
-            <el-button
-              :disabled="currentPage === 0"
-              style="margin-right: 12px"
-              @click="handleStart"
-            >
-              <i class="fal fa-angle-left"></i>
-              <i class="fal fa-angle-left"></i>
-            </el-button>
-            <el-button :disabled="currentPage === 0" @click="handlePrevPage">
-              <i class="fal fa-angle-left"></i>
-            </el-button>
-
-            <h2
-              style="
-                font-weight: 800;
-                font-size: 14px;
-                color: #191b1f;
-                opacity: 0.5;
-                margin: 0 19px;
-              "
-            >
-              {{
-                vueNumberFormat(nextPage > pages ? pages : nextPage, {
-                  prefix: "",
-                  decimal: ".",
-                  thousand: ",",
-                  precision: 0,
-                })
-              }}
-              out of
-              {{
-                vueNumberFormat(pages, {
-                  prefix: "",
-                  decimal: ".",
-                  thousand: ",",
-                  precision: 0,
-                })
-              }}
-            </h2>
-            <el-button :disabled="nextPage + 1 > pages" @click="handleNextPage">
-              <i class="fal fa-angle-right"></i>
-            </el-button>
-
-            <el-button
-              :disabled="nextPage + 1 > pages"
-              style="margin-left: 12px"
-              @click="handleEnd"
-            >
-              <i class="fal fa-angle-right"></i>
-              <i class="fal fa-angle-right"></i>
-            </el-button>
-          </div>
+          <table-pagination
+            :current-page="currentPage"
+            :next-page="nextPage"
+            :pages="pages"
+            :handle-next-page="handleNextPage"
+            :handle-prev-page="handlePrevPage"
+            :handle-start="handleStart"
+            :handle-end="handleEnd"
+          />
         </div>
       </div>
     </el-card>
@@ -104,10 +59,11 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
 import LiquidityWalletRow from "./LiquidityWalletRow.vue";
+import TablePagination from "./TablePagination.vue";
 
 export default {
   name: "LiquidityWalletView",
-  components: { LiquidityWalletRow },
+  components: { LiquidityWalletRow, TablePagination },
   props: {
     showUsd: {
       type: Boolean,
@@ -128,7 +84,7 @@ export default {
           dex: "Plenty",
           isPlentyLp: true,
           thumbnailUri:
-            "https://res.cloudinary.com/melvin-manni/image/upload/v1645292809/nstgjnest4jrhcsgwymf.png",
+            "https://res.cloudinary.com/melvin-manni/image/upload/v1677417526/nstgjnest4jrhcsgwymf.png",
           positionsCount: "2",
           totalValue: 400.4,
           totalValueUsd: 744.95326,

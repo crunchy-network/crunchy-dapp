@@ -1,6 +1,5 @@
 import _ from "lodash";
 import tzkt from "./../../utils/tzkt";
-import coingecko from "./../../utils/coingecko";
 import teztools from "./../../utils/teztools";
 import ipfs from "./../../utils/ipfs";
 import farmUtils from "./../../utils/farm";
@@ -38,7 +37,7 @@ const getFarmTokenMetadata = async (address, tokenId) => {
 
 export default {
   async _updateXtzUsdVwap({ commit, dispatch }) {
-    return coingecko.getXtzUsdPrice().then((price) => {
+    return tzkt.getXtzUsdPrice().then((price) => {
       commit("updateXtzUsdVwap", price);
       setTimeout(() => {
         updateXtzUsdVwapPromise = dispatch("_updateXtzUsdVwap");
@@ -54,7 +53,7 @@ export default {
   },
 
   async _updateCurrentPrices({ commit, dispatch }) {
-    const usdValue = await coingecko.getXtzUsdPrice();
+    const usdValue = await tzkt.getXtzUsdPrice();
     const tez = {
       asset: "XTZ",
       balance: 0,

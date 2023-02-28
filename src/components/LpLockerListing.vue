@@ -9,10 +9,9 @@
                 type="flex"
                 align="middle"
                 style="
-                  color: #757679;
                   font-size: 14px;
                   font-weight: 600;
-                  border-bottom: 2px solid #f4f4f4;
+                  border-bottom: var(--line-border);
                   padding-bottom: 14px;
                   margin-bottom: 14px;
                 "
@@ -22,7 +21,7 @@
                     :gutter="20"
                     type="flex"
                     align="middle"
-                    style="padding: 0 20px"
+                    style="padding: 0 20px; color: var(--color-subheading-text);"
                   >
                     <el-col :sm="8" :lg="6">Pair</el-col>
                     <el-col :sm="2" :lg="5">DEX</el-col>

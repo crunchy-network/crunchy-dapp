@@ -111,7 +111,7 @@
                 <el-col :span="10" style="position: relative">
                   <h3 style="margin: 0; margin-bottom: 8px">Get CRUNCH</h3>
                   <el-avatar
-                    src="https://ipfs.fleek.co/ipfs/bafybeienhhbxz53n3gtg7stjou2zs3lmhupahwovv2kxwh5uass3bc5xzq"
+                    src="https://nftstorage.link/ipfs/bafybeienhhbxz53n3gtg7stjou2zs3lmhupahwovv2kxwh5uass3bc5xzq"
                     shape="circle"
                     :size="38"
                     style="position: absolute; top: 0; right: 10px"
@@ -128,19 +128,7 @@
                       <span slot="suffix">CRUNCH</span>
                     </el-input>
                   </el-form-item>
-                  <el-button
-                    v-if="wallet.connected === false"
-                    type="success"
-                    style="
-                      border-radius: 12px;
-                      font-weight: bold;
-                      width: 100%;
-                      padding: 12px 20px;
-                      margin-left: 0;
-                    "
-                    @click="connectWallet"
-                    >Connect Wallet</el-button
-                  >
+                  <connect-button v-if="wallet.connected === false" />
                   <el-button
                     v-else
                     type="primary"
@@ -255,7 +243,7 @@
                 <el-col :span="10" style="position: relative">
                   <h3 style="margin: 0; margin-bottom: 8px">Get CRUNCH</h3>
                   <el-avatar
-                    src="https://ipfs.fleek.co/ipfs/bafybeienhhbxz53n3gtg7stjou2zs3lmhupahwovv2kxwh5uass3bc5xzq"
+                    src="https://nftstorage.link/ipfs/bafybeienhhbxz53n3gtg7stjou2zs3lmhupahwovv2kxwh5uass3bc5xzq"
                     shape="circle"
                     :size="38"
                     style="position: absolute; top: 0; right: 10px"
@@ -272,19 +260,7 @@
                       <span slot="suffix">CRUNCH</span>
                     </el-input>
                   </el-form-item>
-                  <el-button
-                    v-if="wallet.connected === false"
-                    type="success"
-                    style="
-                      border-radius: 12px;
-                      font-weight: bold;
-                      width: 100%;
-                      padding: 12px 20px;
-                      margin-left: 0;
-                    "
-                    @click="connectWallet"
-                    >Connect Wallet</el-button
-                  >
+                  <connect-button v-if="wallet.connected === false" />
                   <el-button
                     v-else
                     type="primary"
@@ -311,8 +287,10 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import { BigNumber } from "bignumber.js";
+import ConnectButton from './ConnectButton.vue';
 
 export default {
+  components: { ConnectButton },
   name: "RocketSwap",
   data() {
     return {

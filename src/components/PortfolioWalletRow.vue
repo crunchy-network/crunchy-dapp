@@ -35,19 +35,24 @@
               >
                 {{ asset.asset }}
               </a>
-              <span v-if="asset.contract === 'tez'">
+              <span
+                v-if="asset.contract === 'tez'"
+                style="color: var(--primary-text)"
+              >
                 {{ asset.asset }}
               </span>
             </el-row>
           </el-col>
 
           <el-col style="text-align: right" :span="4">
-            <price-format :precision="4" :value="asset.balance" />
+            <number-format
+              :precision="4"
+              :value="asset.balance"
+              :custom-setting="true"
+            />
           </el-col>
           <el-col style="text-align: right" :span="4">
             <price-format
-              :prefix="showUsd ? '$' : ''"
-              :suffix="!showUsd ? 'ꜩ' : ''"
               :precision="4"
               :show-usd="showUsd"
               :usd-value="asset.priceUsd"
@@ -56,8 +61,6 @@
           </el-col>
           <el-col style="text-align: right" :span="4">
             <price-format
-              :prefix="showUsd ? '$' : ''"
-              :suffix="!showUsd ? 'ꜩ' : ''"
               :precision="4"
               :show-usd="showUsd"
               :usd-value="asset.valueUsd"
@@ -68,52 +71,86 @@
           <el-col
             style="text-align: right"
             :span="2"
-            :class="asset.priceChange1Day < 0 ? 'n-change' : 'p-change'"
+            :class="
+              handleChangeclass(asset, 'priceChange1Day', 'priceChange1DayUsd')
+            "
           >
             {{
-              asset.contract !== "tez"
-                ? vueNumberFormat(asset.priceChange1Day, {
+              asset.contract === "tez"
+                ? "-"
+                : getShowUsd
+                ? vueNumberFormat(asset.priceChange1DayUsd, {
                     prefix: "",
                     suffix: "%",
                     decimal: ".",
                     thousand: ",",
                     precision: 2,
                   })
-                : "-"
+                : vueNumberFormat(asset.priceChange1Day, {
+                    prefix: "",
+                    suffix: "%",
+                    decimal: ".",
+                    thousand: ",",
+                    precision: 2,
+                  })
             }}
           </el-col>
           <el-col
             style="text-align: right"
             :span="2"
-            :class="asset.priceChange7Day < 0 ? 'n-change' : 'p-change'"
+            :class="
+              handleChangeclass(asset, 'priceChange7Day', 'priceChange7DayUsd')
+            "
           >
             {{
-              asset.contract !== "tez"
-                ? vueNumberFormat(asset.priceChange7Day, {
+              asset.contract === "tez"
+                ? "-"
+                : getShowUsd
+                ? vueNumberFormat(asset.priceChange7DayUsd, {
                     prefix: "",
                     suffix: "%",
                     decimal: ".",
                     thousand: ",",
                     precision: 2,
                   })
-                : "-"
+                : vueNumberFormat(asset.priceChange7Day, {
+                    prefix: "",
+                    suffix: "%",
+                    decimal: ".",
+                    thousand: ",",
+                    precision: 2,
+                  })
             }}
           </el-col>
           <el-col
             style="text-align: right"
             :span="2"
-            :class="asset.priceChange30Day < 0 ? 'n-change' : 'p-change'"
+            :class="
+              handleChangeclass(
+                asset,
+                'priceChange30Day',
+                'priceChange30DayUsd'
+              )
+            "
           >
             {{
-              asset.contract !== "tez"
-                ? vueNumberFormat(asset.priceChange30Day, {
+              asset.contract === "tez"
+                ? "-"
+                : getShowUsd
+                ? vueNumberFormat(asset.priceChange30DayUsd, {
                     prefix: "",
                     suffix: "%",
                     decimal: ".",
                     thousand: ",",
                     precision: 2,
                   })
-                : "-"
+                : vueNumberFormat(asset.priceChange30Day, {
+                    prefix: "",
+                    suffix: "%",
+                    decimal: ".",
+                    thousand: ",",
+                    precision: 2,
+                  })
             }}
           </el-col>
 
@@ -144,13 +181,18 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+import NumberFormat from "./NumberFormat.vue";
 import PriceFormat from "./PriceFormat.vue";
 export default {
   name: "PortfolioWalletRow",
-  components: { PriceFormat },
+  components: { PriceFormat, NumberFormat },
   props: {
     asset: { type: Object, required: true },
     showUsd: { type: Boolean, required: true },
+  },
+  computed: {
+    ...mapGetters(["getShowUsd"]),
   },
   methods: {
     getToParams(asset) {
@@ -159,6 +201,16 @@ export default {
         name: "swap",
         query: { from: "tez", to: `${asset.contract}_${tokenId}` },
       };
+    },
+    handleChangeclass(asset, param, usdParam) {
+      let className = "";
+      if (this.getShowUsd) {
+        className = asset[usdParam] < 0 ? "n-change" : "p-change";
+      } else {
+        className = asset[param] < 0 ? "n-change" : "p-change";
+      }
+
+      return className;
     },
   },
 };

@@ -68,7 +68,7 @@ export default {
 <style lang="scss" scoped>
 p {
   font-size: 14px;
-  color: rgb(117, 118, 121);
+  color: var(--color-subheading-text);
 }
 .el-button {
   font-weight: bold;

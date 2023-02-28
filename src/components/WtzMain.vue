@@ -27,28 +27,15 @@
 
     <el-main style="margin-top: 90px">
       <el-row :gutter="20" type="flex" align="bottom">
-        <el-col :span="16">
+        <el-col :span="24">
           <div class="grid-content">
             <h2 style="margin-top: 0; margin-bottom: 5px">
               Mint WTZ/Redeem XTZ
             </h2>
-            <span style="font-size: 14px"
+            <span style="font-size: 14px; color: var(--color-subheading-text)"
               >Just submit XTZ to start minting. Burn WTZ to redeem for
               XTZ.</span
             >
-          </div>
-        </el-col>
-        <el-col :span="8">
-          <div class="grid-content" style="text-align: right">
-            <el-switch
-              v-model="showUsd"
-              style="margin-right: 24px"
-              active-color="#1EC37F"
-              inactive-color="#555CFF"
-              active-text="USD"
-              inactive-text="XTZ"
-            >
-            </el-switch>
           </div>
         </el-col>
       </el-row>
@@ -116,7 +103,7 @@
                         </el-input>
                       </el-form-item>
                       <div
-                        class="current-balance"
+                        class="current-balance _info-card"
                         style="
                           border-radius: 22px;
                           background: #ffeecc;
@@ -131,13 +118,13 @@
                           <el-col
                             :span="8"
                             style="color: #8c8477; font-size: 12px"
+                            class="_info-card__title"
                             >BALANCE</el-col
                           >
                           <el-col
                             :span="16"
                             style="
                               font-size: 12px;
-                              color: #303133;
                               font-weight: 600;
                               text-align: right;
                             "
@@ -154,7 +141,7 @@
 
                     <template v-if="mode === 'burn'">
                       <el-avatar
-                        src="https://ipfs.fleek.co/ipfs/bafybeidwsid6fvv4vxbqja7er3b4exsht5r7umv6hpz7rc3ujg7xilhwv4"
+                        src="https://nftstorage.link/ipfs/bafybeidwsid6fvv4vxbqja7er3b4exsht5r7umv6hpz7rc3ujg7xilhwv4"
                         shape="circle"
                         :size="38"
                         style="position: absolute; top: 0; right: 10px"
@@ -244,7 +231,7 @@
 
                     <template v-if="mode === 'mint'">
                       <el-avatar
-                        src="https://ipfs.fleek.co/ipfs/bafybeidwsid6fvv4vxbqja7er3b4exsht5r7umv6hpz7rc3ujg7xilhwv4"
+                        src="https://nftstorage.link/ipfs/bafybeidwsid6fvv4vxbqja7er3b4exsht5r7umv6hpz7rc3ujg7xilhwv4"
                         shape="circle"
                         :size="38"
                         style="position: absolute; top: 0; right: 10px"
@@ -313,138 +300,6 @@
                 </el-row>
               </el-form>
             </el-card>
-
-            <h2 style="margin-top: 50px; margin-bottom: 30px">
-              Recent WTZ Transactions
-            </h2>
-            <el-card class="box-card" shadow="always">
-              <el-table
-                v-loading="wtz.loading"
-                :data="wtz.txs"
-                :row-class-name="txRowClassName"
-                style="width: 100%"
-              >
-                <el-table-column prop="level" label="Level" width="120">
-                </el-table-column>
-                <el-table-column label="Type" width="120" align="left">
-                  <template slot-scope="scope">
-                    <span v-if="scope.row.parameter.entrypoint === 'wrap'"
-                      >Mint</span
-                    >
-                    <span
-                      v-else-if="scope.row.parameter.entrypoint === 'unwrap'"
-                      >Redeem</span
-                    >
-                  </template>
-                </el-table-column>
-                <el-table-column label="Sender">
-                  <template slot-scope="scope">
-                    <el-link
-                      :href="`https://tzkt.io/${scope.row.sender.address}`"
-                      target="_blank"
-                      >{{
-                        $async(
-                          scope.row.sender.domain,
-                          `tez-domain-${scope.row.sender.address}`
-                        ) ||
-                        `${scope.row.sender.address.substr(
-                          0,
-                          6
-                        )}...${scope.row.sender.address.substr(-6)}`
-                      }}
-                      <i class="far fa-external-link fa-icon-right"></i
-                    ></el-link>
-                  </template>
-                </el-table-column>
-                <el-table-column label="Amount" align="right">
-                  <template slot-scope="scope">
-                    <span v-if="scope.row.parameter.entrypoint === 'wrap'">
-                      {{
-                        vueNumberFormat(
-                          Number.parseInt(scope.row.amount) / Math.pow(10, 6)
-                        )
-                      }}
-                      XTZ
-                    </span>
-                    <span
-                      v-else-if="scope.row.parameter.entrypoint === 'unwrap'"
-                    >
-                      {{
-                        vueNumberFormat(
-                          Number.parseInt(scope.row.parameter.value.nat) /
-                            Math.pow(10, 6)
-                        )
-                      }}
-                      WTZ
-                    </span>
-                  </template>
-                </el-table-column>
-
-                <!-- applied, failed, backtracked, skipped -->
-                <el-table-column label="Status" width="125" align="center">
-                  <template slot-scope="scope">
-                    <el-popover
-                      v-if="scope.row.status == 'applied'"
-                      placement="bottom"
-                      width="100"
-                      trigger="hover"
-                      content="Applied"
-                      popper-class="popover"
-                    >
-                      <span slot="reference" class="applied"
-                        ><i class="far fa-check-double"></i
-                      ></span>
-                    </el-popover>
-                    <el-popover
-                      v-if="scope.row.status == 'backtracked'"
-                      placement="bottom"
-                      width="100"
-                      trigger="hover"
-                      content="Backtracked"
-                      popper-class="popover"
-                    >
-                      <span slot="reference" class="backtracked"
-                        ><i class="far fa-undo"></i
-                      ></span>
-                    </el-popover>
-                    <el-popover
-                      v-if="scope.row.status == 'skipped'"
-                      placement="bottom"
-                      width="100"
-                      trigger="hover"
-                      content="Skipped"
-                      popper-class="popover"
-                    >
-                      <span slot="reference" class="skipped"
-                        ><i class="far fa-redo"></i
-                      ></span>
-                    </el-popover>
-                    <el-popover
-                      v-if="scope.row.status == 'failed'"
-                      placement="bottom"
-                      width="100"
-                      trigger="hover"
-                      content="Failed"
-                      popper-class="popover"
-                    >
-                      <span slot="reference" class="failed"
-                        ><i class="far fa-xmark"></i
-                      ></span>
-                    </el-popover>
-                  </template>
-                </el-table-column>
-
-                <el-table-column label="" width="110" align="right">
-                  <template slot-scope="scope">
-                    <el-link
-                      :href="`https://tzkt.io/${scope.row.hash}`"
-                      target="_blank"
-                      >View Op <i class="far fa-external-link fa-icon-right"></i
-                    ></el-link>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </el-card>
           </div>
         </el-col>
         <el-col :span="8">
@@ -481,8 +336,7 @@
               </div>
               <h2
                 style="
-                  color: #191b1f;
-                  opacity: 0.4;
+                  color: var(--color-subheading-text);
                   font-size: 14px;
                   margin-bottom: 0px;
                 "
@@ -526,13 +380,148 @@
           </div>
         </el-col>
       </el-row>
+      <div>
+        <h2 style="margin-top: 50px; margin-bottom: 30px">
+          Recent WTZ Transactions
+        </h2>
+        <el-card class="box-card" shadow="always">
+          <el-table
+            v-loading="wtz.loading"
+            :data="wtz.txs"
+            :row-class-name="txRowClassName"
+            style="width: 100%"
+          >
+            <el-table-column prop="level" label="Level" width="120">
+            </el-table-column>
+            <el-table-column label="Type" width="120" align="left">
+              <template slot-scope="scope">
+                <span v-if="scope.row.parameter.entrypoint === 'wrap'"
+                  >Mint</span
+                >
+                <span v-else-if="scope.row.parameter.entrypoint === 'unwrap'"
+                  >Redeem</span
+                >
+              </template>
+            </el-table-column>
+            <el-table-column label="Sender">
+              <template slot-scope="scope">
+                <el-link
+                  :href="`https://tzkt.io/${scope.row.sender.address}`"
+                  target="_blank"
+                  >{{
+                    $async(
+                      scope.row.sender.domain,
+                      `tez-domain-${scope.row.sender.address}`
+                    ) ||
+                    `${scope.row.sender.address.substr(
+                      0,
+                      6
+                    )}...${scope.row.sender.address.substr(-6)}`
+                  }}
+                  <i class="far fa-external-link fa-icon-right"></i
+                ></el-link>
+              </template>
+            </el-table-column>
+            <el-table-column label="Amount" align="right">
+              <template slot-scope="scope">
+                <span v-if="scope.row.parameter.entrypoint === 'wrap'">
+                  {{
+                    vueNumberFormat(
+                      Number.parseInt(scope.row.amount) / Math.pow(10, 6)
+                    )
+                  }}
+                  XTZ
+                </span>
+                <span v-else-if="scope.row.parameter.entrypoint === 'unwrap'">
+                  {{
+                    vueNumberFormat(
+                      Number.parseInt(scope.row.parameter.value.nat) /
+                        Math.pow(10, 6)
+                    )
+                  }}
+                  WTZ
+                </span>
+              </template>
+            </el-table-column>
+
+            <!-- applied, failed, backtracked, skipped -->
+            <el-table-column label="Status" width="125" align="center">
+              <template slot-scope="scope">
+                <el-popover
+                  v-if="scope.row.status == 'applied'"
+                  placement="bottom"
+                  width="100"
+                  trigger="hover"
+                  content="Applied"
+                  popper-class="popover"
+                >
+                  <span slot="reference" class="applied"
+                    ><i class="far fa-check-double"></i
+                  ></span>
+                </el-popover>
+                <el-popover
+                  v-if="scope.row.status == 'backtracked'"
+                  placement="bottom"
+                  width="100"
+                  trigger="hover"
+                  content="Backtracked"
+                  popper-class="popover"
+                >
+                  <span slot="reference" class="backtracked"
+                    ><i class="far fa-undo"></i
+                  ></span>
+                </el-popover>
+                <el-popover
+                  v-if="scope.row.status == 'skipped'"
+                  placement="bottom"
+                  width="100"
+                  trigger="hover"
+                  content="Skipped"
+                  popper-class="popover"
+                >
+                  <span slot="reference" class="skipped"
+                    ><i class="far fa-redo"></i
+                  ></span>
+                </el-popover>
+                <el-popover
+                  v-if="scope.row.status == 'failed'"
+                  placement="bottom"
+                  width="100"
+                  trigger="hover"
+                  content="Failed"
+                  popper-class="popover"
+                >
+                  <span slot="reference" class="failed"
+                    ><i class="far fa-xmark"></i
+                  ></span>
+                </el-popover>
+              </template>
+            </el-table-column>
+
+            <el-table-column label="" width="110" align="right">
+              <template slot-scope="scope">
+                <el-link
+                  :href="`https://tzkt.io/${scope.row.hash}`"
+                  target="_blank"
+                  style="color: var(--color-subheading-text)"
+                  >View Op
+                  <i
+                    style="color: var(--link-btn-color)"
+                    class="far fa-external-link fa-icon-right"
+                  ></i
+                ></el-link>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-card>
+      </div>
     </el-main>
   </div>
 </template>
 
 <script>
 // import NavWallet from "./NavWallet.vue";
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
 import { BigNumber } from "bignumber.js";
 import NavMenu from "./NavMenu.vue";
 
@@ -551,11 +540,14 @@ export default {
         outputWtz: "",
       },
       mode: "mint",
-      showUsd: false,
     };
   },
   computed: {
     ...mapState(["wallet", "wtz"]),
+    ...mapGetters(["getShowUsd"]),
+    showUsd() {
+      return this.getShowUsd;
+    },
   },
   created() {
     this.refresh();
@@ -607,6 +599,10 @@ export default {
 @import "../crunchy-variables.scss";
 @import "~element-ui/packages/theme-chalk/src/common/var";
 
+html[data-theme="dark"] #wtz .el-input.is-disabled .el-input__inner {
+  background: var(--background-color) !important;
+}
+
 #wtz {
   position: relative;
   width: 100%;
@@ -621,11 +617,12 @@ export default {
   }
 
   .el-input.is-disabled .el-input__inner {
-    color: #191b1f;
-    border-color: #f6f6f6;
+    color: var(--primary-text);
+    border-color: var(--border-color);
   }
+
   .el-input.is-disabled .el-input__suffix {
-    color: #191b1f;
+    color: var(--primary-text);
     font-weight: bold;
   }
 

@@ -23,7 +23,7 @@
             </h2>
             <span
               style="
-                color: #8c8d8f;
+                color: var(--color-subheading-text);
                 font-weight: 400;
                 font-size: 16px;
                 line-height: 24px;
@@ -58,7 +58,7 @@
         :gutter="20"
         style="margin-bottom: 50px; flex-wrap: wrap; row-gap: 20px"
       >
-        <el-col :sm="12" :md="8" :lg="4">
+        <el-col :sm="12" :md="8">
           <div class="grid-content" style="height: 100%">
             <el-card
               v-loading="lpLockers.loading"
@@ -84,8 +84,7 @@
               </div>
               <h2
                 style="
-                  color: #191b1f;
-                  opacity: 0.4;
+                  color: var(--color-subheading-text);
                   font-size: 12px;
                   margin-bottom: 0px;
                 "
@@ -95,7 +94,7 @@
             </el-card>
           </div>
         </el-col>
-        <el-col :sm="12" :md="8" :lg="4">
+        <el-col :sm="12" :md="8">
           <div class="grid-content" style="height: 100%">
             <el-card
               v-loading="lpLockers.loading"
@@ -120,8 +119,7 @@
               </div>
               <h2
                 style="
-                  color: #191b1f;
-                  opacity: 0.4;
+                  color: var(--color-subheading-text);
                   font-size: 12px;
                   margin-bottom: 0px;
                 "
@@ -131,7 +129,7 @@
             </el-card>
           </div>
         </el-col>
-        <el-col :sm="12" :md="8" :lg="4">
+        <el-col :sm="12" :md="8">
           <div class="grid-content" style="height: 100%">
             <el-card
               v-loading="lpLockers.loading"
@@ -164,8 +162,7 @@
               </div>
               <h2
                 style="
-                  color: #191b1f;
-                  opacity: 0.4;
+                  color: var(--color-subheading-text);
                   font-size: 12px;
                   margin-bottom: 0px;
                 "
@@ -176,7 +173,7 @@
           </div>
         </el-col>
 
-        <el-col :sm="12" :md="8" :lg="4">
+        <el-col :sm="12" :md="8">
           <div class="grid-content lp-locker-progress" style="height: 100%">
             <el-card
               v-loading="lpLockers.loading"
@@ -210,8 +207,7 @@
               </div>
               <h2
                 style="
-                  color: #191b1f;
-                  opacity: 0.4;
+                  color: var(--color-subheading-text);
                   font-size: 12px;
                   margin-bottom: 0px;
                 "
@@ -221,7 +217,7 @@
             </el-card>
           </div>
         </el-col>
-        <el-col :sm="12" :md="8" :lg="4">
+        <el-col :sm="12" :md="8">
           <div class="grid-content lp-locker-progress" style="height: 100%">
             <el-card
               v-loading="lpLockers.loading"
@@ -255,8 +251,7 @@
               </div>
               <h2
                 style="
-                  color: #191b1f;
-                  opacity: 0.4;
+                  color: var(--color-subheading-text);
                   font-size: 12px;
                   margin-bottom: 0px;
                 "
@@ -266,7 +261,7 @@
             </el-card>
           </div>
         </el-col>
-        <el-col :sm="12" :md="8" :lg="4">
+        <el-col :sm="12" :md="8">
           <div class="grid-content lp-locker-progress" style="height: 100%">
             <el-card
               v-loading="lpLockers.loading"
@@ -307,8 +302,7 @@
               </div>
               <h2
                 style="
-                  color: #191b1f;
-                  opacity: 0.4;
+                  color: var(--color-subheading-text);
                   font-size: 12px;
                   margin-bottom: 0px;
                 "
@@ -321,15 +315,6 @@
       </el-row>
 
       <el-tabs v-model="activeTab">
-        <el-switch
-          v-model="showUsd"
-          style="float: right; margin-right: 24px; margin-top: -48px"
-          active-color="#1EC37F"
-          inactive-color="#555CFF"
-          active-text="USD"
-          inactive-text="XTZ"
-        >
-        </el-switch>
         <el-tab-pane label="All Locks" name="all">
           <LpLockerListing
             :lockers="activeLockers"
@@ -351,7 +336,7 @@
 
 <script>
 import _ from "lodash";
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
 import LpLockerListing from "./LpLockerListing.vue";
 import LpLockerMyLockers from "./LpLockerMyLockers.vue";
 import LpLockerCreateDialog from "./LpLockerCreateDialog.vue";
@@ -368,13 +353,15 @@ export default {
   },
   data() {
     return {
-      showUsd: false,
       activeTab: "all",
     };
   },
   computed: {
     ...mapState(["wallet", "lpLockers"]),
-
+    ...mapGetters(["getShowUsd"]),
+    showUsd() {
+      return this.getShowUsd;
+    },
     myLockers: function () {
       const vm = this;
       return _.filter(this.lpLockers.data, (l) => l.owner === vm.wallet.pkh);
@@ -450,13 +437,13 @@ export default {
   .el-tabs__item {
     font-size: 16px;
     font-weight: 600;
-    color: $--color-text-gray;
+    color: var(--color-menu-inactive);
     &.is-active {
-      color: $--color-danger;
+      color: var(--color-menu-active);
     }
   }
   .el-tabs__active-bar {
-    background-color: $--color-danger;
+    background-color: var(--color-menu-active);
     height: 3px;
   }
   .el-tabs__nav-wrap::after {

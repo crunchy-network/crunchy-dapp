@@ -1,8 +1,8 @@
 // import axios from "axios";
 import BigNumber from "bignumber.js";
-import coingecko from "./coingecko";
 import dexIndexer from "./dex-indexer";
 import queryDipdup from "./queryDipdup";
+import tzkt from "./tzkt";
 // import teztools from "./teztools";
 
 export default {
@@ -30,7 +30,7 @@ export default {
         .times(crnchyPriceXtz)
         .toNumber();
 
-      const priceUsd = await coingecko.getXtzUsdPrice();
+      const priceUsd = await tzkt.getXtzUsdPrice();
 
       return { burned: crunchyBurned.toNumber(), burnedUsd: priceUsd * burned };
     } catch (error) {

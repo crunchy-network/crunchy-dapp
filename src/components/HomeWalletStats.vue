@@ -113,15 +113,17 @@
       </el-card>
     </el-col>
     <el-col class="vector" :md="10">
-      <img src="../assets/home-wallet.svg" alt="" />
+      <portfolio-vector :width="'100%'" />
     </el-col>
   </el-row>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import PortfolioVector from "./PortfolioVector.vue";
 
 export default {
+  components: { PortfolioVector },
   name: "HomeWalletStats",
   props: {
     loading: {
@@ -148,7 +150,7 @@ export default {
 p.title {
   font-weight: 600;
   font-size: 16px;
-  color: #757679;
+  color: var(--color-subheading-text);
   letter-spacing: -0.02em;
 }
 
@@ -157,13 +159,13 @@ p.small-title {
   font-size: 14px;
   line-height: 21px;
   letter-spacing: -0.02em;
-  color: #757679;
+  color: var(--color-subheading-text);
 }
 
 .value {
   font-weight: 600;
   letter-spacing: -0.02em;
-  color: #000000;
+  color: var(--primary-text);
 }
 
 h1.value {

@@ -8,18 +8,18 @@
     <el-col :span="24">
       <div
         v-loading="farm.loading"
-        style="border: 1px solid #ebeef5; border-radius: 14px"
+        style="border: var(--line-border); border-radius: 14px"
         :style="[
           farm.rowExpanded
-            ? { borderColor: '#EBEEF5' }
-            : { borderColor: '#fff' },
+            ? { borderColor: 'var(--border-color)' }
+            : { borderColor: 'transparent !important' },
         ]"
       >
         <el-row
           :gutter="20"
           class="farm-row"
           :class="{ expanded: farm.rowExpanded }"
-          style="margin-left: 0; margin-right: 0"
+          style="margin-left: 0; margin-right: 0; color: var(--primary-text)"
           type="flex"
           align="middle"
         >
@@ -425,15 +425,23 @@
         </el-row>
         <collapse-transition :duration="250" name="slide">
           <div v-show="farm.rowExpanded">
-            <el-row type="flex" align="top" style="padding: 10px 20px">
+            <el-row
+              type="flex"
+              align="top"
+              style="padding: 10px 20px; color: var(--primary-text)"
+            >
               <el-col
                 v-if="wallet.connected"
                 :span="8"
-                style="padding: 10px 20px; border-right: 1px solid #ebeef5"
+                style="padding: 10px 20px; border-right: var(--line-border)"
               >
                 <div style="margin-bottom: 8px">
                   <strong
-                    style="color: #757679; font-size: 14px; font-weight: 600"
+                    style="
+                      color: var(--color-subheading-text);
+                      font-size: 14px;
+                      font-weight: 600;
+                    "
                     >EST. {{ farm.rewardToken.symbol }} EARNED</strong
                   >
                 </div>
@@ -519,10 +527,11 @@
               <el-col
                 v-if="wallet.connected === false"
                 :span="8"
-                style="padding: 10px 20px; border-right: 1px solid #ebeef5"
+                style="padding: 10px 20px; border-right: var(--line-border)"
               >
                 <div style="margin-bottom: 8px">
-                  <strong style="color: #757679; font-size: 14px"
+                  <strong
+                    style="color: var(--color-subheading-text); font-size: 14px"
                     >&nbsp;</strong
                   >
                 </div>
@@ -530,22 +539,34 @@
               <el-col
                 v-if="wallet.connected"
                 :span="8"
-                style="padding: 10px 20px; border-right: 1px solid #ebeef5"
+                style="padding: 10px 20px; border-right: var(--line-border)"
               >
                 <div style="margin-bottom: 8px">
                   <strong
                     v-if="farm.poolToken.isQuipuLp || farm.poolToken.isLbLp"
-                    style="color: #757679; font-size: 14px; font-weight: 600"
+                    style="
+                      color: var(--color-subheading-text);
+                      font-size: 14px;
+                      font-weight: 600;
+                    "
                     >LP STAKED</strong
                   >
                   <strong
                     v-else-if="farm.poolToken.isPlentyLp"
-                    style="color: #757679; font-size: 14px; font-weight: 600"
+                    style="
+                      color: var(--color-subheading-text);
+                      font-size: 14px;
+                      font-weight: 600;
+                    "
                     >PLP STAKED</strong
                   >
                   <strong
                     v-else
-                    style="color: #757679; font-size: 14px; font-weight: 600"
+                    style="
+                      color: var(--color-subheading-text);
+                      font-size: 14px;
+                      font-weight: 600;
+                    "
                     >{{ farm.poolToken.symbol }} STAKED</strong
                   >
                 </div>
@@ -586,6 +607,7 @@
                   <el-col v-else :span="14" style="font-weight: 600">-</el-col>
                   <el-col :span="10" style="text-align: right">
                     <el-button
+                      class="_action-btn"
                       type="info"
                       plain
                       style="border-radius: 10px; padding: 12px 14px"
@@ -594,6 +616,7 @@
                       ><i class="fas fa-plus"></i
                     ></el-button>
                     <el-button
+                      class="_action-btn"
                       type="info"
                       plain
                       style="border-radius: 10px; padding: 12px 14px"
@@ -669,20 +692,19 @@
               <el-col
                 v-if="wallet.connected === false"
                 :span="8"
-                style="padding: 10px 20px; border-right: 1px solid #ebeef5"
+                style="padding: 10px 20px; border-right: var(--line-border)"
               >
                 <div style="margin-bottom: 8px">
                   <strong
-                    style="color: #757679; font-size: 14px; font-weight: 600"
+                    style="
+                      color: var(--color-subheading-text);
+                      font-size: 14px;
+                      font-weight: 600;
+                    "
                     >START FARMING</strong
                   >
                 </div>
-                <el-button
-                  type="success"
-                  style="border-radius: 10px; font-weight: bold; width: 100%"
-                  @click="connectWallet"
-                  >Connect Wallet</el-button
-                >
+                <connect-button></connect-button>
               </el-col>
               <el-col v-if="farm.errant" :span="8" style="padding: 10px 20px">
                 <div style="margin-bottom: 8px">
@@ -719,7 +741,7 @@
                   <strong
                     v-if="farm.started && !farm.ended"
                     style="
-                      color: #757679;
+                      color: var(--color-subheading-text);
                       font-size: 14px;
                       font-weight: 600;
                       text-transform: uppercase;
@@ -847,11 +869,13 @@ import { CollapseTransition } from "@ivanv/vue-collapse-transition";
 // import ICountUp from 'vue-countup-v2';
 import { mapState, mapActions } from "vuex";
 import farmUtils from "./../utils/farm";
+import ConnectButton from "./ConnectButton.vue";
 
 export default {
   name: "FarmListingRow",
   components: {
     CollapseTransition,
+    ConnectButton,
     // ICountUp
   },
   props: {
@@ -907,4 +931,5 @@ export default {
 <style lang="scss" scoped>
 @import "../crunchy-variables.scss";
 @import "~element-ui/packages/theme-chalk/src/common/var";
+
 </style>

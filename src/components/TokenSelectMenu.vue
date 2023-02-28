@@ -44,7 +44,7 @@
               :src="asset.icon"
               :size="30"
               style="
-                background: #ffffff;
+                background: transparent;
                 font-size: 24px;
                 margin-right: 16px;
                 margin-left: 15px;
@@ -215,6 +215,16 @@ export default {
 </script>
 
 <style lang="scss">
+.el-input__inner {
+  background: transparent;
+  color: var(--primary-text) !important;
+  border-color: var(--border-color);
+
+  &::placeholder {
+    color: var(--color-subheading-text);
+  }
+
+}
 .selected-asset-container {
   display: flex;
   align-items: center;
@@ -226,13 +236,14 @@ export default {
   width: 30px;
   display: flex;
   border-radius: 50%;
-  background-color: rgb(153, 153, 153);
+  background-color: transparent;
 }
 .selected-asset-input {
   margin-left: 10px;
   margin-right: 10px;
   font-size: 22px;
   font-weight: 600;
+  color: var(--primary-text);
 }
 .asset-selection {
   display: flex;
@@ -241,7 +252,7 @@ export default {
   border: 1px solid rgba(25, 27, 31, 0.1);
   padding: 16px 24px;
   &:hover {
-    border-color: #c0c4cc;
+    border-color: #c0c4ccb2;
   }
   &:focus-within {
     border-color: #555cff;
@@ -259,7 +270,7 @@ export default {
   z-index: 1;
 }
 .asset-menu-contents {
-  background: white;
+  background: var(--background-card);
   max-height: 400px;
   overflow-y: hidden;
   .asset-item {
@@ -269,7 +280,7 @@ export default {
     justify-content: start;
     cursor: pointer;
     &:hover {
-      background: rgba(25, 27, 31, 0.05);
+      background: var(--table-row-hover);
     }
   }
 }
@@ -282,6 +293,10 @@ export default {
   .el-dialog {
     width: 95%;
     max-width: 420px;
+    background: var(--background-card);
+    span {
+      color: var(--primary-text);
+    }
   }
   .el-dialog__headerbtn {
     display: none;
@@ -313,7 +328,7 @@ export default {
 
 .asset-swap-amount-placeholder {
   text-align: right;
-  color: black;
+  color: var(--primary-text);
   font-size: 24px;
   font-weight: 600;
   border: none;
@@ -340,7 +355,7 @@ export default {
   height: 30px;
   width: 30px;
   line-height: 30px;
-  background: rgb(255, 255, 255);
+  background: transparent;
   font-size: 24px;
   border-radius: 50%;
 }

@@ -172,7 +172,7 @@
               style="
                 font-weight: 600 !important;
                 font-size: 12px;
-                color: #757679;
+                color: var(--color-subheading-text);
                 margin: 0;
               "
             >
@@ -182,7 +182,6 @@
               style="
                 font-weight: 600 !important;
                 font-size: 12px;
-                color: #191b1f;
                 margin: 0;
                 word-wrap: break-word;
               "
@@ -291,13 +290,13 @@ img.art {
   }
 }
 .count-wrapper {
-  background: #191b1f;
+  background: var(--primary-text);
   border: 1.5px solid rgba(255, 255, 255, 0.1);
   box-sizing: border-box;
   border-radius: 8px;
   padding: 3px 7px;
   font-size: 14px;
-  color: #fcfcfd;
+  color: var(--background-color);
   position: absolute;
   top: 5px;
   right: 5px;

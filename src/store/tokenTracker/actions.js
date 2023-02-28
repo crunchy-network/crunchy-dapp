@@ -1,28 +1,41 @@
 import tokenTracker from "../../utils/token-tracker";
 import tokensToTrack from "../../tokensTracked.json";
 import _ from "lodash";
-import coingecko from "../../utils/coingecko";
+// import coingecko from "../../utils/coingecko";
 import dexIndexer from "../../utils/dex-indexer";
+import tzkt from "../../utils/tzkt";
 
 export default {
   async fetchTokensTracked({ commit, dispatch, state }) {
     if (state.tokenList.length < 1) {
-      commit("setTokenList", []);
       dispatch("_setTokenTracked");
     }
   },
 
-  async _setTokenTracked({ commit, state, dispatch }, id) {
-    commit("updateLoading", true);
+  async softLoadTokensTracked({ commit, dispatch, state }) {
+    if (state.tokenList.length < 1) {
+      dispatch("_setTokenTracked", { softLoad: true });
+    }
+  },
+
+  async _setTokenTracked({ commit, state, dispatch }, payload) {
+    !payload?.softLoad && commit("updateLoading", true);
     try {
       const allTokensMetadata = await dexIndexer.getAllTokens();
-      const xtzUsd = await coingecko.getXtzUsdPrice();
-      const xtzUsdHistory = await coingecko.getXtzUsdHistory();
+      const xtzUsd = await tzkt.getXtzUsdPrice();
+      // const xtzUsdHistory = await coingecko.getXtzUsdHistory();
+      const xtzUsdHistory = await tzkt.getXtzUsdHistory();
+      // const formattedXtzUsdHistory = [];
+      // for (let i = 0; i < xtzUsdHistory.length; i++) {
+      //   const bucket = new Date(xtzUsdHistory[i][0]).getTime();
+      //   const xtzUsdPrice = xtzUsdHistory[i][1].usd;
+      //   formattedXtzUsdHistory.push([bucket,xtzUsdPrice]);
+      // }
 
       commit("updateXtzUsdPrice", xtzUsd);
       commit("updateXtzUsdHistory", xtzUsdHistory);
 
-      const tokenFeed = await tokenTracker.getTokenFeed();
+      const tokenFeed = await tokenTracker.getTokenFeed(xtzUsd, xtzUsdHistory);
 
       const tokens = [];
       for (let i = 0; i < tokensToTrack.length; i++) {
@@ -48,8 +61,8 @@ export default {
     } catch (error) {
       console.log(error);
     } finally {
-      if (id) {
-        dispatch("updateChartAndOverview", id);
+      if (payload?.id) {
+        dispatch("updateChartAndOverview", payload?.id);
       }
       commit("updateLoading", false);
       dispatch("softCalcTokensData");
@@ -58,14 +71,17 @@ export default {
 
   async sortTokensTracked({ commit, state }, tokens) {
     const orderedTokens = _.orderBy(tokens, ["mktCap"], ["desc"]);
+    const tokenList = [];
     for (let index = 0; index < orderedTokens.length; index++) {
       const token = orderedTokens[index];
       token.order = index + 1;
       token.softCalcDone = true;
       // orderedTokens[index].order = index + 1;
       commit("updateTokenTracked", token);
-      commit("updateTokenList", token);
+      tokenList.push(token);
     }
+    commit("setTokenList", []);
+    commit("setTokenList", tokenList);
   },
 
   async softCalcTokensData({ commit, state }) {
@@ -82,14 +98,17 @@ export default {
     // }
   },
 
-  async fetchTokenTrackedWithId({ state, commit, dispatch }, id) {
+  async fetchTokenTrackedWithId({ state, commit, dispatch }, payload) {
     commit("cleanTokenOverview");
-    commit("updateLoadingOverview", true);
+    !payload?.softLoad && commit("updateLoadingOverview", true);
     try {
       if (state.tokenList.length < 1) {
-        dispatch("_setTokenTracked", id);
+        dispatch("_setTokenTracked", {
+          id: payload?.id,
+          softLoad: payload?.softLoad,
+        });
       } else {
-        dispatch("updateChartAndOverview", id);
+        dispatch("updateChartAndOverview", payload?.id);
       }
     } catch (error) {
       console.log(error);
@@ -101,20 +120,21 @@ export default {
   async updateChartAndOverview({ commit, dispatch, state }, id) {
     const token = state.tokensTracked[id];
     if (token) {
-      const updatedToken = await tokenTracker.calcExchangeVolume(
-        token,
-        state.xtzUsd,
-        state.xtzUsdHistory
-      );
-      commit("updateTokenOverview", updatedToken || {});
-      dispatch("fetchChartData", token.id);
+      const updatedToken = await tokenTracker.calcHolders(token);
+      commit("updateTokenOverview", updatedToken);
+      dispatch("fetchChartData", token);
     }
   },
 
-  async fetchChartData({ commit, state }, tokenId) {
+  async fetchChartData({ commit, state }, token) {
+    const xtzUsdHistory = await tzkt.getXtzUsdHistory();
     commit("updateChartDataLoading", true);
     const chartData = {};
-    const exchangeId = state.tokensTracked[tokenId].exchanges[0].address || "";
+    const exchangeId = state.tokensTracked[token.id].exchanges[0].address || "";
+    token.spicyId = token.id.replace(":", "_");
+    if (token.standard === "fa12") {
+      token.spicyId = token.spicyId.replace("0", "null");
+    }
     try {
       const [
         {
@@ -125,9 +145,25 @@ export default {
         allVolumeAndPrice,
         { tvl1Day, tvl7Day, tvl30Day, tvlAll },
       ] = await Promise.all([
-        tokenTracker.getPriceAndVolumeQuotes(tokenId),
-        tokenTracker.getAllQuotes1d(tokenId),
-        tokenTracker.getChartTvl(tokenId, exchangeId),
+        tokenTracker.getPriceAndVolumeQuotes(
+          token.spicyId,
+          token.id,
+          token.symbol,
+          xtzUsdHistory
+        ),
+        tokenTracker.getAllQuotes1d(
+          token.spicyId,
+          token.id,
+          token.symbol,
+          xtzUsdHistory
+        ),
+        tokenTracker.getChartTvl(
+          token.spicyId,
+          token.id,
+          exchangeId,
+          token.symbol,
+          xtzUsdHistory
+        ),
       ]);
 
       chartData.allVolumeAndPrice = allVolumeAndPrice;
