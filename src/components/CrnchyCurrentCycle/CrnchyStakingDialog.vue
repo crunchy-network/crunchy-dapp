@@ -1,5 +1,10 @@
 <template>
-  <el-dialog width="400px" :modal="true" :visible.sync="visible">
+  <el-dialog
+    width="400px"
+    :modal="true"
+    :visible.sync="visible"
+    @closed="() => setDialogTab('stake')"
+  >
     <div
       class="box-card"
       style="flex: 1; display: flex; flex-direction: column"
@@ -9,10 +14,10 @@
           class="text-btn"
           type="text"
           :style="
-            stakeTab === 'stake' &&
+            dialogTab === 'stake' &&
             'border-bottom-color: var(--color-menu-active); color: var(--color-menu-active);'
           "
-          @click="switchStakeTab('stake')"
+          @click="switchDialogTab('stake')"
         >
           Stake
         </el-button>
@@ -20,18 +25,18 @@
           class="text-btn"
           type="text"
           :style="
-            stakeTab === 'restake' &&
+            dialogTab === 'restake' &&
             'border-bottom-color: var(--color-menu-active); color: var(--color-menu-active);'
           "
-          @click="switchStakeTab('restake')"
+          @click="switchDialogTab('restake')"
         >
           Re-Stake
         </el-button>
       </div>
 
       <div>
-        <crnchy-stake v-if="stakeTab === 'stake'"></crnchy-stake>
-        <crnchy-restake v-if="stakeTab === 'restake'"></crnchy-restake>
+        <crnchy-stake v-if="dialogTab === 'stake'"></crnchy-stake>
+        <crnchy-restake v-if="dialogTab === 'restake'"></crnchy-restake>
       </div>
     </div>
   </el-dialog>
@@ -48,16 +53,26 @@ export default {
     CrnchyRestake,
   },
 
+  props: {
+    setDialogTab: {
+      type: Function,
+      default: () => {},
+    },
+    dialogTab: {
+      type: String,
+      default: "stake",
+    },
+  },
+
   data() {
     return {
       visible: false,
-      stakeTab: "stake",
     };
   },
 
   methods: {
-    switchStakeTab(tab = "stake") {
-      this.stakeTab = tab;
+    switchDialogTab(tab = "stake") {
+      this.setDialogTab(tab);
     },
     async showDialog() {
       this.visible = true;

@@ -263,7 +263,7 @@ export default {
     isActiveTab(tab) {
       return (
         this.activeTab === tab &&
-        " border-bottom: 3px solid #FF4D4B; color: #FF4D4B; font-weight: 700"
+        " border-bottom: 3px solid var(--color-menu-active); color: var(--color-menu-active); font-weight: 700"
       );
     },
 
@@ -357,7 +357,7 @@ export default {
   line-height: 24px;
   text-align: center;
   text-transform: capitalize;
-  color: #757679;
+  color: var(--color-menu-inactive);
   cursor: pointer;
   transition: 0.3s ease all;
   margin: 0;
@@ -365,7 +365,8 @@ export default {
   border-bottom: 3px solid transparent;
   background: transparent;
   &:disabled {
-    color: #191b1f66;
+    color: var(--color-menu-inactive);
+    opacity: 0.3;
     cursor: not-allowed;
   }
 }

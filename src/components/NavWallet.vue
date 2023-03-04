@@ -39,17 +39,7 @@
           </el-col>
         </el-row>
       </div>
-      <el-button
-        slot="reference"
-        style="
-          background: var(--background-wallet);
-          color: var(--wallet-color);
-          border: var(--wallet-border);
-        "
-        type="primary"
-        round
-        plain
-      >
+      <el-button slot="reference" type="primary" round plain class="btn-alt__1">
         {{
           $async(wallet.pkhDomain, `tez-domain-${wallet.pkh}`) ||
           `${wallet.pkh.substr(0, 6)}...${wallet.pkh.substr(-6)}`
@@ -85,7 +75,8 @@ html[data-theme="dark"] .disconnect-button {
   border: 1px solid var(--color-menu-active);
   color: var(--color-menu-active);
   &:hover {
-    background-color: #feeded !important;
+    background-color: var(--color-menu-active) !important;
+    color: #fff;
   }
 }
 </style>

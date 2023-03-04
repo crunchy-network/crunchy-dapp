@@ -15,14 +15,7 @@
               <h2 style="font-weight: 600; font-size: 24px; margin: 0">
                 CRNCHY Staking Dashboard
               </h2>
-              <h2
-                style="
-                  font-weight: 300;
-                  font-size: 16px;
-                  color: var(--color-subheading-text);
-                  margin: 0;
-                "
-              >
+              <h2 style="margin: 0" class="color__subheading fs__16 fw__3">
                 The current participation status of CRNCHY stakers. Rewards are
                 accrued over a 7 day cycle and then claimable the following 7
                 day cycle.
@@ -99,56 +92,6 @@
               class="grid-row"
               style="margin-top: 20px; flex-wrap: wrap"
             >
-              <el-col :span="24" :md="12" :lg="6">
-                <el-card class="box-card" style="height: 100%">
-                  <h2
-                    style="
-                      color: var(--color-subheading-text);
-                      font-size: 14px;
-                      margin-bottom: 5px;
-                    "
-                  >
-                    Total CRNCHY
-                  </h2>
-                  <el-row
-                    type="flex"
-                    justify="space-between"
-                    style="align-items: center"
-                  >
-                    <div
-                      style="
-                        font-size: 24px;
-                        font-weight: 600;
-                        margin-right: 8px;
-                      "
-                    >
-                      {{
-                        vueNumberFormat(12000, {
-                          precision: 0,
-                          prefix: "",
-                          decimal: ".",
-                          thousand: ",",
-                        })
-                      }}
-                    </div>
-                    <el-avatar
-                      shape="circle"
-                      :size="48"
-                      src="https://fleek.ipfs.io/ipfs/bafkreifcxtpqojfllakxbhkmy5qfcur7izyyr2e7c6ukm7y43v3scgsszi"
-                    >
-                    </el-avatar>
-                  </el-row>
-                  <h2
-                    style="
-                      color: var(--color-subheading-text);
-                      font-size: 16px;
-                      margin-bottom: 0px;
-                    "
-                  >
-                    $12.2m
-                  </h2>
-                </el-card>
-              </el-col>
               <el-col :span="24" :md="12" :lg="6">
                 <el-card class="box-card" style="height: 100%">
                   <h2
@@ -244,7 +187,6 @@
                   </el-card>
                 </div>
               </el-col>
-
               <el-col :span="24" :md="12" :lg="6">
                 <div class="grid-content" style="height: 100%">
                   <el-card class="box-card" style="height: 100%">
@@ -285,267 +227,114 @@
                   </el-card>
                 </div>
               </el-col>
+              <el-col :span="24" :md="12" :lg="6">
+                <el-card class="box-card" style="height: 100%">
+                  <h2
+                    style="
+                      color: var(--color-subheading-text);
+                      font-size: 14px;
+                      margin-bottom: 5px;
+                    "
+                  >
+                    Total Rewards Available
+                  </h2>
+                  <el-row
+                    type="flex"
+                    justify="space-between"
+                    style="align-items: center"
+                  >
+                    <div
+                      style="
+                        font-size: 24px;
+                        font-weight: 600;
+                        margin-right: 8px;
+                      "
+                    >
+                      {{
+                        vueNumberFormat(5000, {
+                          precision: 0,
+                          prefix: "",
+                          decimal: ".",
+                          thousand: ",",
+                        })
+                      }}
+                    </div>
+                    <el-avatar
+                      shape="circle"
+                      :size="48"
+                      src="https://res.cloudinary.com/melvin-manni/image/upload/v1677920267/gtdqpxe3oflwbpwnzdqd.png"
+                    >
+                    </el-avatar>
+                  </el-row>
+                  <h2
+                    style="
+                      color: var(--color-subheading-text);
+                      font-size: 16px;
+                      margin-bottom: 0px;
+                    "
+                  >
+                    $6.2K
+                  </h2>
+                </el-card>
+              </el-col>
             </el-row>
           </div>
 
-          <div>
-            <el-row
-              class="staking-details-row"
-              style="flex-wrap: wrap; margin-top: 20px; row-gap: 40px"
-              :gutter="40"
-              type="flex"
+          <div
+            class="custom-tab__wrapper tab-wrapper tab-custom-element"
+            style="margin-top: 32px"
+          >
+            <button
+              :class="['tab-text', isActiveTab('current')]"
+              @click="setActiveTab('current')"
             >
-              <el-col :md="12">
-                <el-card
-                  style="height: 100%"
-                  class="_with-bg-image"
-                  body-style="height: 100%; display: flex; flex-direction: column; box-sizing: border-box; padding-bottom: 32px"
-                >
-                  <h2
-                    style="
-                      font-weight: 700 !important;
-                      font-size: 16px;
-                      margin-bottom: 16px;
-                    "
-                  >
-                    My Staking Summary
-                    <el-button type="text">(Next Cycle)</el-button>
-                  </h2>
-                  <el-row :gutter="24">
-                    <el-col :span="8">
-                      <h2 class="stake-text_small">Total Staked</h2>
-                      <h2 class="stake-text_big">5,000</h2>
-                    </el-col>
-                    <el-col :span="8">
-                      <h2 class="stake-text_small">
-                        Staking Power
-                        <el-tooltip
-                          content="Staking power is based on length of lockup"
-                          placement="top"
-                          effect="light"
-                        >
-                          <i
-                            style="color: var(--primary-text)"
-                            class="fas fa-question-circle"
-                          ></i>
-                        </el-tooltip>
-                      </h2>
-                      <h2 class="stake-text_big">
-                        80%
-                        <small
-                          style="
-                            font-weight: 500;
-                            font-size: 12px;
-                            color: var(--link-btn-color);
-                          "
-                          >Increase</small
-                        >
-                      </h2>
-                    </el-col>
-                    <el-col :span="8">
-                      <h2 class="stake-text_small">crVOTE Received</h2>
-                      <h2 class="stake-text_big">4,400</h2>
-                    </el-col>
-                  </el-row>
-                  <el-row style="margin-top: 24px" :gutter="24">
-                    <el-col :span="8">
-                      <h2 class="stake-text_small">CRNCHY Unlocks</h2>
-                      <h2 class="stake-text_big">1.4 yrs</h2>
-                      <h2 class="stake-text_small" style="font-size: 12px">
-                        03 MAR 2024 14:23 UTC
-                      </h2>
-                    </el-col>
-                  </el-row>
-                  <div style="margin-top: 41px"></div>
-                  <div style="margin-top: auto">
-                    <el-row
-                      style="margin-top: auto"
-                      type="flex"
-                      justify="center"
-                      :gutter="24"
-                    >
-                      <el-button
-                        round
-                        plain
-                        type="primary"
-                        style="
-                          background: #eeefff;
-                          color: #555cff;
-                          font-weight: 700;
-                          text-transform: uppercase;
-                        "
-                        >Un-stake
-                      </el-button>
-                      <el-button
-                        round
-                        type="primary"
-                        style="font-weight: 700; text-transform: uppercase"
-                        @click="showCreateDialog"
-                        >stake
-                      </el-button>
-                    </el-row>
-                  </div>
-                </el-card>
-              </el-col>
-              <el-col :md="12">
-                <el-card
-                  style="height: 100%"
-                  body-style="height: 100%; display: flex; flex-direction: column; box-sizing: border-box; padding-bottom: 32px"
-                >
-                  <h2
-                    style="
-                      font-weight: 700 !important;
-                      font-size: 16px;
-                      margin-bottom: 16px;
-                    "
-                  >
-                    Staking Rewards
-                  </h2>
-                  <el-row :gutter="24">
-                    <el-col :span="8">
-                      <h2 class="stake-text_small">
-                        Pool Rewards
-                        <el-tooltip
-                          content="Rewards from the pool"
-                          placement="top"
-                          effect="light"
-                        >
-                          <i
-                            style="color: var(--primary-text)"
-                            class="fas fa-question-circle"
-                          ></i>
-                        </el-tooltip>
-                      </h2>
-                      <h2
-                        style="
-                          display: flex;
-                          align-items: center;
-                          justify-content: start;
-                          margin-top: 6px;
-                        "
-                        class="stake-text_big"
-                      >
-                        {{
-                          vueNumberFormat(5000, {
-                            prefix: "",
-                            decimal: ".",
-                            thousand: ",",
-                            precision: 0,
-                          })
-                        }}
-                        <el-avatar
-                          shape="circle"
-                          :size="24"
-                          style="margin-left: 5px"
-                          src="data:image/png;base64,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"
-                        >
-                        </el-avatar>
-                      </h2>
-                    </el-col>
-                    <el-col :span="8">
-                      <h2 class="stake-text_small">
-                        Pool Ownership
-                        <el-tooltip
-                          content="Percentage of the total pool owned by you"
-                          placement="top"
-                          effect="light"
-                        >
-                          <i
-                            style="color: var(--primary-text)"
-                            class="fas fa-question-circle"
-                          ></i>
-                        </el-tooltip>
-                      </h2>
-                      <h2 style="margin-top: 6px" class="stake-text_big">
-                        {{
-                          vueNumberFormat(12.2, {
-                            prefix: "",
-                            suffix: "%",
-                            decimal: ".",
-                            thousand: ",",
-                            precision: 1,
-                          })
-                        }}
-                      </h2>
-                    </el-col>
-                    <el-col :span="8">
-                      <h2 class="stake-text_small">Current APR</h2>
-                      <h2 style="margin-top: 6px" class="stake-text_big">
-                        {{
-                          vueNumberFormat(36, {
-                            prefix: "",
-                            suffix: "%",
-                            decimal: ".",
-                            thousand: ",",
-                            precision: 0,
-                          })
-                        }}
-                      </h2>
-                    </el-col>
-                  </el-row>
-                  <el-row style="margin-top: 24px" :gutter="24">
-                    <el-col :span="8">
-                      <h2 class="stake-text_small">Claimable Rewards</h2>
-                      <h2
-                        style="
-                          display: flex;
-                          align-items: center;
-                          justify-content: start;
-                          margin-top: 6px;
-                        "
-                        class="stake-text_big"
-                      >
-                        {{
-                          vueNumberFormat(2.21, {
-                            prefix: "",
-                            decimal: ".",
-                            thousand: ",",
-                            precision: 2,
-                          })
-                        }}
-                        <el-avatar
-                          shape="circle"
-                          :size="24"
-                          style="margin-left: 5px"
-                          src="data:image/png;base64,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"
-                        >
-                        </el-avatar>
-                      </h2>
-                    </el-col>
-                  </el-row>
-                  <div style="margin-top: 41px"></div>
-                  <el-row style="margin-top: auto" type="flex" justify="center">
-                    <el-button
-                      round
-                      type="primary"
-                      style="
-                        font-weight: 700;
-                        min-width: 160px;
-                        text-transform: uppercase;
-                      "
-                      >Claim Rewards
-                    </el-button>
-                  </el-row>
-                </el-card>
-              </el-col>
-            </el-row>
+              Current Cycle
+            </button>
+            <button
+              :class="['tab-text', isActiveTab('next')]"
+              @click="setActiveTab('next')"
+            >
+              Next Cycle
+            </button>
           </div>
+          <crnchy-stake-current
+            v-if="activeTab === 'current'"
+          ></crnchy-stake-current>
+          <crnchy-stake-next v-if="activeTab === 'next'"></crnchy-stake-next>
         </el-col>
       </el-row>
-      <crnchy-staking-dialog ref="createDialog" />
     </el-main>
   </div>
 </template>
 
 <script>
-import CrnchyStakingDialog from "./CrnchyStakingDialog.vue";
+import CrnchyStakeNext from "./CrnchyNextCycle/Index.vue";
+import CrnchyStakeCurrent from "./CrnchyCurrentCycle/Index.vue";
 import NavMenu from "./NavMenu.vue";
 export default {
   name: "CrnchyStaking",
-  components: { NavMenu, CrnchyStakingDialog },
+  components: { NavMenu, CrnchyStakeCurrent, CrnchyStakeNext },
+  data() {
+    return {
+      dialogTab: "stake",
+      activeTab: "current",
+    };
+  },
   methods: {
+    isActiveTab(tab) {
+      return this.activeTab === tab ? "is-active" : "";
+    },
+
+    setActiveTab(tab = "") {
+      if (["current", "next"].includes(tab)) {
+        this.activeTab = tab;
+      }
+    },
     showCreateDialog() {
-      this.$refs.createDialog.showDialog();
+      this.$refs.stakeRestakeDialog.showDialog();
+    },
+    setDialogTab(tab) {
+      this.dialogTab = tab;
     },
   },
 };

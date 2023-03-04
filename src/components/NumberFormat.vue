@@ -4,9 +4,9 @@
     :class="className"
   >
     {{
-      vueNumberFormat(shortHand ? numShorthand().value : value, {
+      vueNumberFormat(renderValue(), {
         prefix: prefix,
-        suffix: `${shortHand && numShorthand().suffix}${suffix || ""}`,
+        suffix: `${shortHand ? numShorthand().suffix : ""}${suffix || ""}`,
         decimal: ".",
         thousand: ",",
         precision: handlePrecision(),
@@ -98,7 +98,15 @@ export default {
     },
 
     numShorthand() {
-      return numberFormat.shorthand(this.value);
+      return numberFormat.shorthand(Number(this.value));
+    },
+
+    renderValue() {
+      if (this.shortHand) {
+        return this.numShorthand().value;
+      }
+
+      return Number(this.value);
     },
   },
 };
