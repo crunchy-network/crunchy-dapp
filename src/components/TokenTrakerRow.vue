@@ -236,17 +236,14 @@ export default {
   border: none;
   outline: none;
   cursor: pointer;
-  padding: 0;
   margin: 0;
-  font-size: 20px;
-  color: #999;
+  font-size: 18px;
+  color: #191b1f;
   transition: all 0.3s ease-in-out;
   padding: 2px;
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
+
   &.active {
-    color: #ff4d4f;
+    color: #ffd54f;
   }
   &:hover {
     opacity: 0.65;

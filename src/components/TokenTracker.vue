@@ -211,7 +211,12 @@
                     align="middle"
                     style="padding: 0 20px"
                   >
-                    <el-col :span="1"></el-col>
+                    <el-col style="text-align: right" :span="1">
+                      <i
+                        style="font-size: 20px; color: #757679"
+                        class="fa-solid fa-star"
+                      ></i>
+                    </el-col>
                     <el-col :span="23">
                       <el-row>
                         <el-col :span="2">#</el-col>

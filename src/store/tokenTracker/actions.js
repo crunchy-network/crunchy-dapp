@@ -76,7 +76,7 @@ export default {
       const token = orderedTokens[index];
       token.order = index + 1;
       token.softCalcDone = true;
-      token.isFavorite = lsData?.includes(token.id);
+      token.isFavorite = lsData?.includes(token.id) ? 1 : 0;
 
       // orderedTokens[index].order = index + 1;
       commit("updateTokenTracked", token);
@@ -186,16 +186,18 @@ export default {
   },
 
   setTokenAsFavourite({ commit, state }, payload) {
+    if (!localStorage.getItem(state.LS_FAVORITES_KEY)) {
+      localStorage.setItem(state.LS_FAVORITES_KEY, JSON.stringify([]));
+    }
     const tokenId = payload;
-    const lsData =
-      JSON.parse(localStorage.getItem(state.LS_FAVORITES_KEY)) || [];
+    const lsData = JSON.parse(localStorage.getItem(state.LS_FAVORITES_KEY));
     if (!lsData.includes(tokenId)) {
       lsData.push(tokenId);
 
       localStorage.setItem(state.LS_FAVORITES_KEY, JSON.stringify(lsData));
 
       const token = state.tokensTracked[tokenId];
-      token.isFavorite = true;
+      token.isFavorite = 1;
       const tokens = state.tokenList;
       const index = tokens.findIndex((t) => t.id === tokenId);
 
@@ -221,7 +223,7 @@ export default {
     localStorage.setItem(state.LS_FAVORITES_KEY, JSON.stringify(lsData));
 
     const token = state.tokensTracked[tokenId];
-    token.isFavorite = false;
+    token.isFavorite = 0;
     const tokens = state.tokenList;
     const index = tokens.findIndex((t) => t.id === tokenId);
 
