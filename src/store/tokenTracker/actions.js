@@ -18,8 +18,11 @@ export default {
     }
   },
 
-  async _setTokenTracked({ commit, state, dispatch }, payload) {
+  async _setTokenTracked({ commit, rootState, dispatch }, payload) {
     !payload?.softLoad && commit("updateLoading", true);
+
+    console.log("fetching token tracked");
+    console.log(rootState.priceFeed);
     try {
       const allTokensMetadata = await dexIndexer.getAllTokens();
       const xtzUsd = await tzkt.getXtzUsdPrice();

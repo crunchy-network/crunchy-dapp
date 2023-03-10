@@ -3,7 +3,10 @@
     <!-- Desktop -->
     <!-- <div class="hidden-sm-and-down"> -->
 
-    <el-container style="position: relative; justify-content: space-between">
+    <el-container
+      v-loading="loadPriceFeedAndData"
+      style="position: relative; justify-content: space-between"
+    >
       <div>
         <router-view></router-view>
       </div>
@@ -67,8 +70,20 @@
 <script>
 export default {
   name: "App",
+  watch: {
+    loadPriceFeedAndData: function () {
+      return this.$store.state.priceFeed.loading;
+    },
+  },
   created() {
     this.$store.dispatch("checkWalletConnected");
+    this.$store.dispatch("fetchPriceFeedAndData");
+  },
+
+  mounted() {
+    setInterval(() => {
+      this.$store.dispatch("fetchPriceFeedAndData");
+    }, 1000 * 60 * 5);
   },
 };
 </script>
@@ -332,7 +347,7 @@ header .grid-content button.el-button {
 }
 
 #token-tracker .search-input .el-input__prefix {
-  color: #DCDFE6;
+  color: #dcdfe6;
 }
 
 .search-input .el-input__inner,

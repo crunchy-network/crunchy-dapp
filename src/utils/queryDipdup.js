@@ -94,7 +94,7 @@ export default {
 
     // console.log("\n\n------ begin:  ------");
     // console.log(updatedAllTokens);
-    // console.log("------ end:  ------\n\n");
+    // console.log("------ end:  ------\n\n");x
 
     for (let index = 0; index < token.length; index++) {
       const element = token[index];
@@ -237,5 +237,12 @@ export default {
       weekCloseUsd: closeObjkt.weekClose[tokenId]?.closeUsd || 0,
       monthCloseUsd: closeObjkt.monthClose[tokenId]?.closeUsd || 0,
     };
+  },
+
+  formatToTeztoolStruct(tokenObjkt) {
+    for (let index = 0; index < tokenObjkt?.exchanges.length; index++) {
+      const exchange = tokenObjkt?.exchanges[index];
+      exchange.dex = exchange.name;
+    }
   },
 };

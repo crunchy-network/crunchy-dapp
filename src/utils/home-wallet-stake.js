@@ -55,6 +55,9 @@ async function sumStake(userStake) {
 
   for (let index = 0; index < userStake.length; index++) {
     const stake = userStake[index];
+    console.log("====================================");
+    console.log("stake", stake);
+
     if (isNaN(stake.rewardsEarned)) {
       userStake[index].rewardsEarned = 0;
     }

@@ -824,6 +824,7 @@ export default {
           tokenPool
           tradeVolume
           midPrice
+          sharesTotal
         }
         address
         decimals
@@ -1196,10 +1197,29 @@ export default {
         tokenTvlUsd = new BigNumber(tokenTvlUsd)
           .plus(e.tokenTvl * xtzUSD)
           .toNumber();
-        if (e.name === TRACKED_MARKETS_NAME.plentyNetwork.name || e.name === TRACKED_MARKETS_NAME.spicyswap.name) {
+        if (
+          e.name === TRACKED_MARKETS_NAME.plentyNetwork.name ||
+          e.name === TRACKED_MARKETS_NAME.spicyswap.name
+        ) {
           volume24Xtz = new BigNumber(volume24Xtz).plus(e.volume24).toNumber();
+          e.sides = [
+            {
+              symbol: e.quoteSymbol,
+              price: e.quotePriceUsd,
+            },
+            {
+              symbol: e.baseSymbol,
+              price: e.basePriceUsd,
+            },
+          ];
         }
+        e.tvl = new BigNumber(e.tokenTvl).toNumber();
+        e.dex = e.name;
       });
+
+      element.usdValue = new BigNumber(currentPrice)
+        .multipliedBy(xtzUSD)
+        .toNumber();
 
       tokenObjkt[element.id] = {
         ...element,
