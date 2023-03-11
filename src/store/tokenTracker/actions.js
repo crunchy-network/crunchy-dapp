@@ -41,7 +41,6 @@ export default {
       for (let i = 0; i < tokensToTrack.length; i++) {
         const value = tokensToTrack[i];
         value.id = `${value.tokenAddress}_${value.tokenId || 0}`;
-
         const tokenData = value;
         const token = await tokenTracker.calculateTokenData(
           tokenData,
@@ -72,10 +71,13 @@ export default {
   async sortTokensTracked({ commit, state }, tokens) {
     const orderedTokens = _.orderBy(tokens, ["mktCap"], ["desc"]);
     const tokenList = [];
+    const lsData = JSON.parse(localStorage.getItem(state.LS_FAVORITES_KEY));
     for (let index = 0; index < orderedTokens.length; index++) {
       const token = orderedTokens[index];
       token.order = index + 1;
       token.softCalcDone = true;
+      token.isFavorite = lsData?.includes(token.id) ? 1 : 0;
+
       // orderedTokens[index].order = index + 1;
       commit("updateTokenTracked", token);
       tokenList.push(token);
@@ -181,5 +183,51 @@ export default {
     } finally {
       commit("updateChartDataLoading", false);
     }
+  },
+
+  setTokenAsFavourite({ commit, state }, payload) {
+    if (!localStorage.getItem(state.LS_FAVORITES_KEY)) {
+      localStorage.setItem(state.LS_FAVORITES_KEY, JSON.stringify([]));
+    }
+    const tokenId = payload;
+    const lsData = JSON.parse(localStorage.getItem(state.LS_FAVORITES_KEY));
+    if (!lsData.includes(tokenId)) {
+      lsData.push(tokenId);
+
+      localStorage.setItem(state.LS_FAVORITES_KEY, JSON.stringify(lsData));
+
+      const token = state.tokensTracked[tokenId];
+      token.isFavorite = 1;
+      const tokens = state.tokenList;
+      const index = tokens.findIndex((t) => t.id === tokenId);
+
+      console.log(
+        "🚀 ~ file: actions.js ~ line 202 ~ setTokenAsFavourite ~ index",
+        index,
+        token,
+        tokens,
+        tokenId
+      );
+
+      commit("updateTokenListIndex", { index, token });
+      commit("updateTokenTracked", token);
+    }
+  },
+
+  removeTokenAsFavourite({ commit, state }, payload) {
+    const tokenId = payload;
+    const lsData =
+      JSON.parse(localStorage.getItem(state.LS_FAVORITES_KEY)) || [];
+    const tokenIndex = lsData.findIndex((t) => t === tokenId);
+    lsData.splice(tokenIndex, 1);
+    localStorage.setItem(state.LS_FAVORITES_KEY, JSON.stringify(lsData));
+
+    const token = state.tokensTracked[tokenId];
+    token.isFavorite = 0;
+    const tokens = state.tokenList;
+    const index = tokens.findIndex((t) => t.id === tokenId);
+
+    commit("updateTokenListIndex", { index, token });
+    commit("updateTokenTracked", token);
   },
 };
