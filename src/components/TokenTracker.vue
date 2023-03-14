@@ -211,116 +211,133 @@
                     align="middle"
                     style="padding: 0 20px"
                   >
-                    <el-col :span="2">#</el-col>
+                    <el-col style="text-align: right" :span="1"> </el-col>
+                    <el-col :span="23">
+                      <el-row>
+                        <el-col :span="2">#</el-col>
 
-                    <el-col :span="4">
-                      <div
-                        class="wrap-sort-icon"
-                        @click="toggleColumSort('symbol')"
-                      >
-                        Token
-                        <sort-arrow-indicator
-                          v-if="sort.key === 'symbol'"
-                          :value="sort.rule"
-                          :margin-left="true"
-                        />
-                      </div>
-                    </el-col>
+                        <el-col :span="4">
+                          <div
+                            class="wrap-sort-icon"
+                            @click="toggleColumSort('symbol')"
+                          >
+                            Token
+                            <sort-arrow-indicator
+                              v-if="sort.key === 'symbol'"
+                              :value="sort.rule"
+                              :margin-left="true"
+                            />
+                          </div>
+                        </el-col>
 
-                    <el-col style="text-align: right" :span="4">
-                      <div
-                        class="wrap-sort-icon"
-                        @click="toggleColumSort('cuurentPrice', 'usdValue')"
-                      >
-                        <sort-arrow-indicator
-                          v-if="activeColumn('cuurentPrice', 'usdValue')"
-                          :value="sort.rule"
-                        />
-                        Price
-                      </div>
-                    </el-col>
-                    <el-col style="text-align: right" :span="4">
-                      <div
-                        class="wrap-sort-icon"
-                        @click="toggleColumSort('volume24', 'volume24Usd')"
-                      >
-                        <sort-arrow-indicator
-                          v-if="activeColumn('volume24', 'volume24Usd')"
-                          :value="sort.rule"
-                        />
-                        24 Volume
-                      </div>
-                    </el-col>
-                    <el-col style="text-align: right" :span="4">
-                      <div
-                        class="wrap-sort-icon"
-                        @click="toggleColumSort('mktCap', 'mktCapUsd')"
-                      >
-                        <sort-arrow-indicator
-                          v-if="activeColumn('mktCap', 'mktCapUsd')"
-                          :value="sort.rule"
-                        />
-                        Mkt Cap
-                      </div>
-                    </el-col>
-                    <el-col style="text-align: right" :span="2">
-                      <div
-                        class="wrap-sort-icon"
-                        @click="toggleColumSort('change1Day', 'change1DayUsd')"
-                      >
-                        <sort-arrow-indicator
-                          v-if="activeColumn('change1Day', 'change1DayUsd')"
-                          :value="sort.rule"
-                        />
-                        1d
-                        <el-tooltip
-                          :content="`% Change in ${getShowUsd ? 'USD' : 'XTZ'}`"
-                          placement="top"
-                          effect="light"
-                        >
-                          <i class="fa-regular fa-info-circle"></i>
-                        </el-tooltip>
-                      </div>
-                    </el-col>
-                    <el-col style="text-align: right" :span="2">
-                      <div
-                        class="wrap-sort-icon"
-                        @click="toggleColumSort('change7Day', 'change7DayUsd')"
-                      >
-                        <sort-arrow-indicator
-                          v-if="activeColumn('change7Day', 'change7DayUsd')"
-                          :value="sort.rule"
-                        />
-                        7d
-                        <el-tooltip
-                          :content="`% Change in ${getShowUsd ? 'USD' : 'XTZ'}`"
-                          placement="top"
-                          effect="light"
-                        >
-                          <i class="fa-regular fa-info-circle"></i>
-                        </el-tooltip>
-                      </div>
-                    </el-col>
-                    <el-col style="text-align: right" :span="2">
-                      <div
-                        class="wrap-sort-icon"
-                        @click="
-                          toggleColumSort('change30Day', 'change30DayUsd')
-                        "
-                      >
-                        <sort-arrow-indicator
-                          v-if="activeColumn('change30Day', 'change30DayUsd')"
-                          :value="sort.rule"
-                        />
-                        30d
-                        <el-tooltip
-                          :content="`% Change in ${getShowUsd ? 'USD' : 'XTZ'}`"
-                          placement="top"
-                          effect="light"
-                        >
-                          <i class="fa-regular fa-info-circle"></i>
-                        </el-tooltip>
-                      </div>
+                        <el-col style="text-align: right" :span="4">
+                          <div
+                            class="wrap-sort-icon"
+                            @click="toggleColumSort('cuurentPrice', 'usdValue')"
+                          >
+                            <sort-arrow-indicator
+                              v-if="activeColumn('cuurentPrice', 'usdValue')"
+                              :value="sort.rule"
+                            />
+                            Price
+                          </div>
+                        </el-col>
+                        <el-col style="text-align: right" :span="4">
+                          <div
+                            class="wrap-sort-icon"
+                            @click="toggleColumSort('volume24', 'volume24Usd')"
+                          >
+                            <sort-arrow-indicator
+                              v-if="activeColumn('volume24', 'volume24Usd')"
+                              :value="sort.rule"
+                            />
+                            24 Volume
+                          </div>
+                        </el-col>
+                        <el-col style="text-align: right" :span="4">
+                          <div
+                            class="wrap-sort-icon"
+                            @click="toggleColumSort('mktCap', 'mktCapUsd')"
+                          >
+                            <sort-arrow-indicator
+                              v-if="activeColumn('mktCap', 'mktCapUsd')"
+                              :value="sort.rule"
+                            />
+                            Mkt Cap
+                          </div>
+                        </el-col>
+                        <el-col style="text-align: right" :span="2">
+                          <div
+                            class="wrap-sort-icon"
+                            @click="
+                              toggleColumSort('change1Day', 'change1DayUsd')
+                            "
+                          >
+                            <sort-arrow-indicator
+                              v-if="activeColumn('change1Day', 'change1DayUsd')"
+                              :value="sort.rule"
+                            />
+                            1d
+                            <el-tooltip
+                              :content="`% Change in ${
+                                getShowUsd ? 'USD' : 'XTZ'
+                              }`"
+                              placement="top"
+                              effect="light"
+                            >
+                              <i class="fa-regular fa-info-circle"></i>
+                            </el-tooltip>
+                          </div>
+                        </el-col>
+                        <el-col style="text-align: right" :span="2">
+                          <div
+                            class="wrap-sort-icon"
+                            @click="
+                              toggleColumSort('change7Day', 'change7DayUsd')
+                            "
+                          >
+                            <sort-arrow-indicator
+                              v-if="activeColumn('change7Day', 'change7DayUsd')"
+                              :value="sort.rule"
+                            />
+                            7d
+                            <el-tooltip
+                              :content="`% Change in ${
+                                getShowUsd ? 'USD' : 'XTZ'
+                              }`"
+                              placement="top"
+                              effect="light"
+                            >
+                              <i class="fa-regular fa-info-circle"></i>
+                            </el-tooltip>
+                          </div>
+                        </el-col>
+                        <el-col style="text-align: right" :span="2">
+                          <div
+                            class="wrap-sort-icon"
+                            @click="
+                              toggleColumSort('change30Day', 'change30DayUsd')
+                            "
+                          >
+                            <sort-arrow-indicator
+                              v-if="
+                                activeColumn('change30Day', 'change30DayUsd')
+                              "
+                              :value="sort.rule"
+                            />
+                            30d
+                            <el-tooltip
+                              :content="`% Change in ${
+                                getShowUsd ? 'USD' : 'XTZ'
+                              }`"
+                              placement="top"
+                              effect="light"
+                            >
+                              <i class="fa-regular fa-info-circle"></i>
+                            </el-tooltip>
+                          </div>
+                        </el-col>
+                      </el-row>
                     </el-col>
                   </el-row>
                 </el-col>
@@ -437,7 +454,13 @@ export default {
     ...mapState(["tokenTracker"]),
     ...mapGetters(["getTrackerData", "getTokens", "getShowUsd"]),
     sortedTokensTracked() {
-      return _.orderBy(this.getTokens, [this.sort.key], [this.sort.rule]) || [];
+      return (
+        _.orderBy(
+          this.getTokens,
+          ["isFavorite", this.sort.key],
+          ["desc", this.sort.rule]
+        ) || []
+      );
     },
   },
 
