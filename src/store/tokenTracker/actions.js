@@ -34,6 +34,9 @@ export default {
         await dispatch("softLoadPriceFeedAndData");
       }
       const tokenFeed = rootState.priceFeed.data;
+
+      console.log(tokenFeed.KT1XnTn74bUtxHfDtBmm2bGZAQfhPbvKWR8o_0);
+      console.log("----------------------");
       const xtzUsd = rootState.priceFeed.xtzUsdtPrice;
       const xtzUsdHistory = rootState.priceFeed.xtzUsdtPriceHistory;
 
@@ -121,10 +124,12 @@ export default {
     }
   },
 
-  async updateChartAndOverview({ commit, dispatch, state }, id) {
+  async updateChartAndOverview({ commit, dispatch, state, rootState }, id) {
     const token = state.tokensTracked[id];
     if (token) {
-      const updatedToken = await tokenTracker.calcHolders(token);
+      const xtzUsd = rootState.priceFeed.xtzUsdtPrice;
+      const _token = await tokenTracker.calcHolders(token);
+      const updatedToken = await tokenTracker.getLpTokenSupply(_token, xtzUsd);
       commit("updateTokenOverview", updatedToken);
       dispatch("fetchChartData", token);
     }

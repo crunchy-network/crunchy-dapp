@@ -73,7 +73,9 @@
                       </el-row></el-col
                     >
                     <el-col style="text-align: right" :span="5">{{
-                      item.symbol
+                      item.dex !== "quipuswap"
+                        ? item.symbol
+                        : `XTZ/${item.sides[0].symbol}`
                     }}</el-col>
                     <el-col style="text-align: right" :span="5">
                       <price-format
@@ -95,7 +97,7 @@
                         :value="item.lpPrice"
                         :usd-value="Number(item.lpPriceUsd)"
                       />
-                    </el-col> 
+                    </el-col>
                   </el-row>
                 </div>
               </el-col>
@@ -123,9 +125,7 @@ export default {
   computed: {
     ...mapGetters(["getTokenOverview"]),
     sortedExchanges() {
-      return (
-        _.orderBy(this.getTokenOverview.exchanges, "tokenTvl", "desc") || []
-      );
+      return _.orderBy(this.getTokenOverview.pairs, "tokenTvl", "desc") || [];
     },
     // markets() {
     //   return this.getTokenOverview.exchanges;

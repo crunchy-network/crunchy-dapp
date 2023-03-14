@@ -344,15 +344,25 @@ export default {
       );
     });
   },
-  async getLpTokenSupply(token) {
+  async getLpTokenSupply(token, xtzUsd) {
     for (let index = 0; index < token?.pairs?.length; index++) {
       const e = token.pairs[index];
       if (e.name === TRACKED_MARKETS_NAME.plentyNetwork.name) {
-        const { data: totalSupply } = await axios.get(
-          `https://api.tzkt.io/v1/contracts/${e.address}/storage?path=totalSupply`
+        const { data: lpContract } = await axios.get(
+          `https://api.tzkt.io/v1/contracts/${e.address}/storage`
         );
 
-        e.lptSupply = new BigNumber(totalSupply).div(10000000000).toNumber();
+        if (lpContract.totalSupply) {
+          e.lptSupply = new BigNumber(lpContract.totalSupply)
+            .div(10000000000)
+            .toNumber();
+        } else if (lpContract.lqtTotal) {
+          e.lptSupply = new BigNumber(lpContract.lqtTotal)
+            .div(1000000)
+            .toNumber();
+        } else {
+          e.lptSupply = 0;
+        }
       }
 
       if (e.name === TRACKED_MARKETS_NAME.spicyswap.name) {
@@ -360,6 +370,11 @@ export default {
           `https://api.tzkt.io/v1/contracts/${e.address}/storage?path=assets.token_total_supply`
         );
         e.lptSupply = new BigNumber(totalSupply).toNumber();
+      }
+
+      if (xtzUsd !== undefined) {
+        e.lpPrice = new BigNumber(e.tvl).div(e.lptSupply).toNumber();
+        e.lpPriceUsd = new BigNumber(e.lpPrice).times(xtzUsd).toNumber();
       }
     }
 
@@ -1252,7 +1267,7 @@ export default {
         } else {
           if (e.name === TRACKED_MARKETS_NAME.quipuswap.name) {
             element.quipuswapAddress = e.address;
-            
+
             indexerTokens[element.id].address = e.address;
           }
           e.lptSupply = new BigNumber(e.sharesTotal).toNumber();
@@ -1295,7 +1310,8 @@ export default {
       );
     }
 
-    return utils.mergeObjects(indexerTokens, tokenObjkt);
+    const obj = utils.mergeObjects(indexerTokens, tokenObjkt);
+    return obj;
   },
 
   async calcHolders(token) {
