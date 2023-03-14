@@ -5,6 +5,7 @@ import ipfs from "./ipfs";
 import knownContracts from "../knownContracts.json";
 import tzkt from "./tzkt";
 import queryDipdup from "./queryDipdup";
+import tokenTracker from "./token-tracker";
 
 const SKIP_CONTRACTS = [
   "KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo_0",
@@ -444,11 +445,13 @@ export default {
           totalSupply: tokenStorage.total_supply,
         };
 
-        const tokenMetaData = getPrice(
+        const _token = getPrice(
           tokenObjkt.tokenAddress,
           tokenObjkt.tokenId,
           priceFeed
         );
+
+        const tokenMetaData = await tokenTracker.getLpTokenSupply(_token);
 
         if (tokenMetaData) {
           if (tokenMetaData.thumbnailUri)
@@ -590,10 +593,9 @@ export default {
         );
 
         if (tokenMetaData) {
-          console.log(tokenMetaData);
           // if (tokenMetaData.thumbnailUri) {
           tokenMetaData.thumbnailUri = ipfs.transformUri(
-            tokenMetaData.thumbnailUri
+            tokenMetaData.thumbnailUri || ""
           );
           // }
 
@@ -808,11 +810,11 @@ export default {
 
         if (token0MetaData && token1MetaData) {
           token0MetaData.thumbnailUri = ipfs.transformUri(
-            token0MetaData.thumbnailUri
+            token0MetaData.thumbnailUri || ""
           );
 
           token1MetaData.thumbnailUri = ipfs.transformUri(
-            token1MetaData.thumbnailUri
+            token1MetaData.thumbnailUri || ""
           );
 
           const token0 = new BigNumber(tokenObjkt.balance)
@@ -897,7 +899,7 @@ export default {
 
         if (tokenMetaData) {
           tokenMetaData.thumbnailUri = ipfs.transformUri(
-            tokenMetaData.thumbnailUri
+            tokenMetaData.thumbnailUri || ""
           );
 
           const xtzSide = new BigNumber(tokenObjkt.balance)

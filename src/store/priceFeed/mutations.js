@@ -12,6 +12,6 @@ export default {
   },
 
   setPriceFeed(state, priceFeed) {
-    state.priceFeed = priceFeed;
+    state.data = priceFeed;
   },
 };

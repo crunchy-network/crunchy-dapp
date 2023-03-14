@@ -5,20 +5,36 @@ export default {
   async fetchPriceFeedAndData({ commit }) {
     commit("setLoading", true);
     try {
-      console.log("fetching price feed");
-      const xtzUsd = await tzkt.getXtzUsdPrice();
-      const xtzUsdtHistory = await tzkt.getXtzUsdHistory();
+      const [xtzUsd, xtzUsdtHistory] = await Promise.all([
+        tzkt.getXtzUsdPrice(),
+        tzkt.getXtzUsdHistory(),
+      ]);
 
       commit("setXtzUsdtPrice", xtzUsd);
       commit("setXtzUsdtPriceHistory", xtzUsdtHistory);
 
       const priceFeed = await tokenTracker.getTokenFeed(xtzUsd, xtzUsdtHistory);
-      console.log("====", priceFeed);
       commit("setPriceFeed", priceFeed);
     } catch (error) {
       console.log(error);
     } finally {
       commit("setLoading", false);
+    }
+  },
+  async softLoadPriceFeedAndData({ commit }) {
+    try {
+      const [xtzUsd, xtzUsdtHistory] = await Promise.all([
+        tzkt.getXtzUsdPrice(),
+        tzkt.getXtzUsdHistory(),
+      ]);
+
+      commit("setXtzUsdtPrice", xtzUsd);
+      commit("setXtzUsdtPriceHistory", xtzUsdtHistory);
+
+      const priceFeed = await tokenTracker.getTokenFeed(xtzUsd, xtzUsdtHistory);
+      commit("setPriceFeed", priceFeed);
+    } catch (error) {
+      console.log(error);
     }
   },
 };

@@ -13,17 +13,24 @@ export default {
     });
   },
 
-  async updateLpCurrentPrices({ commit }) {
-    return teztools.getPricefeed().then((feed) => {
-      const currentPrices = {};
-      for (const token of feed.contracts) {
-        const tokenId = token.type === "fa1.2" ? "0" : token.tokenId.toString();
-        currentPrices[`${token.tokenAddress}_${tokenId}`] = token.currentPrice;
-      }
+  async updateLpCurrentPrices({ commit, rootState, dispatch }) {
+    if (Object.keys(rootState.priceFeed.data).length < 1) {
+      await dispatch("softLoadPriceFeedAndData");
+    }
+    const tokenFeed = rootState.priceFeed.data;
+    const currentPrices = {};
+    const feed = [];
 
-      commit("updatePriceFeed", feed.contracts);
-      commit("updateCurrentPrices", currentPrices);
-    });
+    // eslint-disable-next-line no-unused-vars
+    for (const [_, token] of Object.entries(tokenFeed)) {
+      console.log(token);
+      console.log("---------------------");
+      currentPrices[`${token.id}`] = token.currentPrice;
+      feed.push(token);
+    }
+
+    commit("updatePriceFeed", feed);
+    commit("updateCurrentPrices", currentPrices);
   },
 
   async updateLpLockStorage({ state }) {

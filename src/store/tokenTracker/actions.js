@@ -18,11 +18,8 @@ export default {
     }
   },
 
-  async _setTokenTracked({ commit, rootState, dispatch }, payload) {
+  async _setTokenTracked({ commit, dispatch, rootState }, payload) {
     !payload?.softLoad && commit("updateLoading", true);
-
-    console.log("fetching token tracked");
-    console.log(rootState.priceFeed);
     try {
       const allTokensMetadata = await dexIndexer.getAllTokens();
       const xtzUsd = await tzkt.getXtzUsdPrice();
@@ -38,7 +35,10 @@ export default {
       commit("updateXtzUsdPrice", xtzUsd);
       commit("updateXtzUsdHistory", xtzUsdHistory);
 
-      const tokenFeed = await tokenTracker.getTokenFeed(xtzUsd, xtzUsdHistory);
+      if (Object.keys(rootState.priceFeed.data).length < 1) {
+        await dispatch("softLoadPriceFeedAndData");
+      }
+      const tokenFeed = rootState.priceFeed.data;
 
       const tokens = [];
       for (let i = 0; i < tokensToTrack.length; i++) {

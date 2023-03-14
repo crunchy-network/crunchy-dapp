@@ -4,7 +4,7 @@ import mutations from "./mutations";
 export default {
   state: {
     loading: false,
-    priceFeed: {},
+    data: {},
     xtzUsdtPrice: 0,
     xtzUsdtPriceHistory: [],
   },
@@ -12,7 +12,7 @@ export default {
   mutations,
   getters: {
     getPriceFeed(state) {
-      return state.priceFeed;
+      return state.data;
     },
     getXtzUsdtPrice(state) {
       return state.xtzUsdtPrice;

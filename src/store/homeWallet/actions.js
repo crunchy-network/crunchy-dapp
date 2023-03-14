@@ -116,8 +116,14 @@ export default {
 
   async loadDogamiStake({ rootState, state, dispatch, commit }, pkh) {
     try {
+      if (Object.keys(rootState.priceFeed.data).length < 1) {
+        await dispatch("softLoadPriceFeedAndData");
+      }
+      const tokenFeed = rootState.priceFeed.data;
+
       const dogamiStake = await homeWalletStake.getDogamiStake(
-        pkh || rootState.wallet.pkh
+        pkh || rootState.wallet.pkh,
+        tokenFeed
       );
       const dogami = { ...state.dogamiStake, ...dogamiStake };
       commit("updateDogamiStake", dogami);
@@ -128,8 +134,14 @@ export default {
 
   async loadGIFStake({ rootState, state, dispatch, commit }, pkh) {
     try {
+      if (Object.keys(rootState.priceFeed.data).length < 1) {
+        await dispatch("softLoadPriceFeedAndData");
+      }
+      const tokenFeed = rootState.priceFeed.data;
+
       const gifStake = await homeWalletStake.getGIFStake(
-        pkh || rootState.wallet.pkh
+        pkh || rootState.wallet.pkh,
+        tokenFeed
       );
       const gif = { ...state.gifStake, ...gifStake };
       commit("updateGIFStake", gif);
@@ -138,7 +150,7 @@ export default {
     }
   },
 
-  async loadAllLiquidity({ rootState, commit }, pkh) {
+  async loadAllLiquidity({ rootState, commit, dispatch }, pkh) {
     commit("updateLpLoading", true);
     const account = pkh || rootState.wallet.pkh;
     try {
@@ -146,9 +158,12 @@ export default {
         `https://staging.api.tzkt.io/v1/tokens/balances?account=${account}&balance.gt=0&limit=10000&select=token,balance`
       );
 
-      const priceFeed = await queryDipdup.getAllTokenAndQuotes();
+      if (Object.keys(rootState.priceFeed.data).length < 1) {
+        await dispatch("softLoadPriceFeedAndData");
+      }
 
-      const xtzUsd = await tzkt.getXtzUsdPrice();
+      const xtzUsd = rootState.priceFeed.xtzUsdtPrice;
+      const priceFeed = rootState.priceFeed.data;
 
       const [quipuswap, vortex, plenty, spicyswap, sirius] = await Promise.all([
         homeWallet.getQuipuLp(balances, xtzUsd, priceFeed),

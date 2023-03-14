@@ -1,5 +1,6 @@
 import axios from "axios";
 import BigNumber from "bignumber.js";
+import utils from ".";
 import ipfs from "./ipfs";
 import queryDipdup from "./queryDipdup";
 
@@ -331,6 +332,32 @@ function getPlentyTokenChartData(indexes, kind, timeInterval, xtzUsdHistory) {
 }
 
 export default {
+  getTokenFromFeed(token, feed) {
+    return feed.find((el) => {
+      return el.id === `${token.address}_${token.tokenId || 0}`;
+    });
+  },
+  async getLpTokenSupply(token) {
+    for (let index = 0; index < token?.pairs?.length; index++) {
+      const e = token.pairs[index];
+      if (e.name === TRACKED_MARKETS_NAME.plentyNetwork.name) {
+        const { data: totalSupply } = await axios.get(
+          `https://api.tzkt.io/v1/contracts/${e.address}/storage?path=totalSupply`
+        );
+
+        e.lptSupply = new BigNumber(totalSupply).div(10000000000).toNumber();
+      }
+
+      if (e.name === TRACKED_MARKETS_NAME.spicyswap.name) {
+        const { data: totalSupply } = await axios.get(
+          `https://api.tzkt.io/v1/contracts/${e.address}/storage?path=assets.token_total_supply`
+        );
+        e.lptSupply = new BigNumber(totalSupply).toNumber();
+      }
+    }
+
+    return token;
+  },
   async getQuotes() {
     const query = `
     query MyQuery {
@@ -838,6 +865,7 @@ export default {
     }`;
 
     const [
+      indexerTokens,
       {
         data: {
           data: { quotesTotal, statsTotal, token },
@@ -850,6 +878,7 @@ export default {
       spicyTokens,
       spicyPools,
     ] = await Promise.all([
+      queryDipdup.getAllTokenAndQuotes(),
       axios.post("https://dex.dipdup.net/v1/graphql", {
         query,
       }),
@@ -1086,6 +1115,7 @@ export default {
     for (let index = 0; index < token.length; index++) {
       const element = token[index];
       const tokenId = element.id;
+      element.tokenAddress = element.address;
       const closes = queryDipdup.filterTokenClose(tokenId, tokensCloseData);
       /**
       *Calculate aggregated price 
@@ -1205,11 +1235,27 @@ export default {
           e.sides = [
             {
               symbol: e.quoteSymbol,
-              price: e.quotePriceUsd,
+              price: e.quotePrice,
             },
             {
               symbol: e.baseSymbol,
               price: e.basePriceUsd,
+            },
+          ];
+        } else {
+          e.lptSupply = new BigNumber(e.sharesTotal).toNumber();
+          e.sides = [
+            {
+              symbol: element.symbol,
+              price: element.currentPrice,
+              usdValue: element.currentPrice * xtzUSD,
+              pool: e.tokenPool,
+            },
+            {
+              symbol: "XTZ",
+              price: 1,
+              usdValue: xtzUSD,
+              pool: e.tezPool,
             },
           ];
         }
@@ -1217,22 +1263,27 @@ export default {
         e.dex = e.name;
       });
 
-      element.usdValue = new BigNumber(currentPrice)
-        .multipliedBy(xtzUSD)
-        .toNumber();
+      element.pairs = element.exchanges;
+      element.usdValue = new BigNumber(currentPrice).times(xtzUSD).toNumber();
 
-      tokenObjkt[element.id] = {
-        ...element,
-        ...closes,
-        currentPrice: Number(tokenQuotesTotal?.aggregatedClose),
-        // allTimeLow: tokenQuotesTotal?.low || 0,
-        tokenTvl,
-        tokenTvlUsd,
-        volume24Xtz,
-      };
+      tokenObjkt[element.id] = utils.mergeObjects(
+        {
+          ...element,
+          ...closes,
+          currentPrice: Number(tokenQuotesTotal?.aggregatedClose),
+          usdValue: new BigNumber(tokenQuotesTotal?.aggregatedClose)
+            .times(xtzUSD)
+            .toNumber(),
+          // allTimeLow: tokenQuotesTotal?.low || 0,
+          tokenTvl,
+          tokenTvlUsd,
+          volume24Xtz,
+        },
+        indexerTokens[element.id]
+      );
     }
 
-    return tokenObjkt;
+    return utils.mergeObjects(indexerTokens, tokenObjkt);
   },
 
   async calcHolders(token) {

@@ -1,4 +1,7 @@
 import axios from "axios";
+import BigNumber from "bignumber.js";
+import _ from "lodash";
+import utils from ".";
 import dexIndexer from "./dex-indexer";
 import tzkt from "./tzkt";
 
@@ -71,6 +74,16 @@ export default {
         symbol
         thumbnailUri
         tokenId
+        exchanges{
+          address
+          name
+          tokenId
+          tezPool
+          tokenPool
+          tradeVolume
+          midPrice
+          sharesTotal
+        }
       }
     }
     `;
@@ -98,19 +111,21 @@ export default {
 
     for (let index = 0; index < token.length; index++) {
       const element = token[index];
-      const tokenMetadata = updatedAllTokens[element.id];
+      const tokenMetadata = _.mapKeys(
+        updatedAllTokens[element.id],
+        _.rearg(_.camelCase, 1)
+      );
       element.thumbnailUri =
-        tokenMetadata?.thumbnail_uri ||
+        tokenMetadata?.thumbnailUri ||
         element?.thumbnailUri ||
         "https://static.thenounproject.com/png/796573-200.png";
 
       const tokenVal = quotesTotal.find((val) => val.tokenId === element.id);
 
-      tokenObjkt[element.id] = {
-        ...element,
+      tokenObjkt[element.id] = utils.mergeObjects(element, {
         ...tokenMetadata,
-        currentPrice: Number(tokenVal?.close),
-      };
+        currentPrice: new BigNumber(tokenVal?.close).toNumber() || 0,
+      });
     }
 
     return tokenObjkt;

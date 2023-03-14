@@ -79,21 +79,21 @@
                       <price-format
                         prefix="$"
                         :value="item.tokenTvl"
-                        :usd-value="item.tokenTvlUsd"
+                        :usd-value="Number(item.tokenTvlUsd)"
                       />
                     </el-col>
                     <el-col style="text-align: right" :span="5">
                       <price-format
                         prefix="$"
                         :value="item.volume24"
-                        :usd-value="item.volume24Usd"
+                        :usd-value="Number(item.volume24Usd)"
                       />
                     </el-col>
                     <el-col style="text-align: right" :span="5">
                       <price-format
                         prefix="$"
                         :value="item.lpPrice"
-                        :usd-value="item.lpPriceUsd"
+                        :usd-value="Number(item.lpPriceUsd)"
                       />
                     </el-col> 
                   </el-row>
@@ -132,11 +132,11 @@ export default {
     // },
   },
 
-  watch: {
-    getTokenOverview(val) {
-      console.log(val);
-    },
-  },
+  // watch: {
+  //   getTokenOverview(val) {
+  //     console.log(val);
+  //   },
+  // },
 
   methods: {
     handleDexUri(dex = "") {

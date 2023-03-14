@@ -3,10 +3,7 @@
     <!-- Desktop -->
     <!-- <div class="hidden-sm-and-down"> -->
 
-    <el-container
-      v-loading="loadPriceFeedAndData"
-      style="position: relative; justify-content: space-between"
-    >
+    <el-container style="position: relative; justify-content: space-between">
       <div>
         <router-view></router-view>
       </div>
@@ -68,12 +65,12 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   name: "App",
-  watch: {
-    loadPriceFeedAndData: function () {
-      return this.$store.state.priceFeed.loading;
-    },
+  computed: {
+    ...mapState(["priceFeed"]),
   },
   created() {
     this.$store.dispatch("checkWalletConnected");
@@ -82,8 +79,8 @@ export default {
 
   mounted() {
     setInterval(() => {
-      this.$store.dispatch("fetchPriceFeedAndData");
-    }, 1000 * 60 * 5);
+      this.$store.dispatch("softLoadPriceFeedAndData");
+    }, 1000 * 60 * 2);
   },
 };
 </script>
