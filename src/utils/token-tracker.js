@@ -21,6 +21,9 @@ const TRACKED_MARKETS_NAME = {
   spicyswap: {
     name: "spicyswap",
   },
+  quipuswap: {
+    name: "quipuswap",
+  },
 };
 
 async function queryXtzVolume() {
@@ -333,8 +336,12 @@ function getPlentyTokenChartData(indexes, kind, timeInterval, xtzUsdHistory) {
 
 export default {
   getTokenFromFeed(token, feed) {
+    console.log(token, feed);
     return feed.find((el) => {
-      return el.id === `${token.address}_${token.tokenId || 0}`;
+      return (
+        el.quipuswapAddress === token.address ||
+        el.id === `${token.tokenAddress}_${token.tokenId}`
+      );
     });
   },
   async getLpTokenSupply(token) {
@@ -1243,6 +1250,9 @@ export default {
             },
           ];
         } else {
+          if (e.name === TRACKED_MARKETS_NAME.quipuswap.name) {
+            element.quipuswapAddress = e.address;
+          }
           e.lptSupply = new BigNumber(e.sharesTotal).toNumber();
           e.sides = [
             {
@@ -1297,25 +1307,12 @@ export default {
     return token;
   },
 
-  async calculateTokenData(token, tokenFeed, allTokensMetadata, xtzUsd) {
-    const tokenPrice = tokenFeed[token.id];
+  async calculateTokenData(token, tokenFeed, xtzUsd) {
+    const element = tokenFeed[token.id];
 
-    // tokenPrice.currentPrice = currentPrice;
-
-    const tokenMetadata = allTokensMetadata.find((el) => {
-      return (
-        el.token_address === token.tokenAddress &&
-        (el.token_id !== undefined
-          ? el.token_id === (token.tokenId || 0)
-          : true)
-      );
-    });
-
-    const element = tokenPrice;
-
-    if (element && tokenMetadata) {
+    if (element) {
       element.thumbnailUri = ipfs.transformUri(
-        tokenMetadata.thumbnail_uri ||
+        element.thumbnailUri ||
           "https://static.thenounproject.com/png/796573-200.png"
       );
 
@@ -1327,8 +1324,8 @@ export default {
       const priceUsd = price.times(xtzUsd);
       element.usdValue = price.times(xtzUsd).toNumber();
 
-      element.calcSupply = new BigNumber(tokenMetadata.total_supply)
-        .div(new BigNumber(10).pow(tokenMetadata.decimals))
+      element.calcSupply = new BigNumber(element.totalSupply)
+        .div(new BigNumber(10).pow(element.decimals))
         .toNumber();
 
       element.mktCap = new BigNumber(element.calcSupply)

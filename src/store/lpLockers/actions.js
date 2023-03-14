@@ -1,10 +1,10 @@
 import tzkt from "./../../utils/tzkt";
-import teztools from "./../../utils/teztools";
 import ipfs from "./../../utils/ipfs";
 import farmUtils from "./../../utils/farm";
 import { getContract, getWalletContract, getBatch } from "./../../utils/tezos";
 import merge from "deepmerge";
 import { BigNumber } from "bignumber.js";
+import tokenTracker from "../../utils/token-tracker";
 
 export default {
   async updateLpXtzUsdVwap({ commit }) {
@@ -21,10 +21,7 @@ export default {
     const currentPrices = {};
     const feed = [];
 
-    // eslint-disable-next-line no-unused-vars
-    for (const [_, token] of Object.entries(tokenFeed)) {
-      console.log(token);
-      console.log("---------------------");
+    for (const token of Object.values(tokenFeed)) {
       currentPrices[`${token.id}`] = token.currentPrice;
       feed.push(token);
     }
@@ -79,7 +76,7 @@ export default {
           }
         );
 
-        let tokenMeta = teztools.findTokenInPriceFeed(l.token, state.priceFeed);
+        let tokenMeta = tokenTracker.getTokenFromFeed(l.token, state.priceFeed);
         if (tokenMeta) {
           if (tokenMeta.thumbnailUri) {
             tokenMeta.thumbnailUri = ipfs.transformUri(tokenMeta.thumbnailUri);

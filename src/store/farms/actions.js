@@ -70,10 +70,8 @@ export default {
     const tokenFeed = rootState.priceFeed.data;
     const currentPrices = {};
     const feed = [];
-    
-    // eslint-disable-next-line no-unused-vars
-    for (const [_, token] of Object.entries(tokenFeed)) {
-      // const tokenId = token.type === "fa1.2" ? "0" : token.tokenId.toString();
+
+    for (const token of Object.values(tokenFeed)) {
       currentPrices[`${token.id}`] = token.currentPrice;
       feed.push(token);
     }

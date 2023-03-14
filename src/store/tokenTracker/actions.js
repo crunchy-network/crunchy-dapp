@@ -2,7 +2,6 @@ import tokenTracker from "../../utils/token-tracker";
 import tokensToTrack from "../../tokensTracked.json";
 import _ from "lodash";
 // import coingecko from "../../utils/coingecko";
-import dexIndexer from "../../utils/dex-indexer";
 import tzkt from "../../utils/tzkt";
 
 export default {
@@ -21,10 +20,9 @@ export default {
   async _setTokenTracked({ commit, dispatch, rootState }, payload) {
     !payload?.softLoad && commit("updateLoading", true);
     try {
-      const allTokensMetadata = await dexIndexer.getAllTokens();
-      const xtzUsd = await tzkt.getXtzUsdPrice();
+      // const xtzUsd = await tzkt.getXtzUsdPrice();
       // const xtzUsdHistory = await coingecko.getXtzUsdHistory();
-      const xtzUsdHistory = await tzkt.getXtzUsdHistory();
+      // const xtzUsdHistory = await tzkt.getXtzUsdHistory();
       // const formattedXtzUsdHistory = [];
       // for (let i = 0; i < xtzUsdHistory.length; i++) {
       //   const bucket = new Date(xtzUsdHistory[i][0]).getTime();
@@ -32,13 +30,15 @@ export default {
       //   formattedXtzUsdHistory.push([bucket,xtzUsdPrice]);
       // }
 
-      commit("updateXtzUsdPrice", xtzUsd);
-      commit("updateXtzUsdHistory", xtzUsdHistory);
-
       if (Object.keys(rootState.priceFeed.data).length < 1) {
         await dispatch("softLoadPriceFeedAndData");
       }
       const tokenFeed = rootState.priceFeed.data;
+      const xtzUsd = rootState.priceFeed.xtzUsdtPrice;
+      const xtzUsdHistory = rootState.priceFeed.xtzUsdtPriceHistory;
+
+      commit("updateXtzUsdPrice", xtzUsd);
+      commit("updateXtzUsdHistory", xtzUsdHistory);
 
       const tokens = [];
       for (let i = 0; i < tokensToTrack.length; i++) {
@@ -49,7 +49,6 @@ export default {
         const token = await tokenTracker.calculateTokenData(
           tokenData,
           tokenFeed,
-          allTokensMetadata,
           xtzUsd
           // tokenVolumesYesterday
         );
