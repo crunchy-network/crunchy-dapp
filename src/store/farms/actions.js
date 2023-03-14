@@ -267,6 +267,8 @@ export default {
 
       if (poolTokenMeta) {
         const isQuipuLp = poolTokenMeta.address === farm.poolToken.address;
+        console.log("------------");
+        console.log(isQuipuLp);
 
         let rewardTokenMeta = tokenTracker.getTokenFromFeed(
           farm.rewardToken,
@@ -725,10 +727,10 @@ export default {
         ) {
           const poolK = await tzkt.getContractStorage(farm.poolToken.address);
           poolTokenStorage = {
-            tezPool: BigNumber(poolK.data.storage.tez_pool).div(
+            tezPool: BigNumber(poolK.data.storage?.tez_pool).div(
               BigNumber(10).pow(6)
             ),
-            qptTokenSupply: BigNumber(poolK.data.storage.total_supply).div(
+            qptTokenSupply: BigNumber(poolK.data.storage?.total_supply).div(
               BigNumber(10).pow(6)
             ),
           };

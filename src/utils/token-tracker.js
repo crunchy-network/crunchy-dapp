@@ -339,8 +339,8 @@ export default {
     console.log(token, feed);
     return feed.find((el) => {
       return (
-        el.quipuswapAddress === token.address ||
-        el.id === `${token.tokenAddress}_${token.tokenId}`
+        el.id === `${token.tokenAddress}_${token.tokenId}` ||
+        el.quipuswapAddress === token.address
       );
     });
   },
@@ -1252,6 +1252,8 @@ export default {
         } else {
           if (e.name === TRACKED_MARKETS_NAME.quipuswap.name) {
             element.quipuswapAddress = e.address;
+            
+            indexerTokens[element.id].address = e.address;
           }
           e.lptSupply = new BigNumber(e.sharesTotal).toNumber();
           e.sides = [

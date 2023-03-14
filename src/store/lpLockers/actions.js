@@ -76,7 +76,12 @@ export default {
           }
         );
 
+        console.log("------------------");
+        console.log(state.priceFeed);
+        console.log("------------------");
+
         let tokenMeta = tokenTracker.getTokenFromFeed(l.token, state.priceFeed);
+        // console.log(tokenMeta); 
         if (tokenMeta) {
           if (tokenMeta.thumbnailUri) {
             tokenMeta.thumbnailUri = ipfs.transformUri(tokenMeta.thumbnailUri);
@@ -95,6 +100,7 @@ export default {
         ) {
           const poolK = await tzkt.getContractStorage(l.token.address);
           tokenMeta = {
+            ...tokenMeta,
             tezPool: BigNumber(poolK.data.storage.tez_pool)
               .div(BigNumber(10).pow(6))
               .toNumber(),
