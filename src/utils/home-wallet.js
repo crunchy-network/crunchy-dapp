@@ -185,7 +185,7 @@ export default {
     return nfts.find((nft) => nft.address === address);
   },
 
-  async fetchAssetsBal(pkh) {
+  async fetchAssetsBal(pkh, priceFeed) {
     // return array for token balances and filtered data
 
     const assets = [];
@@ -215,10 +215,7 @@ export default {
       // const { contracts: prices } = await teztools.getPricefeed();
 
       // Get token metadata and prices
-      const [tokenData, tokensClose] = await Promise.all([
-        queryDipdup.getAllTokenAndQuotes(),
-        queryDipdup.getTokensPriceClose(),
-      ]);
+      const tokensClose = await queryDipdup.getTokensPriceClose();
 
       // filter out NFTs by checking for artifactURI and token symbol or alias
       const tokens = [];
@@ -244,7 +241,7 @@ export default {
         const tokenId = `${balances[i]?.token?.contract?.address}_${
           balances[i]?.token?.tokenId || 0
         }`;
-        const priceObj = tokenData[tokenId];
+        const priceObj = priceFeed[tokenId];
 
         const tokenClose = queryDipdup.filterTokenClose(tokenId, tokensClose);
         const currentPrice = priceObj?.currentPrice || false;

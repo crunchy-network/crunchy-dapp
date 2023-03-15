@@ -6,13 +6,18 @@ import tzkt from "../../utils/tzkt";
 // import teztools from "../../utils/teztools";
 
 export default {
-  async fetchHomeWalletBalances({ rootState, commit }, pkh) {
+  async fetchHomeWalletBalances({ rootState, commit, dispatch }, pkh) {
     if (!pkh && !rootState.wallet.pkh) {
       // @todo
     } else {
+      if (Object.keys(rootState.priceFeed.data).length < 1) {
+        await dispatch("softLoadPriceFeedAndData");
+      }
+      const tokenFeed = rootState.priceFeed.data;
+
       homeWallet.fetchNFts(pkh || rootState.wallet.pkh);
       return homeWallet
-        .fetchAssetsBal(pkh || rootState.wallet.pkh)
+        .fetchAssetsBal(pkh || rootState.wallet.pkh, tokenFeed)
         .then((res) => {
           commit("updateAssets", res);
         });
