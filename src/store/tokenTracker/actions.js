@@ -35,8 +35,6 @@ export default {
       }
       const tokenFeed = rootState.priceFeed.data;
 
-      console.log(tokenFeed.KT1XnTn74bUtxHfDtBmm2bGZAQfhPbvKWR8o_0);
-      console.log("----------------------");
       const xtzUsd = rootState.priceFeed.xtzUsdtPrice;
       const xtzUsdHistory = rootState.priceFeed.xtzUsdtPriceHistory;
 
@@ -207,14 +205,6 @@ export default {
       token.isFavorite = 1;
       const tokens = state.tokenList;
       const index = tokens.findIndex((t) => t.id === tokenId);
-
-      console.log(
-        "🚀 ~ file: actions.js ~ line 202 ~ setTokenAsFavourite ~ index",
-        index,
-        token,
-        tokens,
-        tokenId
-      );
 
       commit("updateTokenListIndex", { index, token });
       commit("updateTokenTracked", token);

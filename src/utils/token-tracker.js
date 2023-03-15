@@ -372,10 +372,10 @@ export default {
         e.lptSupply = new BigNumber(totalSupply).toNumber();
       }
 
-      if (xtzUsd !== undefined) {
-        e.lpPrice = new BigNumber(e.tvl).div(e.lptSupply).toNumber();
-        e.lpPriceUsd = new BigNumber(e.lpPrice).times(xtzUsd).toNumber();
-      }
+      // if (xtzUsd !== undefined) {
+      //   e.lpPrice = new BigNumber(e.tvl).div(e.lptSupply).toNumber();
+      //   e.lpPriceUsd = new BigNumber(e.lpPrice).times(xtzUsd).toNumber();
+      // }
     }
 
     return token;
@@ -1311,6 +1311,7 @@ export default {
     }
 
     const obj = utils.mergeObjects(indexerTokens, tokenObjkt);
+
     return obj;
   },
 
@@ -1406,20 +1407,20 @@ export default {
         .times(xtzUsd)
         .toNumber();
 
-      for (let index = 0; index < element?.exchanges.length; index++) {
-        const market = element?.exchanges[index];
-        element.exchanges[index].lpPriceUsd =
+      for (let index = 0; index < element?.pairs?.length; index++) {
+        const market = element?.pairs[index];
+        element.pairs[index].lpPriceUsd =
           market.name === "spicyswap"
             ? Number(market.midPriceUsd)
             : Number(market.midPrice) * xtzUsd || 0;
 
-        element.exchanges[index].lpPrice = Number(market.midPrice) || 0;
+        element.pairs[index].lpPrice = Number(market.midPrice) || 0;
 
-        element.exchanges[index].symbol =
+        element.pairs[index].symbol =
           market.name === "plenty network" || market.name === "spicyswap"
             ? market.symbol
             : `XTZ/${element.symbol}`;
-        element.exchanges[index].volume24Usd = new BigNumber(market.volume24)
+        element.pairs[index].volume24Usd = new BigNumber(market.volume24)
           .times(xtzUsd)
           .toNumber();
       }

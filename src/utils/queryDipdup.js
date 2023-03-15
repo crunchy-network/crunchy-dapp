@@ -102,19 +102,18 @@ export default {
 
     const updatedAllTokens = {};
     allTokens?.forEach((value) => {
-      updatedAllTokens[`${value.token_address}_${value.token_id || 0}`] = value;
+      updatedAllTokens[`${value.token_address}_${value.token_id || 0}`] =
+        _.mapKeys(value, _.rearg(_.camelCase, 1));
     });
 
     // console.log("\n\n------ begin:  ------");
     // console.log(updatedAllTokens);
     // console.log("------ end:  ------\n\n");x
-
     for (let index = 0; index < token.length; index++) {
       const element = token[index];
-      const tokenMetadata = _.mapKeys(
-        updatedAllTokens[element.id],
-        _.rearg(_.camelCase, 1)
-      );
+
+      const tokenMetadata = updatedAllTokens[element.id];
+
       element.thumbnailUri =
         tokenMetadata?.thumbnailUri ||
         element?.thumbnailUri ||
@@ -128,7 +127,7 @@ export default {
       });
     }
 
-    return tokenObjkt;
+    return utils.mergeObjects(updatedAllTokens, tokenObjkt);
   },
 
   async getTokensPriceClose() {
