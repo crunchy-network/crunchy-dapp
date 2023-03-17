@@ -5,6 +5,7 @@ import ipfs from "./ipfs";
 import knownContracts from "../knownContracts.json";
 import tzkt from "./tzkt";
 import queryDipdup from "./queryDipdup";
+import tokenTracker from "./token-tracker";
 
 const SKIP_CONTRACTS = [
   "KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo_0",
@@ -184,7 +185,7 @@ export default {
     return nfts.find((nft) => nft.address === address);
   },
 
-  async fetchAssetsBal(pkh) {
+  async fetchAssetsBal(pkh, priceFeed) {
     // return array for token balances and filtered data
 
     const assets = [];
@@ -214,10 +215,7 @@ export default {
       // const { contracts: prices } = await teztools.getPricefeed();
 
       // Get token metadata and prices
-      const [tokenData, tokensClose] = await Promise.all([
-        queryDipdup.getAllTokenAndQuotes(),
-        queryDipdup.getTokensPriceClose(),
-      ]);
+      const tokensClose = await queryDipdup.getTokensPriceClose();
 
       // filter out NFTs by checking for artifactURI and token symbol or alias
       const tokens = [];
@@ -243,7 +241,7 @@ export default {
         const tokenId = `${balances[i]?.token?.contract?.address}_${
           balances[i]?.token?.tokenId || 0
         }`;
-        const priceObj = tokenData[tokenId];
+        const priceObj = priceFeed[tokenId];
 
         const tokenClose = queryDipdup.filterTokenClose(tokenId, tokensClose);
         const currentPrice = priceObj?.currentPrice || false;
@@ -444,11 +442,13 @@ export default {
           totalSupply: tokenStorage.total_supply,
         };
 
-        const tokenMetaData = getPrice(
+        const _token = getPrice(
           tokenObjkt.tokenAddress,
           tokenObjkt.tokenId,
           priceFeed
         );
+
+        const tokenMetaData = await tokenTracker.getLpTokenSupply(_token);
 
         if (tokenMetaData) {
           if (tokenMetaData.thumbnailUri)
@@ -590,10 +590,9 @@ export default {
         );
 
         if (tokenMetaData) {
-          console.log(tokenMetaData);
           // if (tokenMetaData.thumbnailUri) {
           tokenMetaData.thumbnailUri = ipfs.transformUri(
-            tokenMetaData.thumbnailUri
+            tokenMetaData.thumbnailUri || ""
           );
           // }
 
@@ -808,11 +807,11 @@ export default {
 
         if (token0MetaData && token1MetaData) {
           token0MetaData.thumbnailUri = ipfs.transformUri(
-            token0MetaData.thumbnailUri
+            token0MetaData.thumbnailUri || ""
           );
 
           token1MetaData.thumbnailUri = ipfs.transformUri(
-            token1MetaData.thumbnailUri
+            token1MetaData.thumbnailUri || ""
           );
 
           const token0 = new BigNumber(tokenObjkt.balance)
@@ -897,7 +896,7 @@ export default {
 
         if (tokenMetaData) {
           tokenMetaData.thumbnailUri = ipfs.transformUri(
-            tokenMetaData.thumbnailUri
+            tokenMetaData.thumbnailUri || ""
           );
 
           const xtzSide = new BigNumber(tokenObjkt.balance)

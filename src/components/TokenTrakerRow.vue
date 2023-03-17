@@ -50,7 +50,7 @@
                     <a
                       style="color: #555cff; text-decoration: none"
                       target="_blank"
-                      :href="`https://tzkt.io/${asset.address}/operations/`"
+                      :href="`https://tzkt.io/${asset.tokenAddress}/operations/`"
                     >
                       {{ asset.symbol || asset.name }}
                     </a>

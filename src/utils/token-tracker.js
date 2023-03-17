@@ -1,5 +1,6 @@
 import axios from "axios";
 import BigNumber from "bignumber.js";
+import utils from ".";
 import ipfs from "./ipfs";
 import queryDipdup from "./queryDipdup";
 
@@ -19,6 +20,9 @@ const TRACKED_MARKETS_NAME = {
   },
   spicyswap: {
     name: "spicyswap",
+  },
+  quipuswap: {
+    name: "quipuswap",
   },
 };
 
@@ -331,6 +335,51 @@ function getPlentyTokenChartData(indexes, kind, timeInterval, xtzUsdHistory) {
 }
 
 export default {
+  getTokenFromFeed(token, feed) {
+    console.log(token, feed);
+    return feed.find((el) => {
+      return (
+        el.id === `${token.tokenAddress}_${token.tokenId}` ||
+        el.quipuswapAddress === token.address
+      );
+    });
+  },
+  async getLpTokenSupply(token, xtzUsd) {
+    for (let index = 0; index < token?.pairs?.length; index++) {
+      const e = token.pairs[index];
+      if (e.name === TRACKED_MARKETS_NAME.plentyNetwork.name) {
+        const { data: lpContract } = await axios.get(
+          `https://api.tzkt.io/v1/contracts/${e.address}/storage`
+        );
+
+        if (lpContract.totalSupply) {
+          e.lptSupply = new BigNumber(lpContract.totalSupply)
+            .div(10000000000)
+            .toNumber();
+        } else if (lpContract.lqtTotal) {
+          e.lptSupply = new BigNumber(lpContract.lqtTotal)
+            .div(1000000)
+            .toNumber();
+        } else {
+          e.lptSupply = 0;
+        }
+      }
+
+      if (e.name === TRACKED_MARKETS_NAME.spicyswap.name) {
+        const { data: totalSupply } = await axios.get(
+          `https://api.tzkt.io/v1/contracts/${e.address}/storage?path=assets.token_total_supply`
+        );
+        e.lptSupply = new BigNumber(totalSupply).toNumber();
+      }
+
+      // if (xtzUsd !== undefined) {
+      //   e.lpPrice = new BigNumber(e.tvl).div(e.lptSupply).toNumber();
+      //   e.lpPriceUsd = new BigNumber(e.lpPrice).times(xtzUsd).toNumber();
+      // }
+    }
+
+    return token;
+  },
   async getQuotes() {
     const query = `
     query MyQuery {
@@ -824,6 +873,7 @@ export default {
           tokenPool
           tradeVolume
           midPrice
+          sharesTotal
         }
         address
         decimals
@@ -837,6 +887,7 @@ export default {
     }`;
 
     const [
+      indexerTokens,
       {
         data: {
           data: { quotesTotal, statsTotal, token },
@@ -849,6 +900,7 @@ export default {
       spicyTokens,
       spicyPools,
     ] = await Promise.all([
+      queryDipdup.getAllTokenAndQuotes(),
       axios.post("https://dex.dipdup.net/v1/graphql", {
         query,
       }),
@@ -1085,6 +1137,7 @@ export default {
     for (let index = 0; index < token.length; index++) {
       const element = token[index];
       const tokenId = element.id;
+      element.tokenAddress = element.address;
       const closes = queryDipdup.filterTokenClose(tokenId, tokensCloseData);
       /**
       *Calculate aggregated price 
@@ -1196,23 +1249,70 @@ export default {
         tokenTvlUsd = new BigNumber(tokenTvlUsd)
           .plus(e.tokenTvl * xtzUSD)
           .toNumber();
-        if (e.name === TRACKED_MARKETS_NAME.plentyNetwork.name || e.name === TRACKED_MARKETS_NAME.spicyswap.name) {
+        if (
+          e.name === TRACKED_MARKETS_NAME.plentyNetwork.name ||
+          e.name === TRACKED_MARKETS_NAME.spicyswap.name
+        ) {
           volume24Xtz = new BigNumber(volume24Xtz).plus(e.volume24).toNumber();
+          e.sides = [
+            {
+              symbol: e.quoteSymbol,
+              price: e.quotePrice,
+            },
+            {
+              symbol: e.baseSymbol,
+              price: e.basePriceUsd,
+            },
+          ];
+        } else {
+          if (e.name === TRACKED_MARKETS_NAME.quipuswap.name) {
+            element.quipuswapAddress = e.address;
+
+            indexerTokens[element.id].address = e.address;
+          }
+          e.lptSupply = new BigNumber(e.sharesTotal).toNumber();
+          e.sides = [
+            {
+              symbol: element.symbol,
+              price: element.currentPrice,
+              usdValue: element.currentPrice * xtzUSD,
+              pool: e.tokenPool,
+            },
+            {
+              symbol: "XTZ",
+              price: 1,
+              usdValue: xtzUSD,
+              pool: e.tezPool,
+            },
+          ];
         }
+        e.tvl = new BigNumber(e.tokenTvl).toNumber();
+        e.dex = e.name;
       });
 
-      tokenObjkt[element.id] = {
-        ...element,
-        ...closes,
-        currentPrice: Number(tokenQuotesTotal?.aggregatedClose),
-        // allTimeLow: tokenQuotesTotal?.low || 0,
-        tokenTvl,
-        tokenTvlUsd,
-        volume24Xtz,
-      };
+      element.pairs = element.exchanges;
+      element.usdValue = new BigNumber(currentPrice).times(xtzUSD).toNumber();
+
+      tokenObjkt[element.id] = utils.mergeObjects(
+        {
+          ...element,
+          ...closes,
+          currentPrice: Number(tokenQuotesTotal?.aggregatedClose),
+          usdValue: new BigNumber(tokenQuotesTotal?.aggregatedClose)
+            .times(xtzUSD)
+            .toNumber(),
+          // allTimeLow: tokenQuotesTotal?.low || 0,
+          tokenTvl,
+          tokenTvlUsd,
+          volume24Xtz,
+        },
+        indexerTokens[element.id]
+      );
     }
 
-    return tokenObjkt;
+    const obj = utils.mergeObjects(indexerTokens, tokenObjkt);
+
+    return obj;
   },
 
   async calcHolders(token) {
@@ -1226,25 +1326,12 @@ export default {
     return token;
   },
 
-  async calculateTokenData(token, tokenFeed, allTokensMetadata, xtzUsd) {
-    const tokenPrice = tokenFeed[token.id];
+  async calculateTokenData(token, tokenFeed, xtzUsd) {
+    const element = tokenFeed[token.id];
 
-    // tokenPrice.currentPrice = currentPrice;
-
-    const tokenMetadata = allTokensMetadata.find((el) => {
-      return (
-        el.token_address === token.tokenAddress &&
-        (el.token_id !== undefined
-          ? el.token_id === (token.tokenId || 0)
-          : true)
-      );
-    });
-
-    const element = tokenPrice;
-
-    if (element && tokenMetadata) {
+    if (element) {
       element.thumbnailUri = ipfs.transformUri(
-        tokenMetadata.thumbnail_uri ||
+        element.thumbnailUri ||
           "https://static.thenounproject.com/png/796573-200.png"
       );
 
@@ -1256,8 +1343,8 @@ export default {
       const priceUsd = price.times(xtzUsd);
       element.usdValue = price.times(xtzUsd).toNumber();
 
-      element.calcSupply = new BigNumber(tokenMetadata.total_supply)
-        .div(new BigNumber(10).pow(tokenMetadata.decimals))
+      element.calcSupply = new BigNumber(element.totalSupply)
+        .div(new BigNumber(10).pow(element.decimals))
         .toNumber();
 
       element.mktCap = new BigNumber(element.calcSupply)
@@ -1320,20 +1407,20 @@ export default {
         .times(xtzUsd)
         .toNumber();
 
-      for (let index = 0; index < element?.exchanges.length; index++) {
-        const market = element?.exchanges[index];
-        element.exchanges[index].lpPriceUsd =
+      for (let index = 0; index < element?.pairs?.length; index++) {
+        const market = element?.pairs[index];
+        element.pairs[index].lpPriceUsd =
           market.name === "spicyswap"
             ? Number(market.midPriceUsd)
             : Number(market.midPrice) * xtzUsd || 0;
 
-        element.exchanges[index].lpPrice = Number(market.midPrice) || 0;
+        element.pairs[index].lpPrice = Number(market.midPrice) || 0;
 
-        element.exchanges[index].symbol =
+        element.pairs[index].symbol =
           market.name === "plenty network" || market.name === "spicyswap"
             ? market.symbol
             : `XTZ/${element.symbol}`;
-        element.exchanges[index].volume24Usd = new BigNumber(market.volume24)
+        element.pairs[index].volume24Usd = new BigNumber(market.volume24)
           .times(xtzUsd)
           .toNumber();
       }

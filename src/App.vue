@@ -65,10 +65,22 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   name: "App",
+  computed: {
+    ...mapState(["priceFeed"]),
+  },
   created() {
     this.$store.dispatch("checkWalletConnected");
+    this.$store.dispatch("fetchPriceFeedAndData");
+  },
+
+  mounted() {
+    setInterval(() => {
+      this.$store.dispatch("softLoadPriceFeedAndData");
+    }, 1000 * 60 * 2);
   },
 };
 </script>
@@ -332,7 +344,7 @@ header .grid-content button.el-button {
 }
 
 #token-tracker .search-input .el-input__prefix {
-  color: #DCDFE6;
+  color: #dcdfe6;
 }
 
 .search-input .el-input__inner,
