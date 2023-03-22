@@ -6,18 +6,13 @@ import tzkt from "../../utils/tzkt";
 // import teztools from "../../utils/teztools";
 
 export default {
-  async fetchHomeWalletBalances({ rootState, commit, dispatch }, pkh) {
+  async fetchHomeWalletBalances({ rootState, commit }, pkh) {
     if (!pkh && !rootState.wallet.pkh) {
       // @todo
     } else {
-      if (Object.keys(rootState.priceFeed.data).length < 1) {
-        await dispatch("softLoadPriceFeedAndData");
-      }
-      const tokenFeed = rootState.priceFeed.data;
-
       homeWallet.fetchNFts(pkh || rootState.wallet.pkh);
       return homeWallet
-        .fetchAssetsBal(pkh || rootState.wallet.pkh, tokenFeed)
+        .fetchAssetsBal(pkh || rootState.wallet.pkh)
         .then((res) => {
           commit("updateAssets", res);
         });
@@ -121,14 +116,8 @@ export default {
 
   async loadDogamiStake({ rootState, state, dispatch, commit }, pkh) {
     try {
-      if (Object.keys(rootState.priceFeed.data).length < 1) {
-        await dispatch("softLoadPriceFeedAndData");
-      }
-      const tokenFeed = rootState.priceFeed.data;
-
       const dogamiStake = await homeWalletStake.getDogamiStake(
-        pkh || rootState.wallet.pkh,
-        tokenFeed
+        pkh || rootState.wallet.pkh
       );
       const dogami = { ...state.dogamiStake, ...dogamiStake };
       commit("updateDogamiStake", dogami);
@@ -139,14 +128,8 @@ export default {
 
   async loadGIFStake({ rootState, state, dispatch, commit }, pkh) {
     try {
-      if (Object.keys(rootState.priceFeed.data).length < 1) {
-        await dispatch("softLoadPriceFeedAndData");
-      }
-      const tokenFeed = rootState.priceFeed.data;
-
       const gifStake = await homeWalletStake.getGIFStake(
-        pkh || rootState.wallet.pkh,
-        tokenFeed
+        pkh || rootState.wallet.pkh
       );
       const gif = { ...state.gifStake, ...gifStake };
       commit("updateGIFStake", gif);
@@ -155,7 +138,7 @@ export default {
     }
   },
 
-  async loadAllLiquidity({ rootState, commit, dispatch }, pkh) {
+  async loadAllLiquidity({ rootState, commit }, pkh) {
     commit("updateLpLoading", true);
     const account = pkh || rootState.wallet.pkh;
     try {
@@ -163,12 +146,9 @@ export default {
         `https://staging.api.tzkt.io/v1/tokens/balances?account=${account}&balance.gt=0&limit=10000&select=token,balance`
       );
 
-      if (Object.keys(rootState.priceFeed.data).length < 1) {
-        await dispatch("softLoadPriceFeedAndData");
-      }
+      const priceFeed = await queryDipdup.getAllTokenAndQuotes();
 
-      const xtzUsd = rootState.priceFeed.xtzUsdtPrice;
-      const priceFeed = rootState.priceFeed.data;
+      const xtzUsd = await tzkt.getXtzUsdPrice();
 
       const [quipuswap, vortex, plenty, spicyswap, sirius] = await Promise.all([
         homeWallet.getQuipuLp(balances, xtzUsd, priceFeed),

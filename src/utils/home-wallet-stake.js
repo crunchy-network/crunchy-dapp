@@ -1,8 +1,7 @@
 // import axios from "axios";
 import BigNumber from "bignumber.js";
 import ipfs from "./ipfs";
-// import queryDipdup from "./queryDipdup";
-import tokenTracker from "./token-tracker";
+import queryDipdup from "./queryDipdup";
 // import teztools from "./teztools";
 import tzkt from "./tzkt";
 
@@ -56,7 +55,6 @@ async function sumStake(userStake) {
 
   for (let index = 0; index < userStake.length; index++) {
     const stake = userStake[index];
-
     if (isNaN(stake.rewardsEarned)) {
       userStake[index].rewardsEarned = 0;
     }
@@ -224,26 +222,27 @@ export default {
   //   return stakeData;
   // },
 
-  async getDogamiStake(pkh, tokenFeed) {
+  async getDogamiStake(pkh) {
     const userStakes = [];
 
     const { data: dogami } = await tzkt.getContractStorage(
       process.env.VUE_APP_DOGAMI_STAKE
     );
-    const _token = tokenFeed[`${dogami.FA12TokenContract}_0`];
-    const tokenMetaData = await tokenTracker.getLpTokenSupply(_token);
-    const [{ data: dataObjs }, { data: stakeLockPack }] = await Promise.all([
-      await tzkt.getContractBigMapKeys(
-        process.env.VUE_APP_DOGAMI_STAKE,
-        "addressId",
-        { key: pkh, active: "true" }
-      ),
-      await tzkt.getContractBigMapKeys(
-        process.env.VUE_APP_DOGAMI_STAKE_2,
-        "userStakeLockPack",
-        { key: pkh, active: "true" }
-      ),
-    ]);
+
+    const [tokenMetaData, { data: dataObjs }, { data: stakeLockPack }] =
+      await Promise.all([
+        queryDipdup.getTokenPriceAndData(`${dogami.FA12TokenContract}_0`),
+        await tzkt.getContractBigMapKeys(
+          process.env.VUE_APP_DOGAMI_STAKE,
+          "addressId",
+          { key: pkh, active: "true" }
+        ),
+        await tzkt.getContractBigMapKeys(
+          process.env.VUE_APP_DOGAMI_STAKE_2,
+          "userStakeLockPack",
+          { key: pkh, active: "true" }
+        ),
+      ]);
 
     if (dataObjs.length > 0) {
       const [{ value: addressId }] = dataObjs;
@@ -327,18 +326,15 @@ export default {
     return sumStake(userStakes);
   },
 
-  async getGIFStake(pkh, tokenFeed) {
+  async getGIFStake(pkh) {
     const userStakes = [];
 
     const { data: gif } = await tzkt.getContractStorage(
       process.env.VUE_APP_GIF_STAKE
     );
 
-    const _token = tokenFeed[`${gif.staking.gif.address}_0`];
-    const poolToken = await tokenTracker.getLpTokenSupply(_token);
-
-    console.log("poolToken", _token);
-    const [xtzUsd, { data: dataObjs }] = await Promise.all([
+    const [poolToken, xtzUsd, { data: dataObjs }] = await Promise.all([
+      queryDipdup.getTokenPriceAndData(`${gif.staking.gif.address}_0`),
       await tzkt.getXtzUsdPrice(),
       await tzkt.getContractBigMapKeys(
         process.env.VUE_APP_GIF_STAKE,

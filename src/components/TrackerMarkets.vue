@@ -73,31 +73,29 @@
                       </el-row></el-col
                     >
                     <el-col style="text-align: right" :span="5">{{
-                      item.dex !== "quipuswap"
-                        ? item.symbol
-                        : `XTZ/${item.sides[0].symbol}`
+                      item.symbol
                     }}</el-col>
                     <el-col style="text-align: right" :span="5">
                       <price-format
                         prefix="$"
                         :value="item.tokenTvl"
-                        :usd-value="Number(item.tokenTvlUsd)"
+                        :usd-value="item.tokenTvlUsd"
                       />
                     </el-col>
                     <el-col style="text-align: right" :span="5">
                       <price-format
                         prefix="$"
                         :value="item.volume24"
-                        :usd-value="Number(item.volume24Usd)"
+                        :usd-value="item.volume24Usd"
                       />
                     </el-col>
                     <el-col style="text-align: right" :span="5">
                       <price-format
                         prefix="$"
                         :value="item.lpPrice"
-                        :usd-value="Number(item.lpPriceUsd)"
+                        :usd-value="item.lpPriceUsd"
                       />
-                    </el-col>
+                    </el-col> 
                   </el-row>
                 </div>
               </el-col>
@@ -125,18 +123,20 @@ export default {
   computed: {
     ...mapGetters(["getTokenOverview"]),
     sortedExchanges() {
-      return _.orderBy(this.getTokenOverview.pairs, "tokenTvl", "desc") || [];
+      return (
+        _.orderBy(this.getTokenOverview.exchanges, "tokenTvl", "desc") || []
+      );
     },
     // markets() {
     //   return this.getTokenOverview.exchanges;
     // },
   },
 
-  // watch: {
-  //   getTokenOverview(val) {
-  //     console.log(val);
-  //   },
-  // },
+  watch: {
+    getTokenOverview(val) {
+      console.log(val);
+    },
+  },
 
   methods: {
     handleDexUri(dex = "") {

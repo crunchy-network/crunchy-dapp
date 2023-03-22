@@ -68,6 +68,9 @@ export default {
   },
 
   watch: {
+    loading(val) {
+      console.log(val);
+    },
     activeCollection(newVal) {
       this.fetchNftCollection(newVal);
     },

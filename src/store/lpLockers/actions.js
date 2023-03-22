@@ -1,10 +1,10 @@
 import tzkt from "./../../utils/tzkt";
+import teztools from "./../../utils/teztools";
 import ipfs from "./../../utils/ipfs";
 import farmUtils from "./../../utils/farm";
 import { getContract, getWalletContract, getBatch } from "./../../utils/tezos";
 import merge from "deepmerge";
 import { BigNumber } from "bignumber.js";
-import tokenTracker from "../../utils/token-tracker";
 
 export default {
   async updateLpXtzUsdVwap({ commit }) {
@@ -13,21 +13,17 @@ export default {
     });
   },
 
-  async updateLpCurrentPrices({ commit, rootState, dispatch }) {
-    if (Object.keys(rootState.priceFeed.data).length < 1) {
-      await dispatch("softLoadPriceFeedAndData");
-    }
-    const tokenFeed = rootState.priceFeed.data;
-    const currentPrices = {};
-    const feed = [];
+  async updateLpCurrentPrices({ commit }) {
+    return teztools.getPricefeed().then((feed) => {
+      const currentPrices = {};
+      for (const token of feed.contracts) {
+        const tokenId = token.type === "fa1.2" ? "0" : token.tokenId.toString();
+        currentPrices[`${token.tokenAddress}_${tokenId}`] = token.currentPrice;
+      }
 
-    for (const token of Object.values(tokenFeed)) {
-      currentPrices[`${token.id}`] = token.currentPrice;
-      feed.push(token);
-    }
-
-    commit("updatePriceFeed", feed);
-    commit("updateCurrentPrices", currentPrices);
+      commit("updatePriceFeed", feed.contracts);
+      commit("updateCurrentPrices", currentPrices);
+    });
   },
 
   async updateLpLockStorage({ state }) {
@@ -76,12 +72,7 @@ export default {
           }
         );
 
-        console.log("------------------");
-        console.log(state.priceFeed);
-        console.log("------------------");
-
-        let tokenMeta = tokenTracker.getTokenFromFeed(l.token, state.priceFeed);
-        // console.log(tokenMeta); 
+        let tokenMeta = teztools.findTokenInPriceFeed(l.token, state.priceFeed);
         if (tokenMeta) {
           if (tokenMeta.thumbnailUri) {
             tokenMeta.thumbnailUri = ipfs.transformUri(tokenMeta.thumbnailUri);
@@ -100,7 +91,6 @@ export default {
         ) {
           const poolK = await tzkt.getContractStorage(l.token.address);
           tokenMeta = {
-            ...tokenMeta,
             tezPool: BigNumber(poolK.data.storage.tez_pool)
               .div(BigNumber(10).pow(6))
               .toNumber(),

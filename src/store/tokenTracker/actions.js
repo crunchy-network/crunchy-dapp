@@ -2,6 +2,7 @@ import tokenTracker from "../../utils/token-tracker";
 import tokensToTrack from "../../tokensTracked.json";
 import _ from "lodash";
 // import coingecko from "../../utils/coingecko";
+import dexIndexer from "../../utils/dex-indexer";
 import tzkt from "../../utils/tzkt";
 
 export default {
@@ -17,12 +18,13 @@ export default {
     }
   },
 
-  async _setTokenTracked({ commit, dispatch, rootState }, payload) {
+  async _setTokenTracked({ commit, state, dispatch }, payload) {
     !payload?.softLoad && commit("updateLoading", true);
     try {
-      // const xtzUsd = await tzkt.getXtzUsdPrice();
+      const allTokensMetadata = await dexIndexer.getAllTokens();
+      const xtzUsd = await tzkt.getXtzUsdPrice();
       // const xtzUsdHistory = await coingecko.getXtzUsdHistory();
-      // const xtzUsdHistory = await tzkt.getXtzUsdHistory();
+      const xtzUsdHistory = await tzkt.getXtzUsdHistory();
       // const formattedXtzUsdHistory = [];
       // for (let i = 0; i < xtzUsdHistory.length; i++) {
       //   const bucket = new Date(xtzUsdHistory[i][0]).getTime();
@@ -30,16 +32,10 @@ export default {
       //   formattedXtzUsdHistory.push([bucket,xtzUsdPrice]);
       // }
 
-      if (Object.keys(rootState.priceFeed.data).length < 1) {
-        await dispatch("softLoadPriceFeedAndData");
-      }
-      const tokenFeed = rootState.priceFeed.data;
-
-      const xtzUsd = rootState.priceFeed.xtzUsdtPrice;
-      const xtzUsdHistory = rootState.priceFeed.xtzUsdtPriceHistory;
-
       commit("updateXtzUsdPrice", xtzUsd);
       commit("updateXtzUsdHistory", xtzUsdHistory);
+
+      const tokenFeed = await tokenTracker.getTokenFeed(xtzUsd, xtzUsdHistory);
 
       const tokens = [];
       for (let i = 0; i < tokensToTrack.length; i++) {
@@ -49,6 +45,7 @@ export default {
         const token = await tokenTracker.calculateTokenData(
           tokenData,
           tokenFeed,
+          allTokensMetadata,
           xtzUsd
           // tokenVolumesYesterday
         );
@@ -122,12 +119,10 @@ export default {
     }
   },
 
-  async updateChartAndOverview({ commit, dispatch, state, rootState }, id) {
+  async updateChartAndOverview({ commit, dispatch, state }, id) {
     const token = state.tokensTracked[id];
     if (token) {
-      const xtzUsd = rootState.priceFeed.xtzUsdtPrice;
-      const _token = await tokenTracker.calcHolders(token);
-      const updatedToken = await tokenTracker.getLpTokenSupply(_token, xtzUsd);
+      const updatedToken = await tokenTracker.calcHolders(token);
       commit("updateTokenOverview", updatedToken);
       dispatch("fetchChartData", token);
     }
@@ -205,6 +200,14 @@ export default {
       token.isFavorite = 1;
       const tokens = state.tokenList;
       const index = tokens.findIndex((t) => t.id === tokenId);
+
+      console.log(
+        "🚀 ~ file: actions.js ~ line 202 ~ setTokenAsFavourite ~ index",
+        index,
+        token,
+        tokens,
+        tokenId
+      );
 
       commit("updateTokenListIndex", { index, token });
       commit("updateTokenTracked", token);

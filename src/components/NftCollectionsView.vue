@@ -120,6 +120,7 @@ export default {
   },
   watch: {
     getNFTs(newVal) {
+      console.log(newVal);
       this.paginationHandler();
     },
   },
