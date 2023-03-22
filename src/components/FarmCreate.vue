@@ -512,7 +512,7 @@
               >Create Farm</el-button
             >
             <connect-button v-if="wallet.connected === false" />
-            >
+            
           </el-col>
         </el-row>
       </el-form>

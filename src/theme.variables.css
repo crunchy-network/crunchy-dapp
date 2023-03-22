@@ -23,7 +23,9 @@ html[data-theme="dark"] {
   --portfolio-vector: #fff;
   --portfolio-vector-bg: #696969;
   --portfolio-vector-banner: #529AA4;
-  --portfolio-vector-banner-stroke: #026C7F
+  --portfolio-vector-banner-stroke: #026C7F;
+  --badge-background: #2A2C33;
+  --badge-border-color: transparent;
 }
 
 html[data-theme="light"] {
@@ -51,7 +53,9 @@ html[data-theme="light"] {
   --portfolio-vector: #191b1f;
   --portfolio-vector-bg: #fff;
   --portfolio-vector-banner: #76E5F4;
-  --portfolio-vector-banner-stroke: #00C3E5
+  --portfolio-vector-banner-stroke: #00C3E5;
+  --badge-background: #e9f9f2;
+  --badge-border-color: #a5e7cc;
 
 }
 

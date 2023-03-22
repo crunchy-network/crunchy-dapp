@@ -238,7 +238,7 @@ export default {
   cursor: pointer;
   margin: 0;
   font-size: 18px;
-  color: #191b1f;
+  color: var(--primary-text);
   transition: all 0.3s ease-in-out;
   padding: 2px;
 

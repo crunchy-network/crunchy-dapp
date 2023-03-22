@@ -73,7 +73,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
 @import url("./theme.variables.css");
 html {
   overflow-x: hidden;
@@ -665,49 +665,6 @@ body .el-table .el-link:hover {
   height: 1px !important;
 }
 
-html[data-theme="dark"] .el-loading-mask {
-  background: rgba(25, 27, 31, 0.9);
-}
-
-html[data-theme="dark"] .el-avatar {
-  border-color: transparent !important;
-  border-width: 0 !important;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  background: transparent;
-  box-sizing: border-box;
-}
-
-html[data-theme="dark"] .el-avatar img {
-  top: unset;
-  left: unset;
-}
-
-html[data-theme="dark"] .el-card.is-always-shadow {
-  box-shadow: 0 0px 12px 0 rgba(0, 0, 0, 0.25) !important;
-}
-
-html[data-theme="dark"] .el-tooltip__popper.is-light {
-  background: var(--background-card) !important;
-  color: var(--primary-text) !important;
-}
-
-html[data-theme="dark"] ._info-card {
-  background: #303135 !important;
-  color: #ffffff;
-}
-
-html[data-theme="dark"] ._info-card ._info-card__title {
-  color: #97989a;
-}
-
-html[data-theme="dark"] ._action-btn {
-  background: #2a2c33;
-  color: #d4d5d6;
-}
-
 .el-select-dropdown__item,
 .el-dropdown-menu__item {
   color: var(--nav-item) !important;
@@ -723,22 +680,18 @@ html[data-theme="dark"] ._action-btn {
   color: var(--primary-text) !important;
 }
 
-html[data-theme="dark"] .el-button.is-disabled {
-  position: relative;
-  overflow: hidden;
-  opacity: 0.4;
+.el-button.is-disabled {
+  opacity: 0.3 !important;
   /* background-color: unset; */
 }
 
-/* html[data-theme="dark"] .el-button.is-disabled::before { */
-/* position: absolute;
-  top: 0;
-  bottom: 0;
-  left: -1px;
-  right: -1px;
-  content: "";
-  background: #0000001e; */
-/* } */
+button:disabled {
+  opacity: 0.3 !important;
+}
+
+button {
+  transition: 0.2s ease all;
+}
 
 .el-picker-panel,
 .el-picker-panel__footer {
@@ -766,5 +719,175 @@ html[data-theme="dark"] .el-button.is-disabled {
 input {
   background: var(--background-card) !important;
   color: var(--primary-text) !important;
+}
+
+/* customs */
+
+._with-bg-image .el-card__body {
+  /* background: url("./assets/taco-card-bg.png"); */
+  background-repeat: no-repeat;
+  background-size: 25%;
+  background-position: 96% 95%;
+}
+
+.btn-alt__ {
+  background: var(--btn-alt-bg) !important;
+  color: var(--btn-alt-color) !important;
+  border: var(--btn-alt-border) !important;
+  &:hover {
+    background: var(--btn-alt-hover) !important;
+    color: var(--btn-alt-hover-color) !important;
+  }
+}
+
+.btn-alt__1 {
+  background: var(--btn-alt-1-bg) !important;
+  color: var(--btn-alt-1-color) !important;
+  border: var(--btn-alt-1-border) !important;
+  &:hover {
+    background: var(--btn-alt-1-hover) !important;
+    color: var(--btn-alt-1-hover-color) !important;
+  }
+}
+
+.btn-alt__2 {
+  background: var(--btn-alt-2-bg) !important;
+  color: var(--btn-alt-2-color) !important;
+  border: var(--btn-alt-2-border) !important;
+  &:hover {
+    background: var(--btn-alt-2-hover) !important;
+    color: var(--btn-alt-2-hover-color) !important;
+  }
+}
+
+.btn-alt__3 {
+  background: var(--btn-alt-3-bg) !important;
+  color: var(--btn-alt-3-color) !important;
+  border: var(--btn-alt-3-border) !important;
+  &:hover {
+    background: var(--btn-alt-3-hover) !important;
+    color: var(--btn-alt-3-hover-color) !important;
+  }
+}
+
+.btn-text__ {
+  background: transparent !important;
+  color: var(--btn-text-color) !important;
+  border: 0 !important;
+  &:hover {
+    color: var(--btn-text-hover-color) !important;
+  }
+}
+
+.el-dialog__headerbtn {
+  background: var(--btn-alt-1-bg) !important;
+  color: var(--btn-alt-1-color) !important;
+  border: var(--btn-alt-1-border) !important;
+  &:hover {
+    background: var(--btn-alt-1-hover) !important;
+    color: var(--btn-alt-1-hover-color) !important;
+    i {
+      color: var(--btn-alt-1-hover-color) !important;
+    }
+  }
+}
+
+.custom-tab__wrapper {
+  display: flex;
+  align-items: flex-start;
+  .tab-text {
+    min-width: 100px;
+    text-align: center;
+    padding: 2px 10px;
+    padding-bottom: 4.5px;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    text-transform: capitalize;
+    color: var(--color-menu-inactive);
+    cursor: pointer;
+    transition: 0.2s ease all;
+    margin: 0;
+    border: 0;
+    border-bottom: 0.5px solid var(--color-menu-inactive);
+    background: transparent;
+    &:disabled {
+      opacity: 0.4;
+      color: var(--color-menu-inactive);
+      cursor: not-allowed;
+    }
+    &.is-active {
+      color: var(--color-menu-active);
+      padding-bottom: 2px;
+      border-bottom: 3px solid var(--color-menu-active);
+    }
+  }
+}
+
+._info-card {
+  border-radius: 8px;
+  padding: 10px 20px;
+  word-break: keep-all;
+}
+/* 
+* Light Theme
+*/
+html[data-theme="light"] {
+  .lock-display {
+    background: #f4f4f5;
+  }
+}
+
+/* 
+* Dark Theme
+*/
+
+html[data-theme="dark"] {
+  .el-date-table td.disabled div {
+  background-color: #757679 !important;
+}
+
+  ._info-card {
+    background: #303135 !important;
+    color: #ffffff;
+  }
+
+  ._info-card ._info-card__title {
+    color: #97989a;
+  }
+
+  ._action-btn,
+  ._action-btn.is-disabled,
+  ._action-btn:hover {
+    background: #2a2c33 !important;
+    color: #d4d5d6;
+  }
+
+  .el-tooltip__popper.is-light {
+    background: var(--background-card) !important;
+    color: var(--primary-text) !important;
+  }
+  .el-card.is-always-shadow {
+    box-shadow: 0 0px 12px 0 rgba(0, 0, 0, 0.25) !important;
+  }
+  .el-avatar img {
+    top: unset;
+    left: unset;
+  }
+  .el-avatar {
+    border-color: transparent !important;
+    border-width: 0 !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: transparent;
+    box-sizing: border-box;
+  }
+
+  .el-loading-mask {
+    background: rgba(25, 27, 31, 0.9);
+  }
 }
 </style>
