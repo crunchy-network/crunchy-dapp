@@ -299,8 +299,10 @@ export default {
 
     refresh() {
       this.loadWalletAsssets(this.$route.params.walletAddress);
-      this.loadAllLiquidity(this.$route.params.walletAddress);
       this.loadStakeAssets(this.$route.params.walletAddress);
+      this.loadAllLiquidity(this.$route.params.walletAddress);
+      // setTimeout(() => {
+      // }, 500);
     },
 
     isActiveTab(tab) {

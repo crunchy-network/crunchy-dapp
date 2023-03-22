@@ -267,8 +267,6 @@ export default {
 
       if (poolTokenMeta) {
         const isQuipuLp = poolTokenMeta.address === farm.poolToken.address;
-        console.log("------------");
-        console.log(isQuipuLp);
 
         let rewardTokenMeta = tokenTracker.getTokenFromFeed(
           farm.rewardToken,

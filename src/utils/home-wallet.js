@@ -4,7 +4,6 @@ import ipfs from "./ipfs";
 // import teztools from "./teztools";
 import knownContracts from "../knownContracts.json";
 import tzkt from "./tzkt";
-import queryDipdup from "./queryDipdup";
 import tokenTracker from "./token-tracker";
 
 const SKIP_CONTRACTS = [
@@ -214,9 +213,6 @@ export default {
       // Get all wallet prices
       // const { contracts: prices } = await teztools.getPricefeed();
 
-      // Get token metadata and prices
-      const tokensClose = await queryDipdup.getTokensPriceClose();
-
       // filter out NFTs by checking for artifactURI and token symbol or alias
       const tokens = [];
 
@@ -243,93 +239,92 @@ export default {
         }`;
         const priceObj = priceFeed[tokenId];
 
-        const tokenClose = queryDipdup.filterTokenClose(tokenId, tokensClose);
-        const currentPrice = priceObj?.currentPrice || false;
-        const tokenid = priceObj?.tokenId;
-        // get token uri from prices :: This is because  balance does not return  some tokens thumbnail
-        const thumbnailUri = priceObj?.thumbnailUri || false;
-
-        const decimals = priceObj?.decimals || false;
-
-        // Data filter and calculations
-        const bal = new BigNumber(balances[i]?.balance);
-        const balance = bal.div(
-          new BigNumber(10).pow(
-            decimals ||
-              balances[i]?.token?.metadata?.decimals ||
-              (balances[i]?.token?.standard !== "fa1.2" ? 6 : 3)
-          )
-        );
-
-        const price = new BigNumber(currentPrice);
-        const priceUsd = new BigNumber(currentPrice).times(usdMul);
-        const value = balance.multipliedBy(price);
-        const valueUsd = balance.multipliedBy(priceUsd);
-        const icon = ipfs.transformUri(
-          balances[i]?.token?.metadata?.thumbnailUri || thumbnailUri || ""
-        );
-        // const pricePair = priceObj?.pairs?.find(
-        //   (el) => el.dex === "Quipuswap" && el.sides[1].symbol === "XTZ"
-        // );
-        var assetSlug;
-        if (tokenid !== undefined) {
-          assetSlug = `${balances[i]?.token?.contract?.address}_${tokenid}`;
-        } else {
-          assetSlug = balances[i]?.token?.contract?.address;
-        }
-        const valObj = {
-          asset:
-            priceObj?.symbol ||
-            balances[i]?.token?.metadata?.symbol ||
-            balances[i]?.token?.contract?.alias,
-          icon,
-          balance: balance.toNumber(),
-          price: price.toNumber(),
-          name: priceObj?.name,
-          priceChange1Day: price
-            .minus(tokenClose?.dayClose)
-            .div(tokenClose?.dayClose)
-            .times(100)
-            .toNumber(),
-          priceChange7Day: price
-            .minus(tokenClose?.weekClose)
-            .div(tokenClose?.weekClose)
-            .times(100)
-            .toNumber(),
-          priceChange30Day: price
-            .minus(tokenClose?.monthClose)
-            .div(tokenClose?.monthClose)
-            .times(100)
-            .toNumber(),
-          /**
-           *Calculating % changes in Usd
-           */
-
-          priceChange1DayUsd: priceUsd
-            .minus(tokenClose?.dayCloseUsd)
-            .div(tokenClose?.dayCloseUsd)
-            .times(100)
-            .toNumber(),
-          priceChange7DayUsd: priceUsd
-            .minus(tokenClose?.weekCloseUsd)
-            .div(tokenClose?.weekCloseUsd)
-            .times(100)
-            .toNumber(),
-          priceChange30DayUsd: priceUsd
-            .minus(tokenClose?.monthCloseUsd)
-            .div(tokenClose?.monthCloseUsd)
-            .times(100)
-            .toNumber(),
-          priceUsd: priceUsd.toNumber(),
-          valueUsd: valueUsd.toNumber(),
-          value: value.toNumber(),
-          contract: balances[i]?.token?.contract?.address,
-          tokenid,
-          assetSlug,
-          decimals: balances[i]?.token?.metadata?.decimals,
-        };
-
         if (priceObj) {
+          const currentPrice = priceObj?.currentPrice || false;
+          const tokenid = priceObj?.tokenId;
+          // get token uri from prices :: This is because  balance does not return  some tokens thumbnail
+          const thumbnailUri = priceObj?.thumbnailUri || false;
+
+          const decimals = priceObj?.decimals || false;
+
+          // Data filter and calculations
+          const bal = new BigNumber(balances[i]?.balance);
+          const balance = bal.div(
+            new BigNumber(10).pow(
+              decimals ||
+                balances[i]?.token?.metadata?.decimals ||
+                (balances[i]?.token?.standard !== "fa1.2" ? 6 : 3)
+            )
+          );
+
+          const price = new BigNumber(currentPrice);
+          const priceUsd = new BigNumber(currentPrice).times(usdMul);
+          const value = balance.multipliedBy(price);
+          const valueUsd = balance.multipliedBy(priceUsd);
+          const icon = ipfs.transformUri(
+            balances[i]?.token?.metadata?.thumbnailUri || thumbnailUri || ""
+          );
+          // const pricePair = priceObj?.pairs?.find(
+          //   (el) => el.dex === "Quipuswap" && el.sides[1].symbol === "XTZ"
+          // );
+          var assetSlug;
+          if (tokenid !== undefined) {
+            assetSlug = `${balances[i]?.token?.contract?.address}_${tokenid}`;
+          } else {
+            assetSlug = balances[i]?.token?.contract?.address;
+          }
+          const valObj = {
+            asset:
+              priceObj?.symbol ||
+              balances[i]?.token?.metadata?.symbol ||
+              balances[i]?.token?.contract?.alias,
+            icon,
+            balance: balance.toNumber(),
+            price: price.toNumber(),
+            name: priceObj?.name,
+            priceChange1Day: price
+              .minus(priceObj.dayClose)
+              .div(priceObj.dayClose)
+              .times(100)
+              .toNumber(),
+            priceChange7Day: price
+              .minus(priceObj.weekClose)
+              .div(priceObj.weekClose)
+              .times(100)
+              .toNumber(),
+            priceChange30Day: price
+              .minus(priceObj.monthClose)
+              .div(priceObj.monthClose)
+              .times(100)
+              .toNumber(),
+            /**
+             *Calculating % changes in Usd
+             */
+
+            priceChange1DayUsd: priceUsd
+              .minus(priceObj.dayCloseUsd)
+              .div(priceObj.dayCloseUsd)
+              .times(100)
+              .toNumber(),
+            priceChange7DayUsd: priceUsd
+              .minus(priceObj.weekCloseUsd)
+              .div(priceObj.weekCloseUsd)
+              .times(100)
+              .toNumber(),
+            priceChange30DayUsd: priceUsd
+              .minus(priceObj.monthCloseUSd)
+              .div(priceObj.monthCloseUSd)
+              .times(100)
+              .toNumber(),
+            priceUsd: priceUsd.toNumber(),
+            valueUsd: valueUsd.toNumber(),
+            value: value.toNumber(),
+            contract: balances[i]?.token?.contract?.address,
+            tokenid,
+            assetSlug,
+            decimals: balances[i]?.token?.metadata?.decimals,
+          };
+
           if (!SKIP_CONTRACTS.includes(tokenId)) {
             assets.push(valObj);
           }
@@ -369,7 +364,7 @@ export default {
     return { assets };
   },
 
-  async getQuipuLp(balances, xtzUsd, priceFeed) {
+  async getQuipuLp(balances, xtzUsd, priceFeed, contractObj) {
     const quipu = {
       totalValue: 0,
       totalValueUsd: 0,
@@ -379,45 +374,22 @@ export default {
     const lp = [];
     try {
       // Fetch all token balance linked to an address
-      const [
-        { data: fa1Factory },
-        { data: fa1FactoryOld },
-        { data: fa2Factory },
-        { data: fa2FactoryOld },
-        { data: fa2FactoryOld3 },
-      ] = await Promise.all([
-        axios.get(
-          "https://api.tzkt.io/v1/accounts/KT1FWHLMk5tHbwuSsp31S4Jum4dTVmkXpfJw/contracts?limit=10000"
-        ),
-        axios.get(
-          "https://api.tzkt.io/v1/accounts/KT1Lw8hCoaBrHeTeMXbqHPG4sS4K1xn7yKcD/contracts?limit=10000"
-        ),
-        axios.get(
-          "https://api.tzkt.io/v1/accounts/KT1PvEyN1xCFCgorN92QCfYjw3axS6jawCiJ/contracts?limit=10000"
-        ),
-        axios.get(
-          "https://api.tzkt.io/v1/accounts/KT1GDtv3sqhWeSsXLWgcGsmoH5nRRGJd8xVc/contracts?limit=10000"
-        ),
-        axios.get(
-          "https://api.tzkt.io/v1/accounts/KT1SwH9P1Tx8a58Mm6qBExQFTcy2rwZyZiXS/contracts?limit=10000"
-        ),
-      ]);
 
       const lpBal = balances.filter(
         (val) =>
-          fa2Factory.find(
+          contractObj?.fa2Factory.find(
             (contract) => contract.address === val.token?.contract?.address
           ) ||
-          fa2FactoryOld.find(
+          contractObj?.fa2FactoryOld.find(
             (contract) => contract.address === val.token?.contract?.address
           ) ||
-          fa2FactoryOld3.find(
+          contractObj?.fa2FactoryOld3.find(
             (contract) => contract.address === val.token?.contract?.address
           ) ||
-          fa1Factory.find(
+          contractObj?.fa1Factory.find(
             (contract) => contract.address === val.token?.contract?.address
           ) ||
-          fa1FactoryOld.find(
+          contractObj?.fa1FactoryOld.find(
             (contract) => contract.address === val.token?.contract?.address
           )
       );
@@ -501,18 +473,15 @@ export default {
     };
     const lp = [];
     try {
-      const [{ data: youXtz }, { data: hdaoXtz }, { data: gifXtz }] =
-        await Promise.all([
-          axios.get(
-            `https://api.tzkt.io/v1/tokens/balances?token.contract=KT1W6FrLW9d8Y6NVQzx487KCXrTGK1RWtJNh&account=${pkh}&balance.ne=0`
-          ),
-          axios.get(
-            `https://api.tzkt.io/v1/tokens/balances?token.contract=KT1RMfFJphfVwdbaJx7DhFrZ9du5pREVSEyN&account=${pkh}&balance.ne=0`
-          ),
-          axios.get(
-            `https://api.tzkt.io/v1/contracts/KT1SjZYVjdBCBurUUA6W5Qymri2pWJGyu7Tt/bigmaps/tokens/keys?key=${pkh}&active=true`
-          ),
-        ]);
+      const { data: youXtz } = await axios.get(
+        `https://api.tzkt.io/v1/tokens/balances?token.contract=KT1W6FrLW9d8Y6NVQzx487KCXrTGK1RWtJNh&account=${pkh}&balance.ne=0`
+      );
+      const { data: hdaoXtz } = await axios.get(
+        `https://api.tzkt.io/v1/tokens/balances?token.contract=KT1RMfFJphfVwdbaJx7DhFrZ9du5pREVSEyN&account=${pkh}&balance.ne=0`
+      );
+      const { data: gifXtz } = await axios.get(
+        `https://api.tzkt.io/v1/contracts/KT1SjZYVjdBCBurUUA6W5Qymri2pWJGyu7Tt/bigmaps/tokens/keys?key=${pkh}&active=true`
+      );
 
       // Fetch all token balance linked to an address
 

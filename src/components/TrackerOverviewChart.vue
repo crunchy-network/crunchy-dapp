@@ -93,6 +93,7 @@ export default {
     },
     updatedChartData() {
       this.getPrices();
+
     },
     getXtzUsdHistory() {
       this.getPrices();
@@ -315,7 +316,7 @@ export default {
             value: Number(element.aggregatedXtzVolume),
           };
         });
-      
+
       this.updatedChartData.volume.all =
         this.getChartData.allVolumeAndPrice.map((element) => {
           const timeUsdValue = tokenTracker.binarySearch(
@@ -353,6 +354,8 @@ export default {
         }
 
         if (this.legendTab === "price") {
+          console.log("-------------------------");
+          console.log(this.updatedChartData.price.days1);
           this.tokenData =
             this.duration === "1d"
               ? !this.getShowUsd
