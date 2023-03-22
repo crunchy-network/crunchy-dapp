@@ -340,6 +340,7 @@ export default {
   mounted() {
     this.openSubmenu();
     this.screenCheck();
+    console.log(this.defiActive);
   },
   methods: {
     screenCheck() {

@@ -1,5 +1,6 @@
 import _ from "lodash";
 import tzkt from "./../../utils/tzkt";
+import teztools from "./../../utils/teztools";
 import ipfs from "./../../utils/ipfs";
 import farmUtils from "./../../utils/farm";
 import {
@@ -10,7 +11,6 @@ import {
 } from "./../../utils/tezos";
 import merge from "deepmerge";
 import { BigNumber } from "bignumber.js";
-import tokenTracker from "../../utils/token-tracker";
 
 let updateXtzUsdVwapPromise;
 let updateCurrentPricesPromise;
@@ -52,7 +52,7 @@ export default {
     return updateXtzUsdVwapPromise;
   },
 
-  async _updateCurrentPrices({ commit, rootState, dispatch }) {
+  async _updateCurrentPrices({ commit, dispatch }) {
     const usdValue = await tzkt.getXtzUsdPrice();
     const tez = {
       asset: "XTZ",
@@ -63,38 +63,19 @@ export default {
       decimals: 6,
       usdValue,
     };
+    return teztools.getPricefeed().then((feed) => {
+      const currentPrices = {};
+      for (const token of feed.contracts) {
+        const tokenId = token.type === "fa1.2" ? "0" : token.tokenId.toString();
+        currentPrices[`${token.tokenAddress}_${tokenId}`] = token.currentPrice;
+      }
 
-    if (Object.keys(rootState.priceFeed.data).length < 1) {
-      await dispatch("softLoadPriceFeedAndData");
-    }
-    const tokenFeed = rootState.priceFeed.data;
-    const currentPrices = {};
-    const feed = [];
-
-    for (const token of Object.values(tokenFeed)) {
-      currentPrices[`${token.id}`] = token.currentPrice;
-      feed.push(token);
-    }
-
-    commit("updatePriceFeed", [tez, ...feed]);
-    commit("updateCurrentPrices", currentPrices);
-
-    return setTimeout(() => {
-      updateCurrentPricesPromise = dispatch("_updateCurrentPrices");
-    }, 60 * 1000);
-    // return teztools.getPricefeed().then((feed) => {
-    //   const currentPrices = {};
-    //   for (const token of feed.contracts) {
-    //     const tokenId = token.type === "fa1.2" ? "0" : token.tokenId.toString();
-    //     currentPrices[`${token.tokenAddress}_${tokenId}`] = token.currentPrice;
-    //   }
-
-    //   commit("updatePriceFeed", [tez, ...feed.contracts]);
-    //   commit("updateCurrentPrices", currentPrices);
-    //   setTimeout(() => {
-    //     updateCurrentPricesPromise = dispatch("_updateCurrentPrices");
-    //   }, 60 * 1000);
-    // });
+      commit("updatePriceFeed", [tez, ...feed.contracts]);
+      commit("updateCurrentPrices", currentPrices);
+      setTimeout(() => {
+        updateCurrentPricesPromise = dispatch("_updateCurrentPrices");
+      }, 60 * 1000);
+    });
   },
 
   async updateCurrentPrices({ dispatch }) {
@@ -260,17 +241,15 @@ export default {
     if (!farm.loading) {
       commit("updateFarmLoading", { farmId, loading: true });
 
-      let poolTokenMeta = tokenTracker.getTokenFromFeed(
+      let poolTokenMeta = teztools.findTokenInPriceFeed(
         farm.poolToken,
         state.priceFeed
       );
 
       if (poolTokenMeta) {
         const isQuipuLp = poolTokenMeta.address === farm.poolToken.address;
-        console.log("------------");
-        console.log(isQuipuLp);
 
-        let rewardTokenMeta = tokenTracker.getTokenFromFeed(
+        let rewardTokenMeta = teztools.findTokenInPriceFeed(
           farm.rewardToken,
           state.priceFeed
         );
@@ -563,7 +542,7 @@ export default {
           .times(2)
           .toNumber();
       } else if (farm.poolToken.isQuipuLp) {
-        let poolTokenStorage = tokenTracker.getTokenFromFeed(
+        let poolTokenStorage = teztools.findTokenInPriceFeed(
           farm.poolToken,
           state.priceFeed
         );
@@ -714,7 +693,7 @@ export default {
           .times(2)
           .toNumber();
       } else if (farm.poolToken.isQuipuLp) {
-        let poolTokenStorage = tokenTracker.getTokenFromFeed(
+        let poolTokenStorage = teztools.findTokenInPriceFeed(
           farm.poolToken,
           state.priceFeed
         );
@@ -727,10 +706,10 @@ export default {
         ) {
           const poolK = await tzkt.getContractStorage(farm.poolToken.address);
           poolTokenStorage = {
-            tezPool: BigNumber(poolK.data.storage?.tez_pool).div(
+            tezPool: BigNumber(poolK.data.storage.tez_pool).div(
               BigNumber(10).pow(6)
             ),
-            qptTokenSupply: BigNumber(poolK.data.storage?.total_supply).div(
+            qptTokenSupply: BigNumber(poolK.data.storage.total_supply).div(
               BigNumber(10).pow(6)
             ),
           };

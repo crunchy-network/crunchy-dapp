@@ -32,8 +32,8 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 import queryDipdup from "../utils/queryDipdup";
+import tzkt from "../utils/tzkt";
 import PriceFormat from "./PriceFormat.vue";
 export default {
   name: "CrnchyPrice",
@@ -46,7 +46,6 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["getXtzUsdtPrice"]),
     currentPrice() {
       return this.price;
     },
@@ -66,7 +65,7 @@ export default {
     async getCrnchyPrice() {
       this.loading = true;
       try {
-        const xtzUsd = this.getXtzUsdtPrice;
+        const xtzUsd = await tzkt.getXtzUsdPrice();
         const priceXTZ = await queryDipdup.getTokenPriceXTZ(
           `${process.env.VUE_APP_CONTRACTS_CRNCHY}_0`
         );
@@ -83,7 +82,7 @@ export default {
     },
     async softLoadCrnchyPrice() {
       try {
-        const xtzUsd = this.getXtzUsdtPrice;
+        const xtzUsd = await tzkt.getXtzUsdPrice();
         const priceXTZ = await queryDipdup.getTokenPriceXTZ(
           `${process.env.VUE_APP_CONTRACTS_CRNCHY}_0`
         );

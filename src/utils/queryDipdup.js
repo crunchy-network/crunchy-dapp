@@ -1,7 +1,4 @@
 import axios from "axios";
-import BigNumber from "bignumber.js";
-import _ from "lodash";
-import utils from ".";
 import dexIndexer from "./dex-indexer";
 import tzkt from "./tzkt";
 
@@ -74,16 +71,6 @@ export default {
         symbol
         thumbnailUri
         tokenId
-        exchanges{
-          address
-          name
-          tokenId
-          tezPool
-          tokenPool
-          tradeVolume
-          midPrice
-          sharesTotal
-        }
       }
     }
     `;
@@ -102,32 +89,31 @@ export default {
 
     const updatedAllTokens = {};
     allTokens?.forEach((value) => {
-      updatedAllTokens[`${value.token_address}_${value.token_id || 0}`] =
-        _.mapKeys(value, _.rearg(_.camelCase, 1));
+      updatedAllTokens[`${value.token_address}_${value.token_id || 0}`] = value;
     });
 
     // console.log("\n\n------ begin:  ------");
     // console.log(updatedAllTokens);
-    // console.log("------ end:  ------\n\n");x
+    // console.log("------ end:  ------\n\n");
+
     for (let index = 0; index < token.length; index++) {
       const element = token[index];
-
       const tokenMetadata = updatedAllTokens[element.id];
-
       element.thumbnailUri =
-        tokenMetadata?.thumbnailUri ||
+        tokenMetadata?.thumbnail_uri ||
         element?.thumbnailUri ||
         "https://static.thenounproject.com/png/796573-200.png";
 
       const tokenVal = quotesTotal.find((val) => val.tokenId === element.id);
 
-      tokenObjkt[element.id] = utils.mergeObjects(element, {
+      tokenObjkt[element.id] = {
+        ...element,
         ...tokenMetadata,
-        currentPrice: new BigNumber(tokenVal?.close).toNumber() || 0,
-      });
+        currentPrice: Number(tokenVal?.close),
+      };
     }
 
-    return utils.mergeObjects(updatedAllTokens, tokenObjkt);
+    return tokenObjkt;
   },
 
   async getTokensPriceClose() {
@@ -251,12 +237,5 @@ export default {
       weekCloseUsd: closeObjkt.weekClose[tokenId]?.closeUsd || 0,
       monthCloseUsd: closeObjkt.monthClose[tokenId]?.closeUsd || 0,
     };
-  },
-
-  formatToTeztoolStruct(tokenObjkt) {
-    for (let index = 0; index < tokenObjkt?.exchanges.length; index++) {
-      const exchange = tokenObjkt?.exchanges[index];
-      exchange.dex = exchange.name;
-    }
   },
 };
