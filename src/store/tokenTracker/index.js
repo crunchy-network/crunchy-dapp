@@ -9,6 +9,7 @@ export default {
     xtzUsdHistory: [],
     tokenList: [],
     tokensTracked: {},
+    LS_FAVORITES_KEY: "FAVORITES_LIST",
     tokenOverview: {
       chartData: {
         volumeAndPrice1Day: [],
