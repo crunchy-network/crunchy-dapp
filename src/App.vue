@@ -844,9 +844,19 @@ html[data-theme="light"] {
 */
 
 html[data-theme="dark"] {
+  .el-select__tags .el-tag.el-tag--info {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border: 0 !important;
+    color: #ffffff;
+    i {
+      background: #9e9e9e;
+      color: #4a4a4a;
+    }
+  }
+
   .el-date-table td.disabled div {
-  background-color: #757679 !important;
-}
+    background-color: #757679 !important;
+  }
 
   ._info-card {
     background: #303135 !important;
