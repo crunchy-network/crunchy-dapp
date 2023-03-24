@@ -614,9 +614,16 @@ header .grid-content button.el-button {
 
 .el-menu.el-menu--popup,
 .el-select-dropdown,
-.el-dialog {
+.el-dialog, .el-autocomplete-suggestion {
   background-color: var(--background-card) !important;
   border: var(--line-border) !important;
+}
+
+.el-autocomplete-suggestion ul li {
+  color: var(--primary-text) !important;
+  &:hover{
+    background-color: var(--table-row-hover) !important;
+  }
 }
 
 .el-dialog__title {
