@@ -834,6 +834,16 @@ input {
 * Light Theme
 */
 html[data-theme="light"] {
+  .el-select__tags .el-tag.el-tag--info {
+    background: rgba(0, 0, 0, 0.08) !important;
+    border: 0 !important;
+    color: rgba(0, 0, 0, 0.87);
+    i {
+      background: #9e9e9e;
+      color: #4a4a4a;
+    }
+  }
+
   .lock-display {
     background: #f4f4f5;
   }
@@ -848,6 +858,9 @@ html[data-theme="dark"] {
     background: rgba(255, 255, 255, 0.2) !important;
     border: 0 !important;
     color: #ffffff;
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
     i {
       background: #9e9e9e;
       color: #4a4a4a;
