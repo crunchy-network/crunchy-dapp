@@ -245,6 +245,7 @@
           <el-col :span="8">
             <el-button
               type="info"
+              class="btn-alt__2"
               plain
               style="
                 border-radius: 12px;

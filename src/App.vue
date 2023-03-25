@@ -777,6 +777,16 @@ input {
   }
 }
 
+.btn-alt__4 {
+  background: var(--btn-alt-4-bg) !important;
+  color: var(--btn-alt-4-color) !important;
+  border: var(--btn-alt-4-border) !important;
+  &:hover {
+    background: var(--btn-alt-4-hover) !important;
+    color: var(--btn-alt-4-hover-color) !important;
+  }
+}
+
 .btn-text__ {
   background: transparent !important;
   color: var(--btn-text-color) !important;
@@ -889,7 +899,7 @@ html[data-theme="dark"] {
 
   ._action-btn,
   ._action-btn.is-disabled,
-  ._action-btn:hover {
+  ._action-btn.is-disabled:hover {
     background: #2a2c33 !important;
     color: #d4d5d6;
   }
