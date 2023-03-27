@@ -3,7 +3,7 @@
     <HomeWalletStats :loading="homeWallet.loading" :show-usd="showUsd" />
     <el-row
       style="
-        margin: 46px 0 22px 0;
+        margin: 36px 0 22px 0;
         border-bottom: var(--line-border);
         align-items: center;
         flex-wrap: wrap-reverse;

@@ -1,11 +1,11 @@
 <template>
   <el-row :gutter="40" type="flex" align="middle" style="flex-wrap: wrap">
     <el-col :md="14">
-      <el-col :md="12">
+      <el-col style="padding: 0" :md="12">
         <el-card v-loading="loading" shadows="never">
           <div style="margin-bottom: 40px">
             <p class="title">Net Worth</p>
-            <h1 class="value">
+            <h1 class="value fs__32">
               {{
                 !showUsd
                   ? vueNumberFormat(getStatsValues.netWorth.xtz, {
@@ -27,13 +27,13 @@
         </el-card>
       </el-col>
 
-      <el-col class="mt__24" :span="24">
+      <el-col style="padding: 0" class="mt__24" :span="24">
         <el-row :gutter="20" type="flex">
           <el-col :md="8">
             <el-card v-loading="loading" shadows="never">
               <div style="margin-bottom: 40px">
                 <p class="small-title">Portfolio Balance</p>
-                <h2 class="value">
+                <h2 class="value fs__24">
                   {{
                     !showUsd
                       ? vueNumberFormat(getStatsValues.portfolio.xtz, {
@@ -65,7 +65,7 @@
             <el-card v-loading="loading" shadows="never">
               <div style="margin-bottom: 40px">
                 <p class="small-title">Staked Balance</p>
-                <h2 class="value">
+                <h2 class="value fs__24">
                   {{
                     !showUsd
                       ? vueNumberFormat(getStatsValues.staked.xtz, {
@@ -98,7 +98,7 @@
             <el-card v-loading="loading" shadows="never">
               <div style="margin-bottom: 40px">
                 <p class="small-title">Liquidity Balance</p>
-                <h2 class="value">
+                <h2 class="value fs__24">
                   {{
                     !showUsd
                       ? vueNumberFormat(getStatsValues.lp.xtz, {
