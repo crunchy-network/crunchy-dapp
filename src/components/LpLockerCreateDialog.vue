@@ -129,7 +129,7 @@
         v-if="step === 2 && form.lpTokenAddress"
       >
         <p>Enter the below details to proceed.</p>
-        <p style="word-break: break-word">
+        <p style="word-break: break-word; color: var(--color-subheading-text)">
           <strong>Note:</strong> Double check parameters as the tokens can only
           be unlocked after the selected <strong>UNLOCK TIME</strong>
         </p>
@@ -277,13 +277,13 @@
       </div>
 
       <div v-if="step === 3 && form.lpTokenAddress">
-        <p style="word-break: break-word">
+        <p style="word-break: break-word; color: var(--color-subheading-text)">
           <strong>Note:</strong> Double check parameters as the tokens can only
           be unlocked after the selected <strong>UNLOCK TIME</strong>
         </p>
         <h3 style="margin-top: 0">Lock Summary</h3>
         <div
-          class="current-balance"
+          class="current-balance _info-card"
           style="
             border-radius: 12px;
             background: #ffeecc;
@@ -292,7 +292,7 @@
           "
         >
           <el-row type="flex" align="middle" justify="space-between">
-            <el-col :span="12" style="color: #303133; font-weight: bold">
+            <el-col :span="12" style="font-weight: bold">
               <el-avatar
                 shape="circle"
                 :size="32"
@@ -320,13 +320,10 @@
             </el-col>
             <el-col
               :span="12"
-              style="
-                color: #8c8477;
-                font-size: 12px;
-                text-align: right;
-                font-weight: bold;
-              "
-              >BALANCE: {{ vueNumberFormat(form.lpBalance) }}</el-col
+              style="font-size: 12px; text-align: right; font-weight: bold"
+            >
+              <span class="_info-card__title">BALANCE:</span>
+              {{ vueNumberFormat(form.lpBalance) }}</el-col
             >
           </el-row>
         </div>

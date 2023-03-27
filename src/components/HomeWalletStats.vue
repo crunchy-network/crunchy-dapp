@@ -28,7 +28,7 @@
       </el-col>
 
       <el-col style="padding: 0" class="mt__24" :span="24">
-        <el-row :gutter="20" type="flex">
+        <el-row :gutter="20" type="flex" style="flex-wrap: wrap; row-gap: 20px;">
           <el-col :md="8">
             <el-card v-loading="loading" shadows="never">
               <div >
