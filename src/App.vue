@@ -935,11 +935,17 @@ html[data-theme="dark"] {
     stroke: var(--border-color) !important;
   }
 
-  .el-popper[x-placement^="bottom"] .popper__arrow::after {
+  .el-popper[x-placement^="bottom"] .popper__arrow::after,
+  .el-popper[x-placement^="top"] .popper__arrow::after,
+  .el-popper[x-placement^="left"] .popper__arrow::after,
+  .el-popper[x-placement^="right"] .popper__arrow::after {
     border-bottom-color: var(--background-card) !important;
   }
 
-  .el-popper[x-placement^="bottom"] .popper__arrow {
+  .el-popper[x-placement^="bottom"] .popper__arrow,
+  .el-popper[x-placement^="top"] .popper__arrow,
+  .el-popper[x-placement^="left"] .popper__arrow,
+  .el-popper[x-placement^="right"] .popper__arrow {
     border-bottom-color: var(--border-color) !important;
   }
 }
