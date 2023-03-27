@@ -176,6 +176,7 @@ p.small-title {
   font-weight: 600;
   letter-spacing: -0.02em;
   color: var(--primary-text);
+  text-align: center;
 }
 
 h1.value {
