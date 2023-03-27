@@ -3,7 +3,7 @@
     <el-col :md="14">
       <el-col style="padding: 0" :md="12">
         <el-card v-loading="loading" shadows="never">
-          <div style="margin-bottom: 40px">
+          <div >
             <p class="title">Net Worth</p>
             <h1 class="value fs__32">
               {{
@@ -31,7 +31,7 @@
         <el-row :gutter="20" type="flex">
           <el-col :md="8">
             <el-card v-loading="loading" shadows="never">
-              <div style="margin-bottom: 40px">
+              <div >
                 <p class="small-title">Portfolio Balance</p>
                 <h2 class="value fs__24">
                   {{
@@ -63,7 +63,7 @@
         </el-col> -->
           <el-col :md="8">
             <el-card v-loading="loading" shadows="never">
-              <div style="margin-bottom: 40px">
+              <div >
                 <p class="small-title">Staked Balance</p>
                 <h2 class="value fs__24">
                   {{
@@ -96,7 +96,7 @@
 
           <el-col :md="8">
             <el-card v-loading="loading" shadows="never">
-              <div style="margin-bottom: 40px">
+              <div >
                 <p class="small-title">Liquidity Balance</p>
                 <h2 class="value fs__24">
                   {{
@@ -176,7 +176,7 @@ p.small-title {
   font-weight: 600;
   letter-spacing: -0.02em;
   color: var(--primary-text);
-  text-align: center;
+  margin-top: 15px;
 }
 
 h1.value {
