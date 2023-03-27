@@ -129,7 +129,7 @@
         v-if="step === 2 && form.lpTokenAddress"
       >
         <p>Enter the below details to proceed.</p>
-        <p style="word-break: break-word; color: var(--color-subheading-text)">
+        <p style="word-break: break-word">
           <strong>Note:</strong> Double check parameters as the tokens can only
           be unlocked after the selected <strong>UNLOCK TIME</strong>
         </p>
@@ -277,7 +277,7 @@
       </div>
 
       <div v-if="step === 3 && form.lpTokenAddress">
-        <p style="word-break: break-word; color: var(--color-subheading-text)">
+        <p style="word-break: break-word;">
           <strong>Note:</strong> Double check parameters as the tokens can only
           be unlocked after the selected <strong>UNLOCK TIME</strong>
         </p>
