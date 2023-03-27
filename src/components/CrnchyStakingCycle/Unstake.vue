@@ -74,7 +74,7 @@
       </p>
     </div>
     <template v-if="confirm">
-      <el-row type="flex" justify="center" style="gap: 40px"  >
+      <el-row type="flex" justify="center" style="gap: 40px">
         <el-button
           round
           type="primary"

@@ -319,7 +319,7 @@ export default {
             value: Number(element.aggregatedXtzVolume),
           };
         });
-      
+
       this.updatedChartData.volume.all =
         this.getChartData.allVolumeAndPrice.map((element) => {
           const timeUsdValue = tokenTracker.binarySearch(

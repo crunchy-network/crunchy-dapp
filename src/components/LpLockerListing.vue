@@ -21,7 +21,7 @@
                     :gutter="20"
                     type="flex"
                     align="middle"
-                    style="padding: 0 20px; color: var(--color-subheading-text);"
+                    style="padding: 0 20px; color: var(--color-subheading-text)"
                   >
                     <el-col :sm="8" :lg="6">Pair</el-col>
                     <el-col :sm="2" :lg="5">DEX</el-col>

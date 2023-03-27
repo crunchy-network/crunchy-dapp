@@ -2,11 +2,11 @@
   <div class="bottom-section">
     <div class="row">
       <span>Routing Fee</span>
-      <span style="color: var(--primary-text)" >{{ routingFee }}%</span>
+      <span style="color: var(--primary-text)">{{ routingFee }}%</span>
     </div>
     <div class="row">
       <span>Rate</span>
-      <span style="color: var(--primary-text)" >{{ getSwapRate() }}</span>
+      <span style="color: var(--primary-text)">{{ getSwapRate() }}</span>
     </div>
     <div class="row">
       <span>Slippage Tolerance</span>
@@ -47,7 +47,9 @@
     </div>
     <div class="row">
       <span> Minimum Received</span>
-      <span style="color: var(--primary-text)"> {{ getCurrentTrade.outputWithSlippage }}</span>
+      <span style="color: var(--primary-text)">
+        {{ getCurrentTrade.outputWithSlippage }}</span
+      >
     </div>
     <div class="row">
       <span>Price Impact</span>

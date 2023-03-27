@@ -931,5 +931,4 @@ export default {
 <style lang="scss" scoped>
 @import "../crunchy-variables.scss";
 @import "~element-ui/packages/theme-chalk/src/common/var";
-
 </style>

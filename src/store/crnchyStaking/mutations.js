@@ -1,5 +1,4 @@
 export default {
-
   updateCrnchyStakingLoading(state, loading) {
     state.loading = loading;
   },
@@ -23,5 +22,4 @@ export default {
   updateCrnchyMyStaking(state, myStaking) {
     state.myStaking = myStaking;
   },
-
 };

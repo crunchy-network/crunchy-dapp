@@ -223,7 +223,6 @@ export default {
   &::placeholder {
     color: var(--color-subheading-text);
   }
-
 }
 .selected-asset-container {
   display: flex;

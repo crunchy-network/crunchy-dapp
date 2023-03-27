@@ -140,7 +140,7 @@ import { buildRoutingFeeOperation } from "../utils/routing-fee";
 import { buildOperationParams } from "../lib/SwapRouter";
 import { Tezos } from "../utils/tezos";
 import * as signalR from "@microsoft/signalr";
-import ConnectButton from './ConnectButton.vue';
+import ConnectButton from "./ConnectButton.vue";
 
 export default {
   name: "SwapFormMain",

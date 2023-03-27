@@ -1,9 +1,5 @@
 <template>
-  <el-dialog
-    width="400px"
-    :modal="true"
-    :visible.sync="visible"
-  >
+  <el-dialog width="400px" :modal="true" :visible.sync="visible">
     <div
       class="box-card"
       style="flex: 1; display: flex; flex-direction: column"
@@ -92,7 +88,7 @@
             "
           >
             <slot></slot>
-            <div style="justify-self: flex-end;">
+            <div style="justify-self: flex-end">
               <p
                 style="
                   font-weight: 500;
@@ -101,7 +97,8 @@
                   display: inline;
                 "
               >
-                Balance: <span>{{
+                Balance:
+                <span>{{
                   vueNumberFormat(crnchyStaking.myStaking.crnchyBalance, {
                     prefix: "",
                     decimal: ".",
@@ -111,9 +108,17 @@
                 }}</span>
               </p>
               <el-button
-                style="padding: 0; margin-left: 16px; color: #555cff; font-weight: 500; font-size: 12px"
+                style="
+                  padding: 0;
+                  margin-left: 16px;
+                  color: #555cff;
+                  font-weight: 500;
+                  font-size: 12px;
+                "
                 type="text"
-                @click="() => inputAmount = crnchyStaking.myStaking.crnchyBalance"
+                @click="
+                  () => (inputAmount = crnchyStaking.myStaking.crnchyBalance)
+                "
                 >Max</el-button
               >
             </div>
@@ -154,16 +159,16 @@
 
         <div :style="tab === 'stake' && 'margin-top: 16px;'">
           <h2 style="color: var(--color-subheading-text)">
-            <template v-if="tab === 'stake'">
-              Select a Lock Time
-            </template>
-            <template v-else>
-              Extend Lock Time
-            </template>
+            <template v-if="tab === 'stake'"> Select a Lock Time </template>
+            <template v-else> Extend Lock Time </template>
           </h2>
         </div>
         <el-row style="margin-top: 10px" :gutter="8">
-          <el-col :span="8" v-for="(label, lockTime) in lockOpts">
+          <el-col
+            v-for="(label, lockTime) in lockOpts"
+            :key="lockTime"
+            :span="8"
+          >
             <button
               :disabled="lockTime < minLock"
               :class="['time-tag', lockTime == selectedLockTime && 'active']"
@@ -174,7 +179,6 @@
             </button>
           </el-col>
         </el-row>
-
       </div>
 
       <div v-if="step === 'confirm'">
@@ -227,12 +231,8 @@
       </div>
       <div style="margin-bottom: 10px">
         <h2>
-          <template v-if="tab === 'stake'">
-            You Will Receive
-          </template>
-          <template v-else>
-            After Re-Stake You Will Have
-          </template>
+          <template v-if="tab === 'stake'"> You Will Receive </template>
+          <template v-else> After Re-Stake You Will Have </template>
         </h2>
       </div>
 
@@ -279,12 +279,8 @@
             style="min-width: 50%"
             @click="setStep('confirm')"
           >
-            <template v-if="tab === 'stake'">
-              Stake
-            </template>
-            <template v-else>
-              Re-Stake
-            </template>
+            <template v-if="tab === 'stake'"> Stake </template>
+            <template v-else> Re-Stake </template>
           </el-button>
         </template>
         <template v-if="step === 'confirm'">
@@ -299,17 +295,12 @@
             </el-button>
 
             <el-button round type="primary" @click="submitStake">
-              <template v-if="tab === 'stake'">
-                Stake CRNCHY
-              </template>
-              <template v-else>
-                Re-Stake CRNCHY
-              </template>
+              <template v-if="tab === 'stake'"> Stake CRNCHY </template>
+              <template v-else> Re-Stake CRNCHY </template>
             </el-button>
           </el-row>
         </template>
       </el-row>
-
     </div>
   </el-dialog>
 </template>
@@ -329,44 +320,55 @@ export default {
       step: "input", // input | confirm
       inputAmount: 0,
       minLock: 0,
-      selectedLockTime: process.env.VUE_APP_TEZOS_NETWORK === "ghostnet" ? 1209600 : 12614400,
-      lockOpts: process.env.VUE_APP_TEZOS_NETWORK === "ghostnet" ?
-        {
-          1209600: '2 Weeks',
-          604800: '1 Week',
-          86400: '1 Day',
-          21600: '6 Hours',
-          10800: '3 Hours',
-          3600: '1 Hour',
-        } : {
-          12614400: '4 Years',
-          63072000: '2 Years',
-          31536000: '1 Year',
-          15768000: '6 Months',
-          2628000: '1 Month',
-          604800: '1 Week',
-        },
+      selectedLockTime:
+        process.env.VUE_APP_TEZOS_NETWORK === "ghostnet" ? 1209600 : 12614400,
+      lockOpts:
+        process.env.VUE_APP_TEZOS_NETWORK === "ghostnet"
+          ? {
+              1209600: "2 Weeks",
+              604800: "1 Week",
+              86400: "1 Day",
+              21600: "6 Hours",
+              10800: "3 Hours",
+              3600: "1 Hour",
+            }
+          : {
+              12614400: "4 Years",
+              63072000: "2 Years",
+              31536000: "1 Year",
+              15768000: "6 Months",
+              2628000: "1 Month",
+              604800: "1 Week",
+            },
     };
   },
   computed: {
     ...mapState(["crnchyStaking"]),
 
-    selectedLockTimeLabel: function() {
+    selectedLockTimeLabel: function () {
       return this.lockOpts[this.selectedLockTime] || "Unknown";
     },
-    selectedLockTimeUnlocks: function() {
-      return new Date((new Date()).getTime() + (parseInt(this.selectedLockTime) * 1000));
+    selectedLockTimeUnlocks: function () {
+      return new Date(
+        new Date().getTime() + parseInt(this.selectedLockTime) * 1000
+      );
     },
-    estimatedCrVote: function() {
-      return this.finalInputAmount * this.myStakingPowerPct / 100;
+    estimatedCrVote: function () {
+      return (this.finalInputAmount * this.myStakingPowerPct) / 100;
     },
-    finalInputAmount: function() {
-      return Number(this.tab === 'restake' ? this.crnchyStaking.myStaking.nextCycle.deposit : this.inputAmount);
+    finalInputAmount: function () {
+      return Number(
+        this.tab === "restake"
+          ? this.crnchyStaking.myStaking.nextCycle.deposit
+          : this.inputAmount
+      );
     },
-    myStakingPowerPct: function() {
-      return this.crnchyStaking.settings.stakingPowerMap[this.selectedLockTime] || 0;
+    myStakingPowerPct: function () {
+      return (
+        this.crnchyStaking.settings.stakingPowerMap[this.selectedLockTime] || 0
+      );
     },
-    inputFontSize: function() {
+    inputFontSize: function () {
       if (!this.inputAmount) {
         return "";
       }
@@ -380,12 +382,10 @@ export default {
       }
 
       return "";
-    }
+    },
   },
   methods: {
-    ...mapActions([
-      "stakeCrnchyStaking",
-    ]),
+    ...mapActions(["stakeCrnchyStaking"]),
 
     switchDialogTab(tab = "stake") {
       this.tab = tab;
@@ -397,7 +397,7 @@ export default {
 
     showDialog(tab = "stake") {
       this.minLock = this.crnchyStaking.myStaking.nextCycle.stakingPower;
-      if (tab === 'restake' && this.minLock) {
+      if (tab === "restake" && this.minLock) {
         this.selectedLockTime = this.minLock;
       }
       this.setStep("input");
@@ -411,10 +411,10 @@ export default {
 
     async submitStake() {
       this.stakeCrnchyStaking({
-        amount: this.tab === 'restake' ? 0 : this.inputAmount,
+        amount: this.tab === "restake" ? 0 : this.inputAmount,
         stakingPower: this.selectedLockTime,
       });
-    }
+    },
   },
 };
 </script>

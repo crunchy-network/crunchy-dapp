@@ -14,15 +14,22 @@ export default {
 
           for (const [i, transfer] of resp.data.entries()) {
             resp.data[i].from.domain = tzdomains.resolveAddressToName(
-              transfer.from.address, transfer.from.alias || ""
+              transfer.from.address,
+              transfer.from.alias || ""
             );
 
             transactionIds.push(transfer.transactionId);
           }
 
-          const txRes = (await axios.get(`https://api.tzkt.io/v1/operations/transactions?id.in=${transactionIds.join(",")}&select=id,hash,status`)).data;
+          const txRes = (
+            await axios.get(
+              `https://api.tzkt.io/v1/operations/transactions?id.in=${transactionIds.join(
+                ","
+              )}&select=id,hash,status`
+            )
+          ).data;
           for (const [i, transfer] of resp.data.entries()) {
-            const tx = txRes.find(el => el.id === transfer.transactionId);
+            const tx = txRes.find((el) => el.id === transfer.transactionId);
             if (tx) {
               resp.data[i].status = tx.status;
               resp.data[i].hash = tx.hash;

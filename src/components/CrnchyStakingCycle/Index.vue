@@ -23,9 +23,19 @@
                 "
               >
                 My Staking Summary
-                <span class="muted fs__12" style="float: right;">Cycle # {{ selectedCycle.cycleId }} {{ selectedCycle.starts | moment("MMM DD YYYY HH:mm") }} - {{ selectedCycle.ends | moment("MMM DD YYYY HH:mm") }}</span>
+                <span class="muted fs__12" style="float: right"
+                  >Cycle # {{ selectedCycle.cycleId }}
+                  {{ selectedCycle.starts | moment("MMM DD YYYY HH:mm") }} -
+                  {{ selectedCycle.ends | moment("MMM DD YYYY HH:mm") }}</span
+                >
               </h2>
-              <el-row :gutter="24" v-if="crnchyStaking.myStaking.currentCycle.stakingPower > 0 || crnchyStaking.myStaking.nextCycle.stakingPower > 0">
+              <el-row
+                v-if="
+                  crnchyStaking.myStaking.currentCycle.stakingPower > 0 ||
+                  crnchyStaking.myStaking.nextCycle.stakingPower > 0
+                "
+                :gutter="24"
+              >
                 <el-col :span="8">
                   <h2 class="stake-text_small">Total Staked</h2>
                   <h2 class="stake-text_big">
@@ -66,10 +76,7 @@
                     <el-button
                       v-if="myStakingPowerPct < 100 && activeTab !== 'current'"
                       type="text"
-                      style="
-                        font-weight: 500;
-                        font-size: 12px;
-                      "
+                      style="font-weight: 500; font-size: 12px"
                       @click="showRestakeDialog"
                       >Increase</el-button
                     >
@@ -90,17 +97,34 @@
                 </el-col>
               </el-row>
 
-              <el-row style="margin-top: 24px" :gutter="24" v-if="crnchyStaking.loading">
+              <el-row
+                v-if="crnchyStaking.loading"
+                style="margin-top: 24px"
+                :gutter="24"
+              >
                 <el-col></el-col>
               </el-row>
-              <el-row style="margin-top: 24px" :gutter="24" v-else-if="crnchyStaking.myStaking.currentCycle.stakingPower > 0 || crnchyStaking.myStaking.nextCycle.stakingPower > 0">
+              <el-row
+                v-else-if="
+                  crnchyStaking.myStaking.currentCycle.stakingPower > 0 ||
+                  crnchyStaking.myStaking.nextCycle.stakingPower > 0
+                "
+                style="margin-top: 24px"
+                :gutter="24"
+              >
                 <el-col v-if="myLockEndsMs > 0" :span="8">
                   <h2 class="stake-text_small">CRNCHY Unlocks</h2>
                   <h2 class="stake-text_big">
-                    {{ myLockEndsMs | humanizeDuration({ maxDecimalPoints: 0, largest: 2 }) }}
+                    {{
+                      myLockEndsMs
+                        | humanizeDuration({ maxDecimalPoints: 0, largest: 2 })
+                    }}
                   </h2>
                   <h2 class="stake-text_small" style="font-size: 12px">
-                    {{ crnchyStaking.myStaking.lockEndTime | moment("MMM DD YYYY HH:mm Z") }}
+                    {{
+                      crnchyStaking.myStaking.lockEndTime
+                        | moment("MMM DD YYYY HH:mm Z")
+                    }}
                   </h2>
                 </el-col>
                 <el-col v-else :span="8">
@@ -108,19 +132,22 @@
                   <h2 class="stake-text_big">
                     <el-button
                       type="text"
-                      style="
-                        font-weight: 500;
-                        font-size: 12px;
-                      "
+                      style="font-weight: 500; font-size: 12px"
                       @click="showRestakeDialog"
                       >Re-Stake</el-button
                     >
                   </h2>
                 </el-col>
               </el-row>
-              <el-row style="margin-top: 24px" :gutter="24" v-else>
+              <el-row v-else style="margin-top: 24px" :gutter="24">
                 <el-col>
-                  <h2 class="stake-text_medium muted" style="text-align: center;">Stake your CRNCHY to see your staking summary and see potential rewards.</h2>
+                  <h2
+                    class="stake-text_medium muted"
+                    style="text-align: center"
+                  >
+                    Stake your CRNCHY to see your staking summary and see
+                    potential rewards.
+                  </h2>
                 </el-col>
               </el-row>
 
@@ -133,6 +160,10 @@
                   :gutter="24"
                 >
                   <el-button
+                    v-if="
+                      crnchyStaking.myStaking.currentCycle.stakingPower > 0 ||
+                      crnchyStaking.myStaking.nextCycle.stakingPower > 0
+                    "
                     round
                     plain
                     type="primary"
@@ -142,7 +173,6 @@
                       font-weight: 700;
                       text-transform: uppercase;
                     "
-                    v-if="crnchyStaking.myStaking.currentCycle.stakingPower > 0 || crnchyStaking.myStaking.nextCycle.stakingPower > 0"
                     @click="showUnstakeDialog"
                     >Un-stake
                   </el-button>
@@ -256,7 +286,9 @@
               </el-row>
               <el-row style="margin-top: 24px" :gutter="24">
                 <el-col :span="8">
-                  <h2 v-if="activeTab === 'current'" class="stake-text_small">Claimable Rewards</h2>
+                  <h2 v-if="activeTab === 'current'" class="stake-text_small">
+                    Claimable Rewards
+                  </h2>
                   <h2 v-else class="stake-text_small">Estimated Rewards</h2>
                   <h2
                     style="
@@ -290,7 +322,10 @@
                 <el-button
                   round
                   type="primary"
-                  :disabled="activeTab !== 'current' || crnchyStaking.myStaking.currentCycle.stakingPower === 0"
+                  :disabled="
+                    activeTab !== 'current' ||
+                    crnchyStaking.myStaking.currentCycle.stakingPower === 0
+                  "
                   style="
                     font-weight: 700;
                     min-width: 160px;
@@ -325,31 +360,45 @@ export default {
     },
   },
   data() {
-    return {
-    };
+    return {};
   },
   computed: {
     ...mapState(["wallet", "crnchyStaking"]),
-    ...mapGetters(['currentCycle']),
+    ...mapGetters(["currentCycle"]),
 
     selectedCycle: function () {
-      return this.activeTab === "current" ? this.crnchyStaking.currentCycle : this.crnchyStaking.nextCycle;
+      return this.activeTab === "current"
+        ? this.crnchyStaking.currentCycle
+        : this.crnchyStaking.nextCycle;
     },
 
     myStakingSelectedCycle: function () {
-      return this.activeTab === "current" ? this.crnchyStaking.myStaking.currentCycle : this.crnchyStaking.myStaking.nextCycle;
+      return this.activeTab === "current"
+        ? this.crnchyStaking.myStaking.currentCycle
+        : this.crnchyStaking.myStaking.nextCycle;
     },
 
-    cycleOwnershipPct: function() {
-      return (this.myStakingSelectedCycle.deposit / this.selectedCycle.totalDeposit) * 100;
+    cycleOwnershipPct: function () {
+      return (
+        (this.myStakingSelectedCycle.deposit /
+          this.selectedCycle.totalDeposit) *
+        100
+      );
     },
 
-    myStakingPowerPct: function() {
-      return this.crnchyStaking.settings.stakingPowerMap[this.myStakingSelectedCycle.stakingPower] || 0;
+    myStakingPowerPct: function () {
+      return (
+        this.crnchyStaking.settings.stakingPowerMap[
+          this.myStakingSelectedCycle.stakingPower
+        ] || 0
+      );
     },
 
     myLockEndsMs: function () {
-      return this.crnchyStaking.myStaking.lockEndTime.getTime() - (new Date()).getTime();
+      return (
+        this.crnchyStaking.myStaking.lockEndTime.getTime() -
+        new Date().getTime()
+      );
     },
   },
   methods: {

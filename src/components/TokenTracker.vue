@@ -362,7 +362,7 @@ import numberFormat from "../utils/number-format";
 import PriceFormat from "./PriceFormat.vue";
 import _ from "lodash";
 import SortArrowIndicator from "./SortArrowIndicator.vue";
-import TablePagination from './TablePagination.vue';
+import TablePagination from "./TablePagination.vue";
 
 export default {
   name: "TokenTracker",

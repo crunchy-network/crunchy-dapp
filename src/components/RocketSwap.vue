@@ -287,11 +287,11 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import { BigNumber } from "bignumber.js";
-import ConnectButton from './ConnectButton.vue';
+import ConnectButton from "./ConnectButton.vue";
 
 export default {
-  components: { ConnectButton },
   name: "RocketSwap",
+  components: { ConnectButton },
   data() {
     return {
       form1: {

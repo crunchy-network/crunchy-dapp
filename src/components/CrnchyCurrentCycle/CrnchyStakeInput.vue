@@ -10,7 +10,7 @@
       "
     >
       <slot></slot>
-      <div style="justify-self: flex-end;">
+      <div style="justify-self: flex-end">
         <p
           style="
             font-weight: 500;

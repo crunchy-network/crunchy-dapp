@@ -30,7 +30,9 @@
         "
       >
         <el-row type="flex" align="middle" justify="space-between">
-          <el-col :span="8" style="font-size: 12px" class="_info-card__title">BALANCE</el-col>
+          <el-col :span="8" style="font-size: 12px" class="_info-card__title"
+            >BALANCE</el-col
+          >
           <el-col :span="16" style="font-weight: bold; text-align: right">{{
             vueNumberFormat(form.farm.poolToken.balance)
           }}</el-col>

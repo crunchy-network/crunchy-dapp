@@ -88,7 +88,7 @@ body,
 
 * {
   font-family: "Poppins";
-/*  transition: 0.1s ease all;*/
+  /*  transition: 0.1s ease all;*/
 }
 
 body {

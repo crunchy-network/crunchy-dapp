@@ -1,6 +1,7 @@
 <template>
   <el-dialog width="500px" :modal="true" :visible.sync="visible">
-    <div>TODO
+    <div>
+      TODO
       <!-- <unstake-early v-if="unstakeEarly"></unstake-early>
       <unstake v-else></unstake> -->
     </div>
@@ -8,12 +9,12 @@
 </template>
 
 <script>
-import Unstake from "./Unstake.vue";
-import UnstakeEarly from "./UnstakeEarly.vue";
+// import Unstake from "./Unstake.vue";
+// import UnstakeEarly from "./UnstakeEarly.vue";
 
 export default {
   name: "CrnchyUnstakeDialogue",
-  components: { Unstake, UnstakeEarly },
+  // components: { Unstake, UnstakeEarly },
 
   data() {
     return {

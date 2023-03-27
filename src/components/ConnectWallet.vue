@@ -42,8 +42,8 @@
 import { mapState } from "vuex";
 import ConnectButton from "./ConnectButton.vue";
 export default {
-  components: { ConnectButton },
   name: "ConnectWallet",
+  components: { ConnectButton },
   computed: {
     ...mapState(["wallet"]),
   },

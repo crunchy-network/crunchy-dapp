@@ -531,7 +531,7 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import { gatherAllProjectJsonFiles, importAll } from "../lib/JsonHelper";
-import ConnectButton from './ConnectButton.vue';
+import ConnectButton from "./ConnectButton.vue";
 import NavMenu from "./NavMenu.vue";
 export default {
   name: "IFO",

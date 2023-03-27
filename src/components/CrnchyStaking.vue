@@ -116,12 +116,15 @@
                       "
                     >
                       {{
-                        vueNumberFormat(crnchyStaking.summary.totalCrnchyStaked, {
-                          precision: 2,
-                          prefix: "",
-                          decimal: ".",
-                          thousand: ",",
-                        })
+                        vueNumberFormat(
+                          crnchyStaking.summary.totalCrnchyStaked,
+                          {
+                            precision: 2,
+                            prefix: "",
+                            decimal: ".",
+                            thousand: ",",
+                          }
+                        )
                       }}
                     </div>
                     <el-progress
@@ -169,12 +172,15 @@
                         "
                       >
                         {{
-                          vueNumberFormat(crnchyStaking.summary.totalCrvoteIssued, {
-                            precision: 2,
-                            prefix: "",
-                            decimal: ".",
-                            thousand: ",",
-                          })
+                          vueNumberFormat(
+                            crnchyStaking.summary.totalCrvoteIssued,
+                            {
+                              precision: 2,
+                              prefix: "",
+                              decimal: ".",
+                              thousand: ",",
+                            }
+                          )
                         }}
                       </div>
                       <el-avatar
@@ -212,7 +218,11 @@
                         "
                       >
                         {{
-                          crnchyStaking.summary.avgLockTimeMs | humanizeDuration({ maxDecimalPoints: 0, largest: 2 })
+                          crnchyStaking.summary.avgLockTimeMs
+                            | humanizeDuration({
+                              maxDecimalPoints: 0,
+                              largest: 2,
+                            })
                         }}
                       </div>
                       <el-avatar
@@ -253,12 +263,15 @@
                       "
                     >
                       {{
-                        vueNumberFormat(crnchyStaking.summary.totalRewardsAvail, {
-                          precision: 2,
-                          prefix: "",
-                          decimal: ".",
-                          thousand: ",",
-                        })
+                        vueNumberFormat(
+                          crnchyStaking.summary.totalRewardsAvail,
+                          {
+                            precision: 2,
+                            prefix: "",
+                            decimal: ".",
+                            thousand: ",",
+                          }
+                        )
                       }}
                     </div>
                     <el-avatar
@@ -300,7 +313,9 @@
                 Next Cycle
               </button>
             </div>
-            <crnchy-staking-cycle :active-tab="activeTab"></crnchy-staking-cycle>
+            <crnchy-staking-cycle
+              :active-tab="activeTab"
+            ></crnchy-staking-cycle>
           </template>
           <template v-else>
             <div style="text-align: center; margin-top: 48px">
@@ -330,11 +345,15 @@ export default {
   },
   computed: {
     ...mapState(["wallet", "crnchyStaking"]),
-    ...mapGetters(['currentCycle']),
+    ...mapGetters(["currentCycle"]),
 
     totalCrnchyStakedPct: function () {
       return Number(
-        ((this.crnchyStaking.summary.totalCrnchyStaked / this.crnchyStaking.summary.totalCrnchy) * 100).toFixed(1)
+        (
+          (this.crnchyStaking.summary.totalCrnchyStaked /
+            this.crnchyStaking.summary.totalCrnchy) *
+          100
+        ).toFixed(1)
       );
     },
   },

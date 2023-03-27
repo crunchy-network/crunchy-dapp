@@ -511,7 +511,7 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
-import ConnectButton from './ConnectButton.vue';
+import ConnectButton from "./ConnectButton.vue";
 import NavMenu from "./NavMenu.vue";
 
 export default {
