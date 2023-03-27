@@ -93,7 +93,7 @@
               style="margin-top: 20px; flex-wrap: wrap"
             >
               <el-col :span="24" :md="12" :lg="6">
-                <el-card class="box-card" style="height: 100%">
+                <el-card class="box-card" style="height: 100%" v-loading="crnchyStaking.loading">
                   <h2
                     style="
                       color: var(--color-subheading-text);
@@ -149,7 +149,7 @@
               </el-col>
               <el-col :span="24" :md="12" :lg="6">
                 <div class="grid-content" style="height: 100%">
-                  <el-card class="box-card" style="height: 100%">
+                  <el-card class="box-card" style="height: 100%" v-loading="crnchyStaking.loading">
                     <h2
                       style="
                         color: var(--color-subheading-text);
@@ -195,7 +195,7 @@
               </el-col>
               <el-col :span="24" :md="12" :lg="6">
                 <div class="grid-content" style="height: 100%">
-                  <el-card class="box-card" style="height: 100%">
+                  <el-card class="box-card" style="height: 100%" v-loading="crnchyStaking.loading">
                     <h2
                       style="
                         color: var(--color-subheading-text);
@@ -240,7 +240,7 @@
                 </div>
               </el-col>
               <el-col :span="24" :md="12" :lg="6">
-                <el-card class="box-card" style="height: 100%">
+                <el-card class="box-card" style="height: 100%" v-loading="crnchyStaking.loading">
                   <h2
                     style="
                       color: var(--color-subheading-text);

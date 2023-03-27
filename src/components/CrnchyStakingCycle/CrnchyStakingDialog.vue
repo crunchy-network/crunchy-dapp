@@ -1,5 +1,5 @@
 <template>
-  <el-dialog width="400px" :modal="true" :visible.sync="visible">
+  <el-dialog width="400px" :modal="true" :visible.sync="visible" v-loading="submitDisabled">
     <div
       class="box-card"
       style="flex: 1; display: flex; flex-direction: column"
@@ -295,8 +295,8 @@
             </el-button>
 
             <el-button round type="primary" @click="submitStake">
-              <template v-if="tab === 'stake'"> Stake CRNCHY </template>
-              <template v-else> Re-Stake CRNCHY </template>
+              <template v-if="tab === 'stake'">Stake CRNCHY</template>
+              <template v-else>Re-Stake CRNCHY</template>
             </el-button>
           </el-row>
         </template>
@@ -316,6 +316,7 @@ export default {
   data() {
     return {
       visible: false,
+      submitDisabled: false,
       tab: "stake", // stake | restake
       step: "input", // input | confirm
       inputAmount: 0,
@@ -396,6 +397,8 @@ export default {
     },
 
     showDialog(tab = "stake") {
+      this.submitDisabled = false;
+      this.inputAmount = 0;
       this.minLock = this.crnchyStaking.myStaking.nextCycle.stakingPower;
       if (tab === "restake" && this.minLock) {
         this.selectedLockTime = this.minLock;
@@ -410,10 +413,16 @@ export default {
     },
 
     async submitStake() {
-      this.stakeCrnchyStaking({
-        amount: this.tab === "restake" ? 0 : this.inputAmount,
-        stakingPower: this.selectedLockTime,
-      });
+      try {
+        this.submitDisabled = true;
+        await this.stakeCrnchyStaking({
+          amount: this.tab === "restake" ? 0 : this.inputAmount,
+          stakingPower: this.selectedLockTime,
+        });
+        this.visible = false;
+      } catch (e) {
+        this.submitDisabled = false;
+      }
     },
   },
 };

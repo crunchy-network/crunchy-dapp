@@ -316,6 +316,7 @@ export default {
       .harvest()
       .send()
       .then((tx) => {
+        commit("updateCrnchyStakingLoading", true);
         tx.confirmation().then(() => {
           dispatch("refreshCrnchyStakingData");
         });
@@ -363,11 +364,9 @@ export default {
         ])
       );
 
-    batch.send().then((tx) => {
-      tx.confirmation().then(() => {
-        dispatch("refreshCrnchyStakingData");
-      });
-    });
+    const tx = await batch.send();
+    await tx.confirmation();
+    dispatch("refreshCrnchyStakingData");
   },
 
   async walletConnected({ dispatch }) {
