@@ -12,12 +12,14 @@ import homeWallet from "./homeWallet";
 import swap from "./swap";
 import tokenTracker from "./tokenTracker";
 import usdXtzSwitch from "./usdXtzSwitch";
+import crnchyStaking from "./crnchyStaking";
 import theme from "./theme";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   modules: {
+    crnchyStaking,
     usdXtzSwitch: usdXtzSwitch,
     lpLockers: lpLockers,
     farms: farms,

@@ -88,7 +88,7 @@ body,
 
 * {
   font-family: "Poppins";
-  transition: 0.1s ease all;
+/*  transition: 0.1s ease all;*/
 }
 
 body {
@@ -415,6 +415,10 @@ header .grid-content button.el-button {
   left: -2px;
   height: 36px !important;
   width: 36px !important;
+}
+
+.el-loading-mask {
+  border-radius: 18px !important;
 }
 .farm-list .el-loading-mask {
   border-radius: 14px !important;

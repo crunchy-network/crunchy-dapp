@@ -116,7 +116,7 @@
                       "
                     >
                       {{
-                        vueNumberFormat(8142.12, {
+                        vueNumberFormat(crnchyStaking.summary.totalCrnchyStaked, {
                           precision: 2,
                           prefix: "",
                           decimal: ".",
@@ -125,7 +125,7 @@
                       }}
                     </div>
                     <el-progress
-                      :percentage="17.01"
+                      :percentage="totalCrnchyStakedPct"
                       type="circle"
                       :width="48"
                       :stroke-width="8"
@@ -169,7 +169,7 @@
                         "
                       >
                         {{
-                          vueNumberFormat(12123.12, {
+                          vueNumberFormat(crnchyStaking.summary.totalCrvoteIssued, {
                             precision: 2,
                             prefix: "",
                             decimal: ".",
@@ -180,7 +180,7 @@
                       <el-avatar
                         shape="circle"
                         :size="48"
-                        src="https://res.cloudinary.com/melvin-manni/image/upload/v1648552189/lhpbwmibiwyq2tmxjdqv.png"
+                        src="https://nftstorage.link/ipfs/bafkreiemgfthsxmobacmi76hyl3z5nn5rr2z4hi4qzqmiovbvfbp352rme"
                       >
                       </el-avatar>
                     </el-row>
@@ -211,7 +211,9 @@
                           margin-right: 8px;
                         "
                       >
-                        1.23 yrs
+                        {{
+                          crnchyStaking.summary.avgLockTimeMs | humanizeDuration({ maxDecimalPoints: 0, largest: 2 })
+                        }}
                       </div>
                       <el-avatar
                         shape="circle"
@@ -251,8 +253,8 @@
                       "
                     >
                       {{
-                        vueNumberFormat(5000, {
-                          precision: 0,
+                        vueNumberFormat(crnchyStaking.summary.totalRewardsAvail, {
+                          precision: 2,
                           prefix: "",
                           decimal: ".",
                           thousand: ",",
@@ -280,27 +282,31 @@
             </el-row>
           </div>
 
-          <div
-            class="custom-tab__wrapper tab-wrapper tab-custom-element"
-            style="margin-top: 32px"
-          >
-            <button
-              :class="['tab-text', isActiveTab('current')]"
-              @click="setActiveTab('current')"
+          <template v-if="wallet.connected">
+            <div
+              class="custom-tab__wrapper tab-wrapper tab-custom-element"
+              style="margin-top: 32px"
             >
-              Current Cycle
-            </button>
-            <button
-              :class="['tab-text', isActiveTab('next')]"
-              @click="setActiveTab('next')"
-            >
-              Next Cycle
-            </button>
-          </div>
-          <crnchy-stake-current
-            v-if="activeTab === 'current'"
-          ></crnchy-stake-current>
-          <crnchy-stake-next v-if="activeTab === 'next'"></crnchy-stake-next>
+              <button
+                :class="['tab-text', isActiveTab('current')]"
+                @click="setActiveTab('current')"
+              >
+                Current Cycle
+              </button>
+              <button
+                :class="['tab-text', isActiveTab('next')]"
+                @click="setActiveTab('next')"
+              >
+                Next Cycle
+              </button>
+            </div>
+            <crnchy-staking-cycle :active-tab="activeTab"></crnchy-staking-cycle>
+          </template>
+          <template v-else>
+            <div style="text-align: center; margin-top: 48px">
+              <connect-button />
+            </div>
+          </template>
         </el-col>
       </el-row>
     </el-main>
@@ -308,19 +314,44 @@
 </template>
 
 <script>
-import CrnchyStakeNext from "./CrnchyNextCycle/Index.vue";
-import CrnchyStakeCurrent from "./CrnchyCurrentCycle/Index.vue";
+import { mapState, mapActions, mapGetters } from "vuex";
+import CrnchyStakingCycle from "./CrnchyStakingCycle/Index.vue";
 import NavMenu from "./NavMenu.vue";
+import ConnectButton from "./ConnectButton.vue";
+
 export default {
   name: "CrnchyStaking",
-  components: { NavMenu, CrnchyStakeCurrent, CrnchyStakeNext },
+  components: { NavMenu, ConnectButton, CrnchyStakingCycle },
   data() {
     return {
       dialogTab: "stake",
       activeTab: "current",
     };
   },
+  computed: {
+    ...mapState(["wallet", "crnchyStaking"]),
+    ...mapGetters(['currentCycle']),
+
+    totalCrnchyStakedPct: function () {
+      return Number(
+        ((this.crnchyStaking.summary.totalCrnchyStaked / this.crnchyStaking.summary.totalCrnchy) * 100).toFixed(1)
+      );
+    },
+  },
+  created() {
+    this.refresh();
+  },
   methods: {
+    ...mapActions([
+      "connectWallet",
+      "disconnectWallet",
+      "refreshCrnchyStakingData",
+    ]),
+
+    refresh() {
+      this.refreshCrnchyStakingData();
+    },
+
     isActiveTab(tab) {
       return this.activeTab === tab ? "is-active" : "";
     },
