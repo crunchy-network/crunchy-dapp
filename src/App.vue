@@ -88,7 +88,7 @@ body,
 
 * {
   font-family: "Poppins";
-  transition: 0.1s ease all;
+  transition: 0.17s ease-in-out all !important;
 }
 
 body {
@@ -614,14 +614,15 @@ header .grid-content button.el-button {
 
 .el-menu.el-menu--popup,
 .el-select-dropdown,
-.el-dialog, .el-autocomplete-suggestion {
+.el-dialog,
+.el-autocomplete-suggestion {
   background-color: var(--background-card) !important;
   border: var(--line-border) !important;
 }
 
 .el-autocomplete-suggestion ul li {
   color: var(--primary-text) !important;
-  &:hover{
+  &:hover {
     background-color: var(--table-row-hover) !important;
   }
 }
@@ -928,6 +929,18 @@ html[data-theme="dark"] {
 
   .el-loading-mask {
     background: rgba(25, 27, 31, 0.9);
+  }
+
+  path.el-progress-circle__track {
+    stroke: var(--border-color) !important;
+  }
+
+  .el-popper[x-placement^="bottom"] .popper__arrow::after {
+    border-bottom-color: var(--background-card) !important;
+  }
+
+  .el-popper[x-placement^="bottom"] .popper__arrow {
+    border-bottom-color: var(--border-color) !important;
   }
 }
 </style>

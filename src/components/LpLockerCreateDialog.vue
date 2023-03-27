@@ -412,6 +412,7 @@
             <el-button
               type="info"
               plain
+              class="btn-alt__2"
               style="
                 border-radius: 12px;
                 font-weight: bold;

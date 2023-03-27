@@ -141,11 +141,12 @@
 
                     <template v-if="mode === 'burn'">
                       <el-avatar
-                        src="https://nftstorage.link/ipfs/bafybeidwsid6fvv4vxbqja7er3b4exsht5r7umv6hpz7rc3ujg7xilhwv4"
                         shape="circle"
                         :size="38"
                         style="position: absolute; top: 0; right: 10px"
-                      ></el-avatar>
+                      >
+                        <img src="../assets/wtz-icon.png" alt="" />
+                      </el-avatar>
                       <el-form-item
                         key="input-wtz"
                         :label="`1 WTZ = ${calcWtzToXtz(1)} XTZ`"
@@ -231,11 +232,12 @@
 
                     <template v-if="mode === 'mint'">
                       <el-avatar
-                        src="https://nftstorage.link/ipfs/bafybeidwsid6fvv4vxbqja7er3b4exsht5r7umv6hpz7rc3ujg7xilhwv4"
                         shape="circle"
                         :size="38"
                         style="position: absolute; top: 0; right: 10px"
-                      ></el-avatar>
+                      >
+                        <img src="../assets/wtz-icon.png" alt="" />
+                      </el-avatar>
                       <el-form-item
                         label="Fee: 0.0%"
                         style="margin-bottom: 24px"

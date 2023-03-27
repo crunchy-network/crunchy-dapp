@@ -235,6 +235,7 @@
 
               <div
                 v-if="wallet.connected && ifo.data.harvesting"
+                class="_info-card"
                 style="
                   border-radius: 22px;
                   background: #ffeecc;
@@ -252,16 +253,12 @@
                   <el-col
                     :span="8"
                     style="color: #8c8477; font-size: 12px; text-align: left"
+                    class="_info-card__title"
                     >PENDING HARVEST</el-col
                   >
                   <el-col
                     :span="16"
-                    style="
-                      font-size: 12px;
-                      color: #303133;
-                      font-weight: 600;
-                      text-align: right;
-                    "
+                    style="font-size: 12px; font-weight: 600; text-align: right"
                     >{{
                       vueNumberFormat(ifo.data.userRecord.pendingHarvest)
                     }}
@@ -531,7 +528,7 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import { gatherAllProjectJsonFiles, importAll } from "../lib/JsonHelper";
-import ConnectButton from './ConnectButton.vue';
+import ConnectButton from "./ConnectButton.vue";
 import NavMenu from "./NavMenu.vue";
 export default {
   name: "IFO",
