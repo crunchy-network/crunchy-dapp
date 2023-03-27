@@ -40,7 +40,7 @@
         </el-col>
       </el-row>
 
-      <el-row :gutter="20" type="flex" align="top" style="margin-top: 25px">
+      <el-row :gutter="20" type="flex" align="stretch" style="margin-top: 25px">
         <el-col :span="16">
           <div class="grid-content">
             <el-card class="box-card" shadow="always">
@@ -370,8 +370,7 @@
               </div>
               <h2
                 style="
-                  color: #191b1f;
-                  opacity: 0.4;
+                  color: var(--color-subheading-text);
                   font-size: 14px;
                   margin-bottom: 0px;
                 "
