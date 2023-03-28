@@ -702,13 +702,19 @@ button {
 }
 
 .el-picker-panel,
-.el-picker-panel__footer {
+.el-picker-panel__footer,
+.el-time-panel {
   background: var(--background-card) !important;
   border: var(--line-border) !important;
   color: var(--primary-text) !important;
 }
 
-.el-date-table td.available {
+.el-time-spinner__item {
+  color: var(--color-subheading-text) !important;
+}
+
+.el-date-table td.available,
+.el-time-spinner__item.active {
   color: var(--primary-text) !important;
 }
 
@@ -905,7 +911,10 @@ html[data-theme="dark"] {
     }
   }
 
-  .el-date-table th {
+  .el-date-table th,
+  .el-time-panel__footer,
+  .el-time-panel__content::after,
+  .el-time-panel__content::before {
     border-color: var(--border-color) !important;
   }
 
@@ -978,9 +987,18 @@ html[data-theme="dark"] {
     border-bottom-color: var(--border-color) !important;
   }
 
-  .el-tag {
+  .el-tag,
+  .el-time-spinner__item:hover:not(.disabled):not(.active) {
     background: var(--badge-background) !important;
     border-color: var(--border-color) !important;
+  }
+
+  .el-time-spinner__item.disabled {
+    opacity: 0.4;
+  }
+
+  .el-time-panel__btn.cancel {
+    color: var(--color-subheading-text) !important;
   }
 }
 </style>
