@@ -854,6 +854,20 @@ input {
   color: #fff !important;
   border-color: #555cff !important;
 }
+
+.el-date-range-picker__time-header,
+.el-date-range-picker__content.is-left,
+.el-date-picker__time-header {
+  border-color: var(--border-color) !important;
+}
+
+.el-date-range-picker__header,
+.el-date-picker__header {
+  * {
+    color: var(--primary-text) !important;
+  }
+}
+
 /* 
 * Light Theme
 */
@@ -893,17 +907,6 @@ html[data-theme="dark"] {
 
   .el-date-table th {
     border-color: var(--border-color) !important;
-  }
-
-  .el-date-range-picker__time-header,
-  .el-date-range-picker__content.is-left {
-    border-color: var(--border-color) !important;
-  }
-
-  .el-date-range-picker__header {
-    * {
-      color: #ffffff !important;
-    }
   }
 
   .el-date-table td.disabled div {
