@@ -473,6 +473,7 @@
                         font-weight: bold;
                         width: 100%;
                         background-color: var(--color-alt-btn) !important;
+                        color: #fff !important;
                         border: 0;
                       "
                       @click="harvestFarm(farm.id)"
@@ -496,6 +497,7 @@
                         font-weight: bold;
                         width: 100%;
                         background-color: var(--color-alt-btn) !important;
+                        color: #fff !important;
                         border: 0;
                       "
                       >Harvest</el-button

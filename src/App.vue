@@ -848,6 +848,12 @@ input {
   padding: 10px 20px;
   word-break: keep-all;
 }
+
+.el-picker-panel__footer .el-button:nth-child(2) {
+  background: #555cff !important;
+  color: #fff !important;
+  border-color: #555cff !important;
+}
 /* 
 * Light Theme
 */
@@ -885,8 +891,28 @@ html[data-theme="dark"] {
     }
   }
 
+  .el-date-table th {
+    border-color: var(--border-color) !important;
+  }
+
+  .el-date-range-picker__time-header,
+  .el-date-range-picker__content.is-left {
+    border-color: var(--border-color) !important;
+  }
+
+  .el-date-range-picker__header {
+    * {
+      color: #ffffff !important;
+    }
+  }
+
   .el-date-table td.disabled div {
-    background-color: #757679 !important;
+    background-color: transparent !important;
+    opacity: 0.4;
+  }
+
+  .el-date-table .available .in-range {
+    background: #303135;
   }
 
   ._info-card {
@@ -947,6 +973,11 @@ html[data-theme="dark"] {
   .el-popper[x-placement^="left"] .popper__arrow,
   .el-popper[x-placement^="right"] .popper__arrow {
     border-bottom-color: var(--border-color) !important;
+  }
+
+  .el-tag {
+    background: var(--badge-background) !important;
+    border-color: var(--border-color) !important;
   }
 }
 </style>
