@@ -1,5 +1,10 @@
 <template>
-  <el-dialog width="400px" :modal="true" :visible.sync="visible" v-loading="submitDisabled">
+  <el-dialog
+    v-loading="submitDisabled"
+    width="400px"
+    :modal="true"
+    :visible.sync="visible"
+  >
     <div
       class="box-card"
       style="flex: 1; display: flex; flex-direction: column"

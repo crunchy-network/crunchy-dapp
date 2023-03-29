@@ -19,11 +19,31 @@
             display: inline;
           "
         >
-          Balamce: <span>21</span>
+          Balance:
+          <span>{{
+            vueNumberFormat(maxInput, {
+              prefix: "",
+              decimal: ".",
+              thousand: ",",
+              precision: 4,
+            })
+          }}</span>
         </p>
         <el-button
-          style="padding: 0; color: #555cff; font-weight: 500; font-size: 12px"
+          style="
+            padding: 0;
+            margin-left: 16px;
+            color: #555cff;
+            font-weight: 500;
+            font-size: 12px;
+          "
           type="text"
+          @click="
+            () => {
+              inputAmount = maxInput;
+              setInputAmount(maxInput);
+            }
+          "
           >Max</el-button
         >
       </div>
@@ -35,19 +55,16 @@
       <div style="display: flex; align-items: center">
         <img
           shape="circle"
-          :src="'https://bafkreifcxtpqojfllakxbhkmy5qfcur7izyyr2e7c6ukm7y43v3scgsszi.ipfs.nftstorage.link/'"
+          src="../../assets/token-icons/crnchy.png"
           :size="30"
           class="img-style"
-          @error="hideBrokenImage"
-          @load="showLoadedImage"
         />
         <span class="selected-asset-input">CRNCHY</span>
       </div>
       <el-input
         v-model="inputAmount"
-        :class="`asset-swap-amount ${getInputFontSize}`"
+        :class="`asset-swap-amount ${inputFontSize}`"
         type="number"
-        :min="1"
         style="padding: 0"
         @input="(e) => setInputAmount(e)"
       />
@@ -67,6 +84,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import PriceFormat from "../PriceFormat.vue";
 
 export default {
@@ -77,26 +95,39 @@ export default {
       type: Function,
       default: () => {},
     },
-    inputAmount: {
-      type: Number,
-      default: 1,
+    initialAmount: 0,
+    mode: {
+      type: String,
+      default: "stake",
     },
   },
+  data() {
+    return {
+      inputAmount: 0,
+    };
+  },
+  mounted() {
+    this.inputAmount = this.initialAmount;
+  },
+  computed: {
+    ...mapState(["crnchyStaking"]),
 
-  methods: {
-    hideBrokenImage(e) {
-      e.target.style.opacity = 0;
+    maxInput: function () {
+      return this.mode === "stake"
+        ? this.crnchyStaking.myStaking.crnchyBalance
+        : this.crnchyStaking.myStaking.nextCycle.deposit;
     },
-    showLoadedImage(e) {
-      e.target.style.opacity = 1;
-    },
-    getInputFontSize() {
-      if (!this.$props.amount) return "";
-      const amountString = this.$props.amount.toString();
-      if (amountString.length > 15) {
+
+    inputFontSize: function () {
+      if (!this.inputAmount) {
+        return "";
+      }
+
+      const inputLen = this.inputAmount.toString().length;
+      if (inputLen > 15) {
         return "really-mini-font";
       }
-      if (amountString.length > 11) {
+      if (inputLen > 11) {
         return "mini-font";
       }
 

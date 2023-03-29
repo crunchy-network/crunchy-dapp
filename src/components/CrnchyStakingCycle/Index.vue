@@ -180,7 +180,7 @@
                     round
                     type="primary"
                     style="font-weight: 700; text-transform: uppercase"
-                    @click="showCreateDialog"
+                    @click="showStakeDialog"
                     >stake
                   </el-button>
                 </el-row>
@@ -400,6 +400,13 @@ export default {
         new Date().getTime()
       );
     },
+
+    myStakeIsUnlocked: function () {
+      return (
+        this.crnchyStaking.myStaking.lockEndTime.getTime() <
+        new Date().getTime()
+      );
+    },
   },
   methods: {
     ...mapActions([
@@ -408,14 +415,14 @@ export default {
       "harvestCrnchyStaking",
     ]),
 
-    showCreateDialog() {
+    showStakeDialog() {
       this.$refs.stakeRestakeDialog.showDialog("stake");
     },
     showRestakeDialog() {
       this.$refs.stakeRestakeDialog.showDialog("restake");
     },
     showUnstakeDialog() {
-      this.$refs.claimDialog.showDialog();
+      this.$refs.claimDialog.showDialog(!this.myStakeIsUnlocked);
     },
   },
 };

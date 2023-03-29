@@ -196,7 +196,7 @@ export default {
           amountHarvested: BigNumber(
             myStakingLedger.current_cycle.amount_harvested
           )
-            .div(BigNumber(10).pow(8))
+            .div(BigNumber(10).pow(6))
             .toNumber(),
           stakingPower: parseInt(myStakingLedger.current_cycle.staking_power),
           pendingHarvest: 0,
@@ -240,7 +240,9 @@ export default {
             .times(rps)
             .div(currentCycleObj.totalIssued);
           const numSec =
-            (new Date().getTime() - getters.cycleStart(currentCycle)) / 1000;
+            (new Date().getTime() -
+              getters.cycleStart(currentCycle).getTime()) /
+            1000;
           const currHarvest = rewardsAllocation
             .times(numSec)
             .minus(myCurrentCycleObj.amountHarvested)
@@ -354,6 +356,47 @@ export default {
       )
       .withContractCall(
         crnchyContract.methodsObject.update_operators([
+          {
+            remove_operator: {
+              owner: rootState.wallet.pkh,
+              operator: state.contract,
+              token_id: "0",
+            },
+          },
+        ])
+      );
+
+    const tx = await batch.send();
+    await tx.confirmation();
+    dispatch("refreshCrnchyStakingData");
+  },
+
+  async unstakeCrnchyStaking({ state, rootState, commit, dispatch }, payload) {
+    const { amount } = payload;
+    const stakingContract = await getContract(state.contract);
+    const crvoteContract = await getContract(state.crvoteAddress);
+
+    const amountB = BigNumber(amount)
+      .times(BigNumber(10).pow(8))
+      .idiv(1)
+      .toNumber();
+
+    const batch = await getBatch()
+      .withContractCall(stakingContract.methods.harvest())
+      .withContractCall(
+        crvoteContract.methodsObject.update_operators([
+          {
+            add_operator: {
+              owner: rootState.wallet.pkh,
+              operator: state.contract,
+              token_id: "0",
+            },
+          },
+        ])
+      )
+      .withContractCall(stakingContract.methods.unstake(amountB))
+      .withContractCall(
+        crvoteContract.methodsObject.update_operators([
           {
             remove_operator: {
               owner: rootState.wallet.pkh,
