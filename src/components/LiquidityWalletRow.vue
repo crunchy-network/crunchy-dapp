@@ -4,8 +4,8 @@
     style="padding-bottom: 14px; font-size: 14px; font-weight: 600"
     :style="
       rowExpanded
-        ? 'border: 1px solid #f3f3f3; border-radius: 14px; margin-bottom: 24px;'
-        : 'border: 1px solid #fff; border-radius: 14px; margin-bottom: 0px;'
+        ? 'border: var(--line-border); border-radius: 14px; margin-bottom: 24px;'
+        : 'border: 1px solid transparent; border-radius: 14px; margin-bottom: 0px;'
     "
     type="flex"
     align="top"
@@ -31,7 +31,17 @@
                 <el-col style="text-align: left" :span="4">
                   <el-row type="flex" style="align-items: center">
                     <img
+                      v-if="lp.dex !== 'Quipuswap'"
                       :src="lp.thumbnailUri"
+                      style="
+                        position: relative;
+                        margin-right: 10px;
+                        width: 50px;
+                      "
+                    />
+                    <img
+                      v-else
+                      src="../assets/dex-icons/QuipuSwap.png"
                       style="
                         position: relative;
                         margin-right: 10px;
@@ -58,60 +68,18 @@
                 <el-col style="text-align: left" :span="4"></el-col>
 
                 <el-col style="text-align: right" :span="4">
-                  {{ lp.positionsCount }}
+                  <number-format :value="lp.totalValue" :precision="0" />
+                  <!-- {{ lp.positionsCount }} -->
                 </el-col>
 
                 <el-col style="text-align: left" :span="4"></el-col>
                 <template aria-describedby=" Total Value">
                   <el-col style="text-align: right" :span="4">
-                    {{
-                      !showUsd
-                        ? vueNumberFormat(lp.totalValue, {
-                            prefix: "",
-                            suffix: " ꜩ",
-                            decimal: ".",
-                            thousand: ",",
-                            precision: 2,
-                          })
-                        : vueNumberFormat(lp.totalValueUsd, {
-                            prefix: "$",
-                            decimal: ".",
-                            thousand: ",",
-                            precision: 2,
-                          })
-                    }}
-
-                    <template name="show-full-amount">
-                      <template
-                        v-if="
-                          `${lp.totalValue}`.split('.')[1] &&
-                          `${lp.totalValue}`.split('.')[1].startsWith('00') &&
-                          !showUsd
-                        "
-                      >
-                        <el-tooltip
-                          :content="`${lp.totalValue}`"
-                          placement="top"
-                          ><i class="el-icon-info"></i>
-                        </el-tooltip>
-                      </template>
-
-                      <template
-                        v-if="
-                          `${lp.totalValueUsd}`.split('.')[1] &&
-                          `${lp.totalValueUsd}`
-                            .split('.')[1]
-                            .startsWith('00') &&
-                          showUsd
-                        "
-                      >
-                        <el-tooltip
-                          :content="`${lp.totalValueUsd}`"
-                          placement="top"
-                          ><i class="el-icon-info"></i>
-                        </el-tooltip>
-                      </template>
-                    </template>
+                    <price-format
+                      :precision="4"
+                      :value="lp.totalValue"
+                      :usd-value="lp.totalValueUsd"
+                    />
                   </el-col>
                 </template>
 
@@ -294,99 +262,22 @@
                   </a>
                 </el-col>
                 <el-col style="text-align: right" :span="4">
-                  <template>
-                    {{
-                      vueNumberFormat(Number(position.lpBalance), {
-                        decimal: ".",
-                        thousand: ",",
-                        precision: 2,
-                      })
-                    }}
-                  </template>
-                  <template
-                    v-if="
-                      `${position.lpBalance}`.split('.')[1] &&
-                      `${position.lpBalance}`.split('.')[1].startsWith('00')
-                    "
-                  >
-                    <el-tooltip
-                      :content="`${position.lpBalance}`"
-                      placement="top"
-                      ><i class="el-icon-info"></i>
-                    </el-tooltip>
-                  </template>
+                  <number-format
+                    :value="Number(position.lpBalance)"
+                    :precision="4"
+                  />
                 </el-col>
                 <el-col style="text-align: right" :span="4">
                   <template v-if="lp.isSpicyLp || lp.isPlentyLp">
-                    {{
-                      vueNumberFormat(position.token0Side, {
-                        prefix: "",
-                        suffix: "",
-                        decimal: ".",
-                        thousand: ",",
-                        precision: 2,
-                      })
-                    }}
-
-                    <template
-                      v-if="
-                        `${position.token0Side}`.split('.')[1] &&
-                        `${position.token0Side}`.split('.')[1].startsWith('00')
-                      "
-                    >
-                      <el-tooltip
-                        :content="`${position.token0Side}`"
-                        placement="top"
-                        ><i class="el-icon-info"></i>
-                      </el-tooltip>
-                    </template>
+                    <number-format :valu="position.token0Side" :precision="4" />
                   </template>
 
                   <template v-else>
-                    {{
-                      !showUsd
-                        ? vueNumberFormat(position.xtzSide, {
-                            prefix: "",
-                            suffix: " ꜩ",
-                            decimal: ".",
-                            thousand: ",",
-                            precision: 2,
-                          })
-                        : vueNumberFormat(position.xtzSideUsd, {
-                            prefix: "$",
-                            decimal: ".",
-                            thousand: ",",
-                            precision: 2,
-                          })
-                    }}
-
-                    <template name="show-full-amount-xtzSide">
-                      <template
-                        v-if="
-                          `${lp.xtzSide}`.split('.')[1] &&
-                          `${lp.xtzSide}`.split('.')[1].startsWith('00') &&
-                          !showUsd
-                        "
-                      >
-                        <el-tooltip :content="`${lp.xtzSide}`" placement="top"
-                          ><i class="el-icon-info"></i>
-                        </el-tooltip>
-                      </template>
-
-                      <template
-                        v-if="
-                          `${lp.xtzSideUsd}`.split('.')[1] &&
-                          `${lp.xtzSideUsd}`.split('.')[1].startsWith('00') &&
-                          showUsd
-                        "
-                      >
-                        <el-tooltip
-                          :content="`${lp.xtzSideUsd}`"
-                          placement="top"
-                          ><i class="el-icon-info"></i>
-                        </el-tooltip>
-                      </template>
-                    </template>
+                    <price-format
+                      :precision="4"
+                      :value="position.xtzSide"
+                      :usd-value="position.xtzSideUsd"
+                    />
                   </template>
                 </el-col>
                 <template aria-describedby=" Reward Value">
@@ -395,122 +286,35 @@
                     :span="4"
                   >
                     <template v-if="lp.isSpicyLp || lp.isPlentyLp">
-                      {{
-                        vueNumberFormat(position.token1Side, {
-                          prefix: "",
-                          suffix: "",
-                          decimal: ".",
-                          thousand: ",",
-                          precision: 2,
-                        })
-                      }}
-                      <template
-                        v-if="
-                          `${position.token1Side}`.split('.')[1] &&
-                          `${position.token1Side}`
-                            .split('.')[1]
-                            .startsWith('00')
-                        "
-                      >
-                        <el-tooltip
-                          :content="`${position.token1Side}`"
-                          placement="top"
-                          ><i class="el-icon-info"></i>
-                        </el-tooltip>
-                      </template>
+                      <number-format
+                        :value="position.token1Side"
+                        :precision="2"
+                      />
                     </template>
 
                     <template v-else>
-                      {{
-                        vueNumberFormat(position.tokenSide, {
-                          prefix: "",
-                          suffix: "",
-                          decimal: ".",
-                          thousand: ",",
-                          precision: 2,
-                        })
-                      }}
-                      <template
-                        v-if="
-                          `${position.tokenSide}`.split('.')[1] &&
-                          `${position.tokenSide}`.split('.')[1].startsWith('00')
-                        "
-                      >
-                        <el-tooltip
-                          :content="`${position.tokenSide}`"
-                          placement="top"
-                          ><i class="el-icon-info"></i>
-                        </el-tooltip>
-                      </template>
+                      <number-format
+                        :value="position.tokenSide"
+                        :precision="2"
+                      />
                     </template>
                   </el-col>
                 </template>
                 <template aria-describedby="Total Value">
                   <el-col style="text-align: right" :span="4">
-                    {{
-                      !showUsd
-                        ? vueNumberFormat(position.totalValue, {
-                            prefix: "",
-                            suffix: " ꜩ",
-                            decimal: ".",
-                            thousand: ",",
-                            precision: 2,
-                          })
-                        : vueNumberFormat(position.totalValueUsd, {
-                            prefix: "$",
-                            decimal: ".",
-                            thousand: ",",
-                            precision: 2,
-                          })
-                    }}
-                    <template name="show-full-amount">
-                      <template
-                        v-if="
-                          `${position.totalValue}`.split('.')[1] &&
-                          `${position.totalValue}`
-                            .split('.')[1]
-                            .startsWith('00') &&
-                          !showUsd
-                        "
-                      >
-                        <el-tooltip
-                          :content="`${position.totalValue}`"
-                          placement="top"
-                          ><i class="el-icon-info"></i>
-                        </el-tooltip>
-                      </template>
-
-                      <template
-                        v-if="
-                          `${position.totalValueUsd}`.split('.')[1] &&
-                          `${position.totalValueUsd}`
-                            .split('.')[1]
-                            .startsWith('00') &&
-                          showUsd
-                        "
-                      >
-                        <el-tooltip
-                          :content="`${position.totalValueUsd}`"
-                          placement="top"
-                          ><i class="el-icon-info"></i>
-                        </el-tooltip>
-                      </template>
-                    </template>
+                    <price-format
+                      :precision="4"
+                      :value="position.totalValue"
+                      :usd-value="position.totalValueUsd"
+                    />
                   </el-col>
                 </template>
-                <el-col style="text-align: right" :span="4"> </el-col>
+                <el-col style="text-align: right" :span="4"></el-col>
               </el-row>
             </div>
           </div>
           <div v-else v-show="rowExpanded">
-            <h2
-              style="
-                text-align: center;
-                color: #909399;
-                font-size: 16px;
-                margin-top: 20px;
-              "
-            >
+            <h2 style="text-align: center; font-size: 16px; margin-top: 20px">
               You currently do not have any {{ lp.dex }} liquidity pool tokens.
             </h2>
           </div>
@@ -524,10 +328,14 @@
 import { CollapseTransition } from "@ivanv/vue-collapse-transition";
 import { mapActions } from "vuex";
 import { sectionNotAvailable } from "../utils/home-wallet-stake";
+import NumberFormat from "./NumberFormat.vue";
+import PriceFormat from "./PriceFormat.vue";
 export default {
   name: "LiquidityWalletRow",
   components: {
     CollapseTransition,
+    NumberFormat,
+    PriceFormat,
   },
   props: {
     lp: {

@@ -235,6 +235,7 @@
 
               <div
                 v-if="wallet.connected && ifo.data.harvesting"
+                class="_info-card"
                 style="
                   border-radius: 22px;
                   background: #ffeecc;
@@ -252,16 +253,12 @@
                   <el-col
                     :span="8"
                     style="color: #8c8477; font-size: 12px; text-align: left"
+                    class="_info-card__title"
                     >PENDING HARVEST</el-col
                   >
                   <el-col
                     :span="16"
-                    style="
-                      font-size: 12px;
-                      color: #303133;
-                      font-weight: 600;
-                      text-align: right;
-                    "
+                    style="font-size: 12px; font-weight: 600; text-align: right"
                     >{{
                       vueNumberFormat(ifo.data.userRecord.pendingHarvest)
                     }}
@@ -271,19 +268,7 @@
               </div>
 
               <div style="width: 100%; margin-top: 18px">
-                <el-button
-                  v-if="wallet.connected === false"
-                  type="success"
-                  style="
-                    border-radius: 10px;
-                    font-weight: bold;
-                    width: 100%;
-                    padding: 12px 20px;
-                    color: #ffffff;
-                  "
-                  @click="connectWallet"
-                  >Connect Wallet</el-button
-                >
+                <connect-button v-if="wallet.connected === false" />
                 <!-- <el-button v-else :disabled="!live" type="primary" @click="showStakeDialog" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px;">FARM</el-button> -->
                 <el-button
                   v-else
@@ -543,10 +528,11 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import { gatherAllProjectJsonFiles, importAll } from "../lib/JsonHelper";
+import ConnectButton from "./ConnectButton.vue";
 import NavMenu from "./NavMenu.vue";
 export default {
   name: "IFO",
-  components: { NavMenu },
+  components: { NavMenu, ConnectButton },
   data: () => ({
     project: null,
     images: importAll(
@@ -673,7 +659,7 @@ export default {
 }
 
 .box {
-  border: 1px solid rgba(25, 27, 31, 0.1);
+  border: var(--line-border);
   box-sizing: border-box;
   border-radius: 18px;
   padding: 35px 45px;
@@ -702,7 +688,7 @@ export default {
 }
 
 .vertical-bar {
-  background: #191b1f;
+  background: var(--border-color);
   min-height: 100%;
   width: 4.5px;
 }
@@ -739,7 +725,7 @@ p {
   font-weight: 300;
   line-height: 21px;
   letter-spacing: 0.02em;
-  color: #757679;
+  color: var(--color-subheading-text) !important;
   margin: 0;
 }
 
@@ -760,7 +746,7 @@ p.mid {
   font-weight: 800;
   font-size: 28px;
   line-height: 42px;
-  color: #191b1f;
+  color: var(primary-text) !important;
   margin: 0;
   margin-bottom: 25px;
 }
@@ -785,14 +771,14 @@ p.mid {
   font-size: 14px;
   line-height: 21px;
   letter-spacing: -0.02em;
-  color: #757679;
+  color: var(--color-subheading-text) !important;
 }
 
 .line {
   max-width: 100%;
   flex: 1;
   height: 1px;
-  background: #e8e9e9;
+  background: var(--border-color);
 }
 
 .tier-box {
@@ -824,7 +810,7 @@ p.mid {
 }
 
 .detail-row .data-col p {
-  color: #757679;
+  color: var(--color-subheading-text) !important;
   font-weight: 800;
   font-size: 12px;
   text-align: left;
@@ -832,7 +818,7 @@ p.mid {
 
 .detail-row .data-col:nth-child(2) p {
   text-align: right;
-  color: #303133;
+  color: var(--primary-text) !important;
   font-weight: 700;
   font-size: 14px;
 }
@@ -842,26 +828,19 @@ p.mid {
   font-size: 20px;
   line-height: 30px;
   text-align: center;
-  color: #303133;
+  color: var(--primary-text) !important;
   margin-bottom: 15px;
 }
 
 .info-box .detail-row {
   margin-bottom: 10px;
   padding-bottom: 10px;
-  border-bottom: 1px solid #e8e9e9;
+  border-bottom: var(--line-border);
   &:last-child {
     border-bottom: 0px;
     padding-bottom: 0px;
     margin-bottom: 0px;
   }
-}
-
-.el-col {
-  color: #303133;
-}
-.el-card * {
-  color: #303133;
 }
 
 @media all and (max-width: 1200px) {

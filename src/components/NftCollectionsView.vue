@@ -34,59 +34,15 @@
       </el-col>
     </el-row>
     <div style="margin-top: auto">
-      <div id="pagination">
-        <el-button
-          :disabled="currentPage === 0"
-          style="margin-right: 12px"
-          @click="handleStart"
-        >
-          <i class="fal fa-angle-left"></i>
-          <i class="fal fa-angle-left"></i>
-        </el-button>
-        <el-button :disabled="currentPage === 0" @click="handlePrevPage">
-          <i class="fal fa-angle-left"></i>
-        </el-button>
-
-        <h2
-          style="
-            font-weight: 800;
-            font-size: 14px;
-            color: #191b1f;
-            opacity: 0.5;
-            margin: 0 19px;
-          "
-        >
-          {{
-            vueNumberFormat(nextPage > pages ? pages : nextPage, {
-              prefix: "",
-              decimal: ".",
-              thousand: ",",
-              precision: 0,
-            })
-          }}
-          out of
-          {{
-            vueNumberFormat(pages, {
-              prefix: "",
-              decimal: ".",
-              thousand: ",",
-              precision: 0,
-            })
-          }}
-        </h2>
-        <el-button :disabled="nextPage + 1 > pages" @click="handleNextPage">
-          <i class="fal fa-angle-right"></i>
-        </el-button>
-
-        <el-button
-          :disabled="nextPage + 1 > pages"
-          style="margin-left: 12px"
-          @click="handleEnd"
-        >
-          <i class="fal fa-angle-right"></i>
-          <i class="fal fa-angle-right"></i>
-        </el-button>
-      </div>
+      <table-pagination
+        :current-page="currentPage"
+        :next-page="nextPage"
+        :pages="pages"
+        :handle-next-page="handleNextPage"
+        :handle-prev-page="handlePrevPage"
+        :handle-start="handleStart"
+        :handle-end="handleEnd"
+      />
     </div>
   </el-card>
 </template>
@@ -94,9 +50,10 @@
 <script>
 import { mapGetters } from "vuex";
 import NftAssetCard from "./NftAssetCard.vue";
+import TablePagination from "./TablePagination.vue";
 export default {
   name: "NftCollectionsView",
-  components: { NftAssetCard },
+  components: { NftAssetCard, TablePagination },
   props: {
     // eslint-disable-next-line vue/require-default-prop
     setCollectionName: Function,
@@ -207,24 +164,6 @@ export default {
 #nft-wallet-view {
   .el-select .el-input__inner {
     border-radius: 24px;
-  }
-  #pagination {
-    margin-top: 32px;
-    padding: 20px 0 8px 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-top: 2px solid rgba(25, 27, 31, 0.05);
-    .el-button {
-      width: 42px;
-      height: 42px;
-      color: rgba(25, 27, 31, 0.5);
-      padding: 13px;
-      background: rgba(25, 27, 31, 0.04);
-      border: 1px solid rgba(25, 27, 31, 0.2);
-      box-sizing: border-box;
-      border-radius: 8px;
-    }
   }
 }
 </style>

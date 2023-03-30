@@ -1,7 +1,8 @@
 // import axios from "axios";
 import BigNumber from "bignumber.js";
 import ipfs from "./ipfs";
-import queryDipdup from "./queryDipdup";
+// import queryDipdup from "./queryDipdup";
+import teztools from "./teztools";
 // import teztools from "./teztools";
 import tzkt from "./tzkt";
 
@@ -171,6 +172,8 @@ export default {
       }
     }
 
+    console.log("userStakes", userStake);
+
     const stakeData = await sumStake(userStake);
 
     return stakeData;
@@ -231,7 +234,7 @@ export default {
 
     const [tokenMetaData, { data: dataObjs }, { data: stakeLockPack }] =
       await Promise.all([
-        queryDipdup.getTokenPriceAndData(`${dogami.FA12TokenContract}_0`),
+        teztools.getTokenPrice(`${dogami.FA12TokenContract}`),
         await tzkt.getContractBigMapKeys(
           process.env.VUE_APP_DOGAMI_STAKE,
           "addressId",
@@ -243,6 +246,8 @@ export default {
           { key: pkh, active: "true" }
         ),
       ]);
+
+    console.log("Got Here...", tokenMetaData);
 
     if (dataObjs.length > 0) {
       const [{ value: addressId }] = dataObjs;
@@ -323,7 +328,8 @@ export default {
       }
     }
 
-    return sumStake(userStakes);
+    const stakeData = await sumStake(userStakes);
+    return stakeData;
   },
 
   async getGIFStake(pkh) {
@@ -334,7 +340,7 @@ export default {
     );
 
     const [poolToken, xtzUsd, { data: dataObjs }] = await Promise.all([
-      queryDipdup.getTokenPriceAndData(`${gif.staking.gif.address}_0`),
+      teztools.getTokenPrice(`${gif.staking.gif.address}_0`),
       await tzkt.getXtzUsdPrice(),
       await tzkt.getContractBigMapKeys(
         process.env.VUE_APP_GIF_STAKE,
@@ -415,7 +421,9 @@ export default {
         });
       }
     }
-    return sumStake(userStakes);
+
+    const stakeData = await sumStake(userStakes);
+    return stakeData;
   },
 
   // NO Claimable

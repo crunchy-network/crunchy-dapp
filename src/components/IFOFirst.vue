@@ -9,7 +9,7 @@
         />
       </div>
       <div class="launch-date-container">
-        <span style="color: #8c8d8f; margin-right: 15px"
+        <span style="color: var(--color-subheading-text); margin-right: 15px"
           >{{ getLaunchText(project.startTime) }}
         </span>
         <span>{{ project.startTime | moment("calendar") }}</span>
@@ -50,7 +50,7 @@ export default {
 <style lang="scss" scoped>
 p {
   font-size: 14px;
-  color: rgb(117, 118, 121);
+  color: var(--color-text);
 }
 .el-button {
   font-weight: bold;

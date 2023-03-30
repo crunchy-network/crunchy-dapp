@@ -25,6 +25,11 @@
             round
             type="primary"
             plain
+            style="
+              background: var(--wallet-background) !important;
+              border: 0.5px solid #555cff;
+              color: var(--alt-btn-color) !important; ;
+            "
             icon="fa-sharp fa-solid fa-arrow-left"
             >{{ " " }}BACK
           </el-button>
@@ -53,9 +58,8 @@
               "
             ></el-avatar>
             <a
-              class="token-header"
               style="
-                color: #555cff;
+                color: var(--primary-text);
                 text-decoration: none;
                 font-weight: 600;
                 font-size: 20px;
@@ -311,7 +315,7 @@ export default {
   }
 }
 @media (max-width: 993px) {
-  .token-header{
+  .token-header {
     font-size: 14px !important;
   }
 }

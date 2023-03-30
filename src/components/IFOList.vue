@@ -31,10 +31,9 @@
                     type="flex"
                     align="middle"
                     style="
-                      color: #757679;
                       font-size: 14px;
                       font-weight: 600;
-                      border-bottom: 2px solid #f4f4f4;
+                      border-bottom: var(--line-border);
                       padding-bottom: 14px;
                       margin-bottom: 14px;
                     "
@@ -44,7 +43,10 @@
                         :gutter="20"
                         type="flex"
                         align="middle"
-                        style="padding: 0 20px"
+                        style="
+                          padding: 0 20px;
+                          color: var(--color-subheading-text);
+                        "
                       >
                         <el-col :span="7">Pool</el-col>
                         <el-col :span="7" style="text-align: right"
@@ -92,7 +94,6 @@ export default {
 
 <style>
 .el-row {
-  color: #303133;
   font-size: 14px;
 }
 </style>

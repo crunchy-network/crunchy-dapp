@@ -28,7 +28,7 @@
               </h2>
               <span
                 style="
-                  color: #8c8d8f;
+                  color: var(--color-subheading-text);
                   font-weight: 400;
                   font-size: 16px;
                   line-height: 24px;
@@ -49,8 +49,8 @@
                 <el-card class="box-card" shadow="always" style="height: 100%">
                   <h2
                     style="
-                      color: #191b1f;
-                      opacity: 0.4;
+                      color: var(--color-subheading-text);
+
                       font-size: 14px;
                       margin: 0;
                     "
@@ -79,8 +79,8 @@
                 <el-card class="box-card" shadow="always" style="height: 100%">
                   <h2
                     style="
-                      color: #191b1f;
-                      opacity: 0.4;
+                      color: var(--color-subheading-text);
+
                       font-size: 14px;
                       margin: 0;
                     "
@@ -109,15 +109,15 @@
                 <el-card class="box-card" shadow="always" style="height: 100%">
                   <h2
                     style="
-                      color: #191b1f;
-                      opacity: 0.4;
+                      color: var(--color-subheading-text);
+
                       font-size: 14px;
                       margin: 0;
                     "
                   >
                     Tokens Tracked
                   </h2>
-                  <div
+                  <p
                     style="
                       font-weight: 700;
                       font-size: 24px;
@@ -127,7 +127,7 @@
                     "
                   >
                     {{ getTrackerData.tokensTracked }}
-                  </div>
+                  </p>
                 </el-card>
               </div>
             </el-col>
@@ -136,15 +136,15 @@
                 <el-card class="box-card" shadow="always" style="height: 100%">
                   <h2
                     style="
-                      color: #191b1f;
-                      opacity: 0.4;
+                      color: var(--color-subheading-text);
+
                       font-size: 14px;
                       margin: 0;
                     "
                   >
                     DEX’s Tracked
                   </h2>
-                  <div
+                  <p
                     style="
                       font-weight: 700;
                       font-size: 24px;
@@ -154,7 +154,7 @@
                     "
                   >
                     {{ getTrackerData.dexCovered }}
-                  </div>
+                  </p>
                 </el-card>
               </div>
             </el-col>
@@ -173,6 +173,12 @@
                   :value="tokenTracker.searchInput"
                   placeholder="Search tokens"
                   prefix-icon="fa-solid fa-magnifying-glass"
+                  class="el-card is-always-shadow"
+                  style="
+                    border-radius: 24px !important;
+                    border: 0 !important;
+                    background: var(--background-card) !important;
+                  "
                   @input="updateSearchInput"
                 >
                 </el-input></div
@@ -198,7 +204,7 @@
                 align="middle"
                 class="header-row-wrap"
                 style="
-                  border-bottom: 2px solid #f4f4f4;
+                  border-bottom: var(--line-border);
                   padding-bottom: 14px;
                   margin-bottom: 14px;
                   min-width: 900px;
@@ -209,7 +215,7 @@
                     :gutter="20"
                     type="flex"
                     align="middle"
-                    style="padding: 0 20px"
+                    style="padding: 0 20px; color: var(--color-subheading-text)"
                   >
                     <el-col style="text-align: right" :span="1"> </el-col>
                     <el-col :span="23">
@@ -348,65 +354,15 @@
                 :key="index"
                 :asset="token"
               />
-              <div id="pagination">
-                <el-button
-                  :disabled="currentPage === 0"
-                  style="margin-right: 12px"
-                  @click="handleStart"
-                >
-                  <i class="fal fa-angle-left"></i>
-                  <i class="fal fa-angle-left"></i>
-                </el-button>
-                <el-button
-                  :disabled="currentPage === 0"
-                  @click="handlePrevPage"
-                >
-                  <i class="fal fa-angle-left"></i>
-                </el-button>
-
-                <h2
-                  style="
-                    font-weight: 800;
-                    font-size: 14px;
-                    color: #191b1f;
-                    opacity: 0.5;
-                    margin: 0 19px;
-                  "
-                >
-                  {{
-                    vueNumberFormat(nextPage > pages ? pages : nextPage, {
-                      prefix: "",
-                      decimal: ".",
-                      thousand: ",",
-                      precision: 0,
-                    })
-                  }}
-                  out of
-                  {{
-                    vueNumberFormat(pages, {
-                      prefix: "",
-                      decimal: ".",
-                      thousand: ",",
-                      precision: 0,
-                    })
-                  }}
-                </h2>
-                <el-button
-                  :disabled="nextPage + 1 > pages"
-                  @click="handleNextPage"
-                >
-                  <i class="fal fa-angle-right"></i>
-                </el-button>
-
-                <el-button
-                  :disabled="nextPage + 1 > pages"
-                  style="margin-left: 12px"
-                  @click="handleEnd"
-                >
-                  <i class="fal fa-angle-right"></i>
-                  <i class="fal fa-angle-right"></i>
-                </el-button>
-              </div>
+              <table-pagination
+                :current-page="currentPage"
+                :next-page="nextPage"
+                :pages="pages"
+                :handle-next-page="handleNextPage"
+                :handle-prev-page="handlePrevPage"
+                :handle-start="handleStart"
+                :handle-end="handleEnd"
+              />
             </div>
           </div>
         </el-card>
@@ -423,6 +379,7 @@ import numberFormat from "../utils/number-format";
 import PriceFormat from "./PriceFormat.vue";
 import _ from "lodash";
 import SortArrowIndicator from "./SortArrowIndicator.vue";
+import TablePagination from './TablePagination.vue';
 
 export default {
   name: "TokenTracker",
@@ -431,6 +388,7 @@ export default {
     NavMenu,
     PriceFormat,
     SortArrowIndicator,
+    TablePagination,
   },
   data() {
     return {
@@ -598,124 +556,100 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import "../crunchy-variables.scss";
 @import "~element-ui/packages/theme-chalk/src/common/var";
 
-.el-divider--vertical {
-  height: 120% !important;
-}
-
-.el-card.top {
-  box-shadow: unset !important;
-  padding-left: 20px;
-}
-
-.tab-wrapper {
-  display: flex;
-  align-items: flex-start;
-}
-
-.tab-text {
-  min-width: 100px;
-  text-align: center;
-  padding: 2px 20px;
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 24px;
-  text-align: center;
-  text-transform: capitalize;
-  color: #757679;
-  cursor: pointer;
-  transition: 0.3s ease all;
-  margin: 0;
-  border: 0;
-  border-bottom: 3px solid transparent;
-  background: transparent;
-  &:disabled {
-    color: #191b1f66;
-    cursor: not-allowed;
+#token-tracker {
+  .el-divider--vertical {
+    height: 120% !important;
   }
-}
 
-.divider {
-  opacity: 0.26;
-}
-
-.divider .el-divider.el-divider--horizontal {
-  margin: 0 !important;
-}
-
-#pagination {
-  margin-top: 32px;
-  padding: 20px 0 8px 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-top: 2px solid rgba(25, 27, 31, 0.05);
-  .el-button {
-    width: 42px;
-    height: 42px;
-    color: rgba(25, 27, 31, 0.5);
-    padding: 13px;
-    background: rgba(25, 27, 31, 0.04);
-    border: 1px solid rgba(25, 27, 31, 0.2);
-    box-sizing: border-box;
-    border-radius: 8px;
+  .el-card.top {
+    box-shadow: unset !important;
+    padding-left: 20px;
   }
-}
 
-.header-row-wrap .wrap-sort-icon {
-  color: #757679;
-  font-size: 14px;
-  font-weight: 600;
-  align-items: center;
-  background: transparent;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  width: 100%;
-  height: 100%;
-
-  &:hover {
-    color: #191b1f;
-    transition: 0.2s ease-in-out color;
+  .divider {
+    opacity: 0.26;
   }
-}
-.el-input__inner {
-  border-radius: 28px;
-}
 
-.tab-select-element {
-  display: none;
-  width: 100%;
-}
+  .divider .el-divider.el-divider--horizontal {
+    margin: 0 !important;
+  }
 
-.show-md {
-  display: none;
-}
+  .header-row-wrap .wrap-sort-icon {
+    color: var(--color-subheading-text);
+    font-size: 14px;
+    font-weight: 600;
+    align-items: center;
+    background: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
 
-.hide-md {
-  display: block;
-}
+    &:hover {
+      color: var(--color-subheading-text);
+      transition: 0.2s ease-in-out color;
+    }
+  }
 
-@media (max-width: 993px) {
+  input.el-input__inner {
+    border-radius: 28px;
+    /* background: var(--background-color) !important; */
+    color: var(--primary-text) !important;
+    border: var(--line-border) !important;
+    transition: 0.13s ease border-color;
+    &::placeholder {
+      color: var(--color-subheading-text) !important;
+    }
+
+    &:hover {
+      border-color: var(--primary-text) !important;
+    }
+
+    &:focus {
+      border-color: #555cff !important;
+    }
+  }
+
+  .el-input__icon {
+    color: var(--color-subheading-text) !important;
+  }
+
+  .tab-select-element {
+    display: none;
+    width: 100%;
+  }
+
   .show-md {
-    display: block;
+    display: none;
   }
 
   .hide-md {
-    display: none;
-  }
-}
-
-@media (max-width: 600px) {
-  .tab-select-element {
     display: block;
   }
 
-  .tab-custom-element {
-    display: none;
+  @media (max-width: 993px) {
+    .show-md {
+      display: block;
+    }
+
+    .hide-md {
+      display: none;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .tab-select-element {
+      display: block;
+    }
+
+    .tab-custom-element {
+      display: none;
+    }
   }
 }
 </style>

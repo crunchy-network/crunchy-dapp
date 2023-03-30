@@ -15,6 +15,7 @@
       :number="value.toString()"
       :dp="0.00000001"
     ></number-tooltip>
+    
     <slot />
   </h2>
 </template>
@@ -52,7 +53,7 @@ export default {
     },
     color: {
       type: String,
-      default: "#303133",
+      default: "var(--primary-text)",
     },
     shortHand: {
       type: Boolean,

@@ -19,7 +19,7 @@
                 :gutter="20"
                 type="flex"
                 align="middle"
-                style="padding: 0 20px; color: #757679"
+                style="padding: 0 20px; color: var(--color-subheading-text)"
               >
                 <el-col :span="2">#</el-col>
                 <el-col :span="7">Exchange</el-col>
@@ -64,7 +64,7 @@
                             font-size: 14px;
                             line-height: 19px;
                             letter-spacing: 0.02em;
-                            color: #555cff;
+                            color: var(--link-btn-color);
                             text-decoration: none;
                           "
                         >
@@ -72,9 +72,9 @@
                         </a>
                       </el-row></el-col
                     >
-                    <el-col style="text-align: right" :span="5">{{
-                      item.symbol
-                    }}</el-col>
+                    <el-col style="text-align: right" :span="5"
+                      ><p>{{ item.symbol }}</p></el-col
+                    >
                     <el-col style="text-align: right" :span="5">
                       <price-format
                         prefix="$"
@@ -95,7 +95,7 @@
                         :value="item.lpPrice"
                         :usd-value="item.lpPriceUsd"
                       />
-                    </el-col> 
+                    </el-col>
                   </el-row>
                 </div>
               </el-col>
@@ -142,7 +142,7 @@ export default {
     handleDexUri(dex = "") {
       switch (dex?.toLowerCase()) {
         case "plenty network":
-          return "https://res.cloudinary.com/melvin-manni/image/upload/v1645292809/nstgjnest4jrhcsgwymf.png";
+          return "https://res.cloudinary.com/melvin-manni/image/upload/v1677417526/nstgjnest4jrhcsgwymf.png";
 
         case "quipuswap":
           return "https://res.cloudinary.com/melvin-manni/image/upload/v1645292809/c1rutxlzllilmtuibcdo.png";

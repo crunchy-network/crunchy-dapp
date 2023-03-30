@@ -35,7 +35,10 @@
               >
                 {{ asset.asset }}
               </a>
-              <span v-if="asset.contract === 'tez'">
+              <span
+                v-if="asset.contract === 'tez'"
+                style="color: var(--primary-text)"
+              >
                 {{ asset.asset }}
               </span>
             </el-row>
@@ -179,7 +182,7 @@
 
 <script>
 import { mapGetters } from "vuex";
-import NumberFormat from './NumberFormat.vue';
+import NumberFormat from "./NumberFormat.vue";
 import PriceFormat from "./PriceFormat.vue";
 export default {
   name: "PortfolioWalletRow",

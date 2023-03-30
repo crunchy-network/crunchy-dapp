@@ -3,10 +3,10 @@
     :style="`font-weight: ${fontWeight} !important; font-size: ${handleFontSize()}px !important; line-height: ${lineHeight}; color: ${color};`"
   >
     {{
-      vueNumberFormat(shortHand ? numShorthand().value : value, {
+      vueNumberFormat(shortHand ? numShorthand().value : numValue(), {
         prefix: customSetting
           ? prefix
-          : !usdValue || !getShowUsd
+          : (!usdValue && usdValue !== 0) || !getShowUsd
           ? prefix.replace("$", "")
           : getShowUsd && prefix.includes("$")
           ? prefix
@@ -16,7 +16,7 @@
         suffix: `${shortHand && numShorthand().suffix}${
           customSetting
             ? suffix
-            : getShowUsd || !value
+            : getShowUsd || (!value && value !== 0)
             ? suffix.replace("ꜩ", "")
             : !getShowUsd && suffix.includes("ꜩ")
             ? suffix
@@ -30,7 +30,13 @@
       })
     }}
     <number-tooltip
-      :number="getShowUsd ? usdValue.toString() : value.toString()"
+      v-if="!getShowUsd"
+      :number="value.toString()"
+      :dp="0.00000001"
+    ></number-tooltip>
+    <number-tooltip
+      v-else
+      :number="value.toString()"
       :dp="0.00000001"
     ></number-tooltip>
     <slot />
@@ -76,7 +82,7 @@ export default {
     },
     color: {
       type: String,
-      default: "#303133",
+      default: "var(--primary-text)",
     },
     shortHand: {
       type: Boolean,
@@ -151,8 +157,16 @@ export default {
 
     numShorthand() {
       return numberFormat.shorthand(
-        this.getShowUsd && this.usdValue ? this.usdValue : this.value
+        this.getShowUsd && (this.usdValue || this.usdValue === 0)
+          ? this.usdValue
+          : this.value
       );
+    },
+
+    numValue() {
+      return this.getShowUsd && (this.usdValue || this.usdValue === 0)
+        ? this.usdValue
+        : this.value;
     },
   },
 };

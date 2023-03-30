@@ -2,7 +2,7 @@
   <el-card
     v-loading="loading"
     shadow="never"
-    style="border: 0"
+    style="border: 0 !important; background: transparent !important"
     body-style="
         display: flex;
         align-items: center;
@@ -10,6 +10,7 @@
         width: fit-content;
         row-gap: 5px;
         padding: 0;
+        
       "
   >
     <el-avatar
@@ -17,12 +18,16 @@
       fit="cover"
       shape="circle"
       :size="30"
-      style="position: relative; border: 4px solid #fff; vertical-align: middle"
+      style="
+        position: relative;
+        border: 4px solid #fff;
+        vertical-align: middle;
+        margin-right: 5px;
+      "
     ></el-avatar>
     <price-format
       :value="currentPrice"
       :usd-value="currentPriceUsd"
-      color=" #191b1f"
       :font-size="16"
       :font-weight="500"
       line-height="24px"
