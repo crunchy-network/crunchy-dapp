@@ -88,7 +88,8 @@ body,
 
 * {
   font-family: "Poppins";
-  transition: 0.17s ease-in-out all !important;
+  transition: 0.17s ease-in-out color, 0.17s ease-in-out background-color,
+    0.17s ease-in-out border-color;
 }
 
 body {
