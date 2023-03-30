@@ -167,9 +167,8 @@
                     round
                     plain
                     type="primary"
+                    class="btn-alt__3"
                     style="
-                      background: #eeefff;
-                      color: #555cff;
                       font-weight: 700;
                       text-transform: uppercase;
                     "
