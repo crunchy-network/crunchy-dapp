@@ -1031,13 +1031,17 @@ html[data-theme="dark"] {
       color: var(--primary-text);
     }
 
+    &.current .cell {
+      color: #555cff !important;
+    }
+
     &.disabled,
     &.disabled:hover {
       .cell {
         color: var(--color-subheading-text);
+        opacity: 0.4;
+        background: var(--badge-background);
       }
-      background: var(--badge-background);
-      opacity: 0.4;
     }
 
     &:hover {
