@@ -282,6 +282,7 @@
               placeholder="Search farms and pools"
               prefix-icon="fad fa-search"
               class="el-card is-always-shadow"
+              style="border: 0 !important"
               @input="updateSearchInput"
             >
             </el-input></div

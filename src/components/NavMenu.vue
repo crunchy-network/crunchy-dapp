@@ -362,6 +362,22 @@ export default {
         this.$refs.menu.close(2);
       }
     },
+    "$route.name": function (val) {
+      if (
+        [
+          "wtz",
+          "deep-freezer-listing",
+          "deep-freezer-item",
+          "ifo-pixel-priv",
+          "ifo-list",
+          "ifo",
+          "farm-listing",
+          "farm-create",
+          "fire-pit",
+        ].includes(this.$route.name)
+      )
+        this.defiActive = true;
+    },
     windowWidth() {
       this.screenCheck();
     },
@@ -373,6 +389,22 @@ export default {
     });
   },
   mounted() {
+    console.log("--------");
+    console.log(
+      "--------",
+      [
+        "wtz",
+        "deep-freezer-listing",
+        "deep-freezer-item",
+        "ifo-pixel-priv",
+        "ifo-list",
+        "ifo",
+        "farm-listing",
+        "farm-create",
+        "fire-pit",
+      ].includes(this.$route.name)
+    );
+    console.log("--------");
     this.openSubmenu();
     this.screenCheck();
     console.log(this.defiActive);
@@ -391,21 +423,30 @@ export default {
         this.showMenu = !this.showMenu;
       }
     },
+    handleDefiActive() {
+      this.defiActive = [
+        "wtz",
+        "deep-freezer-listing",
+        "deep-freezer-item",
+        "ifo-pixel-priv",
+        "ifo-list",
+        "ifo",
+        "farm-listing",
+        "farm-create",
+        "fire-pit",
+      ].includes(this.$route.name);
+    },
     openSubmenu(index) {
+      this.handleDefiActive();
       if (
         this.$route.name !== "home-view-wallet" &&
         this.$route.name !== "home" &&
         this.$route.name !== "home-view-portfolio" &&
         this.$route.name === "token-tracker-item"
       ) {
-        this.defiActive = true;
-
         if (window.innerWidth < 992) {
           return this.$refs.menu.open(1);
         }
-      } else {
-        this.defiActive = false;
-        return null;
       }
     },
   },

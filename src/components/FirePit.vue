@@ -257,6 +257,13 @@ export default {
 <style lang="scss" scoped>
 @import "../crunchy-variables.scss";
 @import "~element-ui/packages/theme-chalk/src/common/var";
+html[data-theme="dark"] {
+  .fire-pit {
+    &:before {
+      color: var(--border-color) !important ;
+    }
+  }
+}
 
 #fire-pit {
   position: relative;

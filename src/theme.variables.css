@@ -24,31 +24,37 @@ html[data-theme="dark"] {
   --pagination-background: rgba(232, 232, 232, 0.04);
   --portfolio-vector: #fff;
   --portfolio-vector-bg: #696969;
-  --portfolio-vector-banner: #529AA4;
-  --portfolio-vector-banner-stroke: #026C7F;
+  --portfolio-vector-banner: #529aa4;
+  --portfolio-vector-banner-stroke: #026c7f;
+  --badge-background: #2a2c33;
+  --badge-border-color: transparent;
   --btn-alt-bg: transparent;
   --btn-alt-color: var(--color-alt-btn);
-  --btn-alt-hover-color: #FFFFFF;
+  --btn-alt-hover-color: #ffffff;
   --btn-alt-hover: var(--color-alt-btn);
   --btn-alt-border: 1px solid var(--color-alt-btn);
-  --btn-alt-1-bg: #35373D;
-  --btn-alt-1-color: #FFFFFF;
-  --btn-alt-1-hover-color: #FFFFFF;
+  --btn-alt-1-bg: #35373d;
+  --btn-alt-1-color: #ffffff;
+  --btn-alt-1-hover-color: #ffffff;
   --btn-alt-1-hover: #909399;
   --btn-alt-1-border: var(--line-border);
-  --btn-alt-2-bg: #2A2C33;
-  --btn-alt-2-color: #FFFFFF;
-  --btn-alt-2-hover-color: #FFFFFF;
+  --btn-alt-2-bg: #2a2c33;
+  --btn-alt-2-color: #ffffff;
+  --btn-alt-2-hover-color: #ffffff;
   --btn-alt-2-hover: #909399;
   --btn-alt-2-border: 1px solid #757679;
-  --btn-alt-3-bg: transparent;  
-  --btn-alt-3-color: #FFFFFF;
-  --btn-alt-3-hover-color: #FFFFFF;
-  --btn-alt-3-hover: #555CFF;
-  --btn-alt-3-border: 1px solid #555CFF;
-  --btn-text-color: #555CFF;
-  --btn-text-hover-color: #787EFF;
-
+  --btn-alt-3-bg: transparent;
+  --btn-alt-3-color: #ffffff;
+  --btn-alt-3-hover-color: #ffffff;
+  --btn-alt-3-hover: #555cff;
+  --btn-alt-3-border: 1px solid #555cff;
+  --btn-alt-4-bg: transparent;
+  --btn-alt-4-color: #ff4d4b;
+  --btn-alt-4-hover-color: #ffffff;
+  --btn-alt-4-hover: #ff4d4b;
+  --btn-alt-4-border: 1px solid #ff4d4b;
+  --btn-text-color: #555cff;
+  --btn-text-hover-color: #787eff;
 }
 
 html[data-theme="light"] {
@@ -77,32 +83,38 @@ html[data-theme="light"] {
   --pagination-background: rgba(117, 118, 121, 0.04);
   --portfolio-vector: #191b1f;
   --portfolio-vector-bg: #fff;
-  --portfolio-vector-banner: #76E5F4;
-  --portfolio-vector-banner-stroke: #00C3E5;
-  --btn-alt-bg: #E9F9F2;
+  --portfolio-vector-banner: #76e5f4;
+  --portfolio-vector-banner-stroke: #00c3e5;
+  --badge-background: #e9f9f2;
+  --badge-border-color: #a5e7cc;
+  --btn-alt-bg: #e9f9f2;
   --btn-alt-color: var(--color-alt-btn);
-  --btn-alt-hover-color: #FFFFFF;
+  --btn-alt-hover-color: #ffffff;
   --btn-alt-hover: var(--color-alt-btn);
   --btn-alt-border: 1px solid var(--color-alt-btn);
-  --btn-alt-1-bg: #EEEFFF;
-  --btn-alt-1-color: #555CFF;
-  --btn-alt-1-hover-color: #FFFFFF;
-  --btn-alt-1-hover: #555CFF;
-  --btn-alt-1-border:  0.5px solid #555CFF;
-  --btn-alt-2-bg: #F4F4F5;
-  --btn-alt-2-color: #96999F;
-  --btn-alt-2-hover-color: #FFFFFF;
-  --btn-alt-2-hover: #96999F;
-  --btn-alt-2-border:  1px solid #96999F;
-  --btn-alt-3-bg: #EEEFFF;
-  --btn-alt-3-color: #555CFF;
-  --btn-alt-3-hover-color: #FFFFFF;
-  --btn-alt-3-hover: #555CFF;
-  --btn-alt-3-border:  0.5px solid #555CFF;
-  --btn-text-color: #555CFF;
-  --btn-text-hover-color: #787EFF;
+  --btn-alt-1-bg: #eeefff;
+  --btn-alt-1-color: #555cff;
+  --btn-alt-1-hover-color: #ffffff;
+  --btn-alt-1-hover: #555cff;
+  --btn-alt-1-border: 0.5px solid #555cff;
+  --btn-alt-2-bg: #f4f4f5;
+  --btn-alt-2-color: #96999f;
+  --btn-alt-2-hover-color: #ffffff;
+  --btn-alt-2-hover: #96999f;
+  --btn-alt-2-border: 1px solid #96999f;
+  --btn-alt-3-bg: #eeefff;
+  --btn-alt-3-color: #555cff;
+  --btn-alt-3-hover-color: #ffffff;
+  --btn-alt-3-hover: #555cff;
+  --btn-alt-3-border: 0.5px solid #555cff;
+  --btn-alt-4-bg: transparent;
+  --btn-alt-4-color: #ff4d4b;
+  --btn-alt-4-hover-color: #ffffff;
+  --btn-alt-4-hover: #ff4d4b;
+  --btn-alt-4-border: 1px solid #ff4d4b;
+  --btn-text-color: #555cff;
+  --btn-text-hover-color: #787eff;
 }
-
 
 .fw__1 {
   font-weight: 100 !important;
@@ -166,6 +178,18 @@ html[data-theme="light"] {
 
 .fs__24 {
   font-size: 24px !important;
+}
+
+.fs__26 {
+  font-size: 26px !important;
+}
+
+.fs__28 {
+  font-size: 28px !important;
+}
+
+.fs__32{
+  font-size: 32px !important;
 }
 
 .mt__24 {
@@ -248,13 +272,8 @@ html[data-theme="light"] {
   color: var(--danger-text) !important;
 }
 
-.row__center{
+.row__center {
   display: flex;
   justify-content: center;
   align-items: center;
 }
-
-/* html[data-theme="dark"] .el-avatar.el-avatar--circle {
-  background-color: transparent !important;
-  border-color: transparent !important;
-} */

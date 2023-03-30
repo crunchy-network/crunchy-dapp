@@ -40,7 +40,7 @@
         </el-col>
       </el-row>
 
-      <el-row :gutter="20" type="flex" align="top" style="margin-top: 25px">
+      <el-row :gutter="20" type="flex" align="stretch" style="margin-top: 25px">
         <el-col :span="16">
           <div class="grid-content">
             <el-card class="box-card" shadow="always">
@@ -141,11 +141,12 @@
 
                     <template v-if="mode === 'burn'">
                       <el-avatar
-                        src="https://nftstorage.link/ipfs/bafybeidwsid6fvv4vxbqja7er3b4exsht5r7umv6hpz7rc3ujg7xilhwv4"
                         shape="circle"
                         :size="38"
                         style="position: absolute; top: 0; right: 10px"
-                      ></el-avatar>
+                      >
+                        <img src="../assets/wtz-icon.png" alt="" />
+                      </el-avatar>
                       <el-form-item
                         key="input-wtz"
                         :label="`1 WTZ = ${calcWtzToXtz(1)} XTZ`"
@@ -186,7 +187,7 @@
                         </el-input>
                       </el-form-item>
                       <div
-                        class="current-balance"
+                        class="current-balance _info-card"
                         style="
                           border-radius: 22px;
                           background: #ffeecc;
@@ -201,13 +202,13 @@
                           <el-col
                             :span="8"
                             style="color: #8c8477; font-size: 12px"
+                            class="_info-card__title"
                             >BALANCE</el-col
                           >
                           <el-col
                             :span="16"
                             style="
                               font-size: 12px;
-                              color: #303133;
                               font-weight: 600;
                               text-align: right;
                             "
@@ -231,11 +232,12 @@
 
                     <template v-if="mode === 'mint'">
                       <el-avatar
-                        src="https://nftstorage.link/ipfs/bafybeidwsid6fvv4vxbqja7er3b4exsht5r7umv6hpz7rc3ujg7xilhwv4"
                         shape="circle"
                         :size="38"
                         style="position: absolute; top: 0; right: 10px"
-                      ></el-avatar>
+                      >
+                        <img src="../assets/wtz-icon.png" alt="" />
+                      </el-avatar>
                       <el-form-item
                         label="Fee: 0.0%"
                         style="margin-bottom: 24px"
@@ -368,8 +370,7 @@
               </div>
               <h2
                 style="
-                  color: #191b1f;
-                  opacity: 0.4;
+                  color: var(--color-subheading-text);
                   font-size: 14px;
                   margin-bottom: 0px;
                 "

@@ -88,7 +88,8 @@ body,
 
 * {
   font-family: "Poppins";
-  /*  transition: 0.1s ease all;*/
+  transition: 0.17s ease-in-out color, 0.17s ease-in-out background-color,
+    0.17s ease-in-out border-color;
 }
 
 body {
@@ -618,9 +619,17 @@ header .grid-content button.el-button {
 
 .el-menu.el-menu--popup,
 .el-select-dropdown,
-.el-dialog {
+.el-dialog,
+.el-autocomplete-suggestion {
   background-color: var(--background-card) !important;
   border: var(--line-border) !important;
+}
+
+.el-autocomplete-suggestion ul li {
+  color: var(--primary-text) !important;
+  &:hover {
+    background-color: var(--table-row-hover) !important;
+  }
 }
 
 .el-dialog__title {
@@ -698,13 +707,19 @@ button {
 }
 
 .el-picker-panel,
-.el-picker-panel__footer {
+.el-picker-panel__footer,
+.el-time-panel {
   background: var(--background-card) !important;
   border: var(--line-border) !important;
   color: var(--primary-text) !important;
 }
 
-.el-date-table td.available {
+.el-time-spinner__item {
+  color: var(--color-subheading-text) !important;
+}
+
+.el-date-table td.available,
+.el-time-spinner__item.active {
   color: var(--primary-text) !important;
 }
 
@@ -774,6 +789,16 @@ input {
   }
 }
 
+.btn-alt__4 {
+  background: var(--btn-alt-4-bg) !important;
+  color: var(--btn-alt-4-color) !important;
+  border: var(--btn-alt-4-border) !important;
+  &:hover {
+    background: var(--btn-alt-4-hover) !important;
+    color: var(--btn-alt-4-hover-color) !important;
+  }
+}
+
 .btn-text__ {
   background: transparent !important;
   color: var(--btn-text-color) !important;
@@ -834,20 +859,79 @@ input {
   padding: 10px 20px;
   word-break: keep-all;
 }
-/* 
+
+.el-picker-panel__footer .el-button:nth-child(2) {
+  background: #555cff !important;
+  color: #fff !important;
+  border-color: #555cff !important;
+}
+
+.el-date-range-picker__time-header,
+.el-date-range-picker__content.is-left,
+.el-date-picker__time-header {
+  border-color: var(--border-color) !important;
+}
+
+.el-date-range-picker__header,
+.el-date-picker__header {
+  * {
+    color: var(--primary-text) !important;
+  }
+}
+
+/*
 * Light Theme
 */
 html[data-theme="light"] {
+  .el-select__tags .el-tag.el-tag--info {
+    background: rgba(0, 0, 0, 0.08) !important;
+    border: 0 !important;
+    color: rgba(0, 0, 0, 0.87);
+    i {
+      background: #9e9e9e;
+      color: #4a4a4a;
+    }
+  }
+
   .lock-display {
     background: #f4f4f5;
   }
 }
 
-/* 
+/*
 * Dark Theme
 */
 
 html[data-theme="dark"] {
+  .el-select__tags .el-tag.el-tag--info {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border: 0 !important;
+    color: #ffffff;
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    i {
+      background: #9e9e9e;
+      color: #4a4a4a;
+    }
+  }
+
+  .el-date-table th,
+  .el-time-panel__footer,
+  .el-time-panel__content::after,
+  .el-time-panel__content::before {
+    border-color: var(--border-color) !important;
+  }
+
+  .el-date-table td.disabled div {
+    background-color: transparent !important;
+    opacity: 0.4;
+  }
+
+  .el-date-table .available .in-range {
+    background: #303135;
+  }
+
   ._info-card {
     background: #303135 !important;
     color: #ffffff;
@@ -857,8 +941,10 @@ html[data-theme="dark"] {
     color: #97989a;
   }
 
-  ._action-btn {
-    background: #2a2c33;
+  ._action-btn,
+  ._action-btn.is-disabled,
+  ._action-btn.is-disabled:hover {
+    background: #2a2c33 !important;
     color: #d4d5d6;
   }
 
@@ -886,6 +972,104 @@ html[data-theme="dark"] {
 
   .el-loading-mask {
     background: rgba(25, 27, 31, 0.9);
+  }
+
+  path.el-progress-circle__track {
+    stroke: var(--border-color) !important;
+  }
+
+  .el-popper[x-placement^="bottom"] .popper__arrow::after {
+    border-bottom-color: var(--background-card) !important;
+  }
+  .el-popper[x-placement^="top"] .popper__arrow::after {
+    border-top-color: var(--background-card) !important;
+  }
+  .el-popper[x-placement^="left"] .popper__arrow::after {
+    border-left-color: var(--background-card) !important;
+  }
+  .el-popper[x-placement^="right"] .popper__arrow::after {
+    border-right-color: var(--background-card) !important;
+  }
+
+  .el-popper[x-placement^="bottom"] .popper__arrow {
+    border-bottom-color: var(--border-color) !important;
+  }
+  .el-popper[x-placement^="left"] .popper__arrow {
+    border-left-color: var(--border-color) !important;
+  }
+  .el-popper[x-placement^="right"] .popper__arrow {
+    border-right-color: var(--border-color) !important;
+  }
+  .el-popper[x-placement^="top"] .popper__arrow {
+    border-top-color: var(--border-color) !important;
+  }
+
+  .el-tag,
+  .el-time-spinner__item:hover:not(.disabled):not(.active) {
+    background: var(--badge-background) !important;
+    border-color: var(--border-color) !important;
+  }
+
+  .el-date-picker__header--bordered {
+    border-color: var(--border-color) !important;
+  }
+
+  .el-time-spinner__item.disabled {
+    opacity: 0.4;
+  }
+
+  .el-time-panel__btn.cancel {
+    color: var(--color-subheading-text) !important;
+  }
+
+  i.el-tooltip {
+    color: var(--color-subheading-text) !important;
+  }
+
+  .el-month-table td,
+  .el-year-table td {
+    .cell {
+      color: var(--color-subheading-text);
+    }
+
+    &.today .cell {
+      color: var(--primary-text);
+    }
+
+    &.current .cell {
+      color: #555cff !important;
+    }
+
+    &.disabled,
+    &.disabled:hover {
+      .cell {
+        color: var(--color-subheading-text);
+        opacity: 0.4;
+        background: var(--badge-background);
+      }
+    }
+
+    &:hover {
+      .cell {
+        color: var(--link-btn-color);
+      }
+    }
+  }
+
+  .el-tooltip__popper[x-placement^="top"] .popper__arrow::after {
+    border-top-color: var(--border-color) !important;
+  }
+
+  .el-tooltip__popper[x-placement^="bottom"] .popper__arrow::after {
+    border-bottom-color: var(--border-color) !important;
+  }
+
+  .el-tooltip__popper[x-placement^="left"] .popper__arrow::after {
+    border-left-color: var(--border-color) !important;
+  }
+
+  .el-tooltip__popper[x-placement^="right"] .popper__arrow::after {
+    border-right-color: var(--border-color) !important;
   }
 }
 </style>

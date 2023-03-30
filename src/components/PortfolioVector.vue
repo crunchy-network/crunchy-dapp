@@ -843,7 +843,7 @@ export default {
     },
     height: {
       type: String,
-      default: "405",
+      default: "355",
       required: false,
     },
   },

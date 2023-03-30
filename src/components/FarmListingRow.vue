@@ -370,7 +370,7 @@
           >
           <el-col
             v-else-if="farm.ended"
-            style="text-align: right; color: #555cff; text-transform: uppercase"
+            style="text-align: right; text-transform: uppercase"
             :span="3"
             >Complete</el-col
           >
@@ -467,12 +467,14 @@
                   }}</el-col>
                   <el-col :span="10">
                     <el-button
-                      type="primary"
                       :disabled="farm.started === false"
                       style="
                         border-radius: 10px;
                         font-weight: bold;
                         width: 100%;
+                        background-color: var(--color-alt-btn) !important;
+                        color: #fff !important;
+                        border: 0;
                       "
                       @click="harvestFarm(farm.id)"
                       >Harvest</el-button
@@ -494,6 +496,9 @@
                         border-radius: 10px;
                         font-weight: bold;
                         width: 100%;
+                        background-color: var(--color-alt-btn) !important;
+                        color: #fff !important;
+                        border: 0;
                       "
                       >Harvest</el-button
                     >
@@ -753,7 +758,6 @@
                   <strong
                     v-if="farm.ended"
                     style="
-                      color: #555cff;
                       font-size: 14px;
                       font-weight: 600;
                       text-transform: uppercase;
@@ -776,9 +780,8 @@
                         icon="far fa-shield-check"
                         style="
                           color: #1ec37f;
-                          background: #e9f9f2;
-                          border-color: #a5e7cc;
-                          border: 1px solid #a5e7cc;
+                          background: var(--badge-background);
+                          border: 1px solid var(--badge-border-color);
                           margin-right: 14px;
                         "
                       ></el-avatar>
@@ -796,9 +799,8 @@
                         icon="far fa-taco"
                         style="
                           color: #1ec37f;
-                          background: #e9f9f2;
-                          border-color: #a5e7cc;
-                          border: 1px solid #a5e7cc;
+                          background: var(--badge-background);
+                          border: 1px solid var(--badge-border-color);
                           margin-right: 14px;
                         "
                       ></el-avatar>
@@ -816,9 +818,8 @@
                         icon="far fa-handshake-alt"
                         style="
                           color: #1ec37f;
-                          background: #e9f9f2;
-                          border-color: #a5e7cc;
-                          border: 1px solid #a5e7cc;
+                          background: var(--badge-background);
+                          border: 1px solid var(--badge-border-color);
                           margin-right: 14px;
                         "
                       ></el-avatar>
@@ -836,9 +837,9 @@
                         icon="fak fa-crunchy-locked"
                         style="
                           color: #1ec37f;
-                          background: #e9f9f2;
-                          border-color: #a5e7cc;
-                          border: 1px solid #a5e7cc;
+                          background: var(--badge-background);
+                          border: 1px solid var(--badge-border-color);
+
                           margin-right: 14px;
                         "
                       ></el-avatar>

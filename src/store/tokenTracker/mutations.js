@@ -71,4 +71,8 @@ export default {
       },
     };
   },
+
+  updateFavoritesList(state, payload) {
+    state.favoritesList = payload;
+  }
 };

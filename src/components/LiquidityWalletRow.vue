@@ -31,7 +31,17 @@
                 <el-col style="text-align: left" :span="4">
                   <el-row type="flex" style="align-items: center">
                     <img
+                      v-if="lp.dex !== 'Quipuswap'"
                       :src="lp.thumbnailUri"
+                      style="
+                        position: relative;
+                        margin-right: 10px;
+                        width: 50px;
+                      "
+                    />
+                    <img
+                      v-else
+                      src="../assets/dex-icons/QuipuSwap.png"
                       style="
                         position: relative;
                         margin-right: 10px;

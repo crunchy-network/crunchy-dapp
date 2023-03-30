@@ -52,8 +52,7 @@ export default {
         dex: "Quipuswap",
         isQuipuLp: true,
         url: "https://quipuswap.com/liquidity/add/tez-KT193D4vozYnhGJQVtw7CoxxqphqUEEwK6Vb_0",
-        thumbnailUri:
-          "https://res.cloudinary.com/melvin-manni/image/upload/v1645292809/c1rutxlzllilmtuibcdo.png",
+        thumbnailUri: "/img/dex-icons/QuipuSwap.png",
         totalValue: 0,
         totalValueUsd: 0,
         positionsCount: 0,
