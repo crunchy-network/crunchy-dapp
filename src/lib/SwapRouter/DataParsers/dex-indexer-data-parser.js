@@ -36,6 +36,10 @@ const getDexName = (dexType) => {
     return "PlentyCtezTez";
   }
 
+  if (dexType === "quipuswap_token2token") {
+    return "QuipuswapTokenToTokenDex";
+  }
+
   return pascalCase(dexType);
 };
 
@@ -174,6 +178,25 @@ const buildQuipuStablePair = (dex, token1Pool, token2Pool) => {
   };
 };
 
+const buildQuipuToken2TokenPair = (dex, inverted = false) => {
+  const aSide = dex.pools[inverted ? 1 : 0];
+  const bSide = dex.pools[inverted ? 0 : 1];
+
+  return {
+    dex: getDexName(dex.dex_type),
+    dexAddress: dex.dex_address,
+    direction: inverted ? "Inverted" : "Direct",
+    a: {
+      ...createSimplePairSide(aSide),
+      precision: getParamValue(aSide.params, "precision"),
+    },
+    b: {
+      ...createSimplePairSide(bSide),
+      precision: getParamValue(bSide.params, "precision"),
+    },
+  };
+};
+
 const buildQuipuStablePairs = (dex) => {
   const pairs = [];
   for (let t1 = 0; t1 < dex.pools.length; t1++) {
@@ -192,10 +215,32 @@ const buildQuipuStablePairs = (dex) => {
   return pairs;
 };
 
+
+const modifyQuipuSwapToken2TokenPair = (dex) => {
+  const removedPoolIds = [];
+  const modifiedPools = dex.pools.filter(function (el) {
+    if (removedPoolIds.includes(el.pool_id)) {
+      return false;
+    }
+    if (config.excludedTokens.includes(el.token.symbol)) {
+      removedPoolIds.push(el.pool_id);
+      return false;
+    }
+    return true;
+  });
+  const { pools, ...rest } = dex;
+  rest.pools = modifiedPools;
+  return rest;
+};
+
 const buildSwapPairs = (dexes) => {
   let pairs = [];
 
-  for (const dex of dexes) {
+  for (let dex of dexes) {
+    if (dex.dex_type === "quipuswap_token2token") {
+      dex = modifyQuipuSwapToken2TokenPair(dex);
+    }
+
     if (shouldSkip(dex)) {
       continue;
     }
@@ -228,6 +273,12 @@ const buildSwapPairs = (dexes) => {
       case "plenty_stable":
         pairs.push(buildPlentyStablePair(dex));
         pairs.push(buildPlentyStablePair(dex, true));
+        break;
+
+      case "quipuswap_token2token":
+        pairs.push(buildQuipuToken2TokenPair(dex));
+        pairs.push(buildQuipuToken2TokenPair(dex, true));
+        console.log(pairs);
         break;
 
       case "quipuswap_stable":
