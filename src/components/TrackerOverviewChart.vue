@@ -78,6 +78,7 @@ export default {
       "getXtzUsdPrice",
       "getXtzUsdHistory",
       "getShowUsd",
+      "getTheme"
     ]),
   },
   watch: {
@@ -98,6 +99,9 @@ export default {
       this.getPrices();
     },
     getShowUsd() {
+      this.getPrices();
+    },
+    getTheme() {
       this.getPrices();
     },
   },
@@ -393,6 +397,13 @@ export default {
         document.getElementById("chart").innerHTML = "";
 
         var chart = createChart(document.getElementById("chart"), {
+          layout:{
+            background:{
+              // type: "solid",
+              color: this.getTheme === "dark" ? "#191B1F" : "#fff",
+            },
+            textColor: this.getTheme === "dark" ? "#fff" : "#191B1F",
+          },
           rightPriceScale: {
             visible: true,
             scaleMargins: {
@@ -411,10 +422,10 @@ export default {
           },
           grid: {
             vertLines: {
-              color: "#f0f3fa",
+              color: this.getTheme === 'dark'? "rgba(240,243,250,0)": "#f0f3fa",
             },
             horzLines: {
-              color: "#f0f3fa",
+              color: this.getTheme === 'dark' ? "rgba(255,255,255,.1)" : "#f0f3fa",
             },
           },
           crosshair: {
@@ -459,7 +470,7 @@ export default {
         toolTip.id = "token-chart-tooltip";
         toolTip.style.background = "white";
         toolTip.style.color = "black";
-        toolTip.style.borderColor = "#555CFF";
+        toolTip.style.borderColor = "var(--color-primary)";
         container.appendChild(toolTip);
         // update tooltip
         chart.subscribeCrosshairMove((param) => {
@@ -478,7 +489,7 @@ export default {
             const price = Number(param.seriesPrices.get(areaSeries)).toFixed(
               this.handlePrecision(param.seriesPrices.get(areaSeries)).precision
             );
-            toolTip.innerHTML = `<div style="color:#555CFF">${
+            toolTip.innerHTML = `<div style="color:var(--color-primary)">${
               this.tokenTracked.symbol || this.tokenTracked.name
             }.</div><div style="font-size: 24px; margin: 0px 0px; color: ${"black"}">
             ${this.getShowUsd ? "$" : ""}${

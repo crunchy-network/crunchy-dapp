@@ -1,5 +1,5 @@
 export default {
-  shorthand(value, decimal = 2) {
+  shorthand(value) {
     const number = Number(value);
     if (isNaN(number)) return { value: 0, suffix: "" };
     if (number < 1000) {

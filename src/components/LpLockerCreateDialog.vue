@@ -13,7 +13,9 @@
       hide-required-asterisk
     >
       <div v-if="step === 1">
-        <p>Search for the LP Pair you want to lock liquidity for.</p>
+        <p style="color: var(--color-subheading-text)">
+          Search for the LP Pair you want to lock liquidity for.
+        </p>
         <el-form-item prop="lpTokenAddress">
           <el-autocomplete
             v-model="form.lpTokenSearch"
@@ -62,7 +64,7 @@
         </div>
         <div
           v-if="form.lpTokenAddress"
-          class="current-balance"
+          class="current-balance _info-card"
           style="
             border-radius: 12px;
             background: #ffeecc;
@@ -71,7 +73,7 @@
           "
         >
           <el-row type="flex" align="middle" justify="space-between">
-            <el-col :span="12" style="color: #303133; font-weight: bold">
+            <el-col :span="12" style="font-weight: bold">
               <el-avatar
                 shape="circle"
                 :size="32"
@@ -99,13 +101,10 @@
             </el-col>
             <el-col
               :span="12"
-              style="
-                color: #8c8477;
-                font-size: 12px;
-                text-align: right;
-                font-weight: bold;
-              "
-              >BALANCE: {{ vueNumberFormat(form.lpBalance) }}</el-col
+              style="font-size: 12px; text-align: right; font-weight: bold"
+            >
+              <span class="_info-card__title">BALANCE: </span>
+              {{ vueNumberFormat(form.lpBalance) }}</el-col
             >
           </el-row>
         </div>
@@ -125,7 +124,10 @@
         >
       </div>
 
-      <div v-if="step === 2 && form.lpTokenAddress">
+      <div
+        style="color: var(--color-subheading-text)"
+        v-if="step === 2 && form.lpTokenAddress"
+      >
         <p>Enter the below details to proceed.</p>
         <p style="word-break: break-word">
           <strong>Note:</strong> Double check parameters as the tokens can only
@@ -133,7 +135,7 @@
         </p>
 
         <div
-          class="current-balance"
+          class="current-balance _info-card"
           style="
             border-radius: 12px;
             background: #ffeecc;
@@ -142,7 +144,7 @@
           "
         >
           <el-row type="flex" align="middle" justify="space-between">
-            <el-col :span="12" style="color: #303133; font-weight: bold">
+            <el-col :span="12" style="font-weight: bold">
               <el-avatar
                 shape="circle"
                 :size="32"
@@ -170,13 +172,9 @@
             </el-col>
             <el-col
               :span="12"
-              style="
-                color: #8c8477;
-                font-size: 12px;
-                text-align: right;
-                font-weight: bold;
-              "
-              >BALANCE: {{ vueNumberFormat(form.lpBalance) }}</el-col
+              style="font-size: 12px; text-align: right; font-weight: bold"
+              ><span class="_info-card__title">BALANCE: </span>
+              {{ vueNumberFormat(form.lpBalance) }}</el-col
             >
           </el-row>
         </div>
@@ -247,6 +245,7 @@
           <el-col :span="8">
             <el-button
               type="info"
+              class="btn-alt__2"
               plain
               style="
                 border-radius: 12px;
@@ -278,13 +277,13 @@
       </div>
 
       <div v-if="step === 3 && form.lpTokenAddress">
-        <p style="word-break: break-word">
+        <p style="word-break: break-word;">
           <strong>Note:</strong> Double check parameters as the tokens can only
           be unlocked after the selected <strong>UNLOCK TIME</strong>
         </p>
         <h3 style="margin-top: 0">Lock Summary</h3>
         <div
-          class="current-balance"
+          class="current-balance _info-card"
           style="
             border-radius: 12px;
             background: #ffeecc;
@@ -293,7 +292,7 @@
           "
         >
           <el-row type="flex" align="middle" justify="space-between">
-            <el-col :span="12" style="color: #303133; font-weight: bold">
+            <el-col :span="12" style="font-weight: bold">
               <el-avatar
                 shape="circle"
                 :size="32"
@@ -321,13 +320,10 @@
             </el-col>
             <el-col
               :span="12"
-              style="
-                color: #8c8477;
-                font-size: 12px;
-                text-align: right;
-                font-weight: bold;
-              "
-              >BALANCE: {{ vueNumberFormat(form.lpBalance) }}</el-col
+              style="font-size: 12px; text-align: right; font-weight: bold"
+            >
+              <span class="_info-card__title">BALANCE:</span>
+              {{ vueNumberFormat(form.lpBalance) }}</el-col
             >
           </el-row>
         </div>
@@ -413,6 +409,7 @@
             <el-button
               type="info"
               plain
+              class="btn-alt__2"
               style="
                 border-radius: 12px;
                 font-weight: bold;

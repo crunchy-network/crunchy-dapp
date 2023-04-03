@@ -159,7 +159,9 @@ export default {
     },
 
     isActiveTab(tabValue, tab) {
-      return tabValue === tab && "color: #FF4D4B; font-weight: 700";
+      return (
+        tabValue === tab && "color: var(--color-menu-active); font-weight: 700"
+      );
     },
 
     setLegendTab(tab = "") {
@@ -198,7 +200,7 @@ export default {
   line-height: 24px;
   text-align: center;
   text-transform: capitalize;
-  color: #757679;
+  color: var(--color-subheading-text);
   cursor: pointer;
   transition: 0.3s ease all;
   margin: 0;

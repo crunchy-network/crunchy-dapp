@@ -99,7 +99,7 @@ export default {
 
 .dex {
   font-size: 12px;
-  color: $--color-text-gray;
+  color: var(--color-subheading-text);
   font-weight: 500;
   margin-bottom: 8px;
   .dex-icon {
@@ -160,8 +160,8 @@ export default {
   flex-wrap: wrap;
   justify-content: center;
   border-radius: 18px;
-  border: 1px solid rgba(25, 27, 31, 0.1);
-  background: #fff;
+  border: var(--line-border);
+  background: var(--background-card);
   z-index: 1;
 }
 

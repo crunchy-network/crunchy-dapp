@@ -4,8 +4,8 @@
     style="padding-bottom: 14px; font-size: 14px; font-weight: 600"
     :style="
       rowExpanded
-        ? 'border: 1px solid #f3f3f3; border-radius: 14px; margin-bottom: 24px;'
-        : 'border: 1px solid #fff; border-radius: 14px; margin-bottom: 0px;'
+        ? 'border: 1px solid var(--border-color); border-radius: 14px; margin-bottom: 24px;'
+        : 'border: 1px solid transparent; border-radius: 14px; margin-bottom: 0px;'
     "
     type="flex"
     align="top"
@@ -47,7 +47,7 @@
                         font-size: 14px;
                         line-height: 19px;
                         letter-spacing: 0.02em;
-                        color: #555cff;
+                        color: var(--link-btn-color);
                         text-decoration: none;
                       "
                     >
@@ -58,22 +58,11 @@
                 <el-col style="text-align: left" :span="4"></el-col>
 
                 <el-col style="text-align: right" :span="4">
-                  {{
-                    !showUsd
-                      ? vueNumberFormat(farm.staked, {
-                          prefix: "",
-                          suffix: " ꜩ",
-                          decimal: ".",
-                          thousand: ",",
-                          precision: 4,
-                        })
-                      : vueNumberFormat(farm.stakedUsd, {
-                          prefix: "$",
-                          decimal: ".",
-                          thousand: ",",
-                          precision: 2,
-                        })
-                  }}
+                  <price-format
+                    :precision="4"
+                    :value="farm.staked"
+                    :usd-value="farm.stakedUsd"
+                  />
                 </el-col>
 
                 <el-col style="text-align: left" :span="4"></el-col>
@@ -105,41 +94,19 @@
                 </template> -->
                 <template aria-describedby=" Total Value">
                   <el-col v-if="farm.lp" style="text-align: right" :span="4">
-                    {{
-                      !showUsd
-                        ? vueNumberFormat(farm.staked, {
-                            prefix: "",
-                            suffix: " ꜩ",
-                            decimal: ".",
-                            thousand: ",",
-                            precision: 4,
-                          })
-                        : vueNumberFormat(farm.stakedUsd, {
-                            prefix: "$",
-                            decimal: ".",
-                            thousand: ",",
-                            precision: 2,
-                          })
-                    }}
+                    <price-format
+                      :precision="4"
+                      :value="farm.staked"
+                      :usd-value="farm.stakedUsd"
+                    />
                   </el-col>
 
                   <el-col v-else style="text-align: right" :span="4">
-                    {{
-                      !showUsd
-                        ? vueNumberFormat(farm.totalValue, {
-                            prefix: "",
-                            suffix: " ꜩ",
-                            decimal: ".",
-                            thousand: ",",
-                            precision: 4,
-                          })
-                        : vueNumberFormat(farm.totalValueUsd, {
-                            prefix: "$",
-                            decimal: ".",
-                            thousand: ",",
-                            precision: 2,
-                          })
-                    }}
+                    <price-format
+                      :precision="4"
+                      :value="farm.totalValue"
+                      :usd-value="farm.totalValueUsd"
+                    />
                   </el-col>
                 </template>
 
@@ -175,7 +142,11 @@
               :gutter="20"
               type="flex"
               align="top"
-              style="padding: 10px 20px; color: #757679; font-size: 14px"
+              style="
+                padding: 10px 20px;
+                color: var(--color-subheading-text);
+                font-size: 14px;
+              "
             >
               <el-col :span="4"> Staked</el-col>
               <el-col style="text-align: right" :span="4">Amount Staked</el-col>
@@ -334,33 +305,24 @@
                   </el-row>
                 </el-col>
                 <el-col style="text-align: right" :span="4">
-                  {{
-                    vueNumberFormat(stake.depositAmount, {
-                      prefix: "",
-                      suffix: "",
-                      decimal: ".",
-                      thousand: ",",
-                      precision: 4,
-                    })
-                  }}
+                  <p>
+                    {{
+                      vueNumberFormat(stake.depositAmount, {
+                        prefix: "",
+                        suffix: "",
+                        decimal: ".",
+                        thousand: ",",
+                        precision: 4,
+                      })
+                    }}
+                  </p>
                 </el-col>
                 <el-col style="text-align: right" :span="4">
-                  {{
-                    !showUsd
-                      ? vueNumberFormat(stake.depositValue, {
-                          prefix: "",
-                          suffix: " ꜩ",
-                          decimal: ".",
-                          thousand: ",",
-                          precision: 4,
-                        })
-                      : vueNumberFormat(stake.depositValueUsd, {
-                          prefix: "$",
-                          decimal: ".",
-                          thousand: ",",
-                          precision: 2,
-                        })
-                  }}
+                  <price-format
+                    :precision="4"
+                    :value="stake.depositValue"
+                    :usd-value="stake.depositValueUsd"
+                  />
                 </el-col>
                 <template aria-describedby=" Reward Value">
                   <el-col v-if="farm.lp" style="text-align: right" :span="4">
@@ -371,23 +333,25 @@
                     style="text-align: right; vertical-align: center"
                     :span="4"
                   >
-                    {{
-                      farm.protocol === "Dogami"
-                        ? vueNumberFormat(stake.apr || 0, {
-                            prefix: "",
-                            suffix: "%",
-                            decimal: ".",
-                            thousand: ",",
-                            precision: 0,
-                          })
-                        : vueNumberFormat(stake.rewardsEarned, {
-                            prefix: "",
-                            suffix: "",
-                            decimal: ".",
-                            thousand: ",",
-                            precision: 4,
-                          })
-                    }}
+                    <span style="color: var(--primary-text)">
+                      {{
+                        farm.protocol === "Dogami"
+                          ? vueNumberFormat(stake.apr || 0, {
+                              prefix: "",
+                              suffix: "%",
+                              decimal: ".",
+                              thousand: ",",
+                              precision: 0,
+                            })
+                          : vueNumberFormat(stake.rewardsEarned, {
+                              prefix: "",
+                              suffix: "",
+                              decimal: ".",
+                              thousand: ",",
+                              precision: 4,
+                            })
+                      }}
+                    </span>
                     <el-avatar
                       v-if="farm.protocol !== 'Dogami'"
                       shape="circle"
@@ -399,56 +363,21 @@
                 </template>
                 <template aria-describedby="Total Value">
                   <el-col v-if="farm.lp" style="text-align: right" :span="4">
-                    {{
-                      !showUsd
-                        ? vueNumberFormat(stake.depositValue, {
-                            prefix: "",
-                            suffix: " ꜩ",
-                            decimal: ".",
-                            thousand: ",",
-                            precision: 4,
-                          })
-                        : vueNumberFormat(stake.depositValueUsd, {
-                            prefix: "$",
-                            decimal: ".",
-                            thousand: ",",
-                            precision: 2,
-                          })
-                    }}
+                    <price-format
+                      :precision="4"
+                      :value="stake.depositValue"
+                      :usd-value="stake.depositValueUsd"
+                    />
                   </el-col>
                   <el-col v-else style="text-align: right" :span="4">
-                    {{
-                      !showUsd
-                        ? vueNumberFormat(stake.totalValue, {
-                            prefix: "",
-                            suffix: " ꜩ",
-                            decimal: ".",
-                            thousand: ",",
-                            precision: 4,
-                          })
-                        : vueNumberFormat(stake.totalValueUsd, {
-                            prefix: "$",
-                            decimal: ".",
-                            thousand: ",",
-                            precision: 2,
-                          })
-                    }}
+                    <price-format
+                      :precision="4"
+                      :value="stake.totalValue"
+                      :usd-value="stake.totalValueUsd"
+                    />
                   </el-col>
                 </template>
                 <el-col style="text-align: right" :span="4">
-                  <!-- <el-button
-                    v-if="farm.protocol === 'Quipuswap'"
-                    type="text"
-                    :disabled="farm.started === false"
-                    style="
-                      padding: 0px;
-                      font-weight: 600;
-                      font-size: 14px;
-                      margin-right: 20px;
-                    "
-                    @click="harvestQuipuLpStake(stake.address)"
-                    >Harvest</el-button
-                  > -->
                   <el-button
                     v-if="farm.protocol === 'Crunchy'"
                     type="text"
@@ -470,7 +399,7 @@
             <h2
               style="
                 text-align: center;
-                color: #909399;
+                color: var(--color-subheading-text);
                 font-size: 16px;
                 margin-top: 20px;
               "
@@ -488,10 +417,12 @@
 import { CollapseTransition } from "@ivanv/vue-collapse-transition";
 import { mapActions } from "vuex";
 import { sectionNotAvailable } from "../utils/home-wallet-stake";
+import PriceFormat from "./PriceFormat.vue";
 export default {
   name: "StakeWalletRow",
   components: {
     CollapseTransition,
+    PriceFormat,
   },
   props: {
     farm: {
@@ -507,6 +438,10 @@ export default {
     return {
       rowExpanded: false,
     };
+  },
+
+  mounted() {
+    console.log(this.farm);
   },
 
   methods: {
