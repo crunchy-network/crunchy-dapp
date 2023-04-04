@@ -37,7 +37,7 @@ export default {
 
       let tokenFeed = {};
 
-      await tokenTracker.getTokenFeed(xtzUsd, xtzUsdHistory).then((feed) => {
+      await tokenTracker.getTokenFeed().then((feed) => {
         tokenFeed = feed;
       });
 

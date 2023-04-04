@@ -4,6 +4,7 @@ import utils from ".";
 import dexIndexer from "./dex-indexer";
 import ipfs from "./ipfs";
 import queryDipdup from "./queryDipdup";
+import tzkt from "./tzkt";
 
 const day1 = new Date(new Date().setDate(new Date().getDate() - 1)).getTime();
 const day7 = new Date(new Date().setDate(new Date().getDate() - 7)).getTime();
@@ -804,8 +805,12 @@ export default {
     };
   },
 
-  async getTokenFeed(xtzUSD, xtzUsdHistory) {
+  async getTokenFeed() {
     try {
+      const xtzUSD = await tzkt.getXtzUsdPrice();
+      // const xtzUsdHistory = await coingecko.getXtzUsdHistory();
+      const xtzUsdHistory = await tzkt.getXtzUsdHistory();
+
       const query = `
     query MyQuery {
      quotesTotal(distinct_on: tokenId){
