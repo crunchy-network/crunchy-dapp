@@ -183,6 +183,7 @@ const buildQuipuToken2TokenPair = (dex, inverted = false) => {
   const bSide = dex.pools[inverted ? 0 : 1];
 
   return {
+    poolId: aSide.pool_id,
     dex: getDexName(dex.dex_type),
     dexAddress: dex.dex_address,
     direction: inverted ? "Inverted" : "Direct",
@@ -278,7 +279,6 @@ const buildSwapPairs = (dexes) => {
       case "quipuswap_token2token":
         pairs.push(buildQuipuToken2TokenPair(dex));
         pairs.push(buildQuipuToken2TokenPair(dex, true));
-        console.log(pairs);
         break;
 
       case "quipuswap_stable":

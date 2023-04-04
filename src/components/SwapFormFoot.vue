@@ -2,11 +2,11 @@
   <div class="bottom-section">
     <div class="row">
       <span>Routing Fee</span>
-      <span style="color: var(--primary-text)" >{{ routingFee }}%</span>
+      <span style="color: var(--primary-text)">{{ routingFee }}%</span>
     </div>
     <div class="row">
       <span>Rate</span>
-      <span style="color: var(--primary-text)" >{{ getSwapRate() }}</span>
+      <span style="color: var(--primary-text)">{{ getSwapRate() }}</span>
     </div>
     <div class="row">
       <span>Slippage Tolerance</span>
