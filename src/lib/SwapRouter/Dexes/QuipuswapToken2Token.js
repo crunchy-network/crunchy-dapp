@@ -23,23 +23,58 @@ function getSwapOutput(input, pair) {
   return toRet;
 }
 
-const buildDexOperation = (dex, trade, walletAddres, tezos) => {
-  const input = convertToMuTez(trade.input, trade.a);
-  const output = convertToMuTez(trade.minOut, trade.b);
-  const transfers = [
+const directTransaction = (dex, trade, walletAddres, input, output) => {
+  return [
     dex.contract.methods
       .swap(
-        trade.poolId,
-        trade.a.index,
-        trade.b.index,
+        [
+          {
+            operation: {
+              a_to_b: [["unit"]],
+            },
+            pair_id: trade.poolId,
+          },
+        ],
         input,
         output,
+        walletAddres,
         `${secondsFromNow(300)}`
       )
       .toTransferParams({
         mutez: true,
       }),
   ];
+};
+
+const invertTransaction = (dex, trade, walletAddres, input, output) => {
+  return [
+    dex.contract.methods
+      .swap(
+        [
+          {
+            operation: {
+              a_to_b: [["unit"]],
+            },
+            pair_id: trade.poolId,
+          },
+        ],
+        input,
+        output,
+        walletAddres,
+        `${secondsFromNow(300)}`
+      )
+      .toTransferParams({
+        mutez: true,
+      }),
+  ];
+};
+const buildDexOperation = (dex, trade, walletAddres, tezos) => {
+  const input = convertToMuTez(trade.input, trade.a);
+  const output = convertToMuTez(trade.minOut, trade.b);
+  const transfers =
+    trade.direction === "Direct"
+      ? directTransaction(dex, trade, walletAddres, input, output)
+      : invertTransaction(dex, trade, walletAddres, input, output);
 
   return addTokenApprovalOperators(
     trade,
