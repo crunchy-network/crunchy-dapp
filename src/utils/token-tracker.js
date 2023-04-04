@@ -1,5 +1,7 @@
 import axios from "axios";
 import BigNumber from "bignumber.js";
+import utils from ".";
+import dexIndexer from "./dex-indexer";
 import ipfs from "./ipfs";
 import queryDipdup from "./queryDipdup";
 
@@ -803,419 +805,449 @@ export default {
   },
 
   async getTokenFeed(xtzUSD, xtzUsdHistory) {
-    const query = `
-     query MyQuery {
-      quotesTotal(distinct_on: tokenId){
-        close
-        tokenId
-      }
-      statsTotal {
-        tvlUsd
-        tvl
-        exchangeId
-        tokenId
-      }
-      token {
-        exchanges{
-          address
-          name
-          tokenId
-          tezPool
-          tokenPool
-          tradeVolume
-          midPrice
-        }
-        address
-        decimals
-        id
-        name
-        symbol
-        thumbnailUri
-        tokenId
-        standard
-      }
-    }`;
+    try {
+      const query = `
+    query MyQuery {
+     quotesTotal(distinct_on: tokenId){
+       close
+       tokenId
+     }
+     statsTotal {
+       tvlUsd
+       tvl
+       exchangeId
+       tokenId
+     }
+     token {
+       exchanges{
+         address
+         name
+         tokenId
+         tezPool
+         tokenPool
+         tradeVolume
+         midPrice
+       }
+       address
+       decimals
+       id
+       name
+       symbol
+       thumbnailUri
+       tokenId
+       standard
+     }
+   }`;
 
-    const [
-      {
-        data: {
-          data: { quotesTotal, statsTotal, token },
+      const [
+        allTokensMetadata,
+
+        {
+          data: {
+            data: { quotesTotal, statsTotal, token },
+          },
         },
-      },
-      tokensCloseData,
-      plentyTokens,
-      PLY,
-      plentyPools,
-      spicyTokens,
-      spicyPools,
-    ] = await Promise.all([
-      axios.post("https://dex.dipdup.net/v1/graphql", {
-        query,
-      }),
-      queryDipdup.getTokensPriceClose(),
-      getPlentyTokens(),
-      getPlentyTokens(PLY_SYMBOL),
-      getPlentyPools(),
-      getSpicyTokens(),
-      getSpicyPools(),
-    ]);
+        tokensCloseData,
+        plentyTokens,
+        PLY,
+        plentyPools,
+        spicyTokens,
+        spicyPools,
+      ] = await Promise.all([
+        dexIndexer.getAllTokens(),
+        axios.post("https://dex.dipdup.net/v1/graphql", {
+          query,
+        }),
+        queryDipdup.getTokensPriceClose(),
+        getPlentyTokens(),
+        getPlentyTokens(PLY_SYMBOL),
+        getPlentyPools(),
+        getSpicyTokens(),
+        getSpicyPools(),
+      ]);
 
-    quotesTotal.push({
-      close: PLY[0].price.value / xtzUSD,
-      tokenId: `${PLY[0].contract}_0`,
-    });
+      quotesTotal.push({
+        close: PLY[0].price.value / xtzUSD,
+        tokenId: `${PLY[0].contract}_0`,
+      });
 
-    /*
-     *Calculate PLY data and push to token list
-     */
-    const updatedPLY = PLY.map((obj) => {
-      return {
-        exchanges: [],
-        address: obj.contract,
-        decimals: obj.decimals,
-        id: `${obj.contract}_0`,
-        name: obj.name,
-        tokenId: 0,
-        symbol: obj.token,
-        thumbnailUri: "",
-      };
-    });
-    const modifiedPlyMetrics = modifyPlentyMetrics(PLY[0], xtzUsdHistory);
-
-    const price1Day = findElementWithSameDate(
-      modifiedPlyMetrics.price.history,
-      new Date(day1).toISOString()
-    );
-    const price7Day = findElementWithSameDate(
-      modifiedPlyMetrics.price.history,
-      new Date(day7).toISOString()
-    );
-    const price30Day = findElementWithSameDate(
-      modifiedPlyMetrics.price.history,
-      new Date(day30).toISOString()
-    );
-
-    const timeUsdValueDay1 = binarySearch(xtzUsdHistory, day1);
-    const timeUsdValueDay7 = binarySearch(xtzUsdHistory, day7);
-    const timeUsdValueDay30 = binarySearch(xtzUsdHistory, day30);
-
-    updatedPLY[0].dayCloseUsd = Object.values(price1Day)[0].c;
-    updatedPLY[0].weekCloseUsd = Object.values(price7Day)[0].c;
-    updatedPLY[0].monthCloseUsd = Object.values(price30Day)[0].c;
-    updatedPLY[0].dayClose = updatedPLY[0].dayCloseUsd / timeUsdValueDay1;
-    updatedPLY[0].weekClose = updatedPLY[0].weekCloseUsd / timeUsdValueDay7;
-    updatedPLY[0].monthClose = updatedPLY[0].monthCloseUsd / timeUsdValueDay30;
-
-    const currentPrice = new BigNumber(PLY[0].price.value).toNumber() || false;
-    const price = new BigNumber(currentPrice);
-    const priceXtz = new BigNumber(price.div(xtzUSD));
-
-    const change1Day = priceXtz
-      .minus(updatedPLY[0].dayClose)
-      .div(updatedPLY[0].dayClose)
-      .times(100)
-      .toNumber();
-    const change7Day = priceXtz
-      .minus(updatedPLY[0].weekClose)
-      .div(updatedPLY[0].weekClose)
-      .times(100)
-      .toNumber();
-    const change30Day = priceXtz
-      .minus(updatedPLY[0].monthClose)
-      .div(updatedPLY[0].monthClose)
-      .times(100)
-      .toNumber();
-
-    const change1DayUsd = price
-      .minus(updatedPLY[0].dayCloseUsd)
-      .div(updatedPLY[0].dayCloseUsd)
-      .times(100)
-      .toNumber();
-    const change7DayUsd = price
-      .minus(updatedPLY[0].weekCloseUsd)
-      .div(updatedPLY[0].weekCloseUsd)
-      .times(100)
-      .toNumber();
-    const change30DayUsd = price
-      .minus(updatedPLY[0].monthCloseUsd)
-      .div(updatedPLY[0].monthCloseUsd)
-      .times(100)
-      .toNumber();
-
-    updatedPLY[0].change1Day = change1Day === Infinity ? 0 : change1Day || 0;
-    updatedPLY[0].change7Day = change7Day === Infinity ? 0 : change7Day || 0;
-    updatedPLY[0].change30Day = change30Day === Infinity ? 0 : change30Day || 0;
-
-    updatedPLY[0].change1DayUsd =
-      change1DayUsd === Infinity ? 0 : change1DayUsd || 0;
-    updatedPLY[0].change7DayUsd =
-      change7DayUsd === Infinity ? 0 : change7DayUsd || 0;
-    updatedPLY[0].change30DayUsd =
-      change30DayUsd === Infinity ? 0 : change30DayUsd || 0;
-
-    token.push(updatedPLY[0]);
-
-    /*
-     *Format plenty pools and spicy pools for integration
-     */
-    const updatedPlentyPools = plentyPools.map(function (obj) {
-      const baseSymbol = obj.symbol.split("/")[0];
-      const quoteSymbol = obj.symbol.split("/")[1];
-      const baseToken = plentyTokens.filter(
-        (token) => token.token.toLowerCase() === baseSymbol.toLowerCase()
-      );
-      const quoteToken = plentyTokens.filter(
-        (token) => token.token.toLowerCase() === quoteSymbol.toLowerCase()
-      );
-      const basePriceUsd = baseToken.length ? baseToken[0].price.value : null;
-      const quotePriceUsd = quoteToken.length
-        ? quoteToken[0].price.value
-        : null;
-
-      return {
-        address: obj.pool,
-        name: TRACKED_MARKETS_NAME.plentyNetwork.name,
-        symbol: obj.symbol,
-        volume24: obj.volume.value24H / xtzUSD,
-        baseSymbol: baseSymbol,
-        quoteSymbol: quoteSymbol,
-        basePrice: basePriceUsd / xtzUSD,
-        quotePrice: quotePriceUsd / xtzUSD,
-        tokenTvl: obj.tvl.value / xtzUSD,
-        tokenTvlUsd: obj.tvl.value,
-      };
-    });
-
-    let updatedSpicyPools = spicyPools.pair_info.map(function (obj) {
-      const baseSymbol = token.filter((element) => {
-        const tokenId = obj.token0.split(":")[1];
-        obj.token0Id = obj.token0.replace(":", "_");
-        if (tokenId === "null") {
-          obj.token0Id = obj.token0Id.replace("null", "0");
-        }
-        return element.id === obj.token0Id;
-      })[0]?.symbol;
-
-      const quoteSymbol = token.filter((element) => {
-        const tokenId = obj.token1.split(":")[1];
-        obj.token1Id = obj.token1.replace(":", "_");
-        if (tokenId === "null") {
-          obj.token1Id = obj.token1Id.replace("null", "0");
-        }
-        return element.id === obj.token1Id;
-      })[0]?.symbol;
-
-      const poolSymbol = baseSymbol + "/" + quoteSymbol;
-
-      if (poolSymbol.includes("undefined")) {
-        return null;
-      } else {
-        const baseToken = spicyTokens.tokens.filter(
-          (token) => token.symbol.toLowerCase() === baseSymbol.toLowerCase()
-        );
-        const quoteToken = spicyTokens.tokens.filter(
-          (token) => token.symbol.toLowerCase() === quoteSymbol.toLowerCase()
-        );
+      /*
+       *Calculate PLY data and push to token list
+       */
+      const updatedPLY = PLY.map((obj) => {
         return {
+          exchanges: [],
           address: obj.contract,
-          name: TRACKED_MARKETS_NAME.spicyswap.name,
-          symbol: poolSymbol,
-          volume24:
-            obj.pairHourData_aggregate.aggregate.sum.hourlyvolumextz !== null
-              ? obj.pairHourData_aggregate.aggregate.sum.hourlyvolumextz
-              : 0,
-          volume24Usd:
-            obj.pairHourData_aggregate.aggregate.sum.hourlyvolumeusd !== null
-              ? obj.pairHourData_aggregate.aggregate.sum.hourlyvolumeusd
-              : 0,
+          decimals: obj.decimals,
+          id: `${obj.contract}_0`,
+          name: obj.name,
+          tokenId: 0,
+          symbol: obj.token,
+          thumbnailUri: "",
+        };
+      });
+      const modifiedPlyMetrics = modifyPlentyMetrics(PLY[0], xtzUsdHistory);
+
+      const price1Day = findElementWithSameDate(
+        modifiedPlyMetrics.price.history,
+        new Date(day1).toISOString()
+      );
+      const price7Day = findElementWithSameDate(
+        modifiedPlyMetrics.price.history,
+        new Date(day7).toISOString()
+      );
+      const price30Day = findElementWithSameDate(
+        modifiedPlyMetrics.price.history,
+        new Date(day30).toISOString()
+      );
+
+      const timeUsdValueDay1 = binarySearch(xtzUsdHistory, day1);
+      const timeUsdValueDay7 = binarySearch(xtzUsdHistory, day7);
+      const timeUsdValueDay30 = binarySearch(xtzUsdHistory, day30);
+
+      updatedPLY[0].dayCloseUsd = Object.values(price1Day)[0].c;
+      updatedPLY[0].weekCloseUsd = Object.values(price7Day)[0].c;
+      updatedPLY[0].monthCloseUsd = Object.values(price30Day)[0].c;
+      updatedPLY[0].dayClose = updatedPLY[0].dayCloseUsd / timeUsdValueDay1;
+      updatedPLY[0].weekClose = updatedPLY[0].weekCloseUsd / timeUsdValueDay7;
+      updatedPLY[0].monthClose =
+        updatedPLY[0].monthCloseUsd / timeUsdValueDay30;
+
+      const currentPrice =
+        new BigNumber(PLY[0].price.value).toNumber() || false;
+      const price = new BigNumber(currentPrice);
+      const priceXtz = new BigNumber(price.div(xtzUSD));
+
+      const change1Day = priceXtz
+        .minus(updatedPLY[0].dayClose)
+        .div(updatedPLY[0].dayClose)
+        .times(100)
+        .toNumber();
+      const change7Day = priceXtz
+        .minus(updatedPLY[0].weekClose)
+        .div(updatedPLY[0].weekClose)
+        .times(100)
+        .toNumber();
+      const change30Day = priceXtz
+        .minus(updatedPLY[0].monthClose)
+        .div(updatedPLY[0].monthClose)
+        .times(100)
+        .toNumber();
+
+      const change1DayUsd = price
+        .minus(updatedPLY[0].dayCloseUsd)
+        .div(updatedPLY[0].dayCloseUsd)
+        .times(100)
+        .toNumber();
+      const change7DayUsd = price
+        .minus(updatedPLY[0].weekCloseUsd)
+        .div(updatedPLY[0].weekCloseUsd)
+        .times(100)
+        .toNumber();
+      const change30DayUsd = price
+        .minus(updatedPLY[0].monthCloseUsd)
+        .div(updatedPLY[0].monthCloseUsd)
+        .times(100)
+        .toNumber();
+
+      updatedPLY[0].change1Day = change1Day === Infinity ? 0 : change1Day || 0;
+      updatedPLY[0].change7Day = change7Day === Infinity ? 0 : change7Day || 0;
+      updatedPLY[0].change30Day =
+        change30Day === Infinity ? 0 : change30Day || 0;
+
+      updatedPLY[0].change1DayUsd =
+        change1DayUsd === Infinity ? 0 : change1DayUsd || 0;
+      updatedPLY[0].change7DayUsd =
+        change7DayUsd === Infinity ? 0 : change7DayUsd || 0;
+      updatedPLY[0].change30DayUsd =
+        change30DayUsd === Infinity ? 0 : change30DayUsd || 0;
+
+      token.push(updatedPLY[0]);
+
+      /*
+       *Format plenty pools and spicy pools for integration
+       */
+      const updatedPlentyPools = plentyPools.map(function (obj) {
+        const baseSymbol = obj.symbol.split("/")[0];
+        const quoteSymbol = obj.symbol.split("/")[1];
+        const baseToken = plentyTokens.filter(
+          (token) => token.token.toLowerCase() === baseSymbol.toLowerCase()
+        );
+        const quoteToken = plentyTokens.filter(
+          (token) => token.token.toLowerCase() === quoteSymbol.toLowerCase()
+        );
+        const basePriceUsd = baseToken.length ? baseToken[0].price.value : null;
+        const quotePriceUsd = quoteToken.length
+          ? quoteToken[0].price.value
+          : null;
+
+        return {
+          address: obj.pool,
+          name: TRACKED_MARKETS_NAME.plentyNetwork.name,
+          symbol: obj.symbol,
+          volume24: obj.volume.value24H / xtzUSD,
           baseSymbol: baseSymbol,
           quoteSymbol: quoteSymbol,
-          basePrice: baseToken[0].tokenDayData[0].last_price,
-          quotePrice: quoteToken[0].tokenDayData[0].last_price,
-          basePriceUsd: baseToken[0].tokenDayData[0].last_price_usd,
-          quotePriceUsd: quoteToken[0].tokenDayData[0].last_price_usd,
-          tokenTvl: obj.reservextz,
-          tokenTvlUsd: obj.reserveusd,
+          basePrice: basePriceUsd / xtzUSD,
+          quotePrice: quotePriceUsd / xtzUSD,
+          tokenTvl: obj.tvl.value / xtzUSD,
+          tokenTvlUsd: obj.tvl.value,
         };
-      }
-    });
-    updatedSpicyPools = updatedSpicyPools.filter((n) => n);
-
-    token.forEach((t) => {
-      updatedPlentyPools.forEach(async (p) => {
-        if (
-          p.baseSymbol.toLowerCase() === t.symbol.toLowerCase() ||
-          p.quoteSymbol.toLowerCase() === t.symbol.toLowerCase()
-        ) {
-          const exchange = {
-            ...p,
-            midPrice:
-              p.baseSymbol.toLowerCase() === t.symbol.toLowerCase()
-                ? p.basePrice
-                : p.quotePrice,
-          };
-          t.exchanges.push(exchange);
-        }
       });
-      updatedSpicyPools.forEach(async (p) => {
-        if (
-          p.baseSymbol.toLowerCase() === t.symbol.toLowerCase() ||
-          p.quoteSymbol.toLowerCase() === t.symbol.toLowerCase()
-        ) {
-          const exchange = {
-            ...p,
-            midPrice:
-              p.baseSymbol.toLowerCase() === t.symbol.toLowerCase()
-                ? p.basePrice
-                : p.quotePrice,
-            midPriceUsd:
-              p.baseSymbol.toLowerCase() === t.symbol.toLowerCase()
-                ? p.basePriceUsd
-                : p.quotePriceUsd,
-          };
-          t.exchanges.push(exchange);
-        }
-      });
-    });
 
-    const tokensVolume = await queryXtzVolume();
-
-    const tokenObjkt = {};
-
-    for (let index = 0; index < token.length; index++) {
-      const element = token[index];
-      const tokenId = element.id;
-      const closes = queryDipdup.filterTokenClose(tokenId, tokensCloseData);
-      /**
-      *Calculate aggregated price 
-      weighted on tvl from Plenty, Spicy and Quipu
-       */
-      let tokenTvl1Day = [];
-      const tokenQuotesTotal = quotesTotal.find(
-        (quote) => quote.tokenId === tokenId
-      );
-      if (tokenQuotesTotal !== undefined) {
-        tokenTvl1Day = statsTotal.filter((stat) => {
-          return stat.tokenId === tokenQuotesTotal.tokenId;
-        });
-        tokenQuotesTotal.tvl = tokenTvl1Day.reduce(
-          (totalTvl, exchange) => Number(totalTvl) + Number(exchange.tvl),
-          0
-        );
-
-        const tokenOnPlenty = plentyTokens.find((token) => {
-          const contract = tokenQuotesTotal.tokenId.split("_")[0];
-          const id = tokenQuotesTotal.tokenId.split("_")[1];
-          return token.standard === "FA2"
-            ? token.contract === contract &&
-                String(token.tokenId) === String(id)
-            : token.contract === contract;
-        });
-        if (tokenOnPlenty !== undefined) {
-          tokenQuotesTotal.plentyClose = tokenOnPlenty.price.value / xtzUSD;
-          tokenQuotesTotal.plentyTvl = tokenOnPlenty.tvl.value / xtzUSD;
-        } else {
-          tokenQuotesTotal.plentyClose = 0;
-          tokenQuotesTotal.plentyTvl = 0;
-        }
-
-        const tokenOnSpicy = spicyTokens.tokens.find((token) => {
-          const contract = tokenQuotesTotal.tokenId.split("_")[0];
-          const id = tokenQuotesTotal.tokenId.split("_")[1];
-          const spicyContract = token.tag.split(":")[0];
-          let spicyId = token.tag.split(":")[1];
-          if (spicyId === "null") {
-            spicyId = 0;
+      let updatedSpicyPools = spicyPools.pair_info.map(function (obj) {
+        const baseSymbol = token.filter((element) => {
+          const tokenId = obj.token0.split(":")[1];
+          obj.token0Id = obj.token0.replace(":", "_");
+          if (tokenId === "null") {
+            obj.token0Id = obj.token0Id.replace("null", "0");
           }
-          return spicyContract === contract && String(spicyId) === String(id);
-        });
-        if (tokenOnSpicy !== undefined) {
-          tokenQuotesTotal.spicyClose = tokenOnSpicy.tokenDayData[0].last_price;
-          tokenQuotesTotal.spicyTvl = tokenOnSpicy.totalliquidityxtz;
+          return element.id === obj.token0Id;
+        })[0]?.symbol;
+
+        const quoteSymbol = token.filter((element) => {
+          const tokenId = obj.token1.split(":")[1];
+          obj.token1Id = obj.token1.replace(":", "_");
+          if (tokenId === "null") {
+            obj.token1Id = obj.token1Id.replace("null", "0");
+          }
+          return element.id === obj.token1Id;
+        })[0]?.symbol;
+
+        const poolSymbol = baseSymbol + "/" + quoteSymbol;
+
+        if (poolSymbol.includes("undefined")) {
+          return null;
         } else {
-          tokenQuotesTotal.spicyClose = 0;
-          tokenQuotesTotal.spicyTvl = 0;
+          const baseToken = spicyTokens.tokens.filter(
+            (token) => token.symbol.toLowerCase() === baseSymbol.toLowerCase()
+          );
+          const quoteToken = spicyTokens.tokens.filter(
+            (token) => token.symbol.toLowerCase() === quoteSymbol.toLowerCase()
+          );
+          return {
+            address: obj.contract,
+            name: TRACKED_MARKETS_NAME.spicyswap.name,
+            symbol: poolSymbol,
+            volume24:
+              obj.pairHourData_aggregate.aggregate.sum.hourlyvolumextz !== null
+                ? obj.pairHourData_aggregate.aggregate.sum.hourlyvolumextz
+                : 0,
+            volume24Usd:
+              obj.pairHourData_aggregate.aggregate.sum.hourlyvolumeusd !== null
+                ? obj.pairHourData_aggregate.aggregate.sum.hourlyvolumeusd
+                : 0,
+            baseSymbol: baseSymbol,
+            quoteSymbol: quoteSymbol,
+            basePrice: baseToken[0].tokenDayData[0].last_price,
+            quotePrice: quoteToken[0].tokenDayData[0].last_price,
+            basePriceUsd: baseToken[0].tokenDayData[0].last_price_usd,
+            quotePriceUsd: quoteToken[0].tokenDayData[0].last_price_usd,
+            tokenTvl: obj.reservextz,
+            tokenTvlUsd: obj.reserveusd,
+          };
         }
+      });
+      updatedSpicyPools = updatedSpicyPools.filter((n) => n);
 
-        const arr = [
-          {
-            num: tokenQuotesTotal.spicyClose,
-            index: tokenQuotesTotal.spicyTvl,
-          },
-          {
-            num: tokenQuotesTotal.plentyClose,
-            index: tokenQuotesTotal.plentyTvl,
-          },
-          {
-            num: tokenQuotesTotal.close,
-            index: tokenQuotesTotal.tvl,
-          },
-        ];
+      token.forEach((t) => {
+        updatedPlentyPools.forEach(async (p) => {
+          if (
+            p.baseSymbol.toLowerCase() === t.symbol.toLowerCase() ||
+            p.quoteSymbol.toLowerCase() === t.symbol.toLowerCase()
+          ) {
+            const exchange = {
+              ...p,
+              midPrice:
+                p.baseSymbol.toLowerCase() === t.symbol.toLowerCase()
+                  ? p.basePrice
+                  : p.quotePrice,
+            };
+            t.exchanges.push(exchange);
+          }
+        });
+        updatedSpicyPools.forEach(async (p) => {
+          if (
+            p.baseSymbol.toLowerCase() === t.symbol.toLowerCase() ||
+            p.quoteSymbol.toLowerCase() === t.symbol.toLowerCase()
+          ) {
+            const exchange = {
+              ...p,
+              midPrice:
+                p.baseSymbol.toLowerCase() === t.symbol.toLowerCase()
+                  ? p.basePrice
+                  : p.quotePrice,
+              midPriceUsd:
+                p.baseSymbol.toLowerCase() === t.symbol.toLowerCase()
+                  ? p.basePriceUsd
+                  : p.quotePriceUsd,
+            };
+            t.exchanges.push(exchange);
+          }
+        });
+      });
 
-        tokenQuotesTotal.aggregatedClose = aggregateMultiple(arr);
+      const tokensVolume = await queryXtzVolume();
+
+      const tokenObjkt = {};
+
+      const updatedIndexerTokens = {};
+
+      for (let index = 0; index < allTokensMetadata.length; index++) {
+        let el = allTokensMetadata[index];
+        el.token_id = el.token_id || 0;
+        el.id = el.token_address + "_" + el.token_id;
+
+        el = utils.convertObjSnakeToCamel(el);
+
+        updatedIndexerTokens[el.id] = el;
       }
 
-      let volume24Xtz = 0;
-      let tokenTvl = 0;
-      let tokenTvlUsd = 0;
+      for (let index = 0; index < token.length; index++) {
+        const element = token[index];
+        const tokenMetadata = updatedIndexerTokens[element.id];
 
-      tokensVolume.forEach((o) => {
-        if (o.tokenId === tokenId) {
-          volume24Xtz = new BigNumber(o.tezQty).plus(volume24Xtz).toNumber();
+        const tokenId = element.id;
+        const closes = queryDipdup.filterTokenClose(tokenId, tokensCloseData);
+        /**
+     *Calculate aggregated price 
+     weighted on tvl from Plenty, Spicy and Quipu
+      */
+        let tokenTvl1Day = [];
+        const tokenQuotesTotal = quotesTotal.find(
+          (quote) => quote.tokenId === tokenId
+        );
+        if (tokenQuotesTotal !== undefined) {
+          tokenTvl1Day = statsTotal.filter((stat) => {
+            return stat.tokenId === tokenQuotesTotal.tokenId;
+          });
+          tokenQuotesTotal.tvl = tokenTvl1Day.reduce(
+            (totalTvl, exchange) => Number(totalTvl) + Number(exchange.tvl),
+            0
+          );
+
+          const tokenOnPlenty = plentyTokens.find((token) => {
+            const contract = tokenQuotesTotal.tokenId.split("_")[0];
+            const id = tokenQuotesTotal.tokenId.split("_")[1];
+            return token.standard === "FA2"
+              ? token.contract === contract &&
+                  String(token.tokenId) === String(id)
+              : token.contract === contract;
+          });
+          if (tokenOnPlenty !== undefined) {
+            tokenQuotesTotal.plentyClose = tokenOnPlenty.price.value / xtzUSD;
+            tokenQuotesTotal.plentyTvl = tokenOnPlenty.tvl.value / xtzUSD;
+          } else {
+            tokenQuotesTotal.plentyClose = 0;
+            tokenQuotesTotal.plentyTvl = 0;
+          }
+
+          const tokenOnSpicy = spicyTokens.tokens.find((token) => {
+            const contract = tokenQuotesTotal.tokenId.split("_")[0];
+            const id = tokenQuotesTotal.tokenId.split("_")[1];
+            const spicyContract = token.tag.split(":")[0];
+            let spicyId = token.tag.split(":")[1];
+            if (spicyId === "null") {
+              spicyId = 0;
+            }
+            return spicyContract === contract && String(spicyId) === String(id);
+          });
+          if (tokenOnSpicy !== undefined) {
+            tokenQuotesTotal.spicyClose =
+              tokenOnSpicy.tokenDayData[0].last_price;
+            tokenQuotesTotal.spicyTvl = tokenOnSpicy.totalliquidityxtz;
+          } else {
+            tokenQuotesTotal.spicyClose = 0;
+            tokenQuotesTotal.spicyTvl = 0;
+          }
+
+          const arr = [
+            {
+              num: tokenQuotesTotal.spicyClose,
+              index: tokenQuotesTotal.spicyTvl,
+            },
+            {
+              num: tokenQuotesTotal.plentyClose,
+              index: tokenQuotesTotal.plentyTvl,
+            },
+            {
+              num: tokenQuotesTotal.close,
+              index: tokenQuotesTotal.tvl,
+            },
+          ];
+
+          tokenQuotesTotal.aggregatedClose = aggregateMultiple(arr);
+        }
+
+        let volume24Xtz = 0;
+        let tokenTvl = 0;
+        let tokenTvlUsd = 0;
+
+        tokensVolume.forEach((o) => {
+          if (o.tokenId === tokenId) {
+            volume24Xtz = new BigNumber(o.tezQty).plus(volume24Xtz).toNumber();
+            element.exchanges.forEach((e, index) => {
+              if (e.address === o.exchangeId) {
+                element.exchanges[index].volume24 = new BigNumber(
+                  element.exchanges[index].volume24 || 0
+                )
+                  .plus(o.tezQty)
+                  .toNumber();
+              }
+            });
+          }
+        });
+
+        /**
+         *Calculate tvl for each exchange
+         */
+        statsTotal.forEach((s) => {
           element.exchanges.forEach((e, index) => {
-            if (e.address === o.exchangeId) {
-              element.exchanges[index].volume24 = new BigNumber(
-                element.exchanges[index].volume24 || 0
-              )
-                .plus(o.tezQty)
-                .toNumber();
+            if (s.tokenId === tokenId && s.exchangeId === e.address) {
+              element.exchanges[index].tokenTvl =
+                new BigNumber(s?.tvl).toNumber() || 0;
+              element.exchanges[index].tokenTvlUsd =
+                new BigNumber(s?.tvlUsd).toNumber() || 0;
             }
           });
-        }
-      });
+        });
 
-      /**
-       *Calculate tvl for each exchange
-       */
-      statsTotal.forEach((s) => {
+        /**
+         *Calculate total tvl and volume for each token
+         */
         element.exchanges.forEach((e, index) => {
-          if (s.tokenId === tokenId && s.exchangeId === e.address) {
-            element.exchanges[index].tokenTvl =
-              new BigNumber(s?.tvl).toNumber() || 0;
-            element.exchanges[index].tokenTvlUsd =
-              new BigNumber(s?.tvlUsd).toNumber() || 0;
+          tokenTvl = new BigNumber(tokenTvl).plus(e.tokenTvl).toNumber();
+          tokenTvlUsd = new BigNumber(tokenTvlUsd)
+            .plus(e.tokenTvl * xtzUSD)
+            .toNumber();
+          if (
+            e.name === TRACKED_MARKETS_NAME.plentyNetwork.name ||
+            e.name === TRACKED_MARKETS_NAME.spicyswap.name
+          ) {
+            volume24Xtz = new BigNumber(volume24Xtz)
+              .plus(e.volume24)
+              .toNumber();
           }
         });
-      });
 
-      /**
-       *Calculate total tvl and volume for each token
-       */
-      element.exchanges.forEach((e, index) => {
-        tokenTvl = new BigNumber(tokenTvl).plus(e.tokenTvl).toNumber();
-        tokenTvlUsd = new BigNumber(tokenTvlUsd)
-          .plus(e.tokenTvl * xtzUSD)
-          .toNumber();
-        if (
-          e.name === TRACKED_MARKETS_NAME.plentyNetwork.name ||
-          e.name === TRACKED_MARKETS_NAME.spicyswap.name
-        ) {
-          volume24Xtz = new BigNumber(volume24Xtz).plus(e.volume24).toNumber();
-        }
-      });
+        tokenObjkt[element.id] = {
+          ...element,
+          ...tokenMetadata,
+          ...closes,
+          currentPrice: Number(tokenQuotesTotal?.aggregatedClose),
+          // allTimeLow: tokenQuotesTotal?.low || 0,
+          tokenTvl,
+          tokenTvlUsd,
+          volume24Xtz,
+        };
+      }
 
-      tokenObjkt[element.id] = {
-        ...element,
-        ...closes,
-        currentPrice: Number(tokenQuotesTotal?.aggregatedClose),
-        // allTimeLow: tokenQuotesTotal?.low || 0,
-        tokenTvl,
-        tokenTvlUsd,
-        volume24Xtz,
-      };
+      console.log("tokenObjkt", tokenObjkt);
+      return { ...updatedIndexerTokens, ...tokenObjkt };
+    } catch (error) {
+      console.log();
+      console.log("error", error);
     }
-
-    return tokenObjkt;
   },
 
   async calcHolders(token) {
@@ -1229,25 +1261,26 @@ export default {
     return token;
   },
 
-  async calculateTokenData(token, tokenFeed, allTokensMetadata, xtzUsd) {
-    const tokenPrice = tokenFeed[token.id];
+  async calculateTokenData(element, token, tokenFeed, xtzUsd) {
+    // const tokenPrice = tokenFeed[token.id];
 
     // tokenPrice.currentPrice = currentPrice;
 
-    const tokenMetadata = allTokensMetadata.find((el) => {
-      return (
-        el.token_address === token.tokenAddress &&
-        (el.token_id !== undefined
-          ? el.token_id === (token.tokenId || 0)
-          : true)
-      );
-    });
+    // const tokenMetadata = allTokensMetadata.find((el) => {
+    //   return (
+    //     el.token_address === token.tokenAddress &&
+    //     (el.token_id !== undefined
+    //       ? el.token_id === (token.tokenId || 0)
+    //       : true)
+    //   );
+    // });
 
-    const element = tokenPrice;
+    // const element = tokenPrice;
+    console.log("element", element);
 
-    if (element && tokenMetadata) {
+    if (element) {
       element.thumbnailUri = ipfs.transformUri(
-        tokenMetadata.thumbnail_uri ||
+        element.thumbnailUri ||
           "https://static.thenounproject.com/png/796573-200.png"
       );
 
@@ -1259,8 +1292,8 @@ export default {
       const priceUsd = price.times(xtzUsd);
       element.usdValue = price.times(xtzUsd).toNumber();
 
-      element.calcSupply = new BigNumber(tokenMetadata.total_supply)
-        .div(new BigNumber(10).pow(tokenMetadata.decimals))
+      element.calcSupply = new BigNumber(element.totalSupply)
+        .div(new BigNumber(10).pow(element.decimals))
         .toNumber();
 
       element.mktCap = new BigNumber(element.calcSupply)
@@ -1322,6 +1355,8 @@ export default {
       element.volume24Usd = new BigNumber(element.volume24Xtz)
         .times(xtzUsd)
         .toNumber();
+
+      element.exchanges = element.exchanges || [];
 
       for (let index = 0; index < element?.exchanges.length; index++) {
         const market = element?.exchanges[index];

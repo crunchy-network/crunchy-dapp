@@ -2,7 +2,7 @@ import tokenTracker from "../../utils/token-tracker";
 import tokensToTrack from "../../tokensTracked.json";
 import _ from "lodash";
 // import coingecko from "../../utils/coingecko";
-import dexIndexer from "../../utils/dex-indexer";
+// import dexIndexer from "../../utils/dex-indexer";
 import tzkt from "../../utils/tzkt";
 
 export default {
@@ -21,7 +21,7 @@ export default {
   async _setTokenTracked({ commit, state, dispatch }, payload) {
     !payload?.softLoad && commit("updateLoading", true);
     try {
-      const allTokensMetadata = await dexIndexer.getAllTokens();
+      // const allTokensMetadata = await dexIndexer.getAllTokens();
       const xtzUsd = await tzkt.getXtzUsdPrice();
       // const xtzUsdHistory = await coingecko.getXtzUsdHistory();
       const xtzUsdHistory = await tzkt.getXtzUsdHistory();
@@ -35,20 +35,29 @@ export default {
       commit("updateXtzUsdPrice", xtzUsd);
       commit("updateXtzUsdHistory", xtzUsdHistory);
 
-      const tokenFeed = await tokenTracker.getTokenFeed(xtzUsd, xtzUsdHistory);
+      let tokenFeed = {};
+
+      await tokenTracker.getTokenFeed(xtzUsd, xtzUsdHistory).then((feed) => {
+        tokenFeed = feed;
+      });
 
       const tokens = [];
       for (let i = 0; i < tokensToTrack.length; i++) {
         const value = tokensToTrack[i];
         value.id = `${value.tokenAddress}_${value.tokenId || 0}`;
         const tokenData = value;
+
+        const element = tokenFeed[tokenData.id];
+
         const token = await tokenTracker.calculateTokenData(
+          element,
           tokenData,
           tokenFeed,
-          allTokensMetadata,
           xtzUsd
           // tokenVolumesYesterday
         );
+
+        console.log("tokenFeed", element);
 
         if (token) {
           tokens.push({
