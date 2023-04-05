@@ -4,7 +4,7 @@ import ipfs from "./ipfs";
 // import teztools from "./teztools";
 import knownContracts from "../knownContracts.json";
 import tzkt from "./tzkt";
-import queryDipdup from "./queryDipdup";
+import tokenTracker from "./token-tracker";
 
 const SKIP_CONTRACTS = [
   "KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo_0",
@@ -214,10 +214,7 @@ export default {
       // const { contracts: prices } = await teztools.getPricefeed();
 
       // Get token metadata and prices
-      const [tokenData, tokensClose] = await Promise.all([
-        queryDipdup.getAllTokenAndQuotes(),
-        queryDipdup.getTokensPriceClose(),
-      ]);
+      const tokenData = await tokenTracker.getTokenFeed();
 
       // filter out NFTs by checking for artifactURI and token symbol or alias
       const tokens = [];
@@ -245,7 +242,7 @@ export default {
         }`;
         const priceObj = tokenData[tokenId];
 
-        const tokenClose = queryDipdup.filterTokenClose(tokenId, tokensClose);
+        // const tokenClose = queryDipdup.filterTokenClose(tokenId, tokensClose);
         const currentPrice = priceObj?.currentPrice || false;
         const tokenid = priceObj?.tokenId;
         // get token uri from prices :: This is because  balance does not return  some tokens thumbnail
@@ -289,18 +286,18 @@ export default {
           price: price.toNumber(),
           name: priceObj?.name,
           priceChange1Day: price
-            .minus(tokenClose?.dayClose)
-            .div(tokenClose?.dayClose)
+            .minus(priceObj?.dayClose)
+            .div(priceObj?.dayClose)
             .times(100)
             .toNumber(),
           priceChange7Day: price
-            .minus(tokenClose?.weekClose)
-            .div(tokenClose?.weekClose)
+            .minus(priceObj?.weekClose)
+            .div(priceObj?.weekClose)
             .times(100)
             .toNumber(),
           priceChange30Day: price
-            .minus(tokenClose?.monthClose)
-            .div(tokenClose?.monthClose)
+            .minus(priceObj?.monthClose)
+            .div(priceObj?.monthClose)
             .times(100)
             .toNumber(),
           /**
@@ -308,18 +305,18 @@ export default {
            */
 
           priceChange1DayUsd: priceUsd
-            .minus(tokenClose?.dayCloseUsd)
-            .div(tokenClose?.dayCloseUsd)
+            .minus(priceObj?.dayCloseUsd)
+            .div(priceObj?.dayCloseUsd)
             .times(100)
             .toNumber(),
           priceChange7DayUsd: priceUsd
-            .minus(tokenClose?.weekCloseUsd)
-            .div(tokenClose?.weekCloseUsd)
+            .minus(priceObj?.weekCloseUsd)
+            .div(priceObj?.weekCloseUsd)
             .times(100)
             .toNumber(),
           priceChange30DayUsd: priceUsd
-            .minus(tokenClose?.monthCloseUsd)
-            .div(tokenClose?.monthCloseUsd)
+            .minus(priceObj?.monthCloseUsd)
+            .div(priceObj?.monthCloseUsd)
             .times(100)
             .toNumber(),
           priceUsd: priceUsd.toNumber(),
