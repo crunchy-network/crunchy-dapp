@@ -40,6 +40,10 @@ const getDexName = (dexType) => {
     return "QuipuswapTokenToTokenDex";
   }
 
+  if (dexType === "quipuswap_v2") {
+    return "QuipuswapV2";
+  }
+
   return pascalCase(dexType);
 };
 
@@ -189,11 +193,37 @@ const buildQuipuToken2TokenPair = (dex, inverted = false) => {
     direction: inverted ? "Inverted" : "Direct",
     a: {
       ...createSimplePairSide(aSide),
-      precision: getParamValue(aSide.params, "precision"),
     },
     b: {
       ...createSimplePairSide(bSide),
-      precision: getParamValue(bSide.params, "precision"),
+    },
+  };
+};
+
+const buildQuipuV2Pair = (dex, inverted = false) => {
+  const aSide = dex.pools[inverted ? 1 : 0];
+  const bSide = dex.pools[inverted ? 0 : 1];
+
+  return {
+    poolId: aSide.pool_id,
+    dex: getDexName(dex.dex_type),
+    dexAddress: dex.dex_address,
+    direction: inverted ? "Inverted" : "Direct",
+    fee: {
+      interfaceFee: BigNumber(getParamValue(dex.params, "interface_fee")),
+      swapFee: BigNumber(getParamValue(dex.params, "swap_fee")),
+      auctionFee: BigNumber(getParamValue(dex.params, "auction_fee")),
+      withdrawFeeReward: BigNumber(
+        getParamValue(dex.params, "withdraw_fee_reward")
+      ),
+    },
+    a: {
+      ...createSimplePairSide(aSide),
+      precision: getParamValue(aSide.params, "token_a_price_cml"),
+    },
+    b: {
+      ...createSimplePairSide(bSide),
+      precision: getParamValue(bSide.params, "token_b_price_cml"),
     },
   };
 };
@@ -217,7 +247,7 @@ const buildQuipuStablePairs = (dex) => {
 };
 
 
-const modifyQuipuSwapToken2TokenPair = (dex) => {
+const modifyQuipuPair = (dex) => {
   const removedPoolIds = [];
   const modifiedPools = dex.pools.filter(function (el) {
     if (removedPoolIds.includes(el.pool_id)) {
@@ -238,8 +268,11 @@ const buildSwapPairs = (dexes) => {
   let pairs = [];
 
   for (let dex of dexes) {
-    if (dex.dex_type === "quipuswap_token2token") {
-      dex = modifyQuipuSwapToken2TokenPair(dex);
+    if (
+      dex.dex_type === "quipuswap_token2token" ||
+      dex.dex_type === "quipuswap_v2"
+    ) {
+      dex = modifyQuipuPair(dex);
     }
 
     if (shouldSkip(dex)) {
@@ -279,6 +312,11 @@ const buildSwapPairs = (dexes) => {
       case "quipuswap_token2token":
         pairs.push(buildQuipuToken2TokenPair(dex));
         pairs.push(buildQuipuToken2TokenPair(dex, true));
+        break;
+      
+      case "quipuswap_v2":
+        pairs.push(buildQuipuV2Pair(dex));
+        pairs.push(buildQuipuV2Pair(dex, true));
         break;
 
       case "quipuswap_stable":
