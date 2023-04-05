@@ -1,8 +1,8 @@
 <template>
   <div style="height: 100%">
     <el-card
+      v-loading="!loading && !getLoadingChart ? false : true"
       style="height: 100%"
-      v-loading="loading || chartLoading"
       shadow="always"
     >
       <el-row
