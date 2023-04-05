@@ -28,6 +28,7 @@ const QUERY_GET_ALL_DEXES = `query AllDexes {
       value
     }
     pools {
+      pool_id
       reserves
       params {
         name
