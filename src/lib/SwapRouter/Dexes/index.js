@@ -8,8 +8,10 @@ const Youves = require("./Youves");
 const PlentyStable = require("./PlentyStable");
 const PlentyCtezTez = require("./PlentyCtezTez");
 const QuipuswapStable = require("./QuipuswapStable");
-const QuipuswapTokenToTokenDex = require("./QuipuswapToken2Token")
-const QuipuswapV2 = require("./QuipuswapV2")
+const QuipuswapTokenToTokenDex = require("./QuipuswapToken2Token");
+const QuipuswapV2 = require("./QuipuswapV2");
+const Flame = require("./Flame");
+const Alien = require("./Alien");
 
 module.exports = {
   LiquidityBaking,
@@ -24,4 +26,6 @@ module.exports = {
   QuipuswapStable,
   QuipuswapTokenToTokenDex,
   QuipuswapV2,
+  Flame,
+  Alien,
 };
