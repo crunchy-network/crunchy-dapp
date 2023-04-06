@@ -231,6 +231,51 @@ const buildQuipuV2Pair = (dex, token1Pool, token2Pool, inverted = false) => {
   };
 };
 
+const buildFlamePair = (dex, token1Pool, token2Pool, inverted = false) => {
+  return {
+    poolId: token1Pool.pool_id,
+    dex: getDexName(dex.dex_type),
+    dexAddress: dex.dex_address,
+    direction: inverted ? "Inverted" : "Direct",
+    fee: getParamValue(token1Pool.params, "fee"),
+    lastRewardPerTez: getParamValue(token1Pool.params, "last_reward_per_tez"),
+    rewardPerShare: getParamValue(token1Pool.params, "reward_per_share"),
+    a: {
+      ...createSimplePairSide(token1Pool),
+      totalSupply: getParamValue(token1Pool.params, "total_supply"),
+    },
+    b: {
+      ...createSimplePairSide(token2Pool),
+      totalSupply: getParamValue(token1Pool.params, "total_supply"),
+    },
+  };
+};
+
+const buildAlienPair = (dex, token1Pool, token2Pool, inverted = false) => {
+  return {
+    poolId: token1Pool.pool_id,
+    dex: getDexName(dex.dex_type),
+    dexAddress: dex.dex_address,
+    direction: inverted ? "Inverted" : "Direct",
+    fee: {
+      dev: BigNumber(getParamValue(dex.params, "dev")),
+      buyback: BigNumber(getParamValue(dex.params, "buyback")),
+      interface: BigNumber(getParamValue(dex.params, "interface")),
+      stake: BigNumber(getParamValue(dex.params, "stake")),
+      lp: BigNumber(getParamValue(dex.params, "lp")),
+      helper: BigNumber(getParamValue(dex.params, "helper")),
+    },
+    a: {
+      ...createSimplePairSide(token1Pool),
+      totalSupply: getParamValue(token1Pool.params, "total_supply"),
+    },
+    b: {
+      ...createSimplePairSide(token2Pool),
+      totalSupply: getParamValue(token1Pool.params, "total_supply"),
+    },
+  };
+};
+
 const buildQuipuV2Pairs = (dex) => {
   const pairs = [];
   const poolIds = [];
@@ -238,9 +283,7 @@ const buildQuipuV2Pairs = (dex) => {
     let p = null;
     const token1 = dex.pools[t1];
     const token2 = dex.pools.filter(
-      (el) =>
-        el.pool_id === token1.pool_id &&
-        el.token_address !== token1.token_address
+      (el) => el.pool_id === token1.pool_id && el.reserves !== token1.reserves
     )[0];
     if (poolIds.includes(token1.pool_id)) {
       p = buildQuipuV2Pair(dex, token1, token2, true);
@@ -278,6 +321,52 @@ const buildQuipuToken2TokenPairs = (dex) => {
   return pairs;
 };
 
+const buildFlamePairs = (dex) => {
+  const pairs = [];
+  const poolIds = [];
+  for (let t1 = 0; t1 < dex.pools.length; t1++) {
+    let p = null;
+    const token1 = dex.pools[t1];
+    const token2 = dex.pools.filter(
+      (el) => el.pool_id === token1.pool_id && el.reserves !== token1.reserves
+    )[0];
+
+    if (poolIds.includes(token1.pool_id)) {
+      p = buildFlamePair(dex, token1, token2, true);
+    } else {
+      p = buildFlamePair(dex, token1, token2);
+      poolIds.push(token1.pool_id);
+    }
+    if (p) {
+      pairs.push(p);
+    }
+  }
+  return pairs;
+};
+
+const buildAlienPairs = (dex) => {
+  const pairs = [];
+  const poolIds = [];
+  for (let t1 = 0; t1 < dex.pools.length; t1++) {
+    let p = null;
+    const token1 = dex.pools[t1];
+    const token2 = dex.pools.filter(
+      (el) => el.pool_id === token1.pool_id && el.reserves !== token1.reserves
+    )[0];
+
+    if (poolIds.includes(token1.pool_id)) {
+      p = buildAlienPair(dex, token1, token2, true);
+    } else {
+      p = buildAlienPair(dex, token1, token2);
+      poolIds.push(token1.pool_id);
+    }
+    if (p) {
+      pairs.push(p);
+    }
+  }
+  return pairs;
+};
+
 const buildQuipuStablePairs = (dex) => {
   const pairs = [];
   for (let t1 = 0; t1 < dex.pools.length; t1++) {
@@ -296,7 +385,7 @@ const buildQuipuStablePairs = (dex) => {
   return pairs;
 };
 
-const modifyQuipuPair = (dex) => {
+const modifyMasterDex = (dex) => {
   const removedPoolIds = [];
   for (let i = 0; i < dex.pools.length; i++) {
     const pool = dex.pools[i];
@@ -327,13 +416,10 @@ const modifyQuipuPair = (dex) => {
 
 const buildSwapPairs = (dexes) => {
   let pairs = [];
-
+  const masterDex = ["quipuswap_token2token", "quipuswap_v2", "flame", "alien"];
   for (let dex of dexes) {
-    if (
-      dex.dex_type === "quipuswap_token2token" ||
-      dex.dex_type === "quipuswap_v2"
-    ) {
-      dex = modifyQuipuPair(dex);
+    if (masterDex.includes(dex.dex_type)) {
+      dex = modifyMasterDex(dex);
     }
 
     if (shouldSkip(dex)) {
@@ -368,6 +454,14 @@ const buildSwapPairs = (dexes) => {
       case "plenty_stable":
         pairs.push(buildPlentyStablePair(dex));
         pairs.push(buildPlentyStablePair(dex, true));
+        break;
+
+      case "flame":
+        pairs = pairs.concat(buildFlamePairs(dex));
+        break;
+
+      case "alien":
+        pairs = pairs.concat(buildAlienPairs(dex));
         break;
 
       case "quipuswap_token2token":

@@ -41,6 +41,9 @@ import vortex from "../assets/dex-icons/Vortex.svg";
 import spicy from "../assets/dex-icons/Spicy.png";
 import wtz from "../assets/dex-icons/Wtz.png";
 import youves from "../assets/dex-icons/Youves.svg";
+import alien from "../assets/dex-icons/Alien.png";
+import flame from "../assets/dex-icons/Flame.png";
+
 export default {
   props: {
     route: { type: Object, required: true },
@@ -60,6 +63,8 @@ export default {
         QuipuswapStable: quipuswap,
         QuipuswapV2: quipuswap,
         Vortex: vortex,
+        Alien: alien,
+        Flame: flame,
         Spicy: spicy,
         WTZ: wtz,
         Youves: youves,
@@ -75,6 +80,8 @@ export default {
         QuipuswapStable: "Quipu",
         QuipuswapV2: "Quipu v2",
         Vortex: "Vortex",
+        Alien: "Alien",
+        Flame: "Flame",
         Spicy: "Spicy",
         WTZ: "WTZ",
         Youves: "Youves",
