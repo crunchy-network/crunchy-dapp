@@ -182,30 +182,29 @@ const buildQuipuStablePair = (dex, token1Pool, token2Pool) => {
   };
 };
 
-const buildQuipuToken2TokenPair = (dex, inverted = false) => {
-  const aSide = dex.pools[inverted ? 1 : 0];
-  const bSide = dex.pools[inverted ? 0 : 1];
-
+const buildQuipuToken2TokenPair = (
+  dex,
+  token1Pool,
+  token2Pool,
+  inverted = false
+) => {
   return {
-    poolId: aSide.pool_id,
+    poolId: token1Pool.pool_id,
     dex: getDexName(dex.dex_type),
     dexAddress: dex.dex_address,
     direction: inverted ? "Inverted" : "Direct",
     a: {
-      ...createSimplePairSide(aSide),
+      ...createSimplePairSide(token1Pool),
     },
     b: {
-      ...createSimplePairSide(bSide),
+      ...createSimplePairSide(token2Pool),
     },
   };
 };
 
-const buildQuipuV2Pair = (dex, inverted = false) => {
-  const aSide = dex.pools[inverted ? 1 : 0];
-  const bSide = dex.pools[inverted ? 0 : 1];
-
+const buildQuipuV2Pair = (dex, token1Pool, token2Pool, inverted = false) => {
   return {
-    poolId: aSide.pool_id,
+    poolId: token1Pool.pool_id,
     dex: getDexName(dex.dex_type),
     dexAddress: dex.dex_address,
     direction: inverted ? "Inverted" : "Direct",
@@ -218,14 +217,65 @@ const buildQuipuV2Pair = (dex, inverted = false) => {
       ),
     },
     a: {
-      ...createSimplePairSide(aSide),
-      precision: getParamValue(aSide.params, "token_a_price_cml"),
+      ...createSimplePairSide(token1Pool),
+      token_a_price_cml: inverted
+        ? getParamValue(token1Pool.params, "token_b_price_cml")
+        : getParamValue(token1Pool.params, "token_a_price_cml"),
     },
     b: {
-      ...createSimplePairSide(bSide),
-      precision: getParamValue(bSide.params, "token_b_price_cml"),
+      ...createSimplePairSide(token2Pool),
+      token_b_price_cml: inverted
+        ? getParamValue(token1Pool.params, "token_b_price_cml")
+        : getParamValue(token1Pool.params, "token_a_price_cml"),
     },
   };
+};
+
+const buildQuipuV2Pairs = (dex) => {
+  const pairs = [];
+  const poolIds = [];
+  for (let t1 = 0; t1 < dex.pools.length; t1++) {
+    let p = null;
+    const token1 = dex.pools[t1];
+    const token2 = dex.pools.filter(
+      (el) =>
+        el.pool_id === token1.pool_id &&
+        el.token_address !== token1.token_address
+    )[0];
+    if (poolIds.includes(token1.pool_id)) {
+      p = buildQuipuV2Pair(dex, token1, token2, true);
+    } else {
+      p = buildQuipuV2Pair(dex, token1, token2);
+      poolIds.push(token1.pool_id);
+    }
+    if (p) {
+      pairs.push(p);
+    }
+  }
+  return pairs;
+};
+
+const buildQuipuToken2TokenPairs = (dex) => {
+  const pairs = [];
+  const poolIds = [];
+  for (let t1 = 0; t1 < dex.pools.length; t1++) {
+    let p = null;
+    const token1 = dex.pools[t1];
+    const token2 = dex.pools.filter(
+      (el) => el.pool_id === token1.pool_id && el.reserves !== token1.reserves
+    )[0];
+
+    if (poolIds.includes(token1.pool_id)) {
+      p = buildQuipuToken2TokenPair(dex, token1, token2, true);
+    } else {
+      p = buildQuipuToken2TokenPair(dex, token1, token2);
+      poolIds.push(token1.pool_id);
+    }
+    if (p) {
+      pairs.push(p);
+    }
+  }
+  return pairs;
 };
 
 const buildQuipuStablePairs = (dex) => {
@@ -246,19 +296,30 @@ const buildQuipuStablePairs = (dex) => {
   return pairs;
 };
 
-
 const modifyQuipuPair = (dex) => {
   const removedPoolIds = [];
+  for (let i = 0; i < dex.pools.length; i++) {
+    const pool = dex.pools[i];
+    if (config.excludedTokens.includes(pool.token.symbol)) {
+      removedPoolIds.push(pool.pool_id);
+      continue;
+    }
+
+    if (
+      ["XTZ", "WTZ"].includes(pool.token.symbol) &&
+      isPoolBelowMinThreshold(pool.reserves)
+    ) {
+      removedPoolIds.push(pool.pool_id);
+    }
+  }
+
   const modifiedPools = dex.pools.filter(function (el) {
     if (removedPoolIds.includes(el.pool_id)) {
       return false;
     }
-    if (config.excludedTokens.includes(el.token.symbol)) {
-      removedPoolIds.push(el.pool_id);
-      return false;
-    }
     return true;
   });
+
   const { pools, ...rest } = dex;
   rest.pools = modifiedPools;
   return rest;
@@ -310,13 +371,11 @@ const buildSwapPairs = (dexes) => {
         break;
 
       case "quipuswap_token2token":
-        pairs.push(buildQuipuToken2TokenPair(dex));
-        pairs.push(buildQuipuToken2TokenPair(dex, true));
+        pairs = pairs.concat(buildQuipuToken2TokenPairs(dex));
         break;
-      
+
       case "quipuswap_v2":
-        pairs.push(buildQuipuV2Pair(dex));
-        pairs.push(buildQuipuV2Pair(dex, true));
+        pairs = pairs.concat(buildQuipuV2Pairs(dex));
         break;
 
       case "quipuswap_stable":
