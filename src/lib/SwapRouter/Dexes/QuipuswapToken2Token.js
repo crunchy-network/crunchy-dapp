@@ -53,7 +53,7 @@ const invertTransaction = (dex, trade, walletAddres, input, output) => {
         [
           {
             operation: {
-              a_to_b: [["unit"]],
+              b_to_a: [["unit"]],
             },
             pair_id: trade.poolId,
           },

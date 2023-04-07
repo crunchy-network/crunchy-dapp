@@ -7,7 +7,7 @@ const {
 const { addTokenApprovalOperators } = require("../TokenTypes");
 const { getAmmSwapOutput } = require("../SwapRates/amm");
 
-const DEX_FEE = 0.3;
+const DEX_FEE = 3;
 
 const roundOutput = (output, pair) => {
   const decimalMover = Math.pow(10, pair.b.decimals);
@@ -30,16 +30,15 @@ const directTransaction = (dex, trade, walletAddress, input, output) => {
   return [
     dex.contract.methods
       .swap(input, output, walletAddress, [[trade.poolId, true]])
-      .toTransferParams(fromOpOpts(convertToMuTez(trade.input, tokenA))),
+      .toTransferParams(fromOpOpts(undefined)),
   ];
 };
 
 const invertTransaction = (dex, trade, walletAddres, input, output) => {
-  const tokenA = { ...trade.a };
   return [
     dex.contract.methods
       .swap(input, output, walletAddres, [[trade.poolId, false]])
-      .toTransferParams(fromOpOpts(convertToMuTez(trade.input, tokenA))),
+      .toTransferParams(fromOpOpts(undefined)),
   ];
 };
 
@@ -51,7 +50,7 @@ const buildDexOperation = (dex, trade, walletAddres, tezos) => {
     trade.direction === "Direct"
       ? directTransaction(dex, trade, walletAddres, input, output)
       : invertTransaction(dex, trade, walletAddres, input, output);
-      console.log(walletAddres)
+
   if (!isTez(trade.a)) {
     return addTokenApprovalOperators(
       trade,

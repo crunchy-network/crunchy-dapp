@@ -6,10 +6,10 @@ const { getAmmSwapOutput } = require("../SwapRates/amm");
 const FEE_DENOMINATOR = new BigNumber(1000000000000000000n);
 
 function getFees(fees) {
-  const { buyback, stake, dev, lp, helper } = fees;
+  const { buyback, stake, dev } = fees;
   const interfaceFee = fees.interface;
 
-  return buyback.plus(stake).plus(interfaceFee).plus(dev).plus(lp).plus(helper);
+  return buyback.plus(stake).plus(interfaceFee).plus(dev);
 }
 
 function calcFees(pair) {
