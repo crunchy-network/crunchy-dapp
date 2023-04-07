@@ -6,14 +6,14 @@ const { getAmmSwapOutput } = require("../SwapRates/amm");
 const FEE_DENOMINATOR = new BigNumber(1000000000000000000n);
 
 function getFees(fees) {
-  const { buyback, stake, dev } = fees;
+  const { buyback, stake, dev, lp, helper } = fees;
   const interfaceFee = fees.interface;
 
-  return buyback.plus(stake).plus(interfaceFee).plus(dev);
+  return buyback.plus(stake).plus(interfaceFee).plus(dev).plus(lp).plus(helper);
 }
 
 function calcFees(pair) {
-  return getFees(pair.fee).idiv(FEE_DENOMINATOR);
+  return getFees(pair.fee).div(FEE_DENOMINATOR);
 }
 
 const roundOutput = (output, pair) => {
@@ -31,9 +31,38 @@ function getSwapOutput(input, pair) {
 }
 
 const directTransaction = (dex, trade, walletAddres, input, output) => {
+  const tokenAId = trade.a.contractType === "fa2" ? trade.a.tokenId : 0;
+  const tokenAType = trade.a.contractType === "fa2" ? "fa2" : "fa12";
+  const tokenBId = trade.b.contractType === "fa2" ? trade.b.tokenId : 0;
+  const tokenBType = trade.b.contractType === "fa2" ? "fa2" : "fa12";
+
   return [
     dex.contract.methods
-      .swap(input, output, walletAddres, [trade.pool_id, true])
+      .swap(
+        [
+          {
+            operation: {
+              buy: [["unit"]],
+            },
+            pair: {
+              token_a_address: trade.a.tokenAddress,
+              token_a_id: tokenAId,
+              token_a_type: {
+                [`${tokenAType}`]: [["unit"]],
+              },
+              token_b_address: trade.b.tokenAddress,
+              token_b_id: tokenBId,
+              token_b_type: {
+                [`${tokenBType}`]: [["unit"]],
+              },
+            },
+          },
+        ],
+        input,
+        output,
+        walletAddres,
+        "tz1SB6rA5pJmRJCeRQZPDykR8RFAzgcjF5bZ",
+      )
       .toTransferParams({
         mutez: true,
       }),
@@ -41,9 +70,38 @@ const directTransaction = (dex, trade, walletAddres, input, output) => {
 };
 
 const invertTransaction = (dex, trade, walletAddres, input, output) => {
+  const tokenAId = trade.a.contractType === "fa2" ? trade.a.tokenId : 0;
+  const tokenAType = trade.a.contractType === "fa2" ? "fa2" : "fa12";
+  const tokenBId = trade.b.contractType === "fa2" ? trade.b.tokenId : 0;
+  const tokenBType = trade.b.contractType === "fa2" ? "fa2" : "fa12";
+
   return [
     dex.contract.methods
-      .swap(input, output, walletAddres, [trade.pool_id, false])
+      .swap(
+        [
+          {
+            operation: {
+              sell: [["unit"]],
+            },
+            pair: {
+              token_a_address: trade.b.tokenAddress,
+              token_a_id: tokenBId,
+              token_a_type: {
+                [`${tokenBType}`]: [["unit"]],
+              },
+              token_b_address: trade.a.tokenAddress,
+              token_b_id: tokenAId,
+              token_b_type: {
+                [`${tokenAType}`]: [["unit"]],
+              },
+            },
+          },
+        ],
+        input,
+        output,
+        walletAddres,
+        "tz1SB6rA5pJmRJCeRQZPDykR8RFAzgcjF5bZ",
+      )
       .toTransferParams({
         mutez: true,
       }),
@@ -53,6 +111,7 @@ const invertTransaction = (dex, trade, walletAddres, input, output) => {
 const buildDexOperation = (dex, trade, walletAddres, tezos) => {
   const input = convertToMuTez(trade.input, trade.a);
   const output = convertToMuTez(trade.minOut, trade.b);
+  console.log(trade, input, output)
   const transfers =
     trade.direction === "Direct"
       ? directTransaction(dex, trade, walletAddres, input, output)

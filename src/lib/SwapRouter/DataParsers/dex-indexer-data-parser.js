@@ -219,14 +219,14 @@ const buildQuipuV2Pair = (dex, token1Pool, token2Pool, inverted = false) => {
     a: {
       ...createSimplePairSide(token1Pool),
       token_a_price_cml: inverted
-        ? getParamValue(token1Pool.params, "token_b_price_cml")
+        ? getParamValue(token2Pool.params, "token_b_price_cml")
         : getParamValue(token1Pool.params, "token_a_price_cml"),
     },
     b: {
       ...createSimplePairSide(token2Pool),
       token_b_price_cml: inverted
-        ? getParamValue(token1Pool.params, "token_b_price_cml")
-        : getParamValue(token1Pool.params, "token_a_price_cml"),
+        ? getParamValue(token1Pool.params, "token_a_price_cml")
+        : getParamValue(token2Pool.params, "token_b_price_cml"),
     },
   };
 };
