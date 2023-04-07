@@ -1,8 +1,13 @@
-const { isTez, percentToDecimal, convertToMuTez } = require("../utils.js");
+const {
+  isTez,
+  percentToDecimal,
+  convertToMuTez,
+  fromOpOpts,
+} = require("../utils.js");
 const { addTokenApprovalOperators } = require("../TokenTypes");
 const { getAmmSwapOutput } = require("../SwapRates/amm");
 
-const DEX_FEE = 0.03;
+const DEX_FEE = 0.3;
 
 const roundOutput = (output, pair) => {
   const decimalMover = Math.pow(10, pair.b.decimals);
@@ -18,34 +23,35 @@ function getSwapOutput(input, pair) {
   return toRet;
 }
 
-const directTransaction = (dex, trade, walletAddres, input, output) => {
+const directTransaction = (dex, trade, walletAddress, input, output) => {
+  const tokenA = { ...trade.a };
+  console.log(input, output, trade.poolId)
+  console.log(fromOpOpts(convertToMuTez(trade.input, tokenA)));
   return [
     dex.contract.methods
-      .swap(input, output, walletAddres, [trade.pool_id, true])
-      .toTransferParams({
-        mutez: true,
-      }),
+      .swap(input, output, walletAddress, [[trade.poolId, true]])
+      .toTransferParams(fromOpOpts(convertToMuTez(trade.input, tokenA))),
   ];
 };
 
 const invertTransaction = (dex, trade, walletAddres, input, output) => {
+  const tokenA = { ...trade.a };
   return [
     dex.contract.methods
-      .swap(input, output, walletAddres, [trade.pool_id, false])
-      .toTransferParams({
-        mutez: true,
-      }),
+      .swap(input, output, walletAddres, [[trade.poolId, false]])
+      .toTransferParams(fromOpOpts(convertToMuTez(trade.input, tokenA))),
   ];
 };
 
 const buildDexOperation = (dex, trade, walletAddres, tezos) => {
   const input = convertToMuTez(trade.input, trade.a);
   const output = convertToMuTez(trade.minOut, trade.b);
+  console.log(input, output, trade)
   const transfers =
     trade.direction === "Direct"
       ? directTransaction(dex, trade, walletAddres, input, output)
       : invertTransaction(dex, trade, walletAddres, input, output);
-
+      console.log(walletAddres)
   if (!isTez(trade.a)) {
     return addTokenApprovalOperators(
       trade,
