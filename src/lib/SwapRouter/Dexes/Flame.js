@@ -1,5 +1,6 @@
 const {
   isTez,
+  isToken,
   percentToDecimal,
   convertToMuTez,
   fromOpOpts,
@@ -7,7 +8,7 @@ const {
 const { addTokenApprovalOperators } = require("../TokenTypes");
 const { getAmmSwapOutput } = require("../SwapRates/amm");
 
-const DEX_FEE = 3;
+const DEX_FEE = 0.3;
 
 const roundOutput = (output, pair) => {
   const decimalMover = Math.pow(10, pair.b.decimals);
@@ -23,43 +24,60 @@ function getSwapOutput(input, pair) {
   return toRet;
 }
 
-const directTransaction = (dex, trade, walletAddress, input, output) => {
+const tezToToken = (transfer, trade, sender, input, tezos) => {
   const tokenA = { ...trade.a };
-  console.log(input, output, trade.poolId)
-  console.log(fromOpOpts(convertToMuTez(trade.input, tokenA)));
-  return [
-    dex.contract.methods
-      .swap(input, output, walletAddress, [[trade.poolId, true]])
-      .toTransferParams(fromOpOpts(undefined)),
-  ];
+
+  return transfer.toTransferParams(fromOpOpts(+input, tokenA));
 };
 
-const invertTransaction = (dex, trade, walletAddres, input, output) => {
-  return [
-    dex.contract.methods
-      .swap(input, output, walletAddres, [[trade.poolId, false]])
-      .toTransferParams(fromOpOpts(undefined)),
-  ];
+const fromToken = async (transfer, trade, sender, input, tezos) => {
+  const transfers = [transfer.toTransferParams(fromOpOpts(undefined))];
+
+  return await addTokenApprovalOperators(
+    trade,
+    sender,
+    input,
+    transfers,
+    tezos
+  );
+};
+
+const getTransactionType = (trade) => {
+  if (isTez(trade.a) && isToken(trade.b)) {
+    return tezToToken;
+  }
+  if (isToken(trade.a)) {
+    return fromToken;
+  }
+  throw new Error("Unsupported transation type \n", JSON.stringify(trade));
+};
+
+const directTransaction = (dex, trade, walletAddres, input, output, tezos) => {
+  const transfer = dex.contract.methods.swap(input, output, walletAddres, [
+    [trade.poolId, true],
+  ]);
+  const operation = getTransactionType(trade);
+
+  return operation(transfer, trade, walletAddres, input, tezos);
+};
+
+const invertTransaction = (dex, trade, walletAddres, input, output, tezos) => {
+  const transfer = dex.contract.methods.swap(input, output, walletAddres, [
+    [trade.poolId, false],
+  ]);
+
+  const operation = getTransactionType(trade);
+  return operation(transfer, trade, walletAddres, input, tezos);
 };
 
 const buildDexOperation = (dex, trade, walletAddres, tezos) => {
   const input = convertToMuTez(trade.input, trade.a);
   const output = convertToMuTez(trade.minOut, trade.b);
-  console.log(input, output, trade)
   const transfers =
     trade.direction === "Direct"
-      ? directTransaction(dex, trade, walletAddres, input, output)
-      : invertTransaction(dex, trade, walletAddres, input, output);
+      ? directTransaction(dex, trade, walletAddres, input, output, tezos)
+      : invertTransaction(dex, trade, walletAddres, input, output, tezos);
 
-  if (!isTez(trade.a)) {
-    return addTokenApprovalOperators(
-      trade,
-      walletAddres,
-      input,
-      transfers,
-      tezos
-    );
-  }
   return transfers;
 };
 
