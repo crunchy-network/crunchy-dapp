@@ -1,15 +1,15 @@
 const { default: BigNumber } = require("bignumber.js");
-const { isTez, convertToMuTez } = require("../utils.js");
+const { convertToMuTez } = require("../utils.js");
 const { addTokenApprovalOperators } = require("../TokenTypes");
 const { getAmmSwapOutput } = require("../SwapRates/amm");
 
 const FEE_DENOMINATOR = new BigNumber(1000000000000000000n);
 
 function getFees(fees) {
-  const { buyback, stake, dev } = fees;
+  const { buyback, stake, dev, lp, helper } = fees;
   const interfaceFee = fees.interface;
 
-  return buyback.plus(stake).plus(interfaceFee).plus(dev);
+  return buyback.plus(stake).plus(interfaceFee).plus(dev).plus(lp).plus(helper);
 }
 
 function calcFees(pair) {
@@ -42,7 +42,7 @@ const directTransaction = (dex, trade, walletAddres, input, output) => {
         [
           {
             operation: {
-              buy: [["unit"]],
+              sell: [["unit"]],
             },
             pair: {
               token_a_address: trade.a.tokenAddress,
@@ -61,7 +61,7 @@ const directTransaction = (dex, trade, walletAddres, input, output) => {
         input,
         output,
         walletAddres,
-        "tz1SB6rA5pJmRJCeRQZPDykR8RFAzgcjF5bZ",
+        "tz1SB6rA5pJmRJCeRQZPDykR8RFAzgcjF5bZ"
       )
       .toTransferParams({
         mutez: true,
@@ -81,7 +81,7 @@ const invertTransaction = (dex, trade, walletAddres, input, output) => {
         [
           {
             operation: {
-              sell: [["unit"]],
+              buy: [["unit"]],
             },
             pair: {
               token_a_address: trade.b.tokenAddress,
@@ -100,7 +100,7 @@ const invertTransaction = (dex, trade, walletAddres, input, output) => {
         input,
         output,
         walletAddres,
-        "tz1SB6rA5pJmRJCeRQZPDykR8RFAzgcjF5bZ",
+        "tz1SB6rA5pJmRJCeRQZPDykR8RFAzgcjF5bZ"
       )
       .toTransferParams({
         mutez: true,
@@ -111,22 +111,18 @@ const invertTransaction = (dex, trade, walletAddres, input, output) => {
 const buildDexOperation = (dex, trade, walletAddres, tezos) => {
   const input = convertToMuTez(trade.input, trade.a);
   const output = convertToMuTez(trade.minOut, trade.b);
-  console.log(trade, input, output)
   const transfers =
     trade.direction === "Direct"
       ? directTransaction(dex, trade, walletAddres, input, output)
       : invertTransaction(dex, trade, walletAddres, input, output);
 
-  if (!isTez(trade.a)) {
-    return addTokenApprovalOperators(
-      trade,
-      walletAddres,
-      input,
-      transfers,
-      tezos
-    );
-  }
-  return transfers;
+  return addTokenApprovalOperators(
+    trade,
+    walletAddres,
+    input,
+    transfers,
+    tezos
+  );
 };
 
 module.exports = {
