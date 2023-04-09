@@ -1,9 +1,10 @@
 const { default: BigNumber } = require("bignumber.js");
-const { convertToMuTez } = require("../utils.js");
+const { convertToMuTez, percentToDecimal } = require("../utils.js");
 const { addTokenApprovalOperators } = require("../TokenTypes");
 const { getAmmSwapOutput } = require("../SwapRates/amm");
 
 const FEE_DENOMINATOR = new BigNumber(1000000000000000000n);
+const DEX_FEE = 5;
 
 function getFees(fees) {
   const { buyback, stake, dev, lp, helper } = fees;
@@ -23,7 +24,7 @@ const roundOutput = (output, pair) => {
 };
 
 function getSwapOutput(input, pair) {
-  const inputAfterFee = input * (1 - calcFees(pair));
+  const inputAfterFee = input * percentToDecimal(DEX_FEE);
   const output = getAmmSwapOutput(inputAfterFee, pair);
   const toRet = roundOutput(output, pair);
 
@@ -59,7 +60,7 @@ const directTransaction = (dex, trade, walletAddres, input, output) => {
           },
         ],
         input,
-        1,
+        output,
         walletAddres,
         process.env.VUE_APP_DEX_AGGREGATE_TOKEN_DESTINATION
       )
@@ -98,7 +99,7 @@ const invertTransaction = (dex, trade, walletAddres, input, output) => {
           },
         ],
         input,
-        1,
+        output,
         walletAddres,
         process.env.VUE_APP_DEX_AGGREGATE_TOKEN_DESTINATION
       )
