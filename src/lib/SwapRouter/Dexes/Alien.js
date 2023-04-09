@@ -59,9 +59,9 @@ const directTransaction = (dex, trade, walletAddres, input, output) => {
           },
         ],
         input,
-        output,
+        1,
         walletAddres,
-        "tz1SB6rA5pJmRJCeRQZPDykR8RFAzgcjF5bZ"
+        process.env.VUE_APP_DEX_AGGREGATE_TOKEN_DESTINATION
       )
       .toTransferParams({
         mutez: true,
@@ -98,9 +98,9 @@ const invertTransaction = (dex, trade, walletAddres, input, output) => {
           },
         ],
         input,
-        output,
+        1,
         walletAddres,
-        "tz1SB6rA5pJmRJCeRQZPDykR8RFAzgcjF5bZ"
+        process.env.VUE_APP_DEX_AGGREGATE_TOKEN_DESTINATION
       )
       .toTransferParams({
         mutez: true,
