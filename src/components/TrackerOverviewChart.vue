@@ -106,13 +106,11 @@ export default {
     },
   },
   mounted() {
-    this.sortTokenData();
-    this.getPrices();
+    this.getPrices()
 
   },
   methods: {
-    sortTokenData() {
-      this.setLoading(true);
+    async sortTokenData() {
       this.updatedChartData.tvl.days1 = this.getChartData.tvl1Day.map(
         (element) => {
           const timeUsdValue = tokenTracker.binarySearch(
@@ -319,7 +317,7 @@ export default {
             value: Number(element.aggregatedXtzVolume),
           };
         });
-      
+
       this.updatedChartData.volume.all =
         this.getChartData.allVolumeAndPrice.map((element) => {
           const timeUsdValue = tokenTracker.binarySearch(
@@ -331,12 +329,13 @@ export default {
             value: Number(element.aggregatedXtzVolume) * timeUsdValue,
           };
         });
-
-      this.setLoading(false);
     },
 
     async getPrices() {
+    this.setLoading(true);
       try {
+        await this.sortTokenData();
+
         if (this.legendTab === "tvl") {
           this.tokenData =
             this.duration === "1d"
@@ -525,6 +524,11 @@ export default {
         });
       } catch (error) {
         console.log("ERROR", error);
+      }
+      finally{
+        setTimeout(() => {
+          this.setLoading(false);
+        }, 1000);
       }
     },
 
