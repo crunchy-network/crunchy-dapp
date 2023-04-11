@@ -17,7 +17,6 @@ export default {
   async loadSwapPairs(state) {
     const dex = "core";
     const dexPools = await dexIndexer.getAllDexes();
-    
     state.commit("updateDexPairs", {
       dex,
       pairs: buildSwapPairs(dexPools),

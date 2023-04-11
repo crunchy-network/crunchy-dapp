@@ -1,16 +1,15 @@
 const { default: BigNumber } = require("bignumber.js");
-const { convertToMuTez, percentToDecimal } = require("../utils.js");
+const { convertToMuTez } = require("../utils.js");
 const { addTokenApprovalOperators } = require("../TokenTypes");
 const { getAmmSwapOutput } = require("../SwapRates/amm");
 
 const FEE_DENOMINATOR = new BigNumber(1000000000000000000n);
-const DEX_FEE = 5;
 
 function getFees(fees) {
   const { buyback, stake, dev, lp, helper } = fees;
   const interfaceFee = fees.interface;
 
-  return buyback.plus(stake).plus(interfaceFee).plus(dev).plus(lp).plus(helper);
+  return lp.plus(stake).plus(interfaceFee).plus(dev).plus(buyback).plus(helper);
 }
 
 function calcFees(pair) {
@@ -24,7 +23,7 @@ const roundOutput = (output, pair) => {
 };
 
 function getSwapOutput(input, pair) {
-  const inputAfterFee = input * percentToDecimal(DEX_FEE);
+  const inputAfterFee = input * (1 - calcFees(pair));
   const output = getAmmSwapOutput(inputAfterFee, pair);
   const toRet = roundOutput(output, pair);
 
