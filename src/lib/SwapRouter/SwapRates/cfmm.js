@@ -1,50 +1,279 @@
 const BigNumber = require("bignumber.js");
 
-function fix_cur_tick_index(cur_tick_index, sqrt_price_new, ladder) {
-  function fix_cur_tick_index_rec(cur_tick_index_new, cur_index_sqrt_price) {
-    if (sqrt_price_new.x80 < cur_index_sqrt_price.x80) {
-      const prev_tick_index = { i: cur_tick_index_new.i - 1 };
-      const prev_index_sqrt_price = half_bps_pow(prev_tick_index.i, ladder);
-      return fix_cur_tick_index_rec(prev_tick_index, prev_index_sqrt_price);
+const { Int, Nat, quipuswapV3Types } = require("../types");
+const {
+  calcNewPriceX,
+  calcNewPriceY,
+  calcSwapFee,
+  shiftLeft,
+  shiftRight,
+  sqrtPriceForTick,
+} = require("./math");
+
+class TooBigPriceChangeErr extends Error {}
+
+const HUNDRED_PERCENT_BPS = 10000;
+
+function floorLogHalfBps(x, y, outOfBoundsError) {
+  const tenx = new BigNumber(x).times(10);
+
+  if (
+    tenx.isLessThan(new BigNumber(y).times(7)) ||
+    tenx.isGreaterThan(new BigNumber(y).times(15))
+  ) {
+    throw outOfBoundsError;
+  }
+
+  const xPlusY = new BigNumber(x).plus(y);
+  const num = new BigNumber(x).minus(y).times(60003).times(xPlusY);
+  const denom = xPlusY.times(xPlusY).plus(new BigNumber(x).times(2).times(y));
+
+  return num.dividedToIntegerBy(denom);
+}
+
+function fixCurTickIndexRec(curTickIndexNew, curIndexSqrtPrice, sqrtPriceNew) {
+  if (sqrtPriceNew.isLessThan(curIndexSqrtPrice)) {
+    const prevTickIndex = curTickIndexNew.minus(1);
+    const prevIndexSqrtPrice = sqrtPriceForTick(prevTickIndex);
+
+    return fixCurTickIndexRec(prevTickIndex, prevIndexSqrtPrice, sqrtPriceNew);
+  } else {
+    const nextTickIndex = curTickIndexNew.plus(1);
+    const nextIndexSqrtPrice = sqrtPriceForTick(nextTickIndex);
+
+    if (nextIndexSqrtPrice.isLessThanOrEqualTo(sqrtPriceNew)) {
+      return fixCurTickIndexRec(
+        nextTickIndex,
+        nextIndexSqrtPrice,
+        sqrtPriceNew
+      );
     } else {
-      const next_tick_index = { i: cur_tick_index_new.i + 1 };
-      const next_index_sqrt_price = half_bps_pow(next_tick_index.i, ladder);
-      if (next_index_sqrt_price.x80 <= sqrt_price_new.x80) {
-        return fix_cur_tick_index_rec(next_tick_index, next_index_sqrt_price);
-      } else {
-        return cur_tick_index_new;
-      }
+      return curTickIndexNew;
     }
   }
+}
 
-  return fix_cur_tick_index_rec(
-    cur_tick_index,
-    half_bps_pow(cur_tick_index.i, ladder)
+function fixCurTickIndex(curTickIndex, sqrtPriceNew) {
+  return fixCurTickIndexRec(
+    curTickIndex,
+    sqrtPriceForTick(curTickIndex),
+    sqrtPriceNew
   );
 }
 
-// Helper function to get a tick by index.
-function get_tick(ticks, index, err_msg) {
-  for (let i = 0; i < ticks.length; i++) {
-    if (ticks[i].index === index.i) {
-      return ticks[i];
-    }
-  }
-  throw new Error(err_msg);
+function calcNewCurTickIndex(curTickIndex, sqrtPriceOld, sqrtPriceNew) {
+  const curTickIndexDelta = floorLogHalfBps(
+    sqrtPriceNew,
+    sqrtPriceOld,
+    new TooBigPriceChangeErr()
+  );
+
+  const curTickIndexNew = curTickIndex.plus(curTickIndexDelta);
+
+  return fixCurTickIndex(curTickIndexNew, sqrtPriceNew);
 }
 
-// Calculates the new `cur_tick_index` after a given price change.
-function calc_new_cur_tick_index(
-  cur_tick_index,
-  sqrt_price_old,
-  sqrt_price_new,
-  ladder
-) {
-  const cur_tick_index_delta = floor_log_half_bps_x80(
-    sqrt_price_new,
-    sqrt_price_old,
-    too_big_price_change_err
+function oneMinusFeeBps(feeBps) {
+  return new Nat(HUNDRED_PERCENT_BPS).minus(feeBps);
+}
+
+function xToYRec(p) {
+  if (p.s.liquidity.isZero()) {
+    return p;
+  }
+
+  // TODO: change fees logic after new Quipuswap V3 contracts are deployed
+  let totalFee = calcSwapFee(
+    p.s.constants.feeBps.toBignumber(),
+    p.dx.toBignumber()
   );
-  const cur_tick_index_new = { i: cur_tick_index.i + cur_tick_index_delta };
-  return fix_cur_tick_index(cur_tick_index_new, sqrt_price_new, ladder);
+  let sqrtPriceNew = calcNewPriceX(
+    p.s.sqrtPrice,
+    p.s.liquidity,
+    p.dx.minus(totalFee)
+  );
+  const curTickIndexNew = calcNewCurTickIndex(
+    p.s.curTickIndex,
+    p.s.sqrtPrice,
+    sqrtPriceNew
+  );
+  if (curTickIndexNew.gte(p.s.curTickWitness)) {
+    const dy = shiftRight(
+      p.s.sqrtPrice
+        .toBignumber()
+        .minus(sqrtPriceNew)
+        .multipliedBy(p.s.liquidity),
+      new BigNumber(80)
+    ).integerValue(BigNumber.ROUND_FLOOR);
+    const newStorage = {
+      ...p.s,
+      sqrtPrice: sqrtPriceNew,
+      curTickIndex: curTickIndexNew,
+    };
+
+    return {
+      s: newStorage,
+      dx: new Nat(0),
+      dy: p.dy.plus(dy),
+    };
+  }
+  const tick = p.s.ticks[p.s.curTickWitness.toFixed()];
+  const loNew = tick.prev;
+  sqrtPriceNew = new quipuswapV3Types.x80n(tick.sqrtPrice.minus(1));
+  const dy = shiftRight(
+    p.s.sqrtPrice.toBignumber().minus(sqrtPriceNew).multipliedBy(p.s.liquidity),
+    new BigNumber(80)
+  ).integerValue(BigNumber.ROUND_FLOOR);
+  const dxForDy = shiftLeft(dy, new BigNumber(160))
+    .dividedBy(p.s.sqrtPrice.multipliedBy(sqrtPriceNew))
+    .integerValue(BigNumber.ROUND_CEIL);
+  const dxConsumed = dxForDy
+    .multipliedBy(HUNDRED_PERCENT_BPS)
+    .dividedBy(oneMinusFeeBps(p.s.constants.feeBps))
+    .integerValue(BigNumber.ROUND_CEIL);
+  totalFee = dxConsumed.minus(dxForDy);
+  const sums = p.s.lastCumulative;
+  const tickCumulativeOutsideNew = sums.tick.sum.minus(
+    tick.tickCumulativeOutside
+  );
+  const tickNew = {
+    ...tick,
+    tickCumulativeOutside: tickCumulativeOutsideNew,
+  };
+  const ticksNew = {
+    ...p.s.ticks,
+    [p.s.curTickWitness.toFixed()]: tickNew,
+  };
+  const storageNew = {
+    ...p.s,
+    curTickWitness: loNew,
+    sqrtPrice: sqrtPriceNew,
+    curTickIndex: curTickIndexNew.minus(1),
+    ticks: ticksNew,
+    liquidity: p.s.liquidity.minus(tick.liquidityNet),
+  };
+  const paramNew = {
+    s: storageNew,
+    dx: p.dx.minus(dxConsumed),
+    dy: p.dy.plus(dy),
+  };
+
+  return xToYRec(paramNew);
+}
+
+function calculateXToY(s, dx) {
+  const r = xToYRec({ s, dx, dy: new Nat(0) });
+
+  return {
+    output: r.dy,
+    inputLeft: r.dx,
+    newStoragePart: r.s,
+  };
+}
+
+function yToXRec(p) {
+  if (p.s.liquidity.isZero()) {
+    return p;
+  }
+
+  let totalFee = calcSwapFee(
+    p.s.constants.feeBps.toBignumber(),
+    p.dy.toBignumber()
+  );
+  let dyMinusFee = p.dy.minus(totalFee);
+  let sqrtPriceNew = calcNewPriceY(p.s.sqrtPrice, p.s.liquidity, dyMinusFee);
+  const curTickIndexNew = calcNewCurTickIndex(
+    p.s.curTickIndex,
+    p.s.sqrtPrice,
+    sqrtPriceNew
+  );
+  const tick = p.s.ticks[p.s.curTickWitness.toFixed()];
+  const nextTickIndex = tick.next;
+  if (curTickIndexNew.lt(nextTickIndex)) {
+    const dx = p.s.liquidity
+      .toBignumber()
+      .multipliedBy(
+        shiftLeft(
+          sqrtPriceNew.toBignumber().minus(p.s.sqrtPrice),
+          new BigNumber(80)
+        )
+      )
+      .dividedBy(sqrtPriceNew.multipliedBy(p.s.sqrtPrice))
+      .integerValue(BigNumber.ROUND_FLOOR);
+    const sNew = {
+      ...p.s,
+      sqrtPrice: new quipuswapV3Types.x80n(sqrtPriceNew),
+      curTickIndex: curTickIndexNew,
+    };
+
+    return { s: sNew, dy: new Nat(0), dx: p.dx.plus(dx) };
+  }
+
+  const nextTick = p.s.ticks[nextTickIndex.toFixed()];
+  sqrtPriceNew = nextTick.sqrtPrice;
+
+  const dx = new Nat(
+    p.s.liquidity
+      .toBignumber()
+      .multipliedBy(
+        shiftLeft(
+          sqrtPriceNew.toBignumber().minus(p.s.sqrtPrice),
+          new BigNumber(80)
+        )
+      )
+      .dividedBy(sqrtPriceNew.multipliedBy(p.s.sqrtPrice))
+      .integerValue(BigNumber.ROUND_FLOOR)
+  );
+  const _280 = new BigNumber(2).pow(80);
+  const dyForDx = new Nat(
+    p.s.liquidity
+      .toBignumber()
+      .multipliedBy(sqrtPriceNew.toBignumber().minus(p.s.sqrtPrice))
+      .dividedBy(_280)
+      .integerValue(BigNumber.ROUND_CEIL)
+  );
+  dyMinusFee = dyForDx;
+  const dyConsumed = dyMinusFee
+    .toBignumber()
+    .multipliedBy(HUNDRED_PERCENT_BPS)
+    .dividedBy(oneMinusFeeBps(p.s.constants.feeBps))
+    .integerValue(BigNumber.ROUND_CEIL);
+  totalFee = dyConsumed.minus(dyForDx);
+  const sums = p.s.lastCumulative;
+  const tickCumulativeOutsideNew = sums.tick.sum.minus(
+    nextTick.tickCumulativeOutside
+  );
+  const nextTickNew = {
+    ...nextTick,
+    tickCumulativeOutside: tickCumulativeOutsideNew,
+  };
+  const ticksNew = {
+    ...p.s.ticks,
+    [nextTickIndex.toFixed()]: nextTickNew,
+  };
+  const storageNew = {
+    ...p.s,
+    sqrtPrice: new quipuswapV3Types.x80n(sqrtPriceNew),
+    curTickWitness: nextTickIndex,
+    curTickIndex: nextTickIndex,
+    ticks: ticksNew,
+    liquidity: new Nat(p.s.liquidity.plus(nextTick.liquidityNet)),
+  };
+  const paramNew = {
+    s: storageNew,
+    dy: p.dy.minus(dyConsumed),
+    dx: p.dx.plus(dx),
+  };
+
+  return yToXRec(paramNew);
+}
+
+function calculateYToX(s, dy) {
+  const r = yToXRec({ s: s, dy: dy, dx: new Nat(0) });
+
+  return {
+    output: r.dx,
+    inputLeft: r.dy,
+    newStoragePart: r.s,
+  };
 }

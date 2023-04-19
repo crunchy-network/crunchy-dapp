@@ -244,7 +244,7 @@ const findBestRoute = (
         trades,
       };
     }
-    console.log(bestRoute);
+    // console.log(bestRoute);
     if (outputAmount > bestRoute.outputAmount) {
       bestRoute = {
         ...bestRoute,
