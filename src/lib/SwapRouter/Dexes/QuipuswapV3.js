@@ -4,7 +4,7 @@ const { secondsFromNow, convertToMuTez, percentToDecimal } = require("../utils.j
 const { getAmmSwapOutput } = require("../SwapRates/amm");
 
 const FEE_DENOMINATOR = new BigNumber(10000);
-const DEX_FEE = 0.1;
+const DEX_FEE = 0.3;
 
 function getFees(fees) {
   const { feeBps } = fees;

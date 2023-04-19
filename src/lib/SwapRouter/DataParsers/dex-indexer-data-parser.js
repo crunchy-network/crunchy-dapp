@@ -44,6 +44,10 @@ const getDexName = (dexType) => {
     return "QuipuswapV2";
   }
 
+  if (dexType === "quipuswap_v3") {
+    return "QuipuswapV3";
+  }
+
   return pascalCase(dexType);
 };
 
@@ -429,13 +433,13 @@ const buildSwapPairs = (dexes) => {
     }
 
     switch (dex.dex_type) {
-      case "quipuswap":
-      case "vortex":
-      case "sirius":
-      case "plenty":
-        pairs.push(buildSimplePair(dex, "tez"));
-        pairs.push(buildSimplePair(dex, "tez", true));
-        break;
+      // case "quipuswap":
+      // case "vortex":
+      // case "sirius":
+      // case "plenty":
+      //   pairs.push(buildSimplePair(dex, "tez"));
+      //   pairs.push(buildSimplePair(dex, "tez", true));
+      //   break;
 
       // case "spicy":
       //   pairs.push({
@@ -473,7 +477,6 @@ const buildSwapPairs = (dexes) => {
       case "quipuswap_v3":
         pairs.push(buildQuipuV3Pairs(dex));
         pairs.push(buildQuipuV3Pairs(dex, true));
-        console.log(pairs)
         break;
 
       // case "quipuswap_stable":

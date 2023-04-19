@@ -557,7 +557,7 @@ export default {
     for(let dex of quipuV3) {
       dexPools.push(dex);
     }
-    console.log(dexPools)
+
     state.commit("updateDexPairs", {
       dex,
       pairs: buildSwapPairs(dexPools),
