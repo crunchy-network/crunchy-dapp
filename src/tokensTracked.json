@@ -216,5 +216,13 @@
     "decimals": 18,
     "description": "Plenty PLY",
     "name": "Plenty PLY"
-  }
+  },
+  {
+    "symbol": "PEPE",
+    "tokenAddress": "KT1MZg99PxMDEENwB4Fi64xkqAVh5d1rv8Z9",
+    "tokenId": 0,
+    "decimals": 2,
+    "description": "Tezos Pepe",
+    "name": "Tezos Pepe"
+  },
  ]
