@@ -35,14 +35,7 @@
       </div>
 
       <div v-if="step === 'input'">
-        <h2
-          style="
-            font-weight: 600;
-            font-size: 16px;
-            margin: 0;
-            color: var(--primary-text);
-          "
-        >
+        <h2 class="title">
           <template v-if="tab === 'stake'">Stake CRNCHY</template>
           <template v-else>Re-Stake CRNCHY</template>
         </h2>
@@ -61,7 +54,8 @@
             original stake date.
           </template>
           <template v-else>
-            You can re-stake your CRNCHY for an extended period of time.
+            You can re-stake your CRNCHY to extend your staking time and gain
+            more staking power.
           </template>
         </h2>
         <div
@@ -89,7 +83,7 @@
               padding-right: 18px;
               display: flex;
               align-items: flex-end;
-              justify-content: space-between;
+              justify-content: end;
             "
           >
             <slot></slot>
@@ -112,20 +106,6 @@
                   })
                 }}</span>
               </p>
-              <el-button
-                style="
-                  padding: 0;
-                  margin-left: 16px;
-                  color: #555cff;
-                  font-weight: 500;
-                  font-size: 12px;
-                "
-                type="text"
-                @click="
-                  () => (inputAmount = crnchyStaking.myStaking.crnchyBalance)
-                "
-                >Max</el-button
-              >
             </div>
           </div>
           <el-card
@@ -145,20 +125,27 @@
               v-model="inputAmount"
               :class="`asset-swap-amount ${inputFontSize}`"
               type="number"
-              :min="1"
+              min="0"
+              placeholder="0"
               style="padding: 0"
             />
           </el-card>
 
           <div style="text-align: right; padding-right: 18px">
-            <price-format
-              :value="3.25"
-              prefix="~$"
-              :precision="2"
-              :custom-setting="true"
-              :font-size="12"
-              color="var(--color-subheading-text)"
-            />
+            <el-button
+              style="
+                padding: 0;
+                margin-left: 16px;
+                color: #555cff;
+                font-weight: 500;
+                font-size: 12px;
+              "
+              type="text"
+              @click="
+                () => (inputAmount = crnchyStaking.myStaking.crnchyBalance)
+              "
+              >Max</el-button
+            >
           </div>
         </div>
 
@@ -236,8 +223,10 @@
       </div>
       <div style="margin-bottom: 10px">
         <h2>
-          <template v-if="tab === 'stake'"> You Will Receive </template>
-          <template v-else> After Re-Stake You Will Have </template>
+          <template v-if="tab === 'stake'"
+            >After Staking You Will Have</template
+          >
+          <template v-else>After Re-Stake You Will Have</template>
         </h2>
       </div>
 
@@ -313,18 +302,17 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import NumberFormat from "../NumberFormat.vue";
-import PriceFormat from "../PriceFormat.vue";
 
 export default {
   name: "CrnchyStakingDialogue",
-  components: { NumberFormat, PriceFormat },
+  components: { NumberFormat },
   data() {
     return {
       visible: false,
       submitDisabled: false,
       tab: "stake", // stake | restake
       step: "input", // input | confirm
-      inputAmount: 0,
+      inputAmount: null,
       minLock: 0,
       selectedLockTime:
         process.env.VUE_APP_TEZOS_NETWORK === "ghostnet" ? 1209600 : 12614400,
@@ -403,7 +391,7 @@ export default {
 
     showDialog(tab = "stake") {
       this.submitDisabled = false;
-      this.inputAmount = 0;
+      this.inputAmount = null;
       this.minLock = this.crnchyStaking.myStaking.nextCycle.stakingPower;
       if (tab === "restake" && this.minLock) {
         this.selectedLockTime = this.minLock;
@@ -456,7 +444,7 @@ h2 {
 
   &.title {
     font-weight: 700;
-    font-size: 20px;
+    font-size: 18px;
   }
 }
 
