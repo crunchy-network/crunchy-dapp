@@ -40,6 +40,10 @@ export default {
   },
 
   async getWtzBalance({ state, rootState }) {
+    if (!rootState.wallet.pkh) {
+      return 0;
+    }
+
     return tzkt
       .getContractBigMapKeys(state.contractWtz, "ledger", {
         "key.address": rootState.wallet.pkh,

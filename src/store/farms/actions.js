@@ -670,6 +670,23 @@ export default {
             .times(xtzPerLp)
             .toNumber();
         }
+      } else if (farm.poolToken.isSpicyLp) {
+        if (!rootState.wtz.totalTvlTez) {
+          await dispatch('loadWtzData');
+        }
+
+        const xtzPerLp = BigNumber(farm.poolToken.token1Pool)
+          .div(BigNumber(10).pow(farm.poolToken.token1.decimals))
+          .times(rootState.wtz.swapRatioPrecision)
+          .div(rootState.wtz.swapRatio)
+          .times(1 - 0.001)
+          .div(farm.poolToken.totalSupply)
+          .toNumber()
+
+        tvlTez = BigNumber(farmStorage.poolBalance)
+          .times(xtzPerLp)
+          .times(2)
+          .toNumber();
       } else {
         if (
           Object.prototype.hasOwnProperty.call(
@@ -821,6 +838,23 @@ export default {
             .times(xtzPerLp)
             .toNumber();
         }
+      } else if (farm.poolToken.isSpicyLp) {
+        if (!rootState.wtz.totalTvlTez) {
+          await dispatch('loadWtzData');
+        }
+
+        const xtzPerLp = BigNumber(farm.poolToken.token1Pool)
+          .div(BigNumber(10).pow(farm.poolToken.token1.decimals))
+          .times(rootState.wtz.swapRatioPrecision)
+          .div(rootState.wtz.swapRatio)
+          .times(1 - 0.001)
+          .div(farm.poolToken.totalSupply)
+          .toNumber()
+
+        tvlTez = BigNumber(farmStorage.poolBalance)
+          .times(xtzPerLp)
+          .times(2)
+          .toNumber();
       } else {
         if (
           Object.prototype.hasOwnProperty.call(
