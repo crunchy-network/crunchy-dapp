@@ -24,6 +24,7 @@ export default {
   mutations,
   actions,
   getters: {
+    getTokenList: (state) => state.tokenList,
     getCurrentTrade: (state) => state.currentTrade,
     getSwapForm: (state) => state.swapForm,
     getSwapPairs: (state) => state.dexApis.core.pairs,
