@@ -1,7 +1,15 @@
 const { default: BigNumber } = require("bignumber.js");
 const { addTokenApprovalOperators } = require("../TokenTypes");
-const { secondsFromNow, convertToMuTez, percentToDecimal } = require("../utils.js");
+const {
+  secondsFromNow,
+  convertToMuTez,
+  percentToDecimal,
+} = require("../utils.js");
 const { getAmmSwapOutput } = require("../SwapRates/amm");
+const {
+  calculateXtoY,
+  calculateYtoX,
+} = require("../SwapRates/cfmm/helpers/swap");
 
 const FEE_DENOMINATOR = new BigNumber(10000);
 const DEX_FEE = 0.3;
@@ -21,12 +29,31 @@ const roundOutput = (output, pair) => {
   return bigNumber / decimalMover;
 };
 
-const getSwapOutput = (input, pair) => {
+const getSwapOutput = async (input, pair) => {
+  console.log(pair);
+  const p = {
+    s: {
+      ticks: pair.ticks,
+      lastCumulativesBuffer: pair.lastCumulativesBuffer,
+      curTickIndex: pair.curTickIndex,
+      curTickWitness: pair.curTickWitness,
+      sqrtPrice: BigNumber(pair.sqrtPrice),
+      liquidity: pair.liquidity,
+      constants: {
+        feeBps: BigNumber(pair.feeBps),
+        factoryAddress: BigNumber(pair.factoryAddress),
+      }
+    },
+    dx: input,
+  }
   // const inputAfterFee = input * (1 - calcFees(pair));
-  const inputAfterFee = input * percentToDecimal(DEX_FEE);
-  const output = getAmmSwapOutput(inputAfterFee, pair);
-  const toRet = roundOutput(output, pair);
-  return toRet;
+  // const inputAfterFee = input * percentToDecimal(DEX_FEE);
+  // const output = getAmmSwapOutput(inputAfterFee, pair);
+  // const toRet = roundOutput(output, pair);
+  // return toRet;
+  const output = calculateXtoY(p);
+  console.log(output)
+  return output;
 };
 
 const directTransaction = (dex, trade, walletAddres, input, output) => {
@@ -49,7 +76,7 @@ const invertTransaction = (dex, trade, walletAddres, input, output) => {
   ];
 };
 const buildDexOperation = (dex, trade, walletAddres, tezos) => {
-  console.log(trade)
+  console.log(trade);
   const input = convertToMuTez(trade.input, trade.a);
   const output = convertToMuTez(trade.minOut, trade.b);
   const transfers =

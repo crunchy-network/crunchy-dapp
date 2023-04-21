@@ -1,6 +1,7 @@
 import { pascalCase } from "change-case";
 import BigNumber from "bignumber.js";
 import config from "./../config";
+import tzkt from "../../../utils/tzkt";
 
 const isPoolBelowMinThreshold = (mutez) => {
   return BigNumber(mutez).lt(config.minPoolSize);
@@ -277,10 +278,17 @@ const buildQuipuV2Pairs = (dex) => {
   return pairs;
 };
 
+const getModifiedTicks = async (ticksKey) => {
+  const ticks = (await tzkt.getBigMapKeys(ticksKey)).data;
+  return ticks.map((item) => ({ [item.key]: item.value }));
+}
 const buildQuipuV3Pairs = (dex, inverted = false) => {
   const aSide = dex.pools[inverted ? 1 : 0];
   const bSide = dex.pools[inverted ? 0 : 1];
-  
+
+  const ticksKey = getParamValue(dex.params, "ticks");
+  const modifiedTicks = getModifiedTicks(ticksKey);
+
   return {
     poolId: aSide.pool_id,
     dex: getDexName(dex.dex_type),
@@ -301,6 +309,8 @@ const buildQuipuV3Pairs = (dex, inverted = false) => {
         ? getParamValue(bSide.params, "fee_growth_A")
         : getParamValue(aSide.params, "fee_growth_B"),
     },
+    ticks: modifiedTicks,
+    lastCumulativesBuffer: getParamValue(dex.params, "last_cumulatives_buffer"),
     curTickIndex: getParamValue(dex.params, "cur_tick_index"),
     curTickWitness: getParamValue(dex.params, "cur_tick_witness"),
     liquidity: getParamValue(dex.params, "liquidity"),
@@ -433,13 +443,13 @@ const buildSwapPairs = (dexes) => {
     }
 
     switch (dex.dex_type) {
-      // case "quipuswap":
-      // case "vortex":
-      // case "sirius":
-      // case "plenty":
-      //   pairs.push(buildSimplePair(dex, "tez"));
-      //   pairs.push(buildSimplePair(dex, "tez", true));
-      //   break;
+      case "quipuswap":
+      case "vortex":
+      case "sirius":
+      case "plenty":
+        pairs.push(buildSimplePair(dex, "tez"));
+        pairs.push(buildSimplePair(dex, "tez", true));
+        break;
 
       // case "spicy":
       //   pairs.push({
