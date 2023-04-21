@@ -175,13 +175,35 @@
           </el-col>
 
           <el-col
-            v-else-if="farm.poolToken.isPlentyLp"
+            v-else-if="farm.poolToken.isPlentyLp || farm.poolToken.isSpicyLp"
             :span="4"
             style="font-weight: bold"
           >
-            <el-tooltip content="PlentySwap" placement="top" effect="light">
+            <el-tooltip
+              v-if="farm.poolToken.isPlentyLp"
+              content="Plenty"
+              placement="top"
+              effect="light"
+            >
               <img
-                src="https://raw.githubusercontent.com/Plenty-DeFi/Plenty-Logo/main/Plenty%20Liquidity%20Provider%20Token.png"
+                src="../assets/dex-icons/Plenty.svg"
+                style="
+                  position: absolute;
+                  left: 8px;
+                  top: 22px;
+                  width: 18px;
+                  height: 18px;
+                "
+              />
+            </el-tooltip>
+            <el-tooltip
+              v-if="farm.poolToken.isSpicyLp"
+              content="SpicySwap"
+              placement="top"
+              effect="light"
+            >
+              <img
+                src="../assets/dex-icons/Spicy.png"
                 style="
                   position: absolute;
                   left: 8px;
@@ -641,7 +663,7 @@
                     <i class="far fa-external-link fa-icon-right"></i
                   ></el-link>
                   <el-link
-                    v-if="farm.poolToken.isPlentyLp"
+                    v-else-if="farm.poolToken.isPlentyLp"
                     style="color: #555cff; font-weight: 600"
                     :href="`https://www.plentydefi.com/liquidity/add?tokenA=${farm.poolToken.token1.symbol}&tokenB=${farm.poolToken.token2.symbol}`"
                     target="_blank"
@@ -651,7 +673,17 @@
                     PLP <i class="far fa-external-link fa-icon-right"></i
                   ></el-link>
                   <el-link
-                    v-if="farm.poolToken.isQuipuLp && isFa1(farm.poolToken)"
+                    v-if="farm.poolToken.isSpicyLp"
+                    style="color: #555cff; font-weight: 600"
+                    :href="`https://spicyswap.xyz/#/liq?tokenLeft=${farm.poolToken.token1.tokenAddress}:${farm.poolToken.token1.tokenId}&tokenRight=${farm.poolToken.token2.tokenAddress}:${farm.poolToken.token2.tokenId}`"
+                    target="_blank"
+                    >Get {{ farm.poolToken.token1.symbol }}/{{
+                      farm.poolToken.token2.symbol
+                    }}
+                    SSLP <i class="far fa-external-link fa-icon-right"></i
+                  ></el-link>
+                  <el-link
+                    v-else-if="farm.poolToken.isQuipuLp && isFa1(farm.poolToken)"
                     style="color: #555cff; font-weight: 600"
                     :href="`https://quipuswap.com/liquidity/add/tez-${farm.poolToken.realTokenAddress}`"
                     target="_blank"
@@ -659,7 +691,7 @@
                     <i class="far fa-external-link fa-icon-right"></i
                   ></el-link>
                   <el-link
-                    v-if="farm.poolToken.isQuipuLp && isFa2(farm.poolToken)"
+                    v-else-if="farm.poolToken.isQuipuLp && isFa2(farm.poolToken)"
                     style="color: #555cff; font-weight: 600"
                     :href="`https://quipuswap.com/liquidity/add/tez-${farm.poolToken.realTokenAddress}_${farm.poolToken.realTokenId}`"
                     target="_blank"
@@ -667,12 +699,7 @@
                     <i class="far fa-external-link fa-icon-right"></i
                   ></el-link>
                   <el-link
-                    v-if="
-                      farm.poolToken.isQuipuLp === false &&
-                      farm.poolToken.isLbLp === false &&
-                      farm.poolToken.isPlentyLp === false &&
-                      isFa1(farm.poolToken)
-                    "
+                    v-else-if="isFa1(farm.poolToken)"
                     style="color: #555cff; font-weight: 600"
                     :href="`https://quipuswap.com/swap/tez-${farm.poolToken.address}`"
                     target="_blank"
@@ -680,12 +707,7 @@
                     <i class="far fa-external-link fa-icon-right"></i
                   ></el-link>
                   <el-link
-                    v-if="
-                      farm.poolToken.isQuipuLp === false &&
-                      farm.poolToken.isLbLp === false &&
-                      farm.poolToken.isPlentyLp === false &&
-                      isFa2(farm.poolToken)
-                    "
+                    v-else-if="isFa2(farm.poolToken)"
                     style="color: #555cff; font-weight: 600"
                     :href="`https://quipuswap.com/swap/tez-${farm.poolToken.address}_${farm.poolToken.tokenId}`"
                     target="_blank"

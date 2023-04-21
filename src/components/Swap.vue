@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapActions, mapState } from "vuex";
 import NavMenu from "./NavMenu.vue";
 import SwapFormMain from "./SwapFormMain.vue";
 import SwapFormFoot from "./SwapFormFoot.vue";
@@ -18,17 +18,24 @@ export default {
   name: "Swap",
   components: { NavMenu, SwapFormMain, SwapFormFoot },
   computed: {
-    ...mapState(["homeWallet", "farms"]),
+    ...mapState(["homeWallet", "farms", "swap"]),
     tokenList() {
       console.log(this.farms.priceFeed)
       const ownedAssets = this.homeWallet.assets || [];
       const toRet = buildTokenListFromWalletAndPriceFeed(
         ownedAssets,
-        this.farms.priceFeed
+        this.swap.tokenList
       );
       return toRet;
     },
   },
+  created() {
+    this.updateTokenList();
+  },
+  methods: {
+    ...mapActions(["updateTokenList"]),
+  },
+  
 };
 </script>
 <style lang="scss">
