@@ -1044,10 +1044,10 @@ export default {
                 : 0,
             baseSymbol: baseSymbol,
             quoteSymbol: quoteSymbol,
-            basePrice: baseToken[0].tokenDayData[0].last_price,
-            quotePrice: quoteToken[0].tokenDayData[0].last_price,
-            basePriceUsd: baseToken[0].tokenDayData[0].last_price_usd,
-            quotePriceUsd: quoteToken[0].tokenDayData[0].last_price_usd,
+            basePrice: baseToken[0]?.tokenDayData[0]?.last_price,
+            quotePrice: quoteToken[0]?.tokenDayData[0]?.last_price,
+            basePriceUsd: baseToken[0]?.tokenDayData[0]?.last_price_usd,
+            quotePriceUsd: quoteToken[0]?.tokenDayData[0]?.last_price_usd,
             tokenTvl: obj.reservextz,
             tokenTvlUsd: obj.reserveusd,
           };
@@ -1159,7 +1159,7 @@ export default {
           });
           if (tokenOnSpicy !== undefined) {
             tokenQuotesTotal.spicyClose =
-              tokenOnSpicy.tokenDayData[0].last_price;
+              tokenOnSpicy?.tokenDayData[0]?.last_price;
             tokenQuotesTotal.spicyTvl = tokenOnSpicy.totalliquidityxtz;
           } else {
             tokenQuotesTotal.spicyClose = 0;
