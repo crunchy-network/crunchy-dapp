@@ -1159,7 +1159,7 @@ export default {
           });
           if (tokenOnSpicy !== undefined) {
             tokenQuotesTotal.spicyClose =
-              tokenOnSpicy.tokenDayData[0].last_price;
+              tokenOnSpicy?.tokenDayData[0]?.last_price;
             tokenQuotesTotal.spicyTvl = tokenOnSpicy.totalliquidityxtz;
           } else {
             tokenQuotesTotal.spicyClose = 0;
