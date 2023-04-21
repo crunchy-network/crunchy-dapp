@@ -6,6 +6,23 @@ import {
 } from "../../lib/SwapRouter";
 import dexIndexer from "./../../utils/dex-indexer";
 export default {
+  async loadTokenList(state) {
+    const tokenList = await dexIndexer.getAllTokens();
+    const modifiedTokenList = tokenList.map((token) => {
+        const modifiedToken = {
+          thumbnailUri: token.thumbnail_uri,
+          type: token.token_type,
+          tokenId: token.token_id,
+          tokenAddress: token.token_address,
+          ...token,
+        }
+        return modifiedToken;
+    })
+    state.commit("updateTokenList", modifiedTokenList);
+  },
+  updateTokenList({ dispatch, commit }) {
+    dispatch("loadTokenList");
+  },
   updateForm(state, payload) {
     state.commit("updateSwapForm", payload);
   },
