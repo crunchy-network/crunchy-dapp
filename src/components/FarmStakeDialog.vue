@@ -30,13 +30,64 @@
         "
       >
         <el-row type="flex" align="middle" justify="space-between">
-          <el-col :span="8" style="font-size: 12px" class="_info-card__title">BALANCE</el-col>
+          <el-col :span="8" style="font-size: 12px" class="_info-card__title"
+            >BALANCE</el-col
+          >
           <el-col :span="16" style="font-weight: bold; text-align: right">{{
             vueNumberFormat(form.farm.poolToken.balance)
           }}</el-col>
         </el-row>
       </div>
       <el-form-item
+        v-if="form.farm.poolToken.isPlentyLp"
+        label="Stake Tokens"
+        prop="input"
+        :rules="[
+          {
+            type: 'number',
+            required: true,
+            message: 'Enter an amount',
+            transform: (v) => Number(v),
+          },
+          {
+            type: 'number',
+            min: 0.000000000001,
+            message: 'Enter a valid amount (at least 0.000000000001)',
+            transform: (v) => Number(v),
+          },
+        ]"
+        style="margin-bottom: 14px"
+      >
+        <el-input v-model="form.input" label="Stake Tokens">
+          <span slot="suffix">{{ form.farm.poolToken.symbol }}</span>
+        </el-input>
+      </el-form-item>
+      <el-form-item
+        v-else-if="form.farm.poolToken.isSpicyLp"
+        label="Stake Tokens"
+        prop="input"
+        :rules="[
+          {
+            type: 'number',
+            required: true,
+            message: 'Enter an amount',
+            transform: (v) => Number(v),
+          },
+          {
+            type: 'number',
+            min: 0.000000000000000001,
+            message: 'Enter a valid amount (at least 0.000000000000000001)',
+            transform: (v) => Number(v),
+          },
+        ]"
+        style="margin-bottom: 14px"
+      >
+        <el-input v-model="form.input" label="Stake Tokens">
+          <span slot="suffix">{{ form.farm.poolToken.symbol }}</span>
+        </el-input>
+      </el-form-item>
+      <el-form-item
+        v-else
         label="Stake Tokens"
         prop="input"
         :rules="[
@@ -97,7 +148,10 @@ export default {
         input: "",
         loading: false,
         visible: false,
-        farm: { poolToken: { balance: 0 }, rewardToken: {} },
+        farm: {
+          poolToken: { balance: 0, isSpicyLp: false, isPlentyLp: false },
+          rewardToken: {},
+        },
       },
     };
   },
@@ -105,7 +159,7 @@ export default {
     ...mapState(["farms"]),
   },
   methods: {
-    ...mapActions(["stakeInFarm", "getPoolTokenBalance"]),
+    ...mapActions(["stakeInFarm", "initFarm", "getPoolTokenBalance"]),
 
     async showDialog(farmId) {
       this.form.input = "";
@@ -115,6 +169,7 @@ export default {
       }
       this.form.loading = true;
       this.form.visible = true;
+      await this.initFarm(farmId);
       const bal = await this.getPoolTokenBalance(farmId);
       this.form.farm = this.farms.data[farmId];
       this.form.farm.poolToken.balance = bal;

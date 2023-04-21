@@ -288,6 +288,7 @@ export default {
                 isQuipuLp: isQuipuLp,
                 isLbLp: false,
                 isPlentyLp: false,
+                isSpicyLp: false,
                 decimals: 6,
                 tokenId: farm.poolToken.tokenId,
                 realTokenAddress: poolTokenMeta.tokenAddress,
@@ -315,6 +316,7 @@ export default {
                 isQuipuLp: isQuipuLp,
                 isLbLp: false,
                 isPlentyLp: false,
+                isSpicyLp: false,
                 ...poolTokenMeta,
                 address: poolTokenMeta.tokenAddress,
               },
@@ -360,6 +362,7 @@ export default {
                   isQuipuLp: false,
                   isLbLp: true,
                   isPlentyLp: false,
+                  isSpicyLp: false,
                   decimals: 0,
                   address: state.lbLpAddress,
                   tokenId: 0,
@@ -391,6 +394,11 @@ export default {
               ) &&
               Object.prototype.hasOwnProperty.call(resp.data, "securityCheck");
 
+            const isSpicyLp = Object.prototype.hasOwnProperty.call(
+              resp.data,
+              "spiceFeeLastK"
+            );
+
             if (isQuipuLp) {
               Promise.all([
                 getFarmTokenMetadata(
@@ -410,6 +418,7 @@ export default {
                       isQuipuLp: isQuipuLp,
                       isLbLp: false,
                       isPlentyLp: false,
+                      isSpicyLp: false,
                       decimals: 6,
                       realTokenAddress: resp.data.storage.token_address,
                       realTokenId: resp.data.storage.token_id,
@@ -457,6 +466,7 @@ export default {
                           isQuipuLp: false,
                           isLbLp: false,
                           isPlentyLp: true,
+                          isSpicyLp: false,
                           decimals: 12,
                           name: token1Meta.name + "/" + token2Meta.name,
                           symbol: token1Meta.symbol + "/" + token2Meta.symbol,
@@ -480,6 +490,62 @@ export default {
                   });
                 });
 
+              // Spicy swap
+            } else if (isSpicyLp) {
+              Promise.all([
+                getFarmTokenMetadata(
+                  resp.data.token0.fa2_address,
+                  resp.data.token0.token_id
+                ),
+                getFarmTokenMetadata(
+                  resp.data.token1.fa2_address,
+                  resp.data.token1.token_id
+                ),
+                getFarmTokenMetadata(
+                  farm.rewardToken.address,
+                  farm.rewardToken.tokenId
+                ),
+                tzkt.getContractBigMapKeys(
+                  farm.poolToken.address,
+                  "token_total_supply",
+                  { key: 0, select: "value" }
+                ),
+              ]).then((values) => {
+                const token1Meta = values[0];
+                const token2Meta = values[1];
+                const rewardMeta = values[2];
+                const totalSupply = values[3].data[0];
+
+                commit(
+                  "updateFarm",
+                  merge(farm, {
+                    poolToken: {
+                      isQuipuLp: false,
+                      isLbLp: false,
+                      isPlentyLp: false,
+                      isSpicyLp: true,
+                      decimals: 18,
+                      name: token1Meta.name + "/" + token2Meta.name,
+                      symbol: token1Meta.symbol + "/" + token2Meta.symbol,
+                      token1: token1Meta,
+                      token1Pool: resp.data.reserve0,
+                      token2: token2Meta,
+                      token2Pool: resp.data.reserve1,
+                      totalSupply: totalSupply,
+                    },
+                    rewardToken: rewardMeta,
+                    rewardSupply: BigNumber(farm.rewardSupply)
+                      .div(BigNumber(10).pow(rewardMeta.decimals))
+                      .toNumber(),
+                    loading: true,
+                  })
+                );
+                dispatch("softUpdateFarm", farmId).then(() => {
+                  dispatch("updateFarmRewardsEarned", farmId);
+                  commit("updateFarmLoading", { farmId, loading: false });
+                });
+              });
+
               // single token staking
             } else {
               Promise.all([
@@ -499,6 +565,7 @@ export default {
                       isQuipuLp: false,
                       isLbLp: false,
                       isPlentyLp: false,
+                      isSpicyLp: false,
                       ...values[0],
                     },
                     rewardToken: values[1],

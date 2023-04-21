@@ -175,13 +175,35 @@
           </el-col>
 
           <el-col
-            v-else-if="farm.poolToken.isPlentyLp"
+            v-else-if="farm.poolToken.isPlentyLp || farm.poolToken.isSpicyLp"
             :span="4"
             style="font-weight: bold"
           >
-            <el-tooltip content="PlentySwap" placement="top" effect="light">
+            <el-tooltip
+              v-if="farm.poolToken.isPlentyLp"
+              content="Plenty"
+              placement="top"
+              effect="light"
+            >
               <img
-                src="https://raw.githubusercontent.com/Plenty-DeFi/Plenty-Logo/main/Plenty%20Liquidity%20Provider%20Token.png"
+                src="../assets/dex-icons/Plenty.svg"
+                style="
+                  position: absolute;
+                  left: 8px;
+                  top: 22px;
+                  width: 18px;
+                  height: 18px;
+                "
+              />
+            </el-tooltip>
+            <el-tooltip
+              v-if="farm.poolToken.isSpicyLp"
+              content="SpicySwap"
+              placement="top"
+              effect="light"
+            >
+              <img
+                src="../assets/dex-icons/Spicy.png"
                 style="
                   position: absolute;
                   left: 8px;
