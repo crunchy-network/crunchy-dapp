@@ -55,8 +55,35 @@
                 <span class="selected-asset-input">{{ asset.asset }} </span>
               </div>
               <div class="asset-balance">
-                <div class="asset-amount">21.13</div>
-                <div class="asset-amount-usd">$12.13</div>
+                <div class="asset-amount">
+                  {{
+                    vueNumberFormat(asset.balance, {
+                      prefix: "",
+                      decimal: ".",
+                      thousand: ",",
+                      precision: 2,
+                    })
+                  }}
+                </div>
+                <div class="asset-amount-usd">
+                  {{
+                    getShowUsd
+                      ? vueNumberFormat(asset.valueUsd, {
+                          prefix: "$",
+                          suffix: "",
+                          decimal: ".",
+                          thousand: ",",
+                          precision: 2,
+                        })
+                      : vueNumberFormat(asset.value, {
+                          prefix: "",
+                          suffix: "ꜩ",
+                          decimal: ".",
+                          thousand: ",",
+                          precision: 2,
+                        })
+                  }}
+                </div>
               </div>
             </div>
           </div>
@@ -80,7 +107,7 @@
   </div>
 </template>
 <script>
-import { mapGetters } from "vuex";
+import { mapState, mapGetters } from "vuex";
 export default {
   // props: ["list", "onChange", "amount", "id", "inputDisabled", "selectedToken"],
   props: {
@@ -93,6 +120,7 @@ export default {
   },
   data: function () {
     return {
+      tokenListData: [],
       open: false,
       searchFilter: "",
       defaultAssets: [
@@ -110,7 +138,8 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["isWalletConnected"]),
+    ...mapState(["homeWallet"]),
+    ...mapGetters(["isWalletConnected", "getShowUsd"]),
     getInputFontSize() {
       if (!this.$props.amount) return "";
       const amountString = this.$props.amount.toString();
@@ -186,15 +215,15 @@ export default {
       return false;
     },
 
-    getDefaultList() {
+    getDefaultList(balanceList) {
       if (!this.$props.inputDisabled) {
         if (this.isWalletConnected) {
           // return list of user's tokens for input list if their wallet is connected;
-          return this.$props.list.slice(0, 10);
+          return balanceList.slice(0, 10);
         }
       }
       const defaults = this.defaultAssets;
-      const defaultList = this.$props.list.filter((token) => {
+      const defaultList = balanceList.filter((token) => {
         return defaults.includes(token.asset?.toLowerCase());
       });
       // sorts default list in order of priority of our favorite tokens.
@@ -207,11 +236,32 @@ export default {
       });
       return defaultList;
     },
-    filteredAssets() {
-      if (this.searchFilter === "") {
-        return this.getDefaultList();
+    getBalanceList() {
+      const modifiedList = [...this.$props.list];
+      // Iterate through secondArray and update corresponding elements in firstArray
+      for (let i = 0; i < this.homeWallet.assets.length; i++) {
+        const index = modifiedList.findIndex(
+          (obj) => obj.asset === this.homeWallet.assets[i].name
+        ); // Get index of matching element in firstArray
+        if (index !== -1) {
+          const properties = Object.keys(this.homeWallet.assets[i]);
+          for (let j = 0; j < properties.length; j++) {
+            // eslint-disable-next-line no-prototype-builtins
+            if (!modifiedList[index].hasOwnProperty(properties[j])) {
+              modifiedList[index][properties[j]] =
+                this.homeWallet.assets[i][properties[j]]; // Add additional property to matching object in firstArray
+            }
+          }
+        }
       }
-      const toRet = this.$props.list.filter(this.applyFilter);
+      return modifiedList;
+    },
+    filteredAssets() {
+      const balanceList = this.getBalanceList();
+      if (this.searchFilter === "") {
+        return this.getDefaultList(balanceList);
+      }
+      const toRet = balanceList.filter(this.applyFilter);
       if (toRet.length > 10) {
         return toRet.slice(0, 10);
       } else {
