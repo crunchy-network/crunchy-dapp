@@ -39,18 +39,26 @@
             class="asset-item"
             @click="selectAsset(asset)"
           >
-            <el-avatar
-              shape="circle"
-              :src="asset.icon"
-              :size="30"
-              style="
-                background: transparent;
-                font-size: 24px;
-                margin-right: 16px;
-                margin-left: 15px;
-              "
-            ></el-avatar>
-            <span class="selected-asset-input">{{ asset.asset }} </span>
+            <div class="asset-wrapper">
+              <div class="asset-infor">
+                <el-avatar
+                  shape="circle"
+                  :src="asset.icon"
+                  :size="30"
+                  style="
+                    background: transparent;
+                    font-size: 24px;
+                    margin-right: 16px;
+                    margin-left: 15px;
+                  "
+                ></el-avatar>
+                <span class="selected-asset-input">{{ asset.asset }} </span>
+              </div>
+              <div class="asset-balance">
+                <div class="asset-amount">21.13</div>
+                <div class="asset-amount-usd">$12.13</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -280,6 +288,39 @@ export default {
     cursor: pointer;
     &:hover {
       background: var(--table-row-hover);
+    }
+    .asset-wrapper {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      .asset-balance {
+        margin-right: 15px;
+        .asset-amount {
+          font-style: normal;
+          font-weight: 600;
+          font-size: 14px;
+          line-height: 19px;
+          /* identical to box height, or 136% */
+
+          text-align: right;
+          letter-spacing: 0.02em;
+
+          color: var(--primary-text);
+        }
+        .asset-amount-usd {
+          font-style: normal;
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 19px;
+          /* identical to box height, or 136% */
+
+          text-align: right;
+          letter-spacing: 0.02em;
+
+          color: var(--primary-text);
+        }
+      }
     }
   }
 }
