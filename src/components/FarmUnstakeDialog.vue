@@ -24,13 +24,13 @@
         class="current-balance _info-card"
         style="
           border-radius: 22px;
-          background: #ffeecc;
+          background: var(--background-information-card);
           padding: 12px 20px;
           margin-bottom: 18px;
         "
       >
         <el-row type="flex" align="middle" justify="space-between">
-          <el-col :span="11" style="font-size: 12px">STAKED BALANCE</el-col>
+          <el-col :span="11" style="font-size: 12px" class="_info-card__title">STAKED BALANCE</el-col>
           <el-col
             v-if="form.farm.depositAmount >= 0.0001 || !form.farm.depositAmount" 
             :span="13"
