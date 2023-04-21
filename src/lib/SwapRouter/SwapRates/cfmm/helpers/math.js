@@ -1,7 +1,9 @@
-const { BigNumber } = require("bignumber.js");
-const { safeObserve } = require("../utils");
-const { QuipuswapV3 } = require("./../index");
-const { Int, Nat, quipuswapV3Types } = require("./../types");
+/* eslint-disable */
+import { BigNumber } from "bignumber.js";
+import { safeObserve } from "../utils";
+
+
+import { Int, Nat, quipuswapV3Types } from "../types";
 
 export const defaultLadder = {
   "0,true": {
@@ -175,10 +177,20 @@ export const defaultLadder = {
  * @param upperTi
  * @returns
  */
-export async function tickAccumulatorsInside(cfmm, st, lowerTi, upperTi) {
+export async function tickAccumulatorsInside(
+  cfmm,
+  st,
+  lowerTi,
+  upperTi,
+) {
   const lowerTs = st.ticks.get(lowerTi);
   const upperTs = st.ticks.get(upperTi);
 
+  // const currentTime = new BigNumber(Math.floor(Date.now() / 1000)).plus(1);
+  // const {
+  //   tick_cumulative: cvTickCumulative,
+  //   seconds_per_liquidity_cumulative: cvSecondsPerLiquidityCumulative,
+  // } = (await cfmm.observe([currentTime.toString()]))[0];
   const blockInfo = await cfmm.tezos.rpc.getBlockHeader();
 
   const now = new BigNumber(
@@ -204,6 +216,7 @@ export async function tickAccumulatorsInside(cfmm, st, lowerTi, upperTi) {
 
   const tickAccumulatorBelow = (
     tickIndex,
+
     globalAcc,
     tickAccOutside,
   ) => {
@@ -213,7 +226,6 @@ export async function tickAccumulatorsInside(cfmm, st, lowerTi, upperTi) {
       return globalAcc.minus(tickAccOutside);
     }
   };
-  
   const tickAccumulatorInside = (
     globalAcc,
     lowerTickAccOutside,
@@ -248,7 +260,11 @@ export async function tickAccumulatorsInside(cfmm, st, lowerTi, upperTi) {
   };
 }
 
-export function adjustScale(i, n1 = new Nat(0), n2 = new Nat(0)) {
+export function adjustScale(
+  i,
+  n1 = new Nat(0),
+  n2 = new Nat(0),
+) {
   const scaleAdjustment = n2.toBignumber().minus(n1);
   const iNormal = i.toBignumber();
   if (scaleAdjustment.gte(0)) {
@@ -262,14 +278,26 @@ export function adjustScale(i, n1 = new Nat(0), n2 = new Nat(0)) {
   }
 }
 
-export function fixedPointMul(a, b) {
+/** 
+ * let fixed_point_mul (a : fixed_point) (b : fixed_point) : fixed_point =
+    { v = a.v * b.v ; offset = a.offset + b.offset }
+ */
+export function fixedPointMul(
+  a,
+  b,
+) {
   return {
     v: a.v.multipliedBy(b.v),
     offset: a.offset.plus(b.offset),
   };
 }
 
-export function halfBpsPowRec(tick, acc, ladderKey, ladder) {
+export function halfBpsPowRec(
+  tick,
+  acc,
+  ladderKey,
+  ladder,
+) {
   if (tick.eq(0)) return acc;
   const half = tick.div(2).integerValue(BigNumber.ROUND_FLOOR);
   const rem = tick.mod(2);
@@ -279,6 +307,10 @@ export function halfBpsPowRec(tick, acc, ladderKey, ladder) {
   return halfBpsPowRec(new Nat(half), newAcc, newLadderKey, ladder);
 }
 
+/**
+ * `shiftRight(x, y)` is only defined for `y <= 256n`.
+ *  This function handles larger values of `y`.
+ */
 export function steppedShiftRight(x, y) {
   const maxShift = 256;
   if (y.lte(maxShift)) {
@@ -291,6 +323,10 @@ export function steppedShiftRight(x, y) {
   }
 }
 
+/**
+ * `shiftLeft(x, y)` is only defined for `y <= 256n`.
+ *  This function handles larger values of `y`.
+ */
 export function steppedShiftLeft(x, y) {
   const maxShift = 256;
   if (y.lte(maxShift)) {
@@ -302,7 +338,12 @@ export function steppedShiftLeft(x, y) {
     return steppedShiftLeft(newX, y.minus(maxShift));
   }
 }
-
+/**
+ *  For a tick index `i`, calculate the corresponding `sqrt_price`:
+ *  sqrt(e^bps)^i * 2^80
+ *  using the exponentiation by squaring method, where:
+ *  bps = 0.0001
+ */
 export function sqrtPriceForTick(tick) {
   const absTick = new Nat(tick.abs());
   const product = halfBpsPowRec(
@@ -319,7 +360,6 @@ export function sqrtPriceForTick(tick) {
     return new Nat(steppedShiftLeft(product.v, new Nat(doffset.abs())));
   }
 }
-
 export function shiftLeft(x, y) {
   return x.multipliedBy(new BigNumber(2).pow(y));
 }
@@ -354,6 +394,7 @@ export function alignToSpacing(tickIndex, tickSpacing) {
 }
 
 function enhancedDiv(x, y) {
+  // @ts-ignore: Object is possibly 'null'.
   const shiftAmount = Math.max(y.e, 0) + y.decimalPlaces();
   return x.shiftedBy(shiftAmount).dividedBy(y).shiftedBy(-shiftAmount);
 }
@@ -672,7 +713,7 @@ Calculate the new `sqrt_price` after a deposit of `dy` `y` tokens.
             sqrt_price = sqrt(400) * 2^80 = 24178516392292583494123520
 */
 export function calcNewPriceY(sqrtPriceOld, liquidity, dy) {
-  //const shiftedDy80 = shiftLeft(dy, new BigNumber(80)) as Nat;
+  // const shiftedDy80 = shiftLeft(dy, new BigNumber(80)) as Nat;
   const _280 = new BigNumber(2).pow(80);
   return new Nat(
     _280

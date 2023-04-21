@@ -1,6 +1,7 @@
+/* eslint-disable new-cap */
 const BigNumber = require("bignumber.js");
 
-const { Int, Nat, quipuswapV3Types } = require("../types");
+const { Nat, quipuswapV3Types } = require("../types");
 const {
   calcNewPriceX,
   calcNewPriceY,
@@ -132,7 +133,7 @@ function xToYRec(p) {
     .dividedBy(oneMinusFeeBps(p.s.constants.feeBps))
     .integerValue(BigNumber.ROUND_CEIL);
   totalFee = dxConsumed.minus(dxForDy);
-  const sums = p.s.lastCumulative;
+  const sums = p.s.lastCumulativesBuffer;
   const tickCumulativeOutsideNew = sums.tick.sum.minus(
     tick.tickCumulativeOutside
   );
