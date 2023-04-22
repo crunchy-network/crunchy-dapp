@@ -1158,8 +1158,9 @@ export default {
             return spicyContract === contract && String(spicyId) === String(id);
           });
           if (tokenOnSpicy !== undefined) {
-            tokenQuotesTotal.spicyClose =
-              tokenOnSpicy?.tokenDayData[0]?.last_price;
+            tokenQuotesTotal.spicyClose = tokenOnSpicy?.derivedxtz
+            ?  tokenOnSpicy?.derivedxtz
+            : tokenOnSpicy?.tokenDayData[0].last_price;
             tokenQuotesTotal.spicyTvl = tokenOnSpicy.totalliquidityxtz;
           } else {
             tokenQuotesTotal.spicyClose = 0;
