@@ -1,6 +1,7 @@
 import _ from "lodash";
 import tzkt from "./../../utils/tzkt";
 import teztools from "./../../utils/teztools";
+import tokenTracker from "./../../utils/token-tracker";
 import ipfs from "./../../utils/ipfs";
 import farmUtils from "./../../utils/farm";
 import {
@@ -63,18 +64,21 @@ export default {
       decimals: 6,
       usdValue,
     };
-    return teztools.getPricefeed().then((feed) => {
+
+    tokenTracker.getTokenFeed().then((feed) => {
       const currentPrices = {};
-      for (const token of feed.contracts) {
-        const tokenId = token.type === "fa1.2" ? "0" : token.tokenId.toString();
-        currentPrices[`${token.tokenAddress}_${tokenId}`] = token.currentPrice;
+      for (const token of Object.values(feed)) {
+        currentPrices[token.id] = token.currentPrice;
       }
 
-      commit("updatePriceFeed", [tez, ...feed.contracts]);
       commit("updateCurrentPrices", currentPrices);
       setTimeout(() => {
         updateCurrentPricesPromise = dispatch("_updateCurrentPrices");
       }, 60 * 1000);
+    })
+
+    return teztools.getPricefeed().then((feed) => {
+      commit("updatePriceFeed", [tez, ...feed.contracts]);
     });
   },
 
