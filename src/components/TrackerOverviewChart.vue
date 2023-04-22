@@ -33,36 +33,42 @@ export default {
     return {
       updatedChartData: {
         price: {
+          hours1: [],
           days1: [],
           days7: [],
           days30: [],
           all: [],
         },
         priceXtz: {
+          hours1: [],
           days1: [],
           days7: [],
           days30: [],
           all: [],
         },
         volume: {
+          hours1: [],
           days1: [],
           days7: [],
           days30: [],
           all: [],
         },
         volumeXtz: {
+          hours1: [],
           days1: [],
           days7: [],
           days30: [],
           all: [],
         },
         tvl: {
+          hours1: [],
           days1: [],
           days7: [],
           days30: [],
           all: [],
         },
         tvlXtz: {
+          hours1: [],
           days1: [],
           days7: [],
           days30: [],
@@ -196,6 +202,18 @@ export default {
         }
       );
 
+      this.updatedChartData.price.hours1 =
+        this.getChartData.volumeAndPrice1Hour.map((element) => {
+          const timeUsdValue = tokenTracker.binarySearch(
+            this.getXtzUsdHistory,
+            new Date(element.bucket).getTime() + 1000 * 60 * 60 * 24
+          );
+          return {
+            time: new Date(element.bucket).getTime(),
+            value: Number(element.aggregatedClose) * timeUsdValue,
+          };
+        });
+
       this.updatedChartData.price.days1 =
         this.getChartData.volumeAndPrice1Day.map((element) => {
           const timeUsdValue = tokenTracker.binarySearch(
@@ -208,6 +226,14 @@ export default {
           };
         });
 
+      this.updatedChartData.priceXtz.hours1 =
+        this.getChartData.volumeAndPrice1Hour.map((element) => {
+          return {
+            time: new Date(element.bucket).getTime(),
+            value: Number(element.aggregatedClose),
+          };
+        });
+
       this.updatedChartData.priceXtz.days1 =
         this.getChartData.volumeAndPrice1Day.map((element) => {
           return {
@@ -216,9 +242,8 @@ export default {
           };
         });
 
-      this.updatedChartData.volume.days1 =
-        this.getChartData.volumeAndPrice1Day.map((element) => {
-          // console.log(element);
+      this.updatedChartData.volume.hours1 =
+        this.getChartData.volumeAndPrice1Hour.map((element) => {
           const timeUsdValue = tokenTracker.binarySearch(
             this.getXtzUsdHistory,
             new Date(element.bucket).getTime()
@@ -226,6 +251,26 @@ export default {
           return {
             time: new Date(element.bucket).getTime(),
             value: Number(element.aggregatedXtzVolume) * timeUsdValue,
+          };
+        });
+
+      this.updatedChartData.volume.days1 =
+        this.getChartData.volumeAndPrice1Day.map((element) => {
+          const timeUsdValue = tokenTracker.binarySearch(
+            this.getXtzUsdHistory,
+            new Date(element.bucket).getTime()
+          );
+          return {
+            time: new Date(element.bucket).getTime(),
+            value: Number(element.aggregatedXtzVolume) * timeUsdValue,
+          };
+        });
+
+      this.updatedChartData.volumeXtz.hours1 =
+        this.getChartData.volumeAndPrice1Hour.map((element) => {
+          return {
+            time: new Date(element.bucket).getTime(),
+            value: Number(element.aggregatedXtzVolume),
           };
         });
 
@@ -357,7 +402,11 @@ export default {
 
         if (this.legendTab === "price") {
           this.tokenData =
-            this.duration === "1d"
+            this.duration === "1h"
+              ? !this.getShowUsd
+                ? this.updatedChartData.priceXtz.hours1
+                : this.updatedChartData.price.hours1
+              : this.duration === "1d"
               ? !this.getShowUsd
                 ? this.updatedChartData.priceXtz.days1
                 : this.updatedChartData.price.days1
@@ -372,7 +421,11 @@ export default {
 
         if (this.legendTab === "volume") {
           this.tokenData =
-            this.duration === "1d"
+            this.duration === "1h"
+              ? !this.getShowUsd
+                ? this.updatedChartData.volumeXtz.hours1
+                : this.updatedChartData.volume.hours1
+              : this.duration === "1d"
               ? !this.getShowUsd
                 ? this.updatedChartData.volumeXtz.days1
                 : this.updatedChartData.volume.days1
@@ -537,7 +590,10 @@ export default {
       const DD = d.toLocaleString("default", { day: "2-digit" });
       const MMM = d.toLocaleString("default", { month: "short" });
       const YY = d.getFullYear().toString().slice(-2);
-      return MMM + " " + DD + ", " + YY;
+      const hh = d.getHours().toString().padStart(2, '0');
+      const mm = d.getMinutes().toString().padStart(2, '0');
+      const timeString = `${hh}:${mm}`;
+      return timeString + " " + MMM + " " + DD + ", " + YY ;
     },
 
     handlePrecision(value) {

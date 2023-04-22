@@ -241,7 +241,7 @@ export default {
     },
 
     setDurationTab(tab = "") {
-      if (["1d", "7d", "30d", "all"].includes(tab)) {
+      if (["1h", "1d", "7d", "30d", "all"].includes(tab)) {
         this.duration = tab;
         this.$router.replace({
           query: {
