@@ -281,13 +281,20 @@ const buildQuipuV2Pairs = (dex) => {
 const getModifiedTicks = async (ticksKey) => {
   const ticks = (await tzkt.getBigMapKeys(ticksKey)).data;
   return ticks.map((item) => ({ [item.key]: item.value }));
-}
-const buildQuipuV3Pairs = (dex, inverted = false) => {
+};
+const buildQuipuV3Pairs = async (dex, inverted = false) => {
   const aSide = dex.pools[inverted ? 1 : 0];
   const bSide = dex.pools[inverted ? 0 : 1];
 
-  const ticksKey = getParamValue(dex.params, "ticks");
-  const modifiedTicks = getModifiedTicks(ticksKey);
+  const ticks = getParamValue(dex.params, "ticks")
+    .replace(/[/\\]/g, "")
+    .replace(/^\{"/, "[")
+    .replace(/"\}$/, "]")
+    .replace(/",{"/g, ',{');
+
+  // const modifiedTicks = JSON.parse(ticks)
+  console.log(ticks);
+  // const modifiedTicks = await getModifiedTicks(ticksKey);
 
   return {
     poolId: aSide.pool_id,
@@ -295,7 +302,7 @@ const buildQuipuV3Pairs = (dex, inverted = false) => {
     dexAddress: dex.dex_address,
     direction: inverted ? "Inverted" : "Direct",
     fee: {
-      feeBps: BigNumber(getParamValue(dex.params, "fee_bps")),
+      feeBps: getParamValue(dex.params, "fee_bps").replace(/^"(.*)"$/, "$1"),
       devFeeA: inverted
         ? getParamValue(bSide.params, "dev_fee_B")
         : getParamValue(aSide.params, "dev_fee_A"),
@@ -311,11 +318,20 @@ const buildQuipuV3Pairs = (dex, inverted = false) => {
     },
     ticks: modifiedTicks,
     lastCumulativesBuffer: getParamValue(dex.params, "last_cumulatives_buffer"),
-    curTickIndex: getParamValue(dex.params, "cur_tick_index"),
-    curTickWitness: getParamValue(dex.params, "cur_tick_witness"),
-    liquidity: getParamValue(dex.params, "liquidity"),
-    factoryAddress: BigNumber(getParamValue(dex.params, "factory_address")),
-    sqrtPrice: BigNumber(getParamValue(dex.params, "sqrt_price")),
+    curTickIndex: getParamValue(dex.params, "cur_tick_index").replace(
+      /^"(.*)"$/,
+      "$1"
+    ),
+    curTickWitness: getParamValue(dex.params, "cur_tick_witness").replace(
+      /^"(.*)"$/,
+      "$1"
+    ),
+    liquidity: getParamValue(dex.params, "liquidity").replace(/^"(.*)"$/, "$1"),
+    factoryAddress: getParamValue(dex.params, "factory_address"),
+    sqrtPrice: getParamValue(dex.params, "sqrt_price").replace(
+      /^"(.*)"$/,
+      "$1"
+    ),
     a: {
       ...createSimplePairSide(aSide),
       devFeeA: inverted
@@ -430,7 +446,7 @@ const modifyMasterDex = (dex) => {
   return rest;
 };
 
-const buildSwapPairs = (dexes) => {
+const buildSwapPairs = async (dexes) => {
   let pairs = [];
   const masterDex = ["quipuswap_token2token", "quipuswap_v2", "flame", "alien"];
   for (let dex of dexes) {
@@ -483,10 +499,11 @@ const buildSwapPairs = (dexes) => {
       // case "quipuswap_v2":
       //   pairs = pairs.concat(buildQuipuV2Pairs(dex));
       //   break;
-      
+
       case "quipuswap_v3":
-        pairs.push(buildQuipuV3Pairs(dex));
-        pairs.push(buildQuipuV3Pairs(dex, true));
+        pairs.push(await buildQuipuV3Pairs(dex));
+        pairs.push(await buildQuipuV3Pairs(dex, true));
+        console.log(pairs);
         break;
 
       // case "quipuswap_stable":

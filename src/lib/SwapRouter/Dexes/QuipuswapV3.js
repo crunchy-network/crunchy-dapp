@@ -7,8 +7,8 @@ const {
 } = require("../utils.js");
 const { getAmmSwapOutput } = require("../SwapRates/amm");
 const {
-  calculateXtoY,
-  calculateYtoX,
+  calculateXToY,
+  calculateYToX,
 } = require("../SwapRates/cfmm/helpers/swap");
 
 const FEE_DENOMINATOR = new BigNumber(10000);
@@ -30,7 +30,6 @@ const roundOutput = (output, pair) => {
 };
 
 const getSwapOutput = async (input, pair) => {
-  console.log(pair);
   const p = {
     s: {
       ticks: pair.ticks,
@@ -38,21 +37,20 @@ const getSwapOutput = async (input, pair) => {
       curTickIndex: pair.curTickIndex,
       curTickWitness: pair.curTickWitness,
       sqrtPrice: BigNumber(pair.sqrtPrice),
-      liquidity: pair.liquidity,
+      liquidity: BigNumber(pair.liquidity),
       constants: {
-        feeBps: BigNumber(pair.feeBps),
-        factoryAddress: BigNumber(pair.factoryAddress),
+        feeBps: BigNumber(pair.fee.feeBps),
+        factoryAddress: pair.factoryAddress,
       }
     },
-    dx: input,
+    dx: BigNumber(input),
   }
   // const inputAfterFee = input * (1 - calcFees(pair));
   // const inputAfterFee = input * percentToDecimal(DEX_FEE);
   // const output = getAmmSwapOutput(inputAfterFee, pair);
   // const toRet = roundOutput(output, pair);
   // return toRet;
-  const output = calculateXtoY(p);
-  console.log(output)
+  const output = calculateXToY(p.s, BigNumber(input));
   return output;
 };
 

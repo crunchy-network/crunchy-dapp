@@ -645,7 +645,7 @@ export function calcReceivedY(
   const dy = new BigNumber(sqrtPriceNew.toBignumber())
     .dividedBy(_280)
     .minus(new BigNumber(sqrtPriceOld.toBignumber()).dividedBy(_280))
-    .multipliedBy(liquidity.toBignumber())
+    .multipliedBy(liquidity)
     .toNumber();
   const dyOut = Math.floor(-dy);
   return new Int(dyOut);
@@ -676,11 +676,11 @@ export function calcNewPriceX(
   dx,
 ) {
   const shiftedL80 = shiftLeft(
-    liquidity.toBignumber().multipliedBy(sqrtPriceOld),
+    liquidity.multipliedBy(sqrtPriceOld),
     new BigNumber(80),
   );
   const shiftedL80PlusDxSqrtPriceOld = shiftLeft(
-    liquidity.toBignumber(),
+    liquidity,
     new BigNumber(80),
   ).plus(dx.multipliedBy(sqrtPriceOld));
   return new quipuswapV3Types.x80n(

@@ -64,12 +64,12 @@ export default {
             "value": "\"0\""
           },
           {
-            "name": "ticks",
-            "value": "381510"
-          },
-          {
             "name": "last_cumulatives_buffer",
             "value": "200"
+          },
+          {
+            "name": "ticks",
+            "value": "{\"{\\\"1048575\\\":{\\\"next\\\":\\\"1048576\\\",\\\"prev\\\":\\\"-36900\\\",\\\"sqrt_price\\\":\\\"71107673757466966990985103421469892397199512717\\\",\\\"n_positions\\\":\\\"1\\\",\\\"liquidity_net\\\":\\\"0\\\",\\\"seconds_outside\\\":\\\"0\\\",\\\"fee_growth_outside\\\":{\\\"x\\\":\\\"0\\\",\\\"y\\\":\\\"0\\\"},\\\"tick_cumulative_outside\\\":\\\"0\\\",\\\"seconds_per_liquidity_outside\\\":\\\"0\\\"}}\",\"{\\\"-1048575\\\":{\\\"next\\\":\\\"-39660\\\",\\\"prev\\\":\\\"-1048576\\\",\\\"sqrt_price\\\":\\\"20\\\",\\\"n_positions\\\":\\\"1\\\",\\\"liquidity_net\\\":\\\"0\\\",\\\"seconds_outside\\\":\\\"0\\\",\\\"fee_growth_outside\\\":{\\\"x\\\":\\\"0\\\",\\\"y\\\":\\\"0\\\"},\\\"tick_cumulative_outside\\\":\\\"0\\\",\\\"seconds_per_liquidity_outside\\\":\\\"0\\\"}}\",\"{\\\"-39660\\\":{\\\"next\\\":\\\"-36900\\\",\\\"prev\\\":\\\"-1048575\\\",\\\"sqrt_price\\\":\\\"166415469851038780193038\\\",\\\"n_positions\\\":\\\"1\\\",\\\"liquidity_net\\\":\\\"42489294319\\\",\\\"seconds_outside\\\":\\\"1676039879\\\",\\\"fee_growth_outside\\\":{\\\"x\\\":\\\"0\\\",\\\"y\\\":\\\"0\\\"},\\\"tick_cumulative_outside\\\":\\\"-64085060813444\\\",\\\"seconds_per_liquidity_outside\\\":\\\"0\\\"}}\",\"{\\\"-36900\\\":{\\\"next\\\":\\\"1048575\\\",\\\"prev\\\":\\\"-39660\\\",\\\"sqrt_price\\\":\\\"191040890576382234308635\\\",\\\"n_positions\\\":\\\"1\\\",\\\"liquidity_net\\\":\\\"-42489294319\\\",\\\"seconds_outside\\\":\\\"1678837499\\\",\\\"fee_growth_outside\\\":{\\\"x\\\":\\\"906341119901685929858839052166021005\\\",\\\"y\\\":\\\"27756970918449065038362156359844550\\\"},\\\"tick_cumulative_outside\\\":\\\"-64190744878139\\\",\\\"seconds_per_liquidity_outside\\\":\\\"22405191015838011573034853849187067\\\"}}\"}"
           }
         ],
         "pools": [
@@ -124,7 +124,7 @@ export default {
 
     state.commit("updateDexPairs", {
       dex,
-      pairs: buildSwapPairs(dexPools),
+      pairs: await buildSwapPairs(dexPools),
     });
     state.commit("updateDexLoading", { dex, loading: false });
   },

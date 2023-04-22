@@ -41,7 +41,6 @@ const getAllSwapPaths = (
   allPaths = []
 ) => {
   for (var i = 0; i < pairList.length; i++) {
-    console.log(pairList)
     const pair = pairList[i];
     if (pair.a.assetSlug !== inputAssetSlug) {
       continue;
