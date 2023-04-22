@@ -149,6 +149,7 @@ export default {
     try {
       const [
         {
+          quotes1h: volumeAndPrice1Hour,
           quotes1d: volumeAndPrice1Day,
           quotes1w: volumeAndPrice7Day,
           quotes1mo: volumeAndPrice30Day,
@@ -178,6 +179,7 @@ export default {
       ]);
 
       chartData.allVolumeAndPrice = allVolumeAndPrice;
+      chartData.volumeAndPrice1Hour = volumeAndPrice1Hour;
       chartData.volumeAndPrice1Day = volumeAndPrice1Day;
       chartData.volumeAndPrice7Day = volumeAndPrice7Day;
       chartData.volumeAndPrice30Day = volumeAndPrice30Day;
