@@ -20,7 +20,6 @@ export default {
   computed: {
     ...mapState(["homeWallet", "farms", "swap"]),
     tokenList() {
-      console.log(this.farms.priceFeed)
       const ownedAssets = this.homeWallet.assets || [];
       const toRet = buildTokenListFromWalletAndPriceFeed(
         ownedAssets,

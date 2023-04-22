@@ -1,5 +1,5 @@
 /* eslint-disable new-cap */
-const BigNumber = require("bignumber.js");
+const { default: BigNumber } = require("bignumber.js");
 
 const { Nat, quipuswapV3Types } = require("../types");
 const {
@@ -79,15 +79,16 @@ function oneMinusFeeBps(feeBps) {
 }
 
 function xToYRec(p) {
-  if (p.s.liquidity.isZero()) {
+  if (p.s.liquidity === 0) {
     return p;
   }
 
   // TODO: change fees logic after new Quipuswap V3 contracts are deployed
-  let totalFee = calcSwapFee(
-    p.s.constants.feeBps.toBignumber(),
-    p.dx.toBignumber()
-  );
+  let totalFee = calcSwapFee(p.s.constants.feeBps, p.dx);
+  console.log(totalFee)
+  console.log(p,p.s.sqrtPrice,
+    p.s.liquidity,
+    p.dx.minus(totalFee))
   let sqrtPriceNew = calcNewPriceX(
     p.s.sqrtPrice,
     p.s.liquidity,
@@ -100,10 +101,7 @@ function xToYRec(p) {
   );
   if (curTickIndexNew.gte(p.s.curTickWitness)) {
     const dy = shiftRight(
-      p.s.sqrtPrice
-        .toBignumber()
-        .minus(sqrtPriceNew)
-        .multipliedBy(p.s.liquidity),
+      p.s.sqrtPrice.minus(sqrtPriceNew).multipliedBy(p.s.liquidity),
       new BigNumber(80)
     ).integerValue(BigNumber.ROUND_FLOOR);
     const newStorage = {
@@ -122,7 +120,7 @@ function xToYRec(p) {
   const loNew = tick.prev;
   sqrtPriceNew = new quipuswapV3Types.x80n(tick.sqrtPrice.minus(1));
   const dy = shiftRight(
-    p.s.sqrtPrice.toBignumber().minus(sqrtPriceNew).multipliedBy(p.s.liquidity),
+    p.s.sqrtPrice.minus(sqrtPriceNew).multipliedBy(p.s.liquidity),
     new BigNumber(80)
   ).integerValue(BigNumber.ROUND_FLOOR);
   const dxForDy = shiftLeft(dy, new BigNumber(160))
@@ -162,7 +160,7 @@ function xToYRec(p) {
   return xToYRec(paramNew);
 }
 
-function calculateXToY(s, dx) {
+const calculateXToY = (s, dx) => {
   const r = xToYRec({ s, dx, dy: new Nat(0) });
 
   return {
@@ -170,17 +168,14 @@ function calculateXToY(s, dx) {
     inputLeft: r.dx,
     newStoragePart: r.s,
   };
-}
+};
 
 function yToXRec(p) {
   if (p.s.liquidity.isZero()) {
     return p;
   }
 
-  let totalFee = calcSwapFee(
-    p.s.constants.feeBps.toBignumber(),
-    p.dy.toBignumber()
-  );
+  let totalFee = calcSwapFee(p.s.constants.feeBps, p.dy);
   let dyMinusFee = p.dy.minus(totalFee);
   let sqrtPriceNew = calcNewPriceY(p.s.sqrtPrice, p.s.liquidity, dyMinusFee);
   const curTickIndexNew = calcNewCurTickIndex(
@@ -192,10 +187,9 @@ function yToXRec(p) {
   const nextTickIndex = tick.next;
   if (curTickIndexNew.lt(nextTickIndex)) {
     const dx = p.s.liquidity
-      .toBignumber()
       .multipliedBy(
         shiftLeft(
-          sqrtPriceNew.toBignumber().minus(p.s.sqrtPrice),
+          sqrtPriceNew.minus(p.s.sqrtPrice),
           new BigNumber(80)
         )
       )
@@ -215,10 +209,9 @@ function yToXRec(p) {
 
   const dx = new Nat(
     p.s.liquidity
-      .toBignumber()
       .multipliedBy(
         shiftLeft(
-          sqrtPriceNew.toBignumber().minus(p.s.sqrtPrice),
+          sqrtPriceNew.minus(p.s.sqrtPrice),
           new BigNumber(80)
         )
       )
@@ -228,14 +221,12 @@ function yToXRec(p) {
   const _280 = new BigNumber(2).pow(80);
   const dyForDx = new Nat(
     p.s.liquidity
-      .toBignumber()
-      .multipliedBy(sqrtPriceNew.toBignumber().minus(p.s.sqrtPrice))
+      .multipliedBy(sqrtPriceNew.minus(p.s.sqrtPrice))
       .dividedBy(_280)
       .integerValue(BigNumber.ROUND_CEIL)
   );
   dyMinusFee = dyForDx;
   const dyConsumed = dyMinusFee
-    .toBignumber()
     .multipliedBy(HUNDRED_PERCENT_BPS)
     .dividedBy(oneMinusFeeBps(p.s.constants.feeBps))
     .integerValue(BigNumber.ROUND_CEIL);
@@ -269,7 +260,7 @@ function yToXRec(p) {
   return yToXRec(paramNew);
 }
 
-function calculateYToX(s, dy) {
+const calculateYToX = (s, dy) => {
   const r = yToXRec({ s: s, dy: dy, dx: new Nat(0) });
 
   return {
@@ -277,4 +268,9 @@ function calculateYToX(s, dy) {
     inputLeft: r.dy,
     newStoragePart: r.s,
   };
-}
+};
+
+module.exports = {
+  calculateYToX,
+  calculateXToY,
+};
