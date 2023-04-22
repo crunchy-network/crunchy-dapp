@@ -1044,10 +1044,18 @@ export default {
                 : 0,
             baseSymbol: baseSymbol,
             quoteSymbol: quoteSymbol,
-            basePrice: baseToken[0]?.tokenDayData[0]?.last_price,
-            quotePrice: quoteToken[0]?.tokenDayData[0]?.last_price,
-            basePriceUsd: baseToken[0]?.tokenDayData[0]?.last_price_usd,
-            quotePriceUsd: quoteToken[0]?.tokenDayData[0]?.last_price_usd,
+            basePrice: baseToken[0]?.derivedxtz
+            ?  baseToken[0]?.derivedxtz
+            : baseToken[0]?.tokenDayData[0].last_price,
+            quotePrice: quoteToken[0]?.derivedxtz
+            ?  quoteToken[0]?.derivedxtz
+            : quoteToken[0]?.tokenDayData[0].last_price,
+            basePriceUsd: baseToken[0]?.derivedusd
+            ?  baseToken[0]?.derivedusd
+            : baseToken[0]?.tokenDayData[0].last_price,
+            quotePriceUsd: quoteToken[0]?.derivedusd
+            ?  quoteToken[0]?.derivedusd
+            : quoteToken[0]?.tokenDayData[0].last_price,
             tokenTvl: obj.reservextz,
             tokenTvlUsd: obj.reserveusd,
           };
