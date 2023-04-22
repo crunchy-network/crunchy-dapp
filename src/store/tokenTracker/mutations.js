@@ -11,7 +11,13 @@ export default {
   },
 
   updateTokenList(state, payload) {
-    state.tokenList.push(payload);
+    if (
+      typeof payload === "object" &&
+      !Array.isArray(payload) &&
+      payload !== null
+    ) {
+      state.tokenList.push(payload);
+    }
   },
 
   updateTokenListIndex(state, payload) {
