@@ -910,9 +910,9 @@ export default {
       const timeUsdValueDay7 = binarySearch(xtzUsdHistory, day7);
       const timeUsdValueDay30 = binarySearch(xtzUsdHistory, day30);
 
-      updatedPLY[0].dayCloseUsd = Object.values(price1Day)[0].c;
-      updatedPLY[0].weekCloseUsd = Object.values(price7Day)[0].c;
-      updatedPLY[0].monthCloseUsd = Object.values(price30Day)[0].c;
+      updatedPLY[0].dayCloseUsd = price1Day ? Object.values(price1Day)[0].c : 0;
+      updatedPLY[0].weekCloseUsd = price7Day ? Object.values(price7Day)[0].c : 0;
+      updatedPLY[0].monthCloseUsd = price30Day ? Object.values(price30Day)[0].c : 0;
       updatedPLY[0].dayClose = updatedPLY[0].dayCloseUsd / timeUsdValueDay1;
       updatedPLY[0].weekClose = updatedPLY[0].weekCloseUsd / timeUsdValueDay7;
       updatedPLY[0].monthClose =
