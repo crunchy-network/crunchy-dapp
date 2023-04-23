@@ -60,7 +60,7 @@
                 <el-col style="text-align: right" :span="4">
                   <price-format
                     prefix="$"
-                    :precision="4"
+                    :precision="5"
                     :value="asset.currentPrice"
                     :usd-value="asset.usdValue"
                   />
