@@ -22,7 +22,10 @@
             All
           </button>
           <button
-            v-if="legendTab !== 'volume' && tokenTracked.symbol !== 'PLY'"
+            v-if="
+              legendTab === 'price' ||
+              (legendTab === 'volume' && tokenTracked.symbol !== 'PLY')
+            "
             class="tab-text"
             :style="isActiveTab('1h', duration)"
             @click="setDurationTab('1h')"
