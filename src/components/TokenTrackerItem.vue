@@ -76,7 +76,7 @@
             <price-format
               v-if="!getLoading"
               prefix="$"
-              :precision="4"
+              :precision="5"
               :font-size="40"
               :line-height="'19px'"
               :value="getTokenOverview.currentPrice"
