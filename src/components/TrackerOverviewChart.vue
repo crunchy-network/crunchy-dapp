@@ -201,7 +201,7 @@ export default {
           };
         }
       );
-      console.log(this.getChartData.volumeAndPrice1Hour)
+
       this.updatedChartData.price.hours1 =
         this.getChartData.volumeAndPrice1Hour.map((element) => {
           const timeUsdValue = tokenTracker.binarySearch(
