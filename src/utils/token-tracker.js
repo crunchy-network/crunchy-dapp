@@ -894,10 +894,18 @@ export default {
 
       const query = `
     query MyQuery {
-     quotesTotal(distinct_on: tokenId){
-       close
-       tokenId
-     }
+     trade(
+        distinct_on: [exchangeId, tokenId]
+        order_by: [{exchangeId: asc, tokenId: asc}, {timestamp: desc}]
+      ) {
+        price
+        exchangeId
+        tokenId
+        token {
+          name
+          symbol
+        }
+      }
      statsTotal {
        tvlUsd
        tvl
@@ -930,7 +938,7 @@ export default {
 
         {
           data: {
-            data: { quotesTotal, statsTotal, token },
+            data: { trade, statsTotal, token },
           },
         },
         tokensCloseData,
@@ -952,6 +960,10 @@ export default {
         getSpicyPools(),
       ]);
 
+      const quotesTotal = trade.map((element) => {
+        element.close = element.price;
+        return element;
+      });
       quotesTotal.push({
         close: PLY[0].price.value / xtzUSD,
         tokenId: `${PLY[0].contract}_0`,
