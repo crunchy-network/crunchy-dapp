@@ -177,7 +177,7 @@ export default {
           xtzUsdHistory
         ),
       ]);
-      console.log(volumeAndPrice1Hour)
+      
       chartData.allVolumeAndPrice = allVolumeAndPrice;
       chartData.volumeAndPrice1Hour = volumeAndPrice1Hour;
       chartData.volumeAndPrice1Day = volumeAndPrice1Day;
