@@ -15,7 +15,7 @@ const oneHourInMiliSecond = 60 * 60 * 1000;
 const oneDayInMiliSecond = oneHourInMiliSecond * 24;
 const oneWeekInMiliSecond = oneDayInMiliSecond * 7;
 const oneMonthInMiliSecond = oneDayInMiliSecond * 30;
-const oneWeekAgo = new Date(Date.now() - oneWeekInMiliSecond).toISOString();
+const oneMonthAgo = new Date(Date.now() - oneWeekInMiliSecond).toISOString();
 const PLY_SYMBOL = "PLY";
 const PLY_TOKEN_ID = "KT1JVjgXPMMSaa6FkzeJcgb8q9cUaLmwaJUX_0";
 const TRACKED_MARKETS_NAME = {
@@ -400,7 +400,7 @@ export default {
     const query = `
     query MyQuery($tokenId: String) {
       quotes1hNogaps (
-        where: {tokenId: {_eq: $tokenId}, bucket: {_gt: "${oneWeekAgo}"}}
+        where: {tokenId: {_eq: $tokenId}, bucket: {_gt: "${oneMonthAgo}"}}
         distinct_on: bucket
         order_by: {bucket: asc}
       ) {
