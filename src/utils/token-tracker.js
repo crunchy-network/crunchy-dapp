@@ -169,7 +169,35 @@ function modifyObject(obj, keyPairs) {
   return obj;
 }
 
+async function getWTZPrice() {
+  const query = `
+  query MyQuery {
+    trade(
+      distinct_on: [exchangeId, tokenId]
+      order_by: [{exchangeId: asc, tokenId: asc}, {timestamp: desc}]
+      where: {tokenId: {_eq: "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn_0"}}
+    ) {
+      price
+    }
+  }
+  `;
+
+  const [
+    {
+      data: {
+        data: { trade },
+      },
+    },
+  ] = await Promise.all([
+    axios.post("https://dex.dipdup.net/v1/graphql", {
+      query,
+    }),
+  ]);
+  return trade[0].price;
+}
+
 function modifySpicyMetrics(spicyMetrics) {
+  const WTZPrice = getWTZPrice();
   const modifiedSpicyMetrics = {
     price: {
       history: [],
@@ -185,7 +213,7 @@ function modifySpicyMetrics(spicyMetrics) {
     return {
       bucket: new Date(element.day).getTime(),
       usdClose: element.derivedusd_close,
-      xtzClose: element.derivedxtz_close,
+      xtzClose: element.derivedxtz_close * WTZPrice,
     };
   });
   modifiedSpicyMetrics.volume.history = spicyMetrics.map((element) => {
@@ -525,8 +553,8 @@ export default {
         : getAggregatedPriceAndVolume(quotes1mo, dailyTokenList);
 
     /*
-      *Calculate PLY price and volume for chart data
-    */
+     *Calculate PLY price and volume for chart data
+     */
     let plyPriceAndVolumeChartData1h = [];
     let plyPriceAndVolumeChartData1d = [];
     let plyPriceAndVolumeChartData1w = [];
@@ -546,13 +574,14 @@ export default {
         xtzUsdHistory
       );
       plyPriceAndVolumeChartData1h = plyPriceChartData1h.map((item, i) => {
-          const index = plyVolumeChartData1h.findIndex(volumeItem => volumeItem.bucket === item.bucket);
-          if (index !== -1) {
-            return Object.assign({}, item, plyVolumeChartData1h[index]);
-          }
-          return item;
+        const index = plyVolumeChartData1h.findIndex(
+          (volumeItem) => volumeItem.bucket === item.bucket
+        );
+        if (index !== -1) {
+          return Object.assign({}, item, plyVolumeChartData1h[index]);
         }
-      );
+        return item;
+      });
 
       const plyPriceChartData1d = getPlentyTokenChartData(
         plentyToken[0].price.history,
@@ -605,7 +634,7 @@ export default {
 
     return {
       quotes1h:
-      tokenId === PLY_TOKEN_ID
+        tokenId === PLY_TOKEN_ID
           ? plyPriceAndVolumeChartData1h
           : aggregatedQuotes1hNoGaps,
       quotes1d:
@@ -960,10 +989,28 @@ export default {
         getSpicyPools(),
       ]);
 
+      /*
+        Convert Spicy Tokens WTZ price to XTZ price
+      */
+      const WTZPrice = trade.filter(
+        (element) =>
+          element.tokenId === "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn_0"
+      )[0].price;
+
+      spicyTokens.tokens.map((token) => {
+        token.price = token.derivedxtz * WTZPrice;
+        return token;
+      });
+
+      /*
+        Change field name and
+        add PLY token to token list from Dipdup
+      */
       const quotesTotal = trade.map((element) => {
         element.close = element.price;
         return element;
       });
+
       quotesTotal.push({
         close: PLY[0].price.value / xtzUSD,
         tokenId: `${PLY[0].contract}_0`,
@@ -1004,8 +1051,12 @@ export default {
       const timeUsdValueDay30 = binarySearch(xtzUsdHistory, day30);
 
       updatedPLY[0].dayCloseUsd = price1Day ? Object.values(price1Day)[0].c : 0;
-      updatedPLY[0].weekCloseUsd = price7Day ? Object.values(price7Day)[0].c : 0;
-      updatedPLY[0].monthCloseUsd = price30Day ? Object.values(price30Day)[0].c : 0;
+      updatedPLY[0].weekCloseUsd = price7Day
+        ? Object.values(price7Day)[0].c
+        : 0;
+      updatedPLY[0].monthCloseUsd = price30Day
+        ? Object.values(price30Day)[0].c
+        : 0;
       updatedPLY[0].dayClose = updatedPLY[0].dayCloseUsd / timeUsdValueDay1;
       updatedPLY[0].weekClose = updatedPLY[0].weekCloseUsd / timeUsdValueDay7;
       updatedPLY[0].monthClose =
@@ -1137,11 +1188,11 @@ export default {
                 : 0,
             baseSymbol: baseSymbol,
             quoteSymbol: quoteSymbol,
-            basePrice: baseToken[0]?.derivedxtz
-              ? baseToken[0]?.derivedxtz
+            basePrice: baseToken[0]?.price
+              ? baseToken[0]?.price
               : baseToken[0]?.tokenDayData[0].last_price,
-            quotePrice: quoteToken[0]?.derivedxtz
-              ? quoteToken[0]?.derivedxtz
+            quotePrice: quoteToken[0]?.price
+              ? quoteToken[0]?.price
               : quoteToken[0]?.tokenDayData[0].last_price,
             basePriceUsd: baseToken[0]?.derivedusd
               ? baseToken[0]?.derivedusd
@@ -1259,8 +1310,8 @@ export default {
             return spicyContract === contract && String(spicyId) === String(id);
           });
           if (tokenOnSpicy !== undefined) {
-            tokenQuotesTotal.spicyClose = tokenOnSpicy?.derivedxtz
-              ? tokenOnSpicy?.derivedxtz
+            tokenQuotesTotal.spicyClose = tokenOnSpicy?.price
+              ? tokenOnSpicy?.price
               : tokenOnSpicy?.tokenDayData[0].last_price;
             tokenQuotesTotal.spicyTvl = tokenOnSpicy.totalliquidityxtz;
           } else {
