@@ -12,6 +12,7 @@ export default {
     LS_FAVORITES_KEY: "FAVORITES_LIST",
     tokenOverview: {
       chartData: {
+        volumeAndPrice1Hour: [],
         volumeAndPrice1Day: [],
         volumeAndPrice7Day: [],
         volumeAndPrice30Day: [],

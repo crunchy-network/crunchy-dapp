@@ -66,6 +66,7 @@ export default {
   cleanTokenOverview(state) {
     state.tokenOverview = {
       chartData: {
+        volumeAndPrice1Hour: [],
         volumeAndPrice1Day: [],
         volumeAndPrice7Day: [],
         volumeAndPrice30Day: [],
