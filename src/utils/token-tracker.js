@@ -284,14 +284,15 @@ function getAggregatedPriceAndVolume(quotesNogaps, tokens) {
         quote.bucket
       );
 
-      quote.aggregatedClose = price?.bucket
-        ? aggregate(
-            price.xtzClose,
-            quote.aggregatedClose,
-            volume.xtzVolume,
-            quote.xtzVolume
-          )
-        : Number(quote.aggregatedClose);
+      quote.aggregatedClose =
+        price?.bucket && volume?.bucket
+          ? aggregate(
+              price.xtzClose,
+              quote.aggregatedClose,
+              volume.xtzVolume,
+              quote.xtzVolume
+            )
+          : Number(quote.aggregatedClose);
       quote.aggregatedXtzVolume = volume?.bucket
         ? Number(volume.xtzVolume) + Number(quote.aggregatedXtzVolume)
         : Number(quote.aggregatedXtzVolume);

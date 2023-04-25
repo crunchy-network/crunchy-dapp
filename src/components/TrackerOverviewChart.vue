@@ -597,8 +597,8 @@ export default {
     },
 
     handlePrecision(value) {
-      let precision = 4;
-      let minMove = 0.0001;
+      let precision = 5;
+      let minMove = 0.00001;
 
       if (value < 0.0000000001 && value > 0) {
         precision = 12;
@@ -614,10 +614,10 @@ export default {
         minMove = 0.000001;
       } else if (value < 0.001 && value > 0) {
         precision = 5;
-        minMove = 0.0001;
+        minMove = 0.00001;
       } else {
         precision = 5;
-        minMove = 0.0001;
+        minMove = 0.00001;
       }
 
       return { precision, minMove };
