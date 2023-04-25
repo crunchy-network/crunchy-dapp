@@ -169,35 +169,7 @@ function modifyObject(obj, keyPairs) {
   return obj;
 }
 
-async function getWTZPrice() {
-  const query = `
-  query MyQuery {
-    trade(
-      distinct_on: [exchangeId, tokenId]
-      order_by: [{exchangeId: asc, tokenId: asc}, {timestamp: desc}]
-      where: {tokenId: {_eq: "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn_0"}}
-    ) {
-      price
-    }
-  }
-  `;
-
-  const [
-    {
-      data: {
-        data: { trade },
-      },
-    },
-  ] = await Promise.all([
-    axios.post("https://dex.dipdup.net/v1/graphql", {
-      query,
-    }),
-  ]);
-  return trade[0].price;
-}
-
-function modifySpicyMetrics(spicyMetrics) {
-  const WTZPrice = getWTZPrice();
+function modifySpicyMetrics(spicyMetrics, xtzUsdHistory) {
   const modifiedSpicyMetrics = {
     price: {
       history: [],
@@ -210,10 +182,16 @@ function modifySpicyMetrics(spicyMetrics) {
     },
   };
   modifiedSpicyMetrics.price.history = spicyMetrics.map((element) => {
+    const dateString = Object.keys(element)[0];
+    const date = Number(dateString) * 1000;
+    const timeUsdValue = binarySearch(
+      xtzUsdHistory,
+      new Date(date).getTime() + oneDayInMiliSecond
+    );
     return {
       bucket: new Date(element.day).getTime(),
       usdClose: element.derivedusd_close,
-      xtzClose: element.derivedxtz_close * WTZPrice,
+      xtzClose: element.derivedusd_close / timeUsdValue,
     };
   });
   modifiedSpicyMetrics.volume.history = spicyMetrics.map((element) => {
@@ -252,7 +230,7 @@ function modifyPlentyMetrics(plentyMetrics, xtzUsdHistory) {
       const date = Number(dateString) * 1000;
       const timeUsdValue = binarySearch(
         xtzUsdHistory,
-        new Date(date).getTime() + 1000 * 60 * 60 * 24
+        new Date(date).getTime() + oneDayInMiliSecond
       );
       return {
         bucket: date,
@@ -266,7 +244,7 @@ function modifyPlentyMetrics(plentyMetrics, xtzUsdHistory) {
       const date = Number(dateString) * 1000;
       const timeUsdValue = binarySearch(
         xtzUsdHistory,
-        new Date(date).getTime() + 1000 * 60 * 60 * 24
+        new Date(date).getTime() + oneDayInMiliSecond
       );
       return {
         bucket: date,
@@ -280,7 +258,7 @@ function modifyPlentyMetrics(plentyMetrics, xtzUsdHistory) {
       const date = Number(dateString) * 1000;
       const timeUsdValue = binarySearch(
         xtzUsdHistory,
-        new Date(date).getTime() + 1000 * 60 * 60 * 24
+        new Date(date).getTime() + oneDayInMiliSecond
       );
       return {
         bucket: date,
@@ -348,12 +326,12 @@ function getPlentyTokenChartData(indexes, kind, timeInterval, xtzUsdHistory) {
   let chartData = indexes.map((element) => {
     const stringDate = Object.keys(element)[0];
     const miliSecondDate = Number(stringDate) * 1000;
-  
+
     if (miliSecondDate - currentBucket >= timeInterval) {
       currentBucket = miliSecondDate;
       const timeUsdValue = binarySearch(
         xtzUsdHistory,
-        new Date(currentBucket).getTime() + 1000 * 60 * 60 * 24
+        new Date(currentBucket).getTime() + oneDayInMiliSecond
       );
       const obj = {};
       obj[kind] =
@@ -498,7 +476,7 @@ export default {
     const modifiedHourlySpicyMetrics = !isEmptyArray(
       spicyTokenMetrics.token_hour_data
     )
-      ? modifySpicyMetrics(spicyTokenMetrics.token_hour_data)
+      ? modifySpicyMetrics(spicyTokenMetrics.token_hour_data, xtzUsdHistory)
       : null;
     const modifiedHourlyPlentyMetrics = !isEmptyArray(
       hourlyPlentyToken[0]?.price.history
@@ -513,7 +491,7 @@ export default {
     const modifiedDailySpicyMetrics = !isEmptyArray(
       spicyTokenMetrics.token_day_data
     )
-      ? modifySpicyMetrics(spicyTokenMetrics.token_day_data)
+      ? modifySpicyMetrics(spicyTokenMetrics.token_day_data, xtzUsdHistory)
       : null;
     const modifiedDailyPlentyMetrics = !isEmptyArray(
       plentyToken[0]?.price.history
@@ -719,7 +697,7 @@ export default {
     ];
 
     const modifiedSpicyMetrics = !isEmptyArray(spicyTokenMetrics.token_day_data)
-      ? modifySpicyMetrics(spicyTokenMetrics.token_day_data)
+      ? modifySpicyMetrics(spicyTokenMetrics.token_day_data, xtzUsdHistory)
       : null;
     const modifiedPlentyMetrics = !isEmptyArray(plentyToken[0]?.price.history)
       ? modifyPlentyMetrics(plentyToken[0], xtzUsdHistory)
@@ -875,7 +853,7 @@ export default {
     ];
 
     const modifiedSpicyMetrics = !isEmptyArray(spicyTokenMetrics.token_day_data)
-      ? modifySpicyMetrics(spicyTokenMetrics.token_day_data)
+      ? modifySpicyMetrics(spicyTokenMetrics.token_day_data, xtzUsdHistory)
       : null;
     const modifiedPlentyMetrics = !isEmptyArray(plentyToken[0]?.price.history)
       ? modifyPlentyMetrics(plentyToken[0], xtzUsdHistory)
