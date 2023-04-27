@@ -101,6 +101,15 @@ function sameDay(d1, d2) {
   );
 }
 
+function sameHour(d1, d2) {
+  return (
+    d1.getFullYear() === d2.getFullYear() &&
+    d1.getMonth() === d2.getMonth() &&
+    d1.getDate() === d2.getDate() &&
+    d1.getHours() === d2.getHours()
+  );
+}
+
 function aggregate(num1, num2, index1, index2) {
   return (
     (Number(num1) * Number(index1) + Number(num2) * Number(index2)) /
@@ -123,6 +132,13 @@ function findElementWithSameDate(array, targetDate) {
   return array.find((element) => {
     const date = element.bucket;
     return sameDay(new Date(date), new Date(targetDate));
+  });
+}
+
+function findElementWithSameHour(array, targetDate) {
+  return array.find((element) => {
+    const date = element.bucket;
+    return sameHour(new Date(date), new Date(targetDate));
   });
 }
 
@@ -268,6 +284,39 @@ function modifyPlentyMetrics(plentyMetrics, xtzUsdHistory) {
     }
   );
   return modifiedPlentyMetrics;
+}
+
+function getAggregatedPriceAndVolume1h(quotesNogaps, tokens) {
+  const aggregatedQuotesNoGaps = quotesNogaps.map((quote) => {
+    for (let index = 0; index < tokens.length; index++) {
+      if (tokens[index] === null) {
+        continue;
+      }
+      const price = findElementWithSameHour(
+        tokens[index].price.history,
+        quote.bucket
+      );
+      const volume = findElementWithSameHour(
+        tokens[index].volume.history,
+        quote.bucket
+      );
+
+      quote.aggregatedClose =
+        price?.bucket && volume?.bucket
+          ? aggregate(
+              price.xtzClose,
+              quote.aggregatedClose,
+              volume.xtzVolume,
+              quote.xtzVolume
+            )
+          : Number(quote.aggregatedClose);
+      quote.aggregatedXtzVolume = volume?.bucket
+        ? Number(volume.xtzVolume) + Number(quote.aggregatedXtzVolume)
+        : Number(quote.aggregatedXtzVolume);
+    }
+    return quote;
+  });
+  return aggregatedQuotesNoGaps;
 }
 
 function getAggregatedPriceAndVolume(quotesNogaps, tokens) {
@@ -510,7 +559,7 @@ export default {
       isEmptyArray(quotes1hNogaps) &&
       isEmptyArray(spicyTokenMetrics.token_hour_data)
         ? aggregatedQuotes1hNoGaps
-        : getAggregatedPriceAndVolume(quotes1hNogaps, hourlyTokenList);
+        : getAggregatedPriceAndVolume1h(quotes1hNogaps, hourlyTokenList);
 
     let aggregatedQuotes1dNoGaps = modifyObject(quotes1dNogaps, keyPairs);
     aggregatedQuotes1dNoGaps =
