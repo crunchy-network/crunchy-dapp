@@ -9,12 +9,12 @@
     "lint:check": "vue-cli-service lint --no-fix"
   },
   "dependencies": {
-    "@airgap/beacon-sdk": "^3.3.0",
+    "@airgap/beacon-sdk": "^4.0.2",
     "@ivanv/vue-collapse-transition": "^1.0.2",
     "@microsoft/signalr": "^6.0.6",
-    "@taquito/beacon-wallet": "^15.0.1",
-    "@taquito/taquito": "^15.0.1",
-    "@taquito/tzip12": "^15.0.1",
+    "@taquito/beacon-wallet": "^16.1.2",
+    "@taquito/taquito": "^16.1.2",
+    "@taquito/tzip12": "^16.1.2",
     "@tezos-domains/core": "^1.22.0",
     "@tezos-domains/taquito-client": "^1.22.0",
     "axios": "^0.21.1",
@@ -88,6 +88,6 @@
     "not dead"
   ],
   "engines": {
-    "node": ">=14 <15"
+    "node": ">=14 =<16"
   }
 }
