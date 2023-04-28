@@ -25,7 +25,7 @@ const cashToToken = async (dex, trade, walletAddress, tezos) => {
 
   const transfers = [
     dex.methods
-      .cashToToken(walletAddress, output, input, `${secondsFromNow(300)}`)
+      .cashToToken(walletAddress, output, input, `${secondsFromNow(1200)}`)
       .toTransferParams(fromOpOpts(undefined)),
   ];
   return await addTokenApprovalOperators(
@@ -41,7 +41,7 @@ const tokenToCash = async (dex, trade, walletAddress, tezos) => {
   const output = convertToMuTez(trade.minOut, trade.b);
   const transfers = [
     dex.methods
-      .tokenToCash(walletAddress, input, output, `${secondsFromNow(300)}`)
+      .tokenToCash(walletAddress, input, output, `${secondsFromNow(1200)}`)
       .toTransferParams(fromOpOpts(undefined)),
   ];
   return await addTokenApprovalOperators(

@@ -38,7 +38,7 @@ const directTransaction = (dex, trade, walletAddres, input, output) => {
         input,
         output,
         walletAddres,
-        `${secondsFromNow(300)}`
+        `${secondsFromNow(1200)}`
       )
       .toTransferParams({
         mutez: true,
@@ -61,7 +61,7 @@ const invertTransaction = (dex, trade, walletAddres, input, output) => {
         input,
         output,
         walletAddres,
-        `${secondsFromNow(300)}`
+        `${secondsFromNow(1200)}`
       )
       .toTransferParams({
         mutez: true,
