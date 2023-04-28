@@ -20,7 +20,7 @@ const dexterXtzToToken = (dex, trade, walletAddress, tezos) => {
   const xtz = { ...trade.a };
   const token = { ...trade.b };
 
-  const timestamp = secondsFromNow(300);
+  const timestamp = secondsFromNow(1200);
   const toRet = dex.methods
     .xtzToToken(
       walletAddress,
@@ -34,7 +34,7 @@ const dexterXtzToToken = (dex, trade, walletAddress, tezos) => {
 const dexterTokenToXtz = async (dex, trade, walletAddress, tezos) => {
   const input = convertToMuTez(trade.input, trade.a);
   const output = convertToMuTez(trade.minOut, trade.b);
-  const timestamp = secondsFromNow(300);
+  const timestamp = secondsFromNow(1200);
   const transfers = [
     dex.methods
       .tokenToXtz(walletAddress, input, output, `${timestamp}`)
