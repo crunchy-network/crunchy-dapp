@@ -6,4 +6,11 @@ module.exports = {
     },
   },
   lintOnSave: "warning",
+  configureWebpack: {
+    module: {
+      rules: [
+        { test: /node_modules[\\/]@walletconnect/, loader: "babel-loader" },
+      ],
+    },
+  },
 };
