@@ -3,6 +3,7 @@ const {
   convertToMuTez,
   secondsFromNow,
   fromOpOpts,
+  isValidDexFee
 } = require("../utils");
 const { getFlatCfmmOutput } = require("../SwapRates/flat-cfmm");
 const { addTokenApprovalOperators } = require("../TokenTypes");
@@ -12,6 +13,10 @@ const DEX_FEE = 0.15;
 
 const getSwapOutput = (input, pair) => {
   const inputAfterFee = input * percentToDecimal(DEX_FEE);
+  const feeAmount = input - inputAfterFee;
+  if (!isValidDexFee(feeAmount, pair)) {
+    return 0;
+  }
   return getFlatCfmmOutput(inputAfterFee, pair);
 };
 
