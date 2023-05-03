@@ -46,7 +46,7 @@ const buildDexOperation = async (dex, trade, walletAddress, tezos) => {
         _to: walletAddress,
         amountIn: input,
         amountOutMin: output,
-        deadline: `${secondsFromNow(300)}`,
+        deadline: `${secondsFromNow(1200)}`,
         tokenIn: {
           fa2_address: trade.a.tokenAddress,
           token_id: trade.a.contractType === "fa2" ? trade.a.tokenId : null,

@@ -42,7 +42,7 @@ const buildDexOperation = (dex, trade, walletAddres, tezos) => {
         trade.b.index,
         input,
         output,
-        `${secondsFromNow(300)}`
+        `${secondsFromNow(1200)}`
       )
       .toTransferParams({
         mutez: true,
