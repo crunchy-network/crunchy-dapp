@@ -178,6 +178,9 @@ export default {
       if (this.getSwapPairs.length < 1) {
         return true;
       }
+      if (this.homeWallet.loading) {
+        return true;
+      }
       return false;
     },
     errorMessage() {
