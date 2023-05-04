@@ -193,7 +193,7 @@ export default {
       let { data: balances } = await axios.get(
         `https://api.tzkt.io/v1/tokens/balances?account=${pkh}&balance.gt=0&limit=10000&select=token,balance`
       );
-
+      
       // Fetch the currrent price of xtz in USD to multiply the price of tokens
       const usdMul = await tzkt.getXtzUsdPrice();
 
@@ -336,7 +336,7 @@ export default {
       }
       const {
         data: { balance, frozenDeposit },
-      } = await axios.get(`https://staging.api.tzkt.io/v1/accounts/${pkh}`);
+      } = await axios.get(`https://api.tzkt.io/v1/accounts/${pkh}`);
 
       const bal = new BigNumber(balance).div(new BigNumber(10).pow(6));
       const value = bal.multipliedBy(usdMul);
