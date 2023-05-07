@@ -1,6 +1,8 @@
 export default {
-  shorthand(value) {
-    const number = Number(value);
+  shorthand(value, precision) {
+    const number = precision
+      ? parseFloat(value).toFixed(precision)
+      : Number(value);
     if (isNaN(number)) return { value: 0, suffix: "" };
     if (number < 1000) {
       return { value: number, suffix: "" };
