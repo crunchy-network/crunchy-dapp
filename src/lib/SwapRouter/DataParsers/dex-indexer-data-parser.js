@@ -263,7 +263,7 @@ const buildQuipuV2Pairs = (dex) => {
     let p = null;
     const token1 = dex.pools[t1];
     const token2 = dex.pools.filter(
-      (el) => el.pool_id === token1.pool_id && el.reserves !== token1.reserves
+      (el) => el.pool_id === token1.pool_id && el !== token1
     )[0];
     if (poolIds.includes(token1.pool_id)) {
       p = buildQuipuV2Pair(dex, token1, token2, true);
@@ -356,7 +356,7 @@ const buildQuipuToken2TokenPairs = (dex) => {
     let p = null;
     const token1 = dex.pools[t1];
     const token2 = dex.pools.filter(
-      (el) => el.pool_id === token1.pool_id && el.reserves !== token1.reserves
+      (el) => el.pool_id === token1.pool_id && el !== token1
     )[0];
 
     if (poolIds.includes(token1.pool_id)) {
@@ -379,7 +379,7 @@ const buildFlamePairs = (dex) => {
     let p = null;
     const token1 = dex.pools[t1];
     const token2 = dex.pools.filter(
-      (el) => el.pool_id === token1.pool_id && el.reserves !== token1.reserves
+      (el) => el.pool_id === token1.pool_id && el !== token1
     )[0];
 
     if (poolIds.includes(token1.pool_id)) {

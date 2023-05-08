@@ -4,6 +4,7 @@ const {
   percentToDecimal,
   convertToMuTez,
   fromOpOpts,
+  isValidDexFee
 } = require("../utils.js");
 const { addTokenApprovalOperators } = require("../TokenTypes");
 const { getAmmSwapOutput } = require("../SwapRates/amm");
@@ -18,6 +19,10 @@ const roundOutput = (output, pair) => {
 
 function getSwapOutput(input, pair) {
   const inputAfterFee = input * percentToDecimal(DEX_FEE);
+  const feeAmount = input - inputAfterFee;
+  if (!isValidDexFee(feeAmount, pair)) {
+    return 0;
+  }
   const output = getAmmSwapOutput(inputAfterFee, pair);
   const toRet = roundOutput(output, pair);
 

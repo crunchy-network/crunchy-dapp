@@ -6,6 +6,7 @@ const {
   secondsFromNow,
   convertToMuTez,
   fromOpOpts,
+  isValidDexFee
 } = require("../utils.js");
 const { getAmmSwapOutput } = require("../SwapRates/amm");
 
@@ -28,6 +29,10 @@ const roundOutput = (output, pair) => {
 
 const getSwapOutput = (input, pair) => {
   const inputAfterFee = input * (1 - calcFees(pair));
+  const feeAmount = input - inputAfterFee;
+  if (!isValidDexFee(feeAmount, pair)) {
+    return 0;
+  }
   const output = getAmmSwapOutput(inputAfterFee, pair);
   const toRet = roundOutput(output, pair);
   return toRet;
@@ -70,7 +75,7 @@ const directTransaction = (dex, trade, walletAddres, input, output, tezos) => {
         pair_id: trade.poolId,
       },
     ],
-    `${secondsFromNow(300)}`,
+    `${secondsFromNow(1200)}`,
     walletAddres,
     walletAddres,
     input,
@@ -93,7 +98,7 @@ const invertTransaction = (dex, trade, walletAddres, input, output, tezos) => {
         pair_id: trade.poolId,
       },
     ],
-    `${secondsFromNow(300)}`,
+    `${secondsFromNow(1200)}`,
     walletAddres,
     walletAddres,
     input,

@@ -5,6 +5,7 @@ const {
   secondsFromNow,
   convertToMuTez,
   fromOpOpts,
+  isValidDexFee
 } = require("../utils.js");
 const { getAmmSwapOutput } = require("../SwapRates/amm");
 const { addTokenApprovalOperators } = require("../TokenTypes");
@@ -14,6 +15,10 @@ const BURN_FEE = 0.1;
 const getSwapOutput = (input, pair) => {
   const inputAfterBurn = input * percentToDecimal(BURN_FEE);
   const inputAfterFee = inputAfterBurn * percentToDecimal(DEX_FEE);
+  const feeAmount = input - inputAfterFee;
+  if (!isValidDexFee(feeAmount, pair)) {
+    return 0;
+  }
   return getAmmSwapOutput(inputAfterFee, pair);
 };
 
@@ -21,7 +26,7 @@ const dexterXtzToToken = (dex, trade, walletAddress, tezos) => {
   const xtz = { ...trade.a };
   const token = { ...trade.b };
 
-  const timestamp = secondsFromNow(300);
+  const timestamp = secondsFromNow(1200);
   const toRet = dex.methods
     .xtzToToken(
       walletAddress,
@@ -35,7 +40,7 @@ const dexterXtzToToken = (dex, trade, walletAddress, tezos) => {
 const dexterTokenToXtz = async (dex, trade, walletAddress, tezos) => {
   const input = convertToMuTez(trade.input, trade.a);
   const output = convertToMuTez(trade.minOut, trade.b);
-  const timestamp = secondsFromNow(300);
+  const timestamp = secondsFromNow(1200);
   const transfers = [
     dex.methods
       .tokenToXtz(walletAddress, input, output, `${timestamp}`)

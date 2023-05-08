@@ -22,6 +22,17 @@
             All
           </button>
           <button
+            v-if="
+              legendTab === 'price' ||
+              (legendTab === 'volume' && tokenTracked.symbol !== 'PLY')
+            "
+            class="tab-text"
+            :style="isActiveTab('1h', duration)"
+            @click="setDurationTab('1h')"
+          >
+            1h
+          </button>
+          <button
             class="tab-text"
             :style="isActiveTab('1d', duration)"
             @click="setDurationTab('1d')"
@@ -120,7 +131,7 @@ export default {
       this.legendTab = val;
       if (val === "price") {
         if (this.$route.query.duration !== "1d") {
-          this.setDurationTab("1d");
+          this.setDurationTab("1h");
         }
       }
     },
@@ -128,7 +139,7 @@ export default {
     legendTab(val) {
       if (val === "price") {
         if (this.$route.query.duration !== "1d") {
-          this.setDurationTab("1d");
+          this.setDurationTab("1h");
         }
       }
     },
@@ -148,7 +159,7 @@ export default {
 
     if (this.legendTab === "price") {
       if (this.$route.query.duration !== "1d") {
-        this.setDurationTab("1d");
+        this.setDurationTab("1h");
       }
     }
   },

@@ -33,8 +33,20 @@
           <el-col :span="8" style="font-size: 12px" class="_info-card__title"
             >BALANCE</el-col
           >
-          <el-col :span="16" style="font-weight: bold; text-align: right">{{
+          <el-col v-if="form.farm.poolToken.balance >= 0.0001 || !form.farm.poolToken.balance" :span="16" style="font-weight: bold; text-align: right">{{
             vueNumberFormat(form.farm.poolToken.balance)
+          }}</el-col>
+          <el-col v-else-if="form.farm.poolToken.balance >= 0.000001" :span="16" style="font-weight: bold; text-align: right">{{
+            vueNumberFormat(form.farm.poolToken.balance, { precision: 6 })
+          }}</el-col>
+          <el-col v-else-if="form.farm.poolToken.balance >= 0.00000001" :span="16" style="font-weight: bold; text-align: right">{{
+            vueNumberFormat(form.farm.poolToken.balance, { precision: 8 })
+          }}</el-col>
+          <el-col v-else-if="form.farm.poolToken.balance >= 0.000000000001" :span="16" style="font-weight: bold; text-align: right">{{
+            vueNumberFormat(form.farm.poolToken.balance, { precision: 12 })
+          }}</el-col>
+          <el-col v-else :span="16" style="font-weight: bold; text-align: right">{{
+            vueNumberFormat(form.farm.poolToken.balance, { precision: 18 })
           }}</el-col>
         </el-row>
       </div>

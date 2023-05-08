@@ -92,6 +92,7 @@
                     <el-col style="text-align: right" :span="5">
                       <price-format
                         prefix="$"
+                        :precision="5"
                         :value="item.lpPrice"
                         :usd-value="item.lpPriceUsd"
                       />

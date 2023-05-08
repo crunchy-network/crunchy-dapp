@@ -5,17 +5,29 @@ import queryDipdup from "../../utils/queryDipdup";
 import tzkt from "../../utils/tzkt";
 // import teztools from "../../utils/teztools";
 
+async function fetchAssetsBalWithRetry(pkh, commit) {
+  return homeWallet.fetchAssetsBal(pkh).then((res) => {
+    if (Array.isArray(res.assets) && res.assets.length > 0) {
+      commit("updateAssets", res);
+      return res;
+    } else {
+      console.log(
+        "fetchAssetsBal returned an empty array or not an array, retrying in 2 seconds..."
+      );
+      return new Promise((resolve) => setTimeout(resolve, 2000)).then(() =>
+        fetchAssetsBalWithRetry(pkh, commit)
+      );
+    }
+  });
+}
+
 export default {
   async fetchHomeWalletBalances({ rootState, commit }, pkh) {
     if (!pkh && !rootState.wallet.pkh) {
       // @todo
     } else {
       homeWallet.fetchNFts(pkh || rootState.wallet.pkh);
-      return homeWallet
-        .fetchAssetsBal(pkh || rootState.wallet.pkh)
-        .then((res) => {
-          commit("updateAssets", res);
-        });
+      return fetchAssetsBalWithRetry(pkh || rootState.wallet.pkh, commit);
     }
   },
 

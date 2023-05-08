@@ -39,6 +39,14 @@ const dateToSeconds = (date) => {
   return Math.floor(date.getTime() / 1000);
 };
 
+const isValidDexFee = (feeAmount, pair) => {
+  const decimalMover = Math.pow(10, pair.a.decimals);
+  const bigNumber = parseFloat(Math.floor(feeAmount * decimalMover));
+  const finalFee = bigNumber / decimalMover;
+  if (finalFee <= 0) return false;
+  return true;
+}
+
 module.exports = {
   percentToDecimal,
   secondsFromNow,
@@ -49,4 +57,5 @@ module.exports = {
   isTez,
   mockTezosNow,
   dateToSeconds,
+  isValidDexFee
 };

@@ -1,4 +1,8 @@
-const { convertToMuTez, secondsFromNow } = require("../utils.js");
+const {
+  convertToMuTez,
+  secondsFromNow,
+  isValidDexFee,
+} = require("../utils.js");
 const { addTokenApprovalOperators } = require("../TokenTypes");
 const { getAmmSwapOutput } = require("../SwapRates/amm");
 
@@ -25,6 +29,10 @@ const getSwapOutput = (input, pair) => {
   if (inputAfterFee < 0) {
     inputAfterFee = 0;
   }
+  const feeAmount = input - inputAfterFee;
+  if (!isValidDexFee(feeAmount, pair)) {
+    return 0;
+  }
   const result = getAmmSwapOutput(inputAfterFee, pair);
   return getOutput(result, pair.b);
 };
@@ -38,7 +46,7 @@ const buildDexOperation = async (dex, trade, walletAddress, tezos) => {
         _to: walletAddress,
         amountIn: input,
         amountOutMin: output,
-        deadline: `${secondsFromNow(300)}`,
+        deadline: `${secondsFromNow(1200)}`,
         tokenIn: {
           fa2_address: trade.a.tokenAddress,
           token_id: trade.a.contractType === "fa2" ? trade.a.tokenId : null,
