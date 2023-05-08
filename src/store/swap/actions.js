@@ -36,6 +36,170 @@ export default {
     const dexPools = await dexIndexer.getAllDexes();
     const quipuV3 = [
       {
+        "dex_address": "KT1RsTtKsNttsAytEt5fs8xLZBNtRieWAXBK",
+        "dex_type": "quipuswap_v3",
+        "params": [
+          {
+            "name": "fee_bps",
+            "value": "\"30\""
+          },
+          {
+            "name": "factory_address",
+            "value": "KT1JNNMMGyNNy36Zo6pcgRTMLUZyqRrttMZ4"
+          },
+          {
+            "name": "sqrt_price",
+            "value": "\"7.1163237632878342408595e+22\""
+          },
+          {
+            "name": "cur_tick_index",
+            "value": "\"-56651\""
+          },
+          {
+            "name": "cur_tick_witness",
+            "value": "\"-59880\""
+          },
+          {
+            "name": "liquidity",
+            "value": "\"85078\""
+          },
+          {
+            "name": "ticksKey",
+            "value": "380890"
+          },
+          {
+            "name": "last_cumulatives_buffer",
+            "value": "257"
+          }
+        ],
+        "pools": [
+          {
+            "pool_id": 0,
+            "reserves": "864233698",
+            "params": [
+              {
+                "name": "dev_fee_A",
+                "value": "1635165"
+              },
+              {
+                "name": "fee_growth_A",
+                "value": "6377715374877455086047601987552645607"
+              }
+            ],
+            "token_address": "KT1UpeXdK6AJbX58GJ92pLZVCucn2DR8Nu4b",
+            "token_id": 0,
+            "token": {
+              "decimals": 6,
+              "symbol": "wTEZ",
+              "token_type": "fa2"
+            }
+          },
+          {
+            "pool_id": 0,
+            "reserves": "1883910",
+            "params": [
+              {
+                "name": "dev_fee_B",
+                "value": "5380"
+              },
+              {
+                "name": "fee_growth_B",
+                "value": "43757829139087102250197810915206746"
+              }
+            ],
+            "token_address": "KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn",
+            "token_id": 0,
+            "token": {
+              "decimals": 8,
+              "symbol": "tzBTC",
+              "token_type": "fa1.2"
+            }
+          }
+        ]
+      },
+      {
+        "dex_address": "KT1DZZG2Neaq5FH6ARtwWrPDro1ZZiHkHRBA",
+        "dex_type": "quipuswap_v3",
+        "params": [
+          {
+            "name": "fee_bps",
+            "value": "\"30\""
+          },
+          {
+            "name": "factory_address",
+            "value": "KT1JNNMMGyNNy36Zo6pcgRTMLUZyqRrttMZ4"
+          },
+          {
+            "name": "sqrt_price",
+            "value": "\"1.250305795987518388616182e+24\""
+          },
+          {
+            "name": "cur_tick_index",
+            "value": "\"673\""
+          },
+          {
+            "name": "cur_tick_witness",
+            "value": "\"0\""
+          },
+          {
+            "name": "liquidity",
+            "value": "\"5743522948\""
+          },
+          {
+            "name": "ticksKey",
+            "value": "380869"
+          },
+          {
+            "name": "last_cumulatives_buffer",
+            "value": "1953"
+          }
+        ],
+        "pools": [
+          {
+            "pool_id": 0,
+            "reserves": "21763414721",
+            "params": [
+              {
+                "name": "dev_fee_A",
+                "value": "88236591"
+              },
+              {
+                "name": "fee_growth_A",
+                "value": "1093556011034505546425556900569972556"
+              }
+            ],
+            "token_address": "KT1XnTn74bUtxHfDtBmm2bGZAQfhPbvKWR8o",
+            "token_id": 0,
+            "token": {
+              "decimals": 6,
+              "symbol": "USDt",
+              "token_type": "fa2"
+            }
+          },
+          {
+            "pool_id": 0,
+            "reserves": "13496200772",
+            "params": [
+              {
+                "name": "dev_fee_B",
+                "value": "91350698"
+              },
+              {
+                "name": "fee_growth_B",
+                "value": "1040110450246037458724075997683807393"
+              }
+            ],
+            "token_address": "KT1UpeXdK6AJbX58GJ92pLZVCucn2DR8Nu4b",
+            "token_id": 0,
+            "token": {
+              "decimals": 6,
+              "symbol": "wTEZ",
+              "token_type": "fa2"
+            }
+          }
+        ]
+      },
+      {
         "dex_address": "KT1D5wP1BPNmWY61wbB7RNvkXp8EUkLv7NAe",
         "dex_type": "quipuswap_v3",
         "params": [
@@ -64,12 +228,12 @@ export default {
             "value": "\"0\""
           },
           {
-            "name": "last_cumulatives_buffer",
-            "value": "200"
+            "name": "ticksKey",
+            "value": "381510"
           },
           {
-            "name": "ticks",
-            "value": "{\"{\\\"1048575\\\":{\\\"next\\\":\\\"1048576\\\",\\\"prev\\\":\\\"-36900\\\",\\\"sqrt_price\\\":\\\"71107673757466966990985103421469892397199512717\\\",\\\"n_positions\\\":\\\"1\\\",\\\"liquidity_net\\\":\\\"0\\\",\\\"seconds_outside\\\":\\\"0\\\",\\\"fee_growth_outside\\\":{\\\"x\\\":\\\"0\\\",\\\"y\\\":\\\"0\\\"},\\\"tick_cumulative_outside\\\":\\\"0\\\",\\\"seconds_per_liquidity_outside\\\":\\\"0\\\"}}\",\"{\\\"-1048575\\\":{\\\"next\\\":\\\"-39660\\\",\\\"prev\\\":\\\"-1048576\\\",\\\"sqrt_price\\\":\\\"20\\\",\\\"n_positions\\\":\\\"1\\\",\\\"liquidity_net\\\":\\\"0\\\",\\\"seconds_outside\\\":\\\"0\\\",\\\"fee_growth_outside\\\":{\\\"x\\\":\\\"0\\\",\\\"y\\\":\\\"0\\\"},\\\"tick_cumulative_outside\\\":\\\"0\\\",\\\"seconds_per_liquidity_outside\\\":\\\"0\\\"}}\",\"{\\\"-39660\\\":{\\\"next\\\":\\\"-36900\\\",\\\"prev\\\":\\\"-1048575\\\",\\\"sqrt_price\\\":\\\"166415469851038780193038\\\",\\\"n_positions\\\":\\\"1\\\",\\\"liquidity_net\\\":\\\"42489294319\\\",\\\"seconds_outside\\\":\\\"1676039879\\\",\\\"fee_growth_outside\\\":{\\\"x\\\":\\\"0\\\",\\\"y\\\":\\\"0\\\"},\\\"tick_cumulative_outside\\\":\\\"-64085060813444\\\",\\\"seconds_per_liquidity_outside\\\":\\\"0\\\"}}\",\"{\\\"-36900\\\":{\\\"next\\\":\\\"1048575\\\",\\\"prev\\\":\\\"-39660\\\",\\\"sqrt_price\\\":\\\"191040890576382234308635\\\",\\\"n_positions\\\":\\\"1\\\",\\\"liquidity_net\\\":\\\"-42489294319\\\",\\\"seconds_outside\\\":\\\"1678837499\\\",\\\"fee_growth_outside\\\":{\\\"x\\\":\\\"906341119901685929858839052166021005\\\",\\\"y\\\":\\\"27756970918449065038362156359844550\\\"},\\\"tick_cumulative_outside\\\":\\\"-64190744878139\\\",\\\"seconds_per_liquidity_outside\\\":\\\"22405191015838011573034853849187067\\\"}}\"}"
+            "name": "last_cumulatives_buffer",
+            "value": "200"
           }
         ],
         "pools": [
