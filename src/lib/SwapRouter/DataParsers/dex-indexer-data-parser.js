@@ -282,19 +282,15 @@ const getModifiedTicks = async (ticksKey) => {
   const ticks = (await tzkt.getBigMapKeys(ticksKey)).data;
   return ticks.map((item) => ({ [item.key]: item.value }));
 };
+
 const buildQuipuV3Pairs = async (dex, inverted = false) => {
   const aSide = dex.pools[inverted ? 1 : 0];
   const bSide = dex.pools[inverted ? 0 : 1];
 
-  const ticks = getParamValue(dex.params, "ticks")
-    .replace(/[/\\]/g, "")
-    .replace(/^\{"/, "[")
-    .replace(/"\}$/, "]")
-    .replace(/",{"/g, ',{');
+  const ticksKey = getParamValue(dex.params, "ticksKey");
 
-  // const modifiedTicks = JSON.parse(ticks)
+  const ticks = await getModifiedTicks(ticksKey);
   console.log(ticks);
-  // const modifiedTicks = await getModifiedTicks(ticksKey);
 
   return {
     poolId: aSide.pool_id,
@@ -316,7 +312,7 @@ const buildQuipuV3Pairs = async (dex, inverted = false) => {
         ? getParamValue(bSide.params, "fee_growth_A")
         : getParamValue(aSide.params, "fee_growth_B"),
     },
-    ticks: modifiedTicks,
+    ticks: ticks,
     lastCumulativesBuffer: getParamValue(dex.params, "last_cumulatives_buffer"),
     curTickIndex: getParamValue(dex.params, "cur_tick_index").replace(
       /^"(.*)"$/,
@@ -459,13 +455,13 @@ const buildSwapPairs = async (dexes) => {
     }
 
     switch (dex.dex_type) {
-      case "quipuswap":
-      case "vortex":
-      case "sirius":
-      case "plenty":
-        pairs.push(buildSimplePair(dex, "tez"));
-        pairs.push(buildSimplePair(dex, "tez", true));
-        break;
+      // case "quipuswap":
+      // case "vortex":
+      // case "sirius":
+      // case "plenty":
+      //   pairs.push(buildSimplePair(dex, "tez"));
+      //   pairs.push(buildSimplePair(dex, "tez", true));
+      //   break;
 
       // case "spicy":
       //   pairs.push({
