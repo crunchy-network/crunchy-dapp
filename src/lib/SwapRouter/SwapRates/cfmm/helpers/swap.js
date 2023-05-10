@@ -16,14 +16,14 @@ class TooBigPriceChangeErr extends Error {}
 const HUNDRED_PERCENT_BPS = 10000;
 
 function floorLogHalfBps(x, y, outOfBoundsError) {
-  const tenx = new BigNumber(x).times(10);
+  // const tenx = new BigNumber(x).times(10);
 
-  if (
-    tenx.isLessThan(new BigNumber(y).times(7)) ||
-    tenx.isGreaterThan(new BigNumber(y).times(15))
-  ) {
-    throw outOfBoundsError;
-  }
+  // if (
+  //   tenx.isLessThan(new BigNumber(y).times(7)) ||
+  //   tenx.isGreaterThan(new BigNumber(y).times(15))
+  // ) {
+  //   throw outOfBoundsError;
+  // }
 
   const xPlusY = new BigNumber(x).plus(y);
   const num = new BigNumber(x).minus(y).times(60003).times(xPlusY);
@@ -84,26 +84,27 @@ function xToYRec(p) {
   }
 
   // TODO: change fees logic after new Quipuswap V3 contracts are deployed
+
   let totalFee = calcSwapFee(p.s.constants.feeBps, p.dx);
-  console.log(totalFee)
-  console.log(p,p.s.sqrtPrice,
-    p.s.liquidity,
-    p.dx.minus(totalFee))
+
   let sqrtPriceNew = calcNewPriceX(
     p.s.sqrtPrice,
     p.s.liquidity,
     p.dx.minus(totalFee)
   );
+
   const curTickIndexNew = calcNewCurTickIndex(
     p.s.curTickIndex,
     p.s.sqrtPrice,
     sqrtPriceNew
   );
+
   if (curTickIndexNew.gte(p.s.curTickWitness)) {
     const dy = shiftRight(
       p.s.sqrtPrice.minus(sqrtPriceNew).multipliedBy(p.s.liquidity),
       new BigNumber(80)
     ).integerValue(BigNumber.ROUND_FLOOR);
+
     const newStorage = {
       ...p.s,
       sqrtPrice: sqrtPriceNew,
@@ -117,8 +118,9 @@ function xToYRec(p) {
     };
   }
   const tick = p.s.ticks[p.s.curTickWitness.toFixed()];
+
   const loNew = tick.prev;
-  sqrtPriceNew = new quipuswapV3Types.x80n(tick.sqrtPrice.minus(1));
+  sqrtPriceNew = new quipuswapV3Types.x80n(BigNumber(tick.sqrtPrice).minus(1));
   const dy = shiftRight(
     p.s.sqrtPrice.minus(sqrtPriceNew).multipliedBy(p.s.liquidity),
     new BigNumber(80)
@@ -132,7 +134,10 @@ function xToYRec(p) {
     .integerValue(BigNumber.ROUND_CEIL);
   totalFee = dxConsumed.minus(dxForDy);
   const sums = p.s.lastCumulativesBuffer;
-  const tickCumulativeOutsideNew = sums.tick.sum.minus(
+  if (!sums) {
+    return p;
+  }
+  const tickCumulativeOutsideNew = BigNumber(sums.tick.sum).minus(
     tick.tickCumulativeOutside
   );
   const tickNew = {
@@ -178,6 +183,7 @@ function yToXRec(p) {
   let totalFee = calcSwapFee(p.s.constants.feeBps, p.dy);
   let dyMinusFee = p.dy.minus(totalFee);
   let sqrtPriceNew = calcNewPriceY(p.s.sqrtPrice, p.s.liquidity, dyMinusFee);
+  
   const curTickIndexNew = calcNewCurTickIndex(
     p.s.curTickIndex,
     p.s.sqrtPrice,
@@ -188,10 +194,7 @@ function yToXRec(p) {
   if (curTickIndexNew.lt(nextTickIndex)) {
     const dx = p.s.liquidity
       .multipliedBy(
-        shiftLeft(
-          sqrtPriceNew.minus(p.s.sqrtPrice),
-          new BigNumber(80)
-        )
+        shiftLeft(sqrtPriceNew.minus(p.s.sqrtPrice), new BigNumber(80))
       )
       .dividedBy(sqrtPriceNew.multipliedBy(p.s.sqrtPrice))
       .integerValue(BigNumber.ROUND_FLOOR);
@@ -210,10 +213,7 @@ function yToXRec(p) {
   const dx = new Nat(
     p.s.liquidity
       .multipliedBy(
-        shiftLeft(
-          sqrtPriceNew.minus(p.s.sqrtPrice),
-          new BigNumber(80)
-        )
+        shiftLeft(sqrtPriceNew.minus(p.s.sqrtPrice), new BigNumber(80))
       )
       .dividedBy(sqrtPriceNew.multipliedBy(p.s.sqrtPrice))
       .integerValue(BigNumber.ROUND_FLOOR)
@@ -231,8 +231,11 @@ function yToXRec(p) {
     .dividedBy(oneMinusFeeBps(p.s.constants.feeBps))
     .integerValue(BigNumber.ROUND_CEIL);
   totalFee = dyConsumed.minus(dyForDx);
-  const sums = p.s.lastCumulative;
-  const tickCumulativeOutsideNew = sums.tick.sum.minus(
+  const sums = p.s.lastCumulativesBuffer;
+  if (!sums) {
+    return p;
+  }
+  const tickCumulativeOutsideNew = BigNumber(sums.tick.sum).minus(
     nextTick.tickCumulativeOutside
   );
   const nextTickNew = {

@@ -675,6 +675,7 @@ export function calcNewPriceX(
   liquidity,
   dx,
 ) {
+
   const shiftedL80 = shiftLeft(
     liquidity.multipliedBy(sqrtPriceOld),
     new BigNumber(80),
@@ -717,7 +718,7 @@ export function calcNewPriceY(sqrtPriceOld, liquidity, dy) {
   const _280 = new BigNumber(2).pow(80);
   return new Nat(
     _280
-      .multipliedBy(dy.toBignumber())
+      .multipliedBy(BigNumber(dy))
       .dividedBy(liquidity)
       .plus(sqrtPriceOld)
       .integerValue(BigNumber.ROUND_FLOOR),

@@ -278,9 +278,33 @@ const buildQuipuV2Pairs = (dex) => {
   return pairs;
 };
 
+function convertToCamelCase(obj) {
+  const newObj = {};
+  for (const key in obj) {
+    const newKey = key.charAt(0).toLowerCase() + key.slice(1).replace(/_([a-z])/g, (m, p1) => p1.toUpperCase());
+    newObj[newKey] = typeof obj[key] === "object" ? convertToCamelCase(obj[key]) : obj[key];
+  }
+  return newObj;
+}
+
 const getModifiedTicks = async (ticksKey) => {
   const ticks = (await tzkt.getBigMapKeys(ticksKey)).data;
-  return ticks.map((item) => ({ [item.key]: item.value }));
+  const ticksObj = ticks.reduce((acc, curr) => {
+    // Change to pascalCase
+    const modifiedValue = convertToCamelCase(curr.value);
+    acc[curr.key] = modifiedValue;
+    return acc;
+  }, {});
+  return ticksObj;
+};
+
+const getModifiedBuffer = async (bufferKey) => {
+  const buffer = (await tzkt.getBigMapKeys(bufferKey)).data;
+  const bufferObj = buffer.reduce((acc, curr) => {
+    acc[curr.key] = curr.value;
+    return acc;
+  }, {});
+  return bufferObj;
 };
 
 const buildQuipuV3Pairs = async (dex, inverted = false) => {
@@ -288,9 +312,10 @@ const buildQuipuV3Pairs = async (dex, inverted = false) => {
   const bSide = dex.pools[inverted ? 0 : 1];
 
   const ticksKey = getParamValue(dex.params, "ticksKey");
+  const bufferKey = getParamValue(dex.params, "bufferKey");
 
   const ticks = await getModifiedTicks(ticksKey);
-  console.log(ticks);
+  const buffer = await getModifiedBuffer(bufferKey);
 
   return {
     poolId: aSide.pool_id,
@@ -313,6 +338,7 @@ const buildQuipuV3Pairs = async (dex, inverted = false) => {
         : getParamValue(aSide.params, "fee_growth_B"),
     },
     ticks: ticks,
+    cumulativesBuffer: buffer,
     lastCumulativesBuffer: getParamValue(dex.params, "last_cumulatives_buffer"),
     curTickIndex: getParamValue(dex.params, "cur_tick_index").replace(
       /^"(.*)"$/,
@@ -455,87 +481,86 @@ const buildSwapPairs = async (dexes) => {
     }
 
     switch (dex.dex_type) {
-      // case "quipuswap":
-      // case "vortex":
-      // case "sirius":
-      // case "plenty":
-      //   pairs.push(buildSimplePair(dex, "tez"));
-      //   pairs.push(buildSimplePair(dex, "tez", true));
-      //   break;
+      case "quipuswap":
+      case "vortex":
+      case "sirius":
+      case "plenty":
+        pairs.push(buildSimplePair(dex, "tez"));
+        pairs.push(buildSimplePair(dex, "tez", true));
+        break;
 
-      // case "spicy":
-      //   pairs.push({
-      //     ...buildSimplePair(dex, "wtz"),
-      //     dexAddress: config.dexes.spicy.dexRouter,
-      //   });
-      //   pairs.push({
-      //     ...buildSimplePair(dex, "wtz", true),
-      //     dexAddress: config.dexes.spicy.dexRouter,
-      //   });
-      //   break;
+      case "spicy":
+        pairs.push({
+          ...buildSimplePair(dex, "wtz"),
+          dexAddress: config.dexes.spicy.dexRouter,
+        });
+        pairs.push({
+          ...buildSimplePair(dex, "wtz", true),
+          dexAddress: config.dexes.spicy.dexRouter,
+        });
+        break;
 
-      // case "youves":
-      //   pairs.push(buildYouvesPair(dex));
-      //   pairs.push(buildYouvesPair(dex, true));
-      //   break;
+      case "youves":
+        pairs.push(buildYouvesPair(dex));
+        pairs.push(buildYouvesPair(dex, true));
+        break;
 
-      // case "plenty_stable":
-      //   pairs.push(buildPlentyStablePair(dex));
-      //   pairs.push(buildPlentyStablePair(dex, true));
-      //   break;
+      case "plenty_stable":
+        pairs.push(buildPlentyStablePair(dex));
+        pairs.push(buildPlentyStablePair(dex, true));
+        break;
 
-      // case "flame":
-      //   pairs = pairs.concat(buildFlamePairs(dex));
-      //   break;
+      case "flame":
+        pairs = pairs.concat(buildFlamePairs(dex));
+        break;
 
-      // case "quipuswap_token2token":
-      //   pairs = pairs.concat(buildQuipuToken2TokenPairs(dex));
-      //   break;
+      case "quipuswap_token2token":
+        pairs = pairs.concat(buildQuipuToken2TokenPairs(dex));
+        break;
 
-      // case "quipuswap_v2":
-      //   pairs = pairs.concat(buildQuipuV2Pairs(dex));
-      //   break;
+      case "quipuswap_v2":
+        pairs = pairs.concat(buildQuipuV2Pairs(dex));
+        break;
 
       case "quipuswap_v3":
         pairs.push(await buildQuipuV3Pairs(dex));
         pairs.push(await buildQuipuV3Pairs(dex, true));
-        console.log(pairs);
         break;
 
-      // case "quipuswap_stable":
-      //   pairs = pairs.concat(buildQuipuStablePairs(dex));
-      //   break;
+      case "quipuswap_stable":
+        pairs = pairs.concat(buildQuipuStablePairs(dex));
+        break;
 
-      // case "plenty_ctez": {
-      //   const ctezParams = {
-      //     target: BigNumber(
-      //       dex.params.find((p) => p.name === "target").value
-      //     ).toNumber(),
-      //   };
-      //   pairs.push({ ...buildSimplePair(dex, "tez"), ...ctezParams });
-      //   pairs.push({ ...buildSimplePair(dex, "tez", true), ...ctezParams });
-      //   break;
-      // }
+      case "plenty_ctez": {
+        const ctezParams = {
+          target: BigNumber(
+            dex.params.find((p) => p.name === "target").value
+          ).toNumber(),
+        };
+        pairs.push({ ...buildSimplePair(dex, "tez"), ...ctezParams });
+        pairs.push({ ...buildSimplePair(dex, "tez", true), ...ctezParams });
+        break;
+      }
 
-      // case "wtz": {
-      //   const wtzParams = {
-      //     swapRatio: BigNumber(
-      //       dex.params.find((p) => p.name === "swap_ratio").value
-      //     ).toNumber(),
-      //     swapRatioPrecision: BigNumber(
-      //       dex.params.find((p) => p.name === "swap_ratio_precision").value
-      //     ).toNumber(),
-      //   };
-      //   pairs.push({
-      //     ...buildSimplePair(dex, "tez"),
-      //     ...wtzParams,
-      //   });
-      //   pairs.push({
-      //     ...buildSimplePair(dex, "tez", true),
-      //     ...wtzParams,
-      //   });
-      //   break;
-      // }
+      case "wtz": {
+        const wtzParams = {
+          swapRatio: BigNumber(
+            dex.params.find((p) => p.name === "swap_ratio").value
+          ).toNumber(),
+          swapRatioPrecision: BigNumber(
+            dex.params.find((p) => p.name === "swap_ratio_precision").value
+          ).toNumber(),
+        };
+        pairs.push({
+          ...buildSimplePair(dex, "tez"),
+          ...wtzParams,
+        });
+        pairs.push({
+          ...buildSimplePair(dex, "tez", true),
+          ...wtzParams,
+        });
+        break;
+      }
     }
   }
 
