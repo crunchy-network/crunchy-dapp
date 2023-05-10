@@ -541,12 +541,13 @@ export default {
             const price = Number(param.seriesPrices.get(areaSeries)).toFixed(
               this.handlePrecision(param.seriesPrices.get(areaSeries)).precision
             );
+            const precision = this.handlePrecision(price).precision
             toolTip.innerHTML = `<div style="color:var(--color-primary)">${
               this.tokenTracked.symbol || this.tokenTracked.name
             }.</div><div style="font-size: 24px; margin: 0px 0px; color: ${"black"}">
             ${this.getShowUsd ? "$" : ""}${
-              this.formatNumShorthand(price).value
-            }${this.formatNumShorthand(price).suffix}${
+              this.formatNumShorthand(price, precision).value
+            }${this.formatNumShorthand(price, precision).suffix}${
               !this.getShowUsd ? "ꜩ" : ""
             }
             </div><div style="color: ${"black"}">
@@ -623,8 +624,8 @@ export default {
       return { precision, minMove };
     },
 
-    formatNumShorthand(val) {
-      return numberFormat.shorthand(val);
+    formatNumShorthand(val, precision) {
+      return numberFormat.shorthand(val, precision);
     },
   },
 };
