@@ -15,7 +15,7 @@ const makeFutureRequest = async (uri, params = {}) => {
 
 export default {
   async getBigMapKeys(id) {
-    return makeRequest(`/v1/bigmaps/${id}/keys`);
+    return makeRequest(`/v1/bigmaps/${id}/keys?select=key,value&active=true`);
   },
 
   async getContractBigMap(address, name, params = {}) {

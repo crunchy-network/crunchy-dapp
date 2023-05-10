@@ -1,57 +1,36 @@
 const { default: BigNumber } = require("bignumber.js");
 const { addTokenApprovalOperators } = require("../TokenTypes");
-const {
-  secondsFromNow,
-  convertToMuTez,
-  percentToDecimal,
-} = require("../utils.js");
-const { getAmmSwapOutput } = require("../SwapRates/amm");
+const { secondsFromNow, convertToMuTez } = require("../utils.js");
 const {
   calculateXToY,
   calculateYToX,
 } = require("../SwapRates/cfmm/helpers/swap");
 
-const FEE_DENOMINATOR = new BigNumber(10000);
-const DEX_FEE = 0.3;
-
-function getFees(fees) {
-  const { feeBps } = fees;
-  return feeBps;
-}
-
-function calcFees(pair) {
-  return getFees(pair.fee).div(FEE_DENOMINATOR);
-}
-
-const roundOutput = (output, pair) => {
-  const decimalMover = Math.pow(10, pair.b.decimals);
-  const bigNumber = parseFloat(Math.floor(output * decimalMover));
-  return bigNumber / decimalMover;
-};
-
-const getSwapOutput = async (input, pair) => {
+const getSwapOutput = (input, pair) => {
   const p = {
     s: {
       ticks: pair.ticks,
-      lastCumulativesBuffer: pair.lastCumulativesBuffer,
-      curTickIndex: pair.curTickIndex,
-      curTickWitness: pair.curTickWitness,
+      lastCumulativesBuffer: pair.cumulativesBuffer[pair.lastCumulativesBuffer],
+      curTickIndex: BigNumber(pair.curTickIndex),
+      curTickWitness: BigNumber(pair.curTickWitness),
       sqrtPrice: BigNumber(pair.sqrtPrice),
       liquidity: BigNumber(pair.liquidity),
       constants: {
         feeBps: BigNumber(pair.fee.feeBps),
         factoryAddress: pair.factoryAddress,
-      }
+      },
     },
-    dx: BigNumber(input),
-  }
-  // const inputAfterFee = input * (1 - calcFees(pair));
-  // const inputAfterFee = input * percentToDecimal(DEX_FEE);
-  // const output = getAmmSwapOutput(inputAfterFee, pair);
-  // const toRet = roundOutput(output, pair);
-  // return toRet;
-  const output = calculateXToY(p.s, BigNumber(input));
-  return output;
+  };
+
+  const decimalMoverA = Math.pow(10, pair.a.decimals);
+  const decimalMoverB = Math.pow(10, pair.b.decimals);
+  const bigNumber = parseFloat(Math.floor(input * decimalMoverA));
+  const output =
+    pair.direction === "Direct"
+      ? calculateXToY(p.s, BigNumber(bigNumber)).output
+      : calculateYToX(p.s, BigNumber(bigNumber)).output;
+  const bigNumberOutput = parseFloat(output / decimalMoverB);
+  return bigNumberOutput;
 };
 
 const directTransaction = (dex, trade, walletAddres, input, output) => {
