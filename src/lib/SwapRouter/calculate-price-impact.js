@@ -26,6 +26,11 @@ const simulateNewTradeOutput = (estimatedPools, inputAmount = 1) => {
     return { inputAmount: 1, outputAmount: 0 };
   }
   const { outputAmount } = getOutputOfTrade(inputAmount, estimatedPools);
+  if (outputAmount === 0) {
+    const input = 0.0001;
+    const { outputAmount } = getOutputOfTrade(input, estimatedPools);
+    return { input, outputAmount }
+  }
   return { inputAmount, outputAmount };
 };
 
@@ -62,7 +67,9 @@ const calculatePriceImpact = (trade) => {
       simulatedOutput = simulateNewTradeOutput(estimatedPools);
       break;
   }
-
+  console.log([...trade.trades])
+  console.log(estimatedPools)
+  console.log(simulatedOutput, tradeOne)
   return (
     (1 - simulatedOutput.outputAmount / tradeOne.outputAmount) *
     100
