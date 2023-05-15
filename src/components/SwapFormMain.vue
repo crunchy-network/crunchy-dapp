@@ -94,10 +94,7 @@
           :disabled="buttonDisabled"
           type="primary"
           :style="{
-            border:
-              isLoading || formSubmitting || isGettingBalance
-                ? 'none'
-                : '2px solid #409EFF',
+            border:'none',
             'border-radius': '20px',
             width: '340px',
             'max-width': '100%',
