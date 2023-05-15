@@ -1,9 +1,5 @@
 <template>
-  <el-card
-    
-    class="swap-form-main-box-card"
-    shadow="always"
-  >
+  <el-card class="swap-form-main-box-card" shadow="always">
     <span class="swap-header" style="color: var(--primary-text)"> SWAP </span>
     <div class="from-section">
       <span> From</span>
@@ -94,19 +90,26 @@
     <div style="width: 100%; margin-top: 16px; text-align: center">
       <div :style="`${!getPkh ? 'display: none;' : ''}`">
         <el-button
-          v-loading="isLoading || formSubmitting"
+          v-loading="isLoading || formSubmitting || isGettingBalance"
           :disabled="buttonDisabled"
           type="primary"
-          style="
-            border-radius: 20px;
-            width: 340px;
-            max-width: 100%;
-            margin: auto;
-            font-weight: 700;
-          "
+          :style="{
+            border: isLoading || formSubmitting ? 'none' : '2px solid #409EFF',
+            'border-radius': '20px',
+            width: '340px',
+            'max-width': '100%',
+            margin: 'auto',
+            'font-weight': '700',
+          }"
           @click="onSubmit"
         >
-          SWAP</el-button
+          {{
+            formSubmitting
+              ? "SWAPPING"
+              : isGettingBalance
+              ? "LOADING BALANCE"
+              : "SWAP"
+          }}</el-button
         >
       </div>
       <div :style="`${getPkh ? 'display: none;' : ''}`">
@@ -141,7 +144,7 @@ import { buildRoutingFeeOperation } from "../utils/routing-fee";
 import { buildOperationParams } from "../lib/SwapRouter";
 import { Tezos } from "../utils/tezos";
 import * as signalR from "@microsoft/signalr";
-import ConnectButton from './ConnectButton.vue';
+import ConnectButton from "./ConnectButton.vue";
 
 export default {
   name: "SwapFormMain",
@@ -179,6 +182,9 @@ export default {
       if (this.getSwapPairs.length < 1) {
         return true;
       }
+      return false;
+    },
+    isGettingBalance() {
       if (this.homeWallet.loading) {
         return true;
       }
