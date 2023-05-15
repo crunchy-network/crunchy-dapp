@@ -1,6 +1,6 @@
 <template>
   <el-card
-    v-loading="isLoading || formSubmitting"
+    
     class="swap-form-main-box-card"
     shadow="always"
   >
@@ -94,6 +94,7 @@
     <div style="width: 100%; margin-top: 16px; text-align: center">
       <div :style="`${!getPkh ? 'display: none;' : ''}`">
         <el-button
+          v-loading="isLoading || formSubmitting"
           :disabled="buttonDisabled"
           type="primary"
           style="
