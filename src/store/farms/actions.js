@@ -2,6 +2,7 @@ import _ from "lodash";
 import tzkt from "./../../utils/tzkt";
 import teztools from "./../../utils/teztools";
 import tokenTracker from "./../../utils/token-tracker";
+import dexIndexer from "./../../utils/dex-indexer";
 import ipfs from "./../../utils/ipfs";
 import farmUtils from "./../../utils/farm";
 import {
@@ -16,6 +17,12 @@ import { BigNumber } from "bignumber.js";
 let updateXtzUsdVwapPromise;
 let updateCurrentPricesPromise;
 let updateFarmStoragePromise;
+
+function snakeToCamel(snakeCase) {
+  return snakeCase.replace(/(_\w)/g, function (match) {
+    return match[1].toUpperCase();
+  });
+}
 
 const tokenMetadataCache = {};
 const getFarmTokenMetadata = async (address, tokenId) => {
@@ -36,6 +43,55 @@ const getFarmTokenMetadata = async (address, tokenId) => {
   return tokenMetadataCache[cacheKey];
 };
 
+const modifyDexIndexerFeed = (feed) => {
+  for (let i = 0; i < feed.length; i++) {
+    const element = feed[i];
+    const keys = Object.keys(element);
+
+    for (let j = 0; j < keys.length; j++) {
+      // convert snake case to camel case
+      const snakeCase = keys[j];
+      const camelCase = snakeToCamel(snakeCase);
+
+      if (snakeCase !== camelCase) {
+        element[camelCase] = element[snakeCase];
+        delete element[snakeCase];
+      }
+
+      if (snakeCase === "pools") {
+        // add pool address, tez supply and quipu token supply
+        const dex = element?.pools[0]?.dex ? element.pools[0].dex : [];
+        const pool = dex?.pools ? dex.pools : [];
+        let qptTokenSupply = null;
+
+        // Find qptTokenSupply in params array
+        // for (let i = 0; i < dex?.params.length; i++) {
+        //   if (dex?.params[i].name === "qptTokenSupply") {
+        //     qptTokenSupply = dex.params[i].value;
+        //     break;
+        //   }
+        // }
+
+        element.address = dex?.dex_address;
+        element.tezPool =
+          pool[0]?.token_address === "tez"
+            ? Number.parseInt(pool[0]?.reserves) /
+              Math.pow(10, pool[0]?.token?.decimals)
+            : Number.parseInt(pool[1]?.reserves) /
+              Math.pow(10, pool[1]?.token?.decimals);
+        // element.qptTokenSupply = qptTokenSupply;
+        element.qptTokenSupply =
+          pool[0]?.token_address !== "tez"
+            ? Number.parseInt(pool[0]?.reserves) /
+              Math.pow(10, pool[0]?.token?.decimals)
+            : Number.parseInt(pool[1]?.reserves) /
+              Math.pow(10, pool[1]?.token?.decimals);
+      }
+    }
+  }
+  console.log(feed);
+  return feed;
+};
 export default {
   async _updateXtzUsdVwap({ commit, dispatch }) {
     return tzkt.getXtzUsdPrice().then((price) => {
@@ -53,7 +109,7 @@ export default {
     return updateXtzUsdVwapPromise;
   },
 
-  async _updateCurrentPrices({ commit, dispatch }) {
+  async _updateCurrentPrices({ commit, rootState, dispatch }) {
     const usdValue = await tzkt.getXtzUsdPrice();
     const tez = {
       asset: "XTZ",
@@ -70,15 +126,21 @@ export default {
       for (const token of Object.values(feed)) {
         currentPrices[token.id] = token.currentPrice;
       }
-
       commit("updateCurrentPrices", currentPrices);
       setTimeout(() => {
         updateCurrentPricesPromise = dispatch("_updateCurrentPrices");
       }, 60 * 1000);
-    })
-
-    return teztools.getPricefeed().then((feed) => {
-      commit("updatePriceFeed", [tez, ...feed.contracts]);
+    });
+    teztools.getPricefeed().then((feed) => {
+      // commit("updatePriceFeed", [tez, ...feed.contracts]);
+    });
+    dexIndexer.getAllTokenPools().then((feed) => {
+      const modifiedFeed = modifyDexIndexerFeed(feed);
+      // commit("updatePriceFeed", [tez, ...modifiedFeed]);
+    });
+    return dexIndexer.getAllTokenPools().then((feed) => {
+      const modifiedFeed = modifyDexIndexerFeed(feed);
+      commit("updatePriceFeed", [tez, ...modifiedFeed]);
     });
   },
 
@@ -228,7 +290,6 @@ export default {
         f.badges = farmUtils.getBadges(f);
         farms[x.key] = f;
       }
-
       commit("updateFarmsData", farms);
       commit("updateFarmsLoading", false);
 
@@ -249,7 +310,8 @@ export default {
         farm.poolToken,
         state.priceFeed
       );
-
+      // console.log(poolTokenMeta,farm.poolToken,
+      //   state.priceFeed )
       if (poolTokenMeta) {
         const isQuipuLp = poolTokenMeta.address === farm.poolToken.address;
 
@@ -676,7 +738,7 @@ export default {
         }
       } else if (farm.poolToken.isSpicyLp) {
         if (!rootState.wtz.totalTvlTez) {
-          await dispatch('loadWtzData');
+          await dispatch("loadWtzData");
         }
 
         const xtzPerLp = BigNumber(farm.poolToken.token1Pool)
@@ -685,7 +747,7 @@ export default {
           .div(rootState.wtz.swapRatio)
           .times(1 - 0.001)
           .div(farm.poolToken.totalSupply)
-          .toNumber()
+          .toNumber();
 
         tvlTez = BigNumber(farmStorage.poolBalance)
           .times(xtzPerLp)
@@ -728,6 +790,7 @@ export default {
             `${farm.rewardToken.address}_${farm.rewardToken.tokenId}`
           ];
         apr = (annualRewardTez / tvlTez) * 100;
+        console.log(apr);
       }
 
       commit(
@@ -844,7 +907,7 @@ export default {
         }
       } else if (farm.poolToken.isSpicyLp) {
         if (!rootState.wtz.totalTvlTez) {
-          await dispatch('loadWtzData');
+          await dispatch("loadWtzData");
         }
 
         const xtzPerLp = BigNumber(farm.poolToken.token1Pool)
@@ -853,7 +916,7 @@ export default {
           .div(rootState.wtz.swapRatio)
           .times(1 - 0.001)
           .div(farm.poolToken.totalSupply)
-          .toNumber()
+          .toNumber();
 
         tvlTez = BigNumber(farmStorage.poolBalance)
           .times(xtzPerLp)
