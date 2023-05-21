@@ -126,13 +126,7 @@ export default {
         updateCurrentPricesPromise = dispatch("_updateCurrentPrices");
       }, 60 * 1000);
     });
-    teztools.getPricefeed().then((feed) => {
-      // commit("updatePriceFeed", [tez, ...feed.contracts]);
-    });
-    dexIndexer.getAllTokenPools().then((feed) => {
-      const modifiedFeed = modifyDexIndexerFeed(feed);
-      // commit("updatePriceFeed", [tez, ...modifiedFeed]);
-    });
+    
     return dexIndexer.getAllTokenPools().then((feed) => {
       const modifiedFeed = modifyDexIndexerFeed(feed);
       commit("updatePriceFeed", [tez, ...modifiedFeed]);
