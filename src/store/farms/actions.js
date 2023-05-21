@@ -62,15 +62,17 @@ const modifyDexIndexerFeed = (feed) => {
         // add pool address, tez supply and quipu token supply
         const dex = element?.pools[0]?.dex ? element.pools[0].dex : [];
         const pool = dex?.pools ? dex.pools : [];
-        let qptTokenSupply = null;
-
+        let qptTokenSupply = 0;
+        console.log(dex);
         // Find qptTokenSupply in params array
-        // for (let i = 0; i < dex?.params.length; i++) {
-        //   if (dex?.params[i].name === "qptTokenSupply") {
-        //     qptTokenSupply = dex.params[i].value;
-        //     break;
-        //   }
-        // }
+        if (Array.isArray(dex) && dex.length > 0) {
+          for (let i = 0; i < dex?.params.length; i++) {
+            if (dex?.params[i].name === "qptTokenSupply") {
+              qptTokenSupply = dex.params[i].value;
+              break;
+            }
+          }
+        }
 
         element.address = dex?.dex_address;
         element.tezPool =
@@ -79,13 +81,7 @@ const modifyDexIndexerFeed = (feed) => {
               Math.pow(10, pool[0]?.token?.decimals)
             : Number.parseInt(pool[1]?.reserves) /
               Math.pow(10, pool[1]?.token?.decimals);
-        // element.qptTokenSupply = qptTokenSupply;
-        element.qptTokenSupply =
-          pool[0]?.token_address !== "tez"
-            ? Number.parseInt(pool[0]?.reserves) /
-              Math.pow(10, pool[0]?.token?.decimals)
-            : Number.parseInt(pool[1]?.reserves) /
-              Math.pow(10, pool[1]?.token?.decimals);
+        element.qptTokenSupply = qptTokenSupply;
       }
     }
   }
