@@ -63,9 +63,8 @@ const modifyDexIndexerFeed = (feed) => {
         const dex = element?.pools[0]?.dex ? element.pools[0].dex : [];
         const pool = dex?.pools ? dex.pools : [];
         let qptTokenSupply = 0;
-        console.log(dex);
         // Find qptTokenSupply in params array
-        if (Array.isArray(dex) && dex.length > 0) {
+        if (Array.isArray(dex.params) && dex.params.length > 0) {
           for (let i = 0; i < dex?.params.length; i++) {
             if (dex?.params[i].name === "qptTokenSupply") {
               qptTokenSupply = dex.params[i].value;
