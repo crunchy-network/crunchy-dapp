@@ -80,11 +80,11 @@ const modifyDexIndexerFeed = (feed) => {
               Math.pow(10, pool[0]?.token?.decimals)
             : Number.parseInt(pool[1]?.reserves) /
               Math.pow(10, pool[1]?.token?.decimals);
-        element.qptTokenSupply = qptTokenSupply;
+        element.qptTokenSupply =
+          Number.parseInt(qptTokenSupply) / Math.pow(10, 6);
       }
     }
   }
-  console.log(feed);
   return feed;
 };
 export default {
@@ -126,7 +126,7 @@ export default {
         updateCurrentPricesPromise = dispatch("_updateCurrentPrices");
       }, 60 * 1000);
     });
-    
+
     return dexIndexer.getAllTokenPools().then((feed) => {
       const modifiedFeed = modifyDexIndexerFeed(feed);
       commit("updatePriceFeed", [tez, ...modifiedFeed]);
@@ -299,8 +299,7 @@ export default {
         farm.poolToken,
         state.priceFeed
       );
-      // console.log(poolTokenMeta,farm.poolToken,
-      //   state.priceFeed )
+
       if (poolTokenMeta) {
         const isQuipuLp = poolTokenMeta.address === farm.poolToken.address;
 
