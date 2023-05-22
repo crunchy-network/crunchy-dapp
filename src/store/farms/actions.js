@@ -779,7 +779,6 @@ export default {
             `${farm.rewardToken.address}_${farm.rewardToken.tokenId}`
           ];
         apr = (annualRewardTez / tvlTez) * 100;
-        console.log(apr);
       }
 
       commit(
