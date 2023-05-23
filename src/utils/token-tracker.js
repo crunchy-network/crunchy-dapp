@@ -1219,16 +1219,16 @@ export default {
             quoteSymbol: quoteSymbol,
             basePrice: baseToken[0]?.price
               ? baseToken[0]?.price
-              : baseToken[0]?.tokenDayData[0].last_price,
+              : baseToken[0]?.tokenDayData[0]?.last_price,
             quotePrice: quoteToken[0]?.price
               ? quoteToken[0]?.price
-              : quoteToken[0]?.tokenDayData[0].last_price,
+              : quoteToken[0]?.tokenDayData[0]?.last_price,
             basePriceUsd: baseToken[0]?.derivedusd
               ? baseToken[0]?.derivedusd
-              : baseToken[0]?.tokenDayData[0].last_price,
+              : baseToken[0]?.tokenDayData[0]?.last_price,
             quotePriceUsd: quoteToken[0]?.derivedusd
               ? quoteToken[0]?.derivedusd
-              : quoteToken[0]?.tokenDayData[0].last_price,
+              : quoteToken[0]?.tokenDayData[0]?.last_price,
             tokenTvl: obj.reservextz,
             tokenTvlUsd: obj.reserveusd,
           };
@@ -1341,7 +1341,7 @@ export default {
           if (tokenOnSpicy !== undefined) {
             tokenQuotesTotal.spicyClose = tokenOnSpicy?.price
               ? tokenOnSpicy?.price
-              : tokenOnSpicy?.tokenDayData[0].last_price;
+              : tokenOnSpicy?.tokenDayData[0]?.last_price;
             tokenQuotesTotal.spicyTvl = tokenOnSpicy.totalliquidityxtz;
           } else {
             tokenQuotesTotal.spicyClose = 0;
