@@ -7,6 +7,15 @@ const {
 } = require("../SwapRates/cfmm/helpers/swap");
 
 const getSwapOutput = (input, pair) => {
+  const outdatedDex = [
+    "KT1LCGKA33zGk8GDQbtonGzFMzqx8QPbeZbr",
+    "KT1CZj28Xc3Rtg1AsRfsagZyxcLEzAkwGXug"
+  ];
+
+  if (outdatedDex.includes(pair.dexAddress)) {
+    return 0;
+  }
+
   const p = {
     s: {
       ticks: pair.ticks,
