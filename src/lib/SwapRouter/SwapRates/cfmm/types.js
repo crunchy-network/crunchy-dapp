@@ -25,7 +25,6 @@ export class Nat extends BigNumber {
   // _nat: BigNumber;
   constructor(number) {
     number = new BigNumber(parseInt(number));
-    console.log(number, number.toFixed())
     if (number < new BigNumber(0) || !number.isInteger() || number.isNaN()) {
       throw new Error(`Invalid nat: ${number.toString()}`);
     }
@@ -57,7 +56,6 @@ export class Nat extends BigNumber {
   }
 
   dividedBy(n) {
-    console.log(n, n.toFixed())
     return Nat.getNat(super.dividedBy(n));
   }
 

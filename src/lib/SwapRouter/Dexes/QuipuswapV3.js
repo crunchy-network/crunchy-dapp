@@ -27,6 +27,7 @@ const getSwapOutput = (input, pair) => {
       constants: {
         feeBps: BigNumber(pair.fee.feeBps),
         factoryAddress: pair.factoryAddress,
+        pair: pair,
       },
     },
   };
@@ -38,7 +39,10 @@ const getSwapOutput = (input, pair) => {
     pair.direction === "Direct"
       ? calculateXToY(p.s, BigNumber(bigNumber)).output
       : calculateYToX(p.s, BigNumber(bigNumber)).output;
-  const bigNumberOutput = parseFloat(output / decimalMoverB);
+  if(output.toFixed() === 0) {
+    return 0;
+  }
+  const bigNumberOutput = parseFloat(output.toFixed(0) / decimalMoverB);
   return bigNumberOutput;
 };
 
