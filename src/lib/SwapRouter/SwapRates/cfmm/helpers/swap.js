@@ -16,14 +16,14 @@ class TooBigPriceChangeErr extends Error {}
 const HUNDRED_PERCENT_BPS = 10000;
 
 function floorLogHalfBps(x, y, outOfBoundsError) {
-  // const tenx = new BigNumber(x).times(10);
+  const tenx = new BigNumber(x).times(10);
 
-  // if (
-  //   tenx.isLessThan(new BigNumber(y).times(7)) ||
-  //   tenx.isGreaterThan(new BigNumber(y).times(15))
-  // ) {
-  //   throw outOfBoundsError;
-  // }
+  if (
+    tenx.isLessThan(new BigNumber(y).times(7)) ||
+    tenx.isGreaterThan(new BigNumber(y).times(15))
+  ) {
+    throw outOfBoundsError;
+  }
 
   const xPlusY = new BigNumber(x).plus(y);
   const num = new BigNumber(x).minus(y).times(60003).times(xPlusY);
@@ -79,90 +79,95 @@ function oneMinusFeeBps(feeBps) {
 }
 
 function xToYRec(p) {
-  if (p.s.liquidity === 0) {
-    return p;
-  }
-
-  // TODO: change fees logic after new Quipuswap V3 contracts are deployed
-
-  let totalFee = calcSwapFee(p.s.constants.feeBps, p.dx);
-
-  let sqrtPriceNew = calcNewPriceX(
-    p.s.sqrtPrice,
-    p.s.liquidity,
-    p.dx.minus(totalFee)
-  );
-
-  const curTickIndexNew = calcNewCurTickIndex(
-    p.s.curTickIndex,
-    p.s.sqrtPrice,
-    sqrtPriceNew
-  );
-
-  if (curTickIndexNew.gte(p.s.curTickWitness)) {
+  try {
+    if (p.s.liquidity === 0) {
+      return p;
+    }
+  
+    // TODO: change fees logic after new Quipuswap V3 contracts are deployed
+  
+    let totalFee = calcSwapFee(p.s.constants.feeBps, p.dx);
+  
+    let sqrtPriceNew = calcNewPriceX(
+      p.s.sqrtPrice,
+      p.s.liquidity,
+      p.dx.minus(totalFee)
+    );
+    
+    const curTickIndexNew = calcNewCurTickIndex(
+      p.s.curTickIndex,
+      p.s.sqrtPrice,
+      sqrtPriceNew
+    );
+  
+    if (curTickIndexNew.gte(p.s.curTickWitness)) {
+      const dy = shiftRight(
+        p.s.sqrtPrice.minus(sqrtPriceNew).multipliedBy(p.s.liquidity),
+        new BigNumber(80)
+      ).integerValue(BigNumber.ROUND_FLOOR);
+  
+      const newStorage = {
+        ...p.s,
+        sqrtPrice: sqrtPriceNew,
+        curTickIndex: curTickIndexNew,
+      };
+  
+      return {
+        s: newStorage,
+        dx: new Nat(0),
+        dy: p.dy.plus(dy),
+      };
+    }
+    const tick = p.s.ticks[p.s.curTickWitness.toFixed()];
+  
+    const loNew = tick.prev;
+    sqrtPriceNew = new quipuswapV3Types.x80n(BigNumber(tick.sqrtPrice).minus(1));
     const dy = shiftRight(
       p.s.sqrtPrice.minus(sqrtPriceNew).multipliedBy(p.s.liquidity),
       new BigNumber(80)
     ).integerValue(BigNumber.ROUND_FLOOR);
-
-    const newStorage = {
-      ...p.s,
-      sqrtPrice: sqrtPriceNew,
-      curTickIndex: curTickIndexNew,
+    const dxForDy = shiftLeft(dy, new BigNumber(160))
+      .dividedBy(p.s.sqrtPrice.multipliedBy(sqrtPriceNew))
+      .integerValue(BigNumber.ROUND_CEIL);
+    const dxConsumed = dxForDy
+      .multipliedBy(HUNDRED_PERCENT_BPS)
+      .dividedBy(oneMinusFeeBps(p.s.constants.feeBps))
+      .integerValue(BigNumber.ROUND_CEIL);
+    totalFee = dxConsumed.minus(dxForDy);
+    const sums = p.s.lastCumulativesBuffer;
+    if (!sums) {
+      return p;
+    }
+    const tickCumulativeOutsideNew = BigNumber(sums.tick.sum).minus(
+      tick.tickCumulativeOutside
+    );
+    const tickNew = {
+      ...tick,
+      tickCumulativeOutside: tickCumulativeOutsideNew,
     };
-
-    return {
-      s: newStorage,
-      dx: new Nat(0),
+    const ticksNew = {
+      ...p.s.ticks,
+      [p.s.curTickWitness.toFixed()]: tickNew,
+    };
+    const storageNew = {
+      ...p.s,
+      curTickWitness: loNew,
+      sqrtPrice: sqrtPriceNew,
+      curTickIndex: curTickIndexNew.minus(1),
+      ticks: ticksNew,
+      liquidity: p.s.liquidity.minus(tick.liquidityNet),
+    };
+    const paramNew = {
+      s: storageNew,
+      dx: p.dx.minus(dxConsumed),
       dy: p.dy.plus(dy),
     };
+  
+    return xToYRec(paramNew);
+  } catch (error) {
+    console.log("Error has happened when calculating x to y", error.toString());
+    return { s: p.s, dx: p.dx, dy: new Nat(0) }
   }
-  const tick = p.s.ticks[p.s.curTickWitness.toFixed()];
-
-  const loNew = tick.prev;
-  sqrtPriceNew = new quipuswapV3Types.x80n(BigNumber(tick.sqrtPrice).minus(1));
-  const dy = shiftRight(
-    p.s.sqrtPrice.minus(sqrtPriceNew).multipliedBy(p.s.liquidity),
-    new BigNumber(80)
-  ).integerValue(BigNumber.ROUND_FLOOR);
-  const dxForDy = shiftLeft(dy, new BigNumber(160))
-    .dividedBy(p.s.sqrtPrice.multipliedBy(sqrtPriceNew))
-    .integerValue(BigNumber.ROUND_CEIL);
-  const dxConsumed = dxForDy
-    .multipliedBy(HUNDRED_PERCENT_BPS)
-    .dividedBy(oneMinusFeeBps(p.s.constants.feeBps))
-    .integerValue(BigNumber.ROUND_CEIL);
-  totalFee = dxConsumed.minus(dxForDy);
-  const sums = p.s.lastCumulativesBuffer;
-  if (!sums) {
-    return p;
-  }
-  const tickCumulativeOutsideNew = BigNumber(sums.tick.sum).minus(
-    tick.tickCumulativeOutside
-  );
-  const tickNew = {
-    ...tick,
-    tickCumulativeOutside: tickCumulativeOutsideNew,
-  };
-  const ticksNew = {
-    ...p.s.ticks,
-    [p.s.curTickWitness.toFixed()]: tickNew,
-  };
-  const storageNew = {
-    ...p.s,
-    curTickWitness: loNew,
-    sqrtPrice: sqrtPriceNew,
-    curTickIndex: curTickIndexNew.minus(1),
-    ticks: ticksNew,
-    liquidity: p.s.liquidity.minus(tick.liquidityNet),
-  };
-  const paramNew = {
-    s: storageNew,
-    dx: p.dx.minus(dxConsumed),
-    dy: p.dy.plus(dy),
-  };
-
-  return xToYRec(paramNew);
 }
 
 const calculateXToY = (s, dx) => {
@@ -185,6 +190,15 @@ function yToXRec(p) {
     let dyMinusFee = p.dy.minus(totalFee);
     let sqrtPriceNew = calcNewPriceY(p.s.sqrtPrice, p.s.liquidity, dyMinusFee);
     
+    const tenx = new BigNumber(sqrtPriceNew).times(10);
+
+  if (
+    tenx.isLessThan(new BigNumber(p.s.sqrtPrice).times(7)) ||
+    tenx.isGreaterThan(new BigNumber(p.s.sqrtPrice).times(15))
+  ) {
+    console.log(p, tenx);
+  }
+
     const curTickIndexNew = calcNewCurTickIndex(
       p.s.curTickIndex,
       p.s.sqrtPrice,
