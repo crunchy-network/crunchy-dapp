@@ -1,7 +1,7 @@
 import { pascalCase } from "change-case";
 import BigNumber from "bignumber.js";
 import config from "./../config";
-import tzkt from "../../../utils/tzkt";
+// import tzkt from "../../../utils/tzkt";
 
 const isPoolBelowMinThreshold = (mutez) => {
   return BigNumber(mutez).lt(config.minPoolSize);
@@ -278,34 +278,34 @@ const buildQuipuV2Pairs = (dex) => {
   return pairs;
 };
 
-function convertToCamelCase(obj) {
-  const newObj = {};
-  for (const key in obj) {
-    const newKey = key.charAt(0).toLowerCase() + key.slice(1).replace(/_([a-z])/g, (m, p1) => p1.toUpperCase());
-    newObj[newKey] = typeof obj[key] === "object" ? convertToCamelCase(obj[key]) : obj[key];
-  }
-  return newObj;
-}
+// function convertToCamelCase(obj) {
+//   const newObj = {};
+//   for (const key in obj) {
+//     const newKey = key.charAt(0).toLowerCase() + key.slice(1).replace(/_([a-z])/g, (m, p1) => p1.toUpperCase());
+//     newObj[newKey] = typeof obj[key] === "object" ? convertToCamelCase(obj[key]) : obj[key];
+//   }
+//   return newObj;
+// }
 
-const getModifiedTicks = async (ticksKey) => {
-  const ticks = (await tzkt.getBigMapKeys(ticksKey)).data;
-  const ticksObj = ticks.reduce((acc, curr) => {
-    // Change to pascalCase
-    const modifiedValue = convertToCamelCase(curr.value);
-    acc[curr.key] = modifiedValue;
-    return acc;
-  }, {});
-  return ticksObj;
-};
+// const getModifiedTicks = async (ticksKey) => {
+//   const ticks = (await tzkt.getBigMapKeys(ticksKey)).data;
+//   const ticksObj = ticks.reduce((acc, curr) => {
+//     // Change to pascalCase
+//     const modifiedValue = convertToCamelCase(curr.value);
+//     acc[curr.key] = modifiedValue;
+//     return acc;
+//   }, {});
+//   return ticksObj;
+// };
 
-const getModifiedBuffer = async (bufferKey) => {
-  const buffer = (await tzkt.getBigMapKeys(bufferKey)).data;
-  const bufferObj = buffer.reduce((acc, curr) => {
-    acc[curr.key] = curr.value;
-    return acc;
-  }, {});
-  return bufferObj;
-};
+// const getModifiedBuffer = async (bufferKey) => {
+//   const buffer = (await tzkt.getBigMapKeys(bufferKey)).data;
+//   const bufferObj = buffer.reduce((acc, curr) => {
+//     acc[curr.key] = curr.value;
+//     return acc;
+//   }, {});
+//   return bufferObj;
+// };
 
 // const buildQuipuV3Pairs = async (dex, inverted = false) => {
 //   const aSide = dex.pools[inverted ? 1 : 0];
