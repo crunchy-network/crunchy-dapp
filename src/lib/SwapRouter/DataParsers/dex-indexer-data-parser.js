@@ -522,10 +522,10 @@ const buildSwapPairs = async (dexes) => {
         pairs = pairs.concat(buildQuipuV2Pairs(dex));
         break;
 
-      case "quipuswap_v3":
-        pairs.push(await buildQuipuV3Pairs(dex));
-        pairs.push(await buildQuipuV3Pairs(dex, true));
-        break;
+      // case "quipuswap_v3":
+      //   pairs.push(await buildQuipuV3Pairs(dex));
+      //   pairs.push(await buildQuipuV3Pairs(dex, true));
+      //   break;
 
       case "quipuswap_stable":
         pairs = pairs.concat(buildQuipuStablePairs(dex));
