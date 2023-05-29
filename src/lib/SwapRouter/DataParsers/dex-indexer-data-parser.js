@@ -307,73 +307,73 @@ const getModifiedBuffer = async (bufferKey) => {
   return bufferObj;
 };
 
-const buildQuipuV3Pairs = async (dex, inverted = false) => {
-  const aSide = dex.pools[inverted ? 1 : 0];
-  const bSide = dex.pools[inverted ? 0 : 1];
+// const buildQuipuV3Pairs = async (dex, inverted = false) => {
+//   const aSide = dex.pools[inverted ? 1 : 0];
+//   const bSide = dex.pools[inverted ? 0 : 1];
 
-  const ticksKey = getParamValue(dex.params, "ticksKey");
-  const bufferKey = getParamValue(dex.params, "bufferKey");
+//   const ticksKey = getParamValue(dex.params, "ticksKey");
+//   const bufferKey = getParamValue(dex.params, "bufferKey");
 
-  const ticks = await getModifiedTicks(ticksKey);
-  const buffer = await getModifiedBuffer(bufferKey);
+//   const ticks = await getModifiedTicks(ticksKey);
+//   const buffer = await getModifiedBuffer(bufferKey);
 
-  return {
-    poolId: aSide.pool_id,
-    dex: getDexName(dex.dex_type),
-    dexAddress: dex.dex_address,
-    direction: inverted ? "Inverted" : "Direct",
-    fee: {
-      feeBps: getParamValue(dex.params, "fee_bps").replace(/^"(.*)"$/, "$1"),
-      devFeeA: inverted
-        ? getParamValue(bSide.params, "dev_fee_B")
-        : getParamValue(aSide.params, "dev_fee_A"),
-      feeGrowthA: inverted
-        ? getParamValue(bSide.params, "fee_growth_B")
-        : getParamValue(aSide.params, "fee_growth_A"),
-      devFeeB: inverted
-        ? getParamValue(aSide.params, "dev_fee_A")
-        : getParamValue(bSide.params, "dev_fee_B"),
-      feeGrowthB: inverted
-        ? getParamValue(bSide.params, "fee_growth_A")
-        : getParamValue(aSide.params, "fee_growth_B"),
-    },
-    ticks: ticks,
-    cumulativesBuffer: buffer,
-    lastCumulativesBuffer: getParamValue(dex.params, "last_cumulatives_buffer"),
-    curTickIndex: getParamValue(dex.params, "cur_tick_index").replace(
-      /^"(.*)"$/,
-      "$1"
-    ),
-    curTickWitness: getParamValue(dex.params, "cur_tick_witness").replace(
-      /^"(.*)"$/,
-      "$1"
-    ),
-    liquidity: getParamValue(dex.params, "liquidity").replace(/^"(.*)"$/, "$1"),
-    factoryAddress: getParamValue(dex.params, "factory_address"),
-    sqrtPrice: getParamValue(dex.params, "sqrt_price").replace(
-      /^"(.*)"$/,
-      "$1"
-    ),
-    a: {
-      ...createSimplePairSide(aSide),
-      devFeeA: inverted
-        ? getParamValue(bSide.params, "dev_fee_B")
-        : getParamValue(aSide.params, "dev_fee_A"),
-      feeGrowthA: inverted
-        ? getParamValue(bSide.params, "fee_growth_B")
-        : getParamValue(aSide.params, "fee_growth_A"),
-    },
-    b: {
-      ...createSimplePairSide(bSide),
-      devFeeB: inverted
-        ? getParamValue(aSide.params, "dev_fee_A")
-        : getParamValue(bSide.params, "dev_fee_B"),
-      feeGrowthB: inverted
-        ? getParamValue(bSide.params, "fee_growth_A")
-        : getParamValue(aSide.params, "fee_growth_B"),
-    },
-  };
-};
+//   return {
+//     poolId: aSide.pool_id,
+//     dex: getDexName(dex.dex_type),
+//     dexAddress: dex.dex_address,
+//     direction: inverted ? "Inverted" : "Direct",
+//     fee: {
+//       feeBps: getParamValue(dex.params, "fee_bps").replace(/^"(.*)"$/, "$1"),
+//       devFeeA: inverted
+//         ? getParamValue(bSide.params, "dev_fee_B")
+//         : getParamValue(aSide.params, "dev_fee_A"),
+//       feeGrowthA: inverted
+//         ? getParamValue(bSide.params, "fee_growth_B")
+//         : getParamValue(aSide.params, "fee_growth_A"),
+//       devFeeB: inverted
+//         ? getParamValue(aSide.params, "dev_fee_A")
+//         : getParamValue(bSide.params, "dev_fee_B"),
+//       feeGrowthB: inverted
+//         ? getParamValue(bSide.params, "fee_growth_A")
+//         : getParamValue(aSide.params, "fee_growth_B"),
+//     },
+//     ticks: ticks,
+//     cumulativesBuffer: buffer,
+//     lastCumulativesBuffer: getParamValue(dex.params, "last_cumulatives_buffer"),
+//     curTickIndex: getParamValue(dex.params, "cur_tick_index").replace(
+//       /^"(.*)"$/,
+//       "$1"
+//     ),
+//     curTickWitness: getParamValue(dex.params, "cur_tick_witness").replace(
+//       /^"(.*)"$/,
+//       "$1"
+//     ),
+//     liquidity: getParamValue(dex.params, "liquidity").replace(/^"(.*)"$/, "$1"),
+//     factoryAddress: getParamValue(dex.params, "factory_address"),
+//     sqrtPrice: getParamValue(dex.params, "sqrt_price").replace(
+//       /^"(.*)"$/,
+//       "$1"
+//     ),
+//     a: {
+//       ...createSimplePairSide(aSide),
+//       devFeeA: inverted
+//         ? getParamValue(bSide.params, "dev_fee_B")
+//         : getParamValue(aSide.params, "dev_fee_A"),
+//       feeGrowthA: inverted
+//         ? getParamValue(bSide.params, "fee_growth_B")
+//         : getParamValue(aSide.params, "fee_growth_A"),
+//     },
+//     b: {
+//       ...createSimplePairSide(bSide),
+//       devFeeB: inverted
+//         ? getParamValue(aSide.params, "dev_fee_A")
+//         : getParamValue(bSide.params, "dev_fee_B"),
+//       feeGrowthB: inverted
+//         ? getParamValue(bSide.params, "fee_growth_A")
+//         : getParamValue(aSide.params, "fee_growth_B"),
+//     },
+//   };
+// };
 
 const buildQuipuToken2TokenPairs = (dex) => {
   const pairs = [];
