@@ -121,7 +121,9 @@ function xToYRec(p) {
     const tick = p.s.ticks[p.s.curTickWitness.toFixed()];
   
     const loNew = tick.prev;
-    sqrtPriceNew = new quipuswapV3Types.x80n(BigNumber(tick.sqrtPrice).minus(1));
+    sqrtPriceNew = new quipuswapV3Types.x80n(
+      BigNumber(tick.sqrtPrice).minus(1)
+    );
     const dy = shiftRight(
       p.s.sqrtPrice.minus(sqrtPriceNew).multipliedBy(p.s.liquidity),
       new BigNumber(80)
