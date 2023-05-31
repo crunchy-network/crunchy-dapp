@@ -9,7 +9,7 @@ const {
 const getSwapOutput = (input, pair) => {
   const outdatedDex = [
     "KT1LCGKA33zGk8GDQbtonGzFMzqx8QPbeZbr",
-    "KT1CZj28Xc3Rtg1AsRfsagZyxcLEzAkwGXug"
+    "KT1CZj28Xc3Rtg1AsRfsagZyxcLEzAkwGXug",
   ];
 
   if (outdatedDex.includes(pair.dexAddress)) {
@@ -39,10 +39,7 @@ const getSwapOutput = (input, pair) => {
     pair.direction === "Direct"
       ? calculateXToY(p.s, BigNumber(bigNumber)).output
       : calculateYToX(p.s, BigNumber(bigNumber)).output;
-  if(output.toFixed() === 0) {
-    return 0;
-  }
-  const bigNumberOutput = parseFloat(output.toFixed(0) / decimalMoverB);
+  const bigNumberOutput = parseFloat(output.toFixed() / decimalMoverB);
   return bigNumberOutput;
 };
 
