@@ -17,6 +17,7 @@ const oneWeekInMiliSecond = oneDayInMiliSecond * 7;
 const oneMonthInMiliSecond = oneDayInMiliSecond * 30;
 const oneMonthAgo = new Date(Date.now() - oneMonthInMiliSecond).toISOString();
 const PLY_SYMBOL = "PLY";
+const TKEY_SYMBOL = "TKEY";
 const PLY_TOKEN_ID = "KT1JVjgXPMMSaa6FkzeJcgb8q9cUaLmwaJUX_0";
 const TRACKED_MARKETS_NAME = {
   plentyNetwork: {
@@ -26,6 +27,96 @@ const TRACKED_MARKETS_NAME = {
     name: "spicyswap",
   },
 };
+
+function modifyPlentyToken(token, xtzUsdHistory, xtzUSD) {
+  const updatedToken = token.map((obj) => {
+    return {
+      exchanges: [],
+      address: obj.contract,
+      decimals: obj.decimals,
+      id: `${obj.contract}_0`,
+      name: obj.name,
+      tokenId: 0,
+      symbol: obj.token,
+      thumbnailUri: "",
+    };
+  });
+  const modifiedTokenMetrics = modifyPlentyMetrics(token[0], xtzUsdHistory);
+
+  const price1Day = findElementWithSameDate(
+    modifiedTokenMetrics.price.history,
+    new Date(day1).toISOString()
+  );
+  const price7Day = findElementWithSameDate(
+    modifiedTokenMetrics.price.history,
+    new Date(day7).toISOString()
+  );
+  const price30Day = findElementWithSameDate(
+    modifiedTokenMetrics.price.history,
+    new Date(day30).toISOString()
+  );
+
+  const timeUsdValueDay1 = binarySearch(xtzUsdHistory, day1);
+  const timeUsdValueDay7 = binarySearch(xtzUsdHistory, day7);
+  const timeUsdValueDay30 = binarySearch(xtzUsdHistory, day30);
+
+  updatedToken[0].dayCloseUsd = price1Day ? price1Day.xtzClose : 0;
+  updatedToken[0].weekCloseUsd = price7Day ? price7Day.xtzClose : 0;
+  updatedToken[0].monthCloseUsd = price30Day ? price30Day.xtzClose : 0;
+  updatedToken[0].dayClose = updatedToken[0].dayCloseUsd / timeUsdValueDay1;
+  updatedToken[0].weekClose = updatedToken[0].weekCloseUsd / timeUsdValueDay7;
+  updatedToken[0].monthClose =
+    updatedToken[0].monthCloseUsd / timeUsdValueDay30;
+
+  const currentPrice = new BigNumber(token[0].price.value).toNumber() || false;
+  const price = new BigNumber(currentPrice);
+  const priceXtz = new BigNumber(price.div(xtzUSD));
+
+  const change1Day = priceXtz
+    .minus(updatedToken[0].dayClose)
+    .div(updatedToken[0].dayClose)
+    .times(100)
+    .toNumber();
+  const change7Day = priceXtz
+    .minus(updatedToken[0].weekClose)
+    .div(updatedToken[0].weekClose)
+    .times(100)
+    .toNumber();
+  const change30Day = priceXtz
+    .minus(updatedToken[0].monthClose)
+    .div(updatedToken[0].monthClose)
+    .times(100)
+    .toNumber();
+
+  const change1DayUsd = price
+    .minus(updatedToken[0].dayCloseUsd)
+    .div(updatedToken[0].dayCloseUsd)
+    .times(100)
+    .toNumber();
+  const change7DayUsd = price
+    .minus(updatedToken[0].weekCloseUsd)
+    .div(updatedToken[0].weekCloseUsd)
+    .times(100)
+    .toNumber();
+  const change30DayUsd = price
+    .minus(updatedToken[0].monthCloseUsd)
+    .div(updatedToken[0].monthCloseUsd)
+    .times(100)
+    .toNumber();
+
+  updatedToken[0].change1Day = change1Day === Infinity ? 0 : change1Day || 0;
+  updatedToken[0].change7Day = change7Day === Infinity ? 0 : change7Day || 0;
+  updatedToken[0].change30Day = change30Day === Infinity ? 0 : change30Day || 0;
+
+  updatedToken[0].change1DayUsd =
+    change1DayUsd === Infinity ? 0 : change1DayUsd || 0;
+  updatedToken[0].change7DayUsd =
+    change7DayUsd === Infinity ? 0 : change7DayUsd || 0;
+  updatedToken[0].change30DayUsd =
+    change30DayUsd === Infinity ? 0 : change30DayUsd || 0;
+
+  return updatedToken;
+}
 
 async function queryXtzVolume() {
   const query = `
@@ -1005,6 +1096,7 @@ export default {
         plentyPools,
         spicyTokens,
         spicyPools,
+        TKEY,
       ] = await Promise.all([
         dexIndexer.getAllTokens(),
         axios.post("https://dex.dipdup.net/v1/graphql", {
@@ -1016,6 +1108,7 @@ export default {
         getPlentyPools(),
         getSpicyTokens(),
         getSpicyPools(),
+        getPlentyTokenDailyMetrics(TKEY_SYMBOL),
       ]);
 
       /*
@@ -1033,7 +1126,7 @@ export default {
 
       /*
         Change field name and
-        add PLY token to token list from Dipdup
+        add PLY, TKEY tokens to token list from Dipdup
       */
       const quotesTotal = trade.map((element) => {
         element.close = element.price;
@@ -1041,106 +1134,21 @@ export default {
       });
 
       quotesTotal.push({
-        close: PLY[0].price.value / xtzUSD,
-        tokenId: `${PLY[0].contract}_0`,
+        close: PLY[0]?.price?.value / xtzUSD,
+        tokenId: `${PLY[0]?.contract}_0`,
+      });
+      quotesTotal.push({
+        close: TKEY[0]?.price?.value / xtzUSD,
+        tokenId: `${TKEY[0]?.contract}_0`,
       });
 
       /*
        *Calculate PLY data and push to token list
        */
-      const updatedPLY = PLY.map((obj) => {
-        return {
-          exchanges: [],
-          address: obj.contract,
-          decimals: obj.decimals,
-          id: `${obj.contract}_0`,
-          name: obj.name,
-          tokenId: 0,
-          symbol: obj.token,
-          thumbnailUri: "",
-        };
-      });
-      const modifiedPlyMetrics = modifyPlentyMetrics(PLY[0], xtzUsdHistory);
-
-      const price1Day = findElementWithSameDate(
-        modifiedPlyMetrics.price.history,
-        new Date(day1).toISOString()
-      );
-      const price7Day = findElementWithSameDate(
-        modifiedPlyMetrics.price.history,
-        new Date(day7).toISOString()
-      );
-      const price30Day = findElementWithSameDate(
-        modifiedPlyMetrics.price.history,
-        new Date(day30).toISOString()
-      );
-
-      const timeUsdValueDay1 = binarySearch(xtzUsdHistory, day1);
-      const timeUsdValueDay7 = binarySearch(xtzUsdHistory, day7);
-      const timeUsdValueDay30 = binarySearch(xtzUsdHistory, day30);
-
-      updatedPLY[0].dayCloseUsd = price1Day ? Object.values(price1Day)[0].c : 0;
-      updatedPLY[0].weekCloseUsd = price7Day
-        ? Object.values(price7Day)[0].c
-        : 0;
-      updatedPLY[0].monthCloseUsd = price30Day
-        ? Object.values(price30Day)[0].c
-        : 0;
-      updatedPLY[0].dayClose = updatedPLY[0].dayCloseUsd / timeUsdValueDay1;
-      updatedPLY[0].weekClose = updatedPLY[0].weekCloseUsd / timeUsdValueDay7;
-      updatedPLY[0].monthClose =
-        updatedPLY[0].monthCloseUsd / timeUsdValueDay30;
-
-      const currentPrice =
-        new BigNumber(PLY[0].price.value).toNumber() || false;
-      const price = new BigNumber(currentPrice);
-      const priceXtz = new BigNumber(price.div(xtzUSD));
-
-      const change1Day = priceXtz
-        .minus(updatedPLY[0].dayClose)
-        .div(updatedPLY[0].dayClose)
-        .times(100)
-        .toNumber();
-      const change7Day = priceXtz
-        .minus(updatedPLY[0].weekClose)
-        .div(updatedPLY[0].weekClose)
-        .times(100)
-        .toNumber();
-      const change30Day = priceXtz
-        .minus(updatedPLY[0].monthClose)
-        .div(updatedPLY[0].monthClose)
-        .times(100)
-        .toNumber();
-
-      const change1DayUsd = price
-        .minus(updatedPLY[0].dayCloseUsd)
-        .div(updatedPLY[0].dayCloseUsd)
-        .times(100)
-        .toNumber();
-      const change7DayUsd = price
-        .minus(updatedPLY[0].weekCloseUsd)
-        .div(updatedPLY[0].weekCloseUsd)
-        .times(100)
-        .toNumber();
-      const change30DayUsd = price
-        .minus(updatedPLY[0].monthCloseUsd)
-        .div(updatedPLY[0].monthCloseUsd)
-        .times(100)
-        .toNumber();
-
-      updatedPLY[0].change1Day = change1Day === Infinity ? 0 : change1Day || 0;
-      updatedPLY[0].change7Day = change7Day === Infinity ? 0 : change7Day || 0;
-      updatedPLY[0].change30Day =
-        change30Day === Infinity ? 0 : change30Day || 0;
-
-      updatedPLY[0].change1DayUsd =
-        change1DayUsd === Infinity ? 0 : change1DayUsd || 0;
-      updatedPLY[0].change7DayUsd =
-        change7DayUsd === Infinity ? 0 : change7DayUsd || 0;
-      updatedPLY[0].change30DayUsd =
-        change30DayUsd === Infinity ? 0 : change30DayUsd || 0;
-
+      const updatedPLY = modifyPlentyToken(PLY, xtzUsdHistory, xtzUSD);
+      const updatedTKEY = modifyPlentyToken(TKEY, xtzUsdHistory, xtzUSD);
       token.push(updatedPLY[0]);
+      token.push(updatedTKEY[0]);
 
       /*
        *Format plenty pools and spicy pools for integration
@@ -1490,7 +1498,7 @@ export default {
         .times(element.usdValue)
         .toNumber();
 
-      if (element.symbol !== PLY_SYMBOL) {
+      if (element.symbol !== PLY_SYMBOL && element.symbol !== TKEY_SYMBOL) {
         const change1Day = price
           .minus(element?.dayClose)
           .div(element?.dayClose)

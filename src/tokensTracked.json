@@ -224,5 +224,13 @@
     "decimals": 2,
     "description": "Tezos Pepe",
     "name": "Tezos Pepe"
+  },
+  {
+    "symbol": "TKEY",
+    "tokenAddress": "KT1VaEsVNiBoA56eToEK6n6BcPgh1tdx9eXi",
+    "tokenId": 0,
+    "decimals": 18,
+    "description": "Temple Key",
+    "name": "Temple Key"
   }
  ]
