@@ -57,7 +57,7 @@
                         />
 
                         <a
-                          :href="`https://tzkt.io/${item.address}`"
+                          :href="`https://tzkt.io/${item.dex_address}`"
                           target="_blank"
                           style="
                             font-weight: 600;
@@ -143,9 +143,17 @@ export default {
     handleDexUri(dex = "") {
       switch (dex?.toLowerCase()) {
         case "plenty network":
+        case "plenty_stable":
+        case "plenty":
+        case "plenty_tez":
+        case "plenty_ctez":
           return "https://res.cloudinary.com/melvin-manni/image/upload/v1677417526/nstgjnest4jrhcsgwymf.png";
 
         case "quipuswap":
+        case "quipuswap_v2":
+        case "quipuswap_v3":
+        case "quipuswap_stable":
+        case "quipuswap_token2token":
           return "https://res.cloudinary.com/melvin-manni/image/upload/v1645292809/c1rutxlzllilmtuibcdo.png";
 
         case "youves":
@@ -155,8 +163,10 @@ export default {
           return "https://www.gitbook.com/cdn-cgi/image/width=40,height=40,fit=contain,dpr=1,format=auto/https%3A%2F%2F3533877337-files.gitbook.io%2F~%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FyX7WTYr0YMeQcemP26Of%252Ficon%252F76rbNGaJiDxSJwFIjsLQ%252FGroup%25201494.png%3Falt%3Dmedia%26token%3D829a380f-2d70-4ceb-ac23-8c2aaddf8fe5";
 
         case "spicyswap":
+        case "spicy":
           return "https://docs.spicyswap.xyz/img/spicy.png";
         case "lb":
+        case "sirius":
           return "https://res.cloudinary.com/melvin-manni/image/upload/v1663433569/lcmsyxatxezrrcovuklr.png";
 
         default:
@@ -165,8 +175,27 @@ export default {
     },
 
     capitalize(str) {
-      if (str === "lb") {
+      if (str === "lb" || str === "sirius") {
         return "SIRS (Liquidity Baking)";
+      } else if (
+        str === "quipuswap_v2" ||
+        str === "quipuswap_v3" ||
+        str === "quipuswap_stable" ||
+        str === "quipuswap_token2token"
+      ) {
+        return "Quipuswap";
+      }
+      if (
+        str === "plenty_stable" ||
+        str === "plenty" ||
+        str === "plenty_stable" ||
+        str === "plenty_ctez" ||
+        str === "plenty_tez"
+      ) {
+        return "Plenty network";
+      }
+      if (str === "spicy") {
+        return "Spicyswap";
       }
       return str.replace(/\b[a-z]/gi, function (char) {
         return char.toUpperCase();
