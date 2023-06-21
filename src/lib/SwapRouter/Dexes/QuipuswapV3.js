@@ -46,7 +46,7 @@ const getSwapOutput = (input, pair) => {
 const directTransaction = (dex, trade, walletAddres, input, output) => {
   return [
     dex.contract.methods
-      .x_to_y(input, `${secondsFromNow(300)}`, 1, walletAddres, null)
+      .x_to_y(input, `${secondsFromNow(1200)}`, 1, walletAddres, null)
       .toTransferParams({
         mutez: true,
       }),
@@ -56,18 +56,22 @@ const directTransaction = (dex, trade, walletAddres, input, output) => {
 const invertTransaction = (dex, trade, walletAddres, input, output) => {
   return [
     dex.contract.methods
-      .y_to_x(input, `${secondsFromNow(300)}`, 1, walletAddres, null)
+      .y_to_x(input, `${secondsFromNow(1200)}`, 1, walletAddres, null)
       .toTransferParams({
         mutez: true,
       }),
   ];
 };
 const buildDexOperation = (dex, trade, walletAddres, tezos) => {
-  console.log(trade);
   const input = convertToMuTez(trade.input, trade.a);
   const output = convertToMuTez(trade.minOut, trade.b);
   const transfers =
-    trade.direction === "Direct"
+    // Wrong pool order in dex-indexer
+    trade.dexAddress === "KT1RnCTQfXLGz14ks3FCnafHv5G73dpjBDsV" 
+      ? trade.direction === "Direct"
+        ? invertTransaction(dex, trade, walletAddres, input, output)
+        : directTransaction(dex, trade, walletAddres, input, output)
+      : trade.direction === "Direct"
       ? directTransaction(dex, trade, walletAddres, input, output)
       : invertTransaction(dex, trade, walletAddres, input, output);
 

@@ -160,6 +160,7 @@ export default {
       return this.getCurrentTrade.trades.length;
     },
     numHops() {
+      console.log(this.getCurrentTrade.trades)
       if (!this.getCurrentTrade.trades || !this.getCurrentTrade.trades.length) {
         return 0;
       }
