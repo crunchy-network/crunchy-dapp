@@ -311,8 +311,21 @@ const getModifiedBuffer = async (bufferKey) => {
 };
 
 const buildQuipuV3Pairs = async (dex, inverted = false) => {
-  const aSide = dex.pools[inverted ? 1 : 0];
-  const bSide = dex.pools[inverted ? 0 : 1];
+  const aSide = inverted
+    ? getParamValue(dex.pools[0].params, "dev_fee_B") !== 0
+      ? dex.pools[0]
+      : dex.pools[1]
+    : getParamValue(dex.pools[0].params, "dev_fee_A") !== 0
+    ? dex.pools[0]
+    : dex.pools[1];
+
+  const bSide = inverted
+    ? getParamValue(dex.pools[0].params, "dev_fee_A") !== 0
+      ? dex.pools[0]
+      : dex.pools[1]
+    : getParamValue(dex.pools[0].params, "dev_fee_B") !== 0
+    ? dex.pools[0]
+    : dex.pools[1];
 
   const ticksKey = getParamValue(dex.params, "ticksKey");
   const bufferKey = getParamValue(dex.params, "bufferKey");

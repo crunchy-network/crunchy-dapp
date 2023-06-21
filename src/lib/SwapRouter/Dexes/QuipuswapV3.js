@@ -66,12 +66,7 @@ const buildDexOperation = (dex, trade, walletAddres, tezos) => {
   const input = convertToMuTez(trade.input, trade.a);
   const output = convertToMuTez(trade.minOut, trade.b);
   const transfers =
-    // Wrong pool order in dex-indexer
-    trade.dexAddress === "KT1RnCTQfXLGz14ks3FCnafHv5G73dpjBDsV" 
-      ? trade.direction === "Direct"
-        ? invertTransaction(dex, trade, walletAddres, input, output)
-        : directTransaction(dex, trade, walletAddres, input, output)
-      : trade.direction === "Direct"
+    trade.direction === "Direct"
       ? directTransaction(dex, trade, walletAddres, input, output)
       : invertTransaction(dex, trade, walletAddres, input, output);
 

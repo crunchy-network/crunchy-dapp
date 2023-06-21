@@ -47,7 +47,9 @@
     </div>
     <div class="row">
       <span> Minimum Received</span>
-      <span style="color: var(--primary-text)"> {{ getCurrentTrade.outputWithSlippage }}</span>
+      <span style="color: var(--primary-text)">
+        {{ getCurrentTrade.outputWithSlippage }}</span
+      >
     </div>
     <div class="row">
       <span>Price Impact</span>
@@ -157,12 +159,20 @@ export default {
       if (!this.getCurrentTrade.trades) {
         return 0;
       }
+      const firstElement = this.getCurrentTrade.trades[0];
+      console.log(firstElement, firstElement instanceof Array )
+      if (!(firstElement instanceof Array)) {
+        return 1;
+      }
       return this.getCurrentTrade.trades.length;
     },
     numHops() {
-      console.log(this.getCurrentTrade.trades)
       if (!this.getCurrentTrade.trades || !this.getCurrentTrade.trades.length) {
         return 0;
+      }
+      const firstElement = this.getCurrentTrade.trades[0];
+      if (firstElement === undefined || !(firstElement instanceof Array)) {
+        return this.getCurrentTrade.trades.length;
       }
       if (this.getCurrentTrade.trades.length === 1) {
         return 1;
