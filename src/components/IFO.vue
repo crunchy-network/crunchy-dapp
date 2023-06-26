@@ -291,7 +291,7 @@
                   @click="harvestIfo"
                   >HARVEST</el-button
                 >
-                <el-button v-else :disabled="!info.data.started" type="primary" @click="showStakeDialog" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px; color: #ffffff;">FARM</el-button>
+                <el-button v-else :disabled="!ifo.data.started" type="primary" @click="showStakeDialog" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px; color: #ffffff;">FARM</el-button>
               </div>
             </div>
           </el-card></el-col
