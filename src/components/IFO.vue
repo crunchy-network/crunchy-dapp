@@ -232,7 +232,7 @@
 
                 <div class="detail-row">
                   <div class="data-col">
-                    <p>$CRUNCH to burn:</p>
+                    <p>$CRNCHY to burn:</p>
                   </div>
 
                   <div class="data-col">
