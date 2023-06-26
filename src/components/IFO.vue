@@ -618,7 +618,11 @@ export default {
 
         let timeDiff = startTime - currentTime;
         if (timeDiff <= 0) {
+          this.displayDays = "";
+          this.displayHours = "";
+          this.displayMinutes = "";
           clearInterval(timer);
+          return;
         }
 
         const days = Math.floor(timeDiff / this._days);
