@@ -605,35 +605,35 @@ export default {
       const timer = setInterval(() => {
         const currentTime = new Date().getTime();
 
-        let startTime = new Date(this.ifo.data.startTime).getTime();
-        if (this.ifo.data.started) {
-          startTime = new Date(this.ifo.data.endTime).getTime();
+        let startTime = new Date(vm.ifo.data.startTime).getTime();
+        if (vm.ifo.data.started) {
+          startTime = new Date(vm.ifo.data.endTime).getTime();
         }
-        if (this.ifo.data.ended) {
-          startTime = new Date(this.ifo.data.harvestTime).getTime();
+        if (vm.ifo.data.ended) {
+          startTime = new Date(vm.ifo.data.harvestTime).getTime();
           if (startTime > currentTime) {
-            startTime = startTime + this.ifo.data.harvestDuration;
+            startTime = startTime + vm.ifo.data.harvestDuration;
           }
         }
 
         let timeDiff = startTime - currentTime;
         if (timeDiff <= 0) {
-          this.displayDays = "";
-          this.displayHours = "";
-          this.displayMinutes = "";
+          vm.displayDays = "";
+          vm.displayHours = "";
+          vm.displayMinutes = "";
           clearInterval(timer);
           return;
         }
 
-        const days = Math.floor(timeDiff / this._days);
-        timeDiff -= days * this._days;
-        const hours = Math.floor(timeDiff / this._hours) % 24;
-        timeDiff -= hours * this._hours;
-        const minutes = Math.floor(timeDiff / this._minutes) % 60;
+        const days = Math.floor(timeDiff / vm._days);
+        timeDiff -= days * vm._days;
+        const hours = Math.floor(timeDiff / vm._hours) % 24;
+        timeDiff -= hours * vm._hours;
+        const minutes = Math.floor(timeDiff / vm._minutes) % 60;
 
-        this.displayDays = this.formatCount(days);
-        this.displayHours = this.formatCount(hours);
-        this.displayMinutes = this.formatCount(minutes);
+        vm.displayDays = vm.formatCount(days);
+        vm.displayHours = vm.formatCount(hours);
+        vm.displayMinutes = vm.formatCount(minutes);
       }, 1000);
     },
 
