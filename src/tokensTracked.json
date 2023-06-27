@@ -225,4 +225,12 @@
     "description": "Tezos Pepe",
     "name": "Tezos Pepe"
   }
+    {
+    "symbol": "SKULL",
+    "tokenAddress": "KT1BEHqhkuqpBoMKuMZSQNx1fEwWp4dranEH",
+    "tokenId": 0,
+    "decimals": 3,
+    "description": "$SKULL Token",
+    "name": "$SKULL Token"
+  }
  ]
