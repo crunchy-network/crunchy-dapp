@@ -239,7 +239,7 @@ export default {
   created() {
     this.ensureTokensMatchQuery();
     this.updateDexApis();
-    this.updateCurrentPrices();
+    // this.updateCurrentPrices();
     this.subscribeToTzktForDexUpdateTrigger(this.updateDexApis);
   },
 
@@ -371,7 +371,7 @@ export default {
     },
     refresh() {
       this.loadWalletAsssets(this.getPkh);
-      this.updateCurrentPrices();
+      // this.updateCurrentPrices();
     },
     applyOption(option) {
       const tokenBalance = this.getBalanceOfSelectedToken(
