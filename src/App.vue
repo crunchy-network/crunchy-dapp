@@ -515,6 +515,10 @@ header .grid-content button.el-button {
   line-height: 22px;
 }
 
+#ifo-create .el-form--label-top .el-form-item__label {
+  text-transform: none !important;
+}
+
 .el-table th {
   padding-bottom: 20px !important;
 }
@@ -1066,6 +1070,14 @@ html[data-theme="dark"] {
 
   .el-tooltip__popper[x-placement^="right"] .popper__arrow::after {
     border-right-color: var(--border-color) !important;
+  }
+  .el-textarea__inner {
+    background-color: #191b1f !important;
+    border-color: var(--border-color);
+    height: 100px;
+  }
+  .el-textarea__inner::placeholder {
+      color: #8C8D8F;
   }
 }
 </style>

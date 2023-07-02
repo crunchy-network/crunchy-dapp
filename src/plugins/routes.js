@@ -14,6 +14,7 @@ import IFOList from "./../components/IFOList.vue";
 import Swap from "./../components/Swap.vue";
 import TokenTracker from "./../components/TokenTracker.vue";
 import TokenTrackerItem from "./../components/TokenTrackerItem.vue";
+import IFOCreate from "./../components/IFOCreate.vue"
 // import Bakery from './../components/Bakery.vue'
 
 Vue.use(VueRouter);
@@ -59,6 +60,7 @@ const routes = [
 
   { name: "ifo-list", path: "/ifo", component: IFOList },
   { name: "ifo", path: "/ifo/:tokenName", component: IFO },
+  { name: "ifo-create", path: "/ifo/create", component: IFOCreate },
   { name: "farm-listing", path: "/farms", component: FarmListing },
   { name: "farm-create", path: "/farms/create", component: FarmCreate },
 
