@@ -59,14 +59,23 @@
                   label="Banner Image 300px x 100px"
                   prop="bannerImage"
                 >
-                  <el-button
-                    type="info"
-                    plain
-                    style="border-radius: 10px; padding: 10px 12px"
-                    class="_action-btn"
-                    @click="addImage(index)"
-                    >ADD IMAGE</el-button
+                  <el-upload
+                    action=""
+                    ref="upload"
+                    :auto-upload="false"
+                    :on-change="onchange"
+                    :on-remove="handleRemove"
+                    :before-upload="beforeUpload"
                   >
+                    <el-button
+                      type="info"
+                      plain
+                      style="border-radius: 10px; padding: 10px 12px"
+                      class="_action-btn"
+                    >
+                      ADD IMAGE
+                    </el-button>
+                  </el-upload>
                 </el-form-item>
 
                 <el-row :gutter="20">
@@ -107,19 +116,53 @@
 
                 <el-row :gutter="20">
                   <el-col :span="12">
-                    <el-form-item label="Deposit token" required>
-                      <el-input
-                        v-model="form.depositToken"
+                    <el-form-item
+                      label="Deposit token"
+                      prop="depositTokenAddress"
+                      required
+                    >
+                      <el-autocomplete
+                        v-model="form.depositTokenAddress"
+                        class="el-input"
+                        :fetch-suggestions="queryDepositTokens"
+                        :trigger-on-focus="false"
                         placeholder="Search for Token or Address"
-                      ></el-input>
+                        @select="handleDepositTokenSelect"
+                      >
+                        <template slot-scope="{ item }">
+                          <div style="padding: 6px 0">
+                            <el-avatar
+                              :src="item.thumbnailUri"
+                              fit="cover"
+                              shape="circle"
+                              :size="40"
+                              style="
+                                position: relative;
+                                border: 4px solid #fff;
+                                vertical-align: middle;
+                                margin-right: 14px;
+                              "
+                            ></el-avatar>
+                            {{ item.value }}
+                          </div>
+                        </template>
+                      </el-autocomplete>
                     </el-form-item>
                   </el-col>
                   <el-col :span="12">
-                    <el-form-item label="Amount to Deposit" required>
+                    <el-form-item
+                      label="Amount to Deposit"
+                      prop="depositTokenAmount"
+                      required
+                    >
                       <el-input
-                        v-model="form.amount"
+                        v-model="form.depositTokenAmount"
                         placeholder="10,000"
-                      ></el-input>
+                      >
+                        <span slot="suffix">{{
+                          form.depositTokenName
+                        }}</span></el-input
+                      >
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -181,6 +224,9 @@
                   <el-col :span="8" style="font-weight: bold"
                     >Amount to Raise:</el-col
                   >
+                  <el-col v-if="form.depositTokenAmount" :span="16">{{
+                    form.depositTokenAmount
+                  }}</el-col>
                 </el-row>
                 <el-row
                   type="flex"
@@ -190,6 +236,9 @@
                   <el-col :span="8" style="font-weight: bold"
                     >Offering Type:</el-col
                   >
+                  <el-col v-if="form.offeringType" :span="16">{{
+                    form.offeringType
+                  }}</el-col>
                 </el-row>
                 <el-row
                   type="flex"
@@ -198,6 +247,24 @@
                 >
                   <el-col :span="8" style="font-weight: bold"
                     >Deposit Token:</el-col
+                  >
+                  <el-col v-if="form.depositTokenName.length" :span="16">
+                    <el-avatar
+                      :src="form.depositTokenThumbnailUri"
+                      fit="cover"
+                      shape="circle"
+                      :size="40"
+                      style="
+                        position: relative;
+                        border: 4px solid #fff;
+                        vertical-align: middle;
+                        margin-right: 14px;
+                      "
+                    ></el-avatar>
+                    {{ form.depositTokenName }}
+                  </el-col>
+                  <el-col v-if="form.depositTokenName.length === 0" :span="16"
+                    >--</el-col
                   >
                 </el-row>
                 <el-row
@@ -208,6 +275,9 @@
                   <el-col :span="12" style="font-weight: bold"
                     >Amount to Deposit:</el-col
                   >
+                  <el-col v-if="form.depositTokenAmount" :span="16">{{
+                    form.depositTokenAmount
+                  }}</el-col>
                 </el-row>
                 <el-row
                   type="flex"
@@ -217,6 +287,9 @@
                   <el-col :span="12" style="font-weight: bold"
                     >Deposit Token Price in XTZ:</el-col
                   >
+                  <el-col v-if="form.priceXtz" :span="16">{{
+                    form.priceXtz
+                  }}</el-col>
                 </el-row>
                 <el-row
                   type="flex"
@@ -225,10 +298,10 @@
                   <el-col :span="8" style="font-weight: bold"
                     >IFO Funding Start:</el-col
                   >
-                  <el-col v-if="form.startEndTime.length" :span="16">{{
-                    form.startEndTime[0]
+                  <el-col v-if="form.startEndTimeIFO" :span="16">{{
+                    form.startEndTimeIFO[0]
                   }}</el-col>
-                  <el-col v-if="form.startEndTime.length === 0" :span="16"
+                  <el-col v-if="form.startEndTimeIFO === 0" :span="16"
                     >--</el-col
                   >
                 </el-row>
@@ -237,12 +310,12 @@
                   style="font-size: 14px; margin-bottom: 14px"
                 >
                   <el-col :span="8" style="font-weight: bold"
-                    >IFO Funding Start:</el-col
+                    >IFO Funding End:</el-col
                   >
-                  <el-col v-if="form.startEndTime.length" :span="16">{{
-                    form.startEndTime[1]
+                  <el-col v-if="form.startEndTimeIFO" :span="16">{{
+                    form.startEndTimeIFO[1]
                   }}</el-col>
-                  <el-col v-if="form.startEndTime.length === 0" :span="16"
+                  <el-col v-if="form.startEndTimeIFO === 0" :span="16"
                     >--</el-col
                   >
                 </el-row>
@@ -254,10 +327,10 @@
                   <el-col :span="8" style="font-weight: bold"
                     >Token Farming Start:</el-col
                   >
-                  <el-col v-if="form.startEndTime.length" :span="16">{{
-                    form.startEndTime[0]
+                  <el-col v-if="form.startEndTimeFarming" :span="16">{{
+                    form.startEndTimeFarming[0]
                   }}</el-col>
-                  <el-col v-if="form.startEndTime.length === 0" :span="16"
+                  <el-col v-if="form.startEndTimeFarming === 0" :span="16"
                     >--</el-col
                   >
                 </el-row>
@@ -268,10 +341,10 @@
                   <el-col :span="8" style="font-weight: bold"
                     >Token Farming End:</el-col
                   >
-                  <el-col v-if="form.startEndTime.length" :span="16">{{
-                    form.startEndTime[1]
+                  <el-col v-if="form.startEndTimeFarming" :span="16">{{
+                    form.startEndTimeFarming[1]
                   }}</el-col>
-                  <el-col v-if="form.startEndTime.length === 0" :span="16"
+                  <el-col v-if="form.startEndTimeFarming === 0" :span="16"
                     >--</el-col
                   >
                 </el-row>
@@ -284,6 +357,9 @@
                   <el-col :span="8" style="font-weight: bold"
                     >Website URL:</el-col
                   >
+                  <el-col v-if="form.websiteURL" :span="16">{{
+                    form.websiteURL
+                  }}</el-col>
                 </el-row>
 
                 <el-row
@@ -294,6 +370,9 @@
                   <el-col :span="8" style="font-weight: bold"
                     >Twitter URL:</el-col
                   >
+                  <el-col v-if="form.twitterURL" :span="16">{{
+                    form.twitterURL
+                  }}</el-col>
                 </el-row>
 
                 <el-row
@@ -304,6 +383,9 @@
                   <el-col :span="8" style="font-weight: bold"
                     >Discord URL:</el-col
                   >
+                  <el-col v-if="form.discordURL" :span="16">{{
+                    form.discordURL
+                  }}</el-col>
                 </el-row>
 
                 <el-row
@@ -320,7 +402,13 @@
                   align="middle"
                   style="font-size: 14px; margin-bottom: 14px"
                 >
-                  --
+                  <el-image
+                    v-if="form.fileList.length > 0"
+                    style="width: 100px; height: 100px"
+                    :src="form.fileList[0]"
+                    :preview-src-list="form.fileList"
+                  >
+                  </el-image>
                 </el-row>
 
                 <el-row
@@ -331,14 +419,13 @@
                   <el-col :span="12" style="font-weight: bold"
                     >Description</el-col
                   >
-                  
                 </el-row>
                 <el-row
                   type="flex"
                   align="middle"
                   style="font-size: 14px; margin-bottom: 14px"
                 >
-                  --
+                  {{ form.desc }}
                 </el-row>
               </el-card>
             </div>
@@ -363,12 +450,10 @@
 </template>
 
 <script>
-import _ from "lodash";
 import { mapState, mapActions } from "vuex";
 import ipfs from "./../utils/ipfs";
 import farmUtils from "./../utils/farm";
 import { getTokenMetadata } from "./../utils/tezos";
-import { BigNumber } from "bignumber.js";
 import { ValidationResult, validateContractAddress } from "@taquito/utils";
 import NavMenu from "./NavMenu.vue";
 import ConnectButton from "./ConnectButton.vue";
@@ -393,20 +478,8 @@ export default {
       }
     };
 
-    var validatePoolTokenId = (rule, value, callback) => {
-      if (this.form.poolTokenType === "fa1") {
-        callback();
-      } else {
-        if (value === "") {
-          callback(new Error("Enter token id"));
-        } else {
-          callback();
-        }
-      }
-    };
-
-    var validateRewardTokenId = (rule, value, callback) => {
-      if (this.form.rewardTokenType === "fa1") {
+    var validateDepositTokenId = (rule, value, callback) => {
+      if (this.form.depositTokenType === "fa1") {
         callback();
       } else {
         if (value === "") {
@@ -420,22 +493,18 @@ export default {
     return {
       loading: true,
       form: {
-        poolTokenIsQuipuLp: true,
-        poolTokenName: "",
-        poolTokenType: "",
-        poolTokenAddress: "",
-        poolTokenId: "",
-        poolTokenThumbnailUri: "",
-        rewardTokenName: "",
-        rewardTokenType: "",
-        rewardTokenAddress: "",
-        rewardTokenId: "",
-        rewardTokenAmount: "",
-        rewardTokenDecimals: 0,
-        rewardTokenThumbnailUri: "",
+        depositTokenName: "",
+        depositTokenType: "",
+        depositTokenAddress: "",
+        depositTokenId: "",
+        depositTokenAmount: "",
+        depositTokenDecimals: 0,
+        depositTokenThumbnailUri: "",
         startEndTime: [],
         bonuses: [{ endTime: "", multiplier: "" }],
         serviceFeeId: "",
+        bannerImage: "",
+        fileList: [],
       },
       pickerOptions: {
         disabledDate(d) {
@@ -449,18 +518,15 @@ export default {
         { value: "3", label: "500,000 CRNCHY + 0% of tokens" },
       ],
       rules: {
-        poolTokenType: [{ required: true, message: "Select token type" }],
-        poolTokenAddress: [{ required: true, validator: validateTokenAddress }],
-        poolTokenId: [{ validator: validatePoolTokenId }],
-        rewardTokenType: [{ required: true, message: "Select token type" }],
-        rewardTokenAddress: [
+        depositTokenType: [{ required: true, message: "Select token type" }],
+        depositTokenAddress: [
           { required: true, validator: validateTokenAddress },
         ],
-        rewardTokenId: [{ validator: validateRewardTokenId }],
+        depositTokenId: [{ validator: validateDepositTokenId }],
         startEndTime: [
           { required: true, message: "Select a start and end date & time" },
         ],
-        rewardTokenAmount: [
+        depositTokenAmount: [
           { required: true, message: "Enter an amount" },
           {
             type: "number",
@@ -474,70 +540,30 @@ export default {
     };
   },
   computed: {
-    ...mapState(["wallet", "farms"]),
-
-    rewardAmountPerSecond: function () {
-      if (!this.form.rewardTokenAmount || !this.form.rewardTokenName) {
-        return 0;
-      }
-
-      if (this.form.startEndTime.length === 0) {
-        return 0;
-      }
-
-      let start = this.form.startEndTime[0];
-      const end = this.form.startEndTime[1];
-      let effectiveSec = 0;
-
-      if (
-        this.form.bonuses.length &&
-        this.form.bonuses[0].endTime &&
-        this.form.bonuses[0].multiplier
-      ) {
-        const bonuses = _.orderBy(this.form.bonuses, "endTime", "asc");
-        for (const bonus of bonuses) {
-          effectiveSec +=
-            ((bonus.endTime - start) / 1000) * parseInt(bonus.multiplier);
-          start = bonus.endTime;
-        }
-      }
-
-      effectiveSec += (end - start) / 1000;
-
-      return BigNumber(this.form.rewardTokenAmount)
-        .times(BigNumber(10).pow(this.form.rewardTokenDecimals))
-        .div(effectiveSec)
-        .integerValue(BigNumber.ROUND_CEIL)
-        .toNumber();
-    },
+    ...mapState(["wallet", "farms", "tokenTracker"]),
   },
   watch: {
     form: {
       async handler(val) {
-        if (
-          !val.rewardTokenThumbnailUri &&
-          val.rewardTokenType &&
-          val.rewardTokenAddress &&
-          (val.rewardTokenType === "fa1" || val.rewardTokenId)
-        ) {
-          const validation = validateContractAddress(val.rewardTokenAddress);
+        if (!val.depositTokenThumbnailUri && val.depositTokenAddress) {
+          const validation = validateContractAddress(val.depositToken);
           if (validation === ValidationResult.VALID) {
-            let rewardTokenMeta = await getTokenMetadata(
-              val.rewardTokenAddress,
-              val.rewardTokenId || 0
+            let depositTokenMeta = await getTokenMetadata(
+              val.depositToken,
+              val.depositTokenId || 0
             );
-            rewardTokenMeta = farmUtils.overrideMetadata(rewardTokenMeta);
-            this.form.rewardTokenName =
-              rewardTokenMeta.symbol || rewardTokenMeta.name;
-            this.form.rewardTokenDecimals = rewardTokenMeta.decimals;
-            this.form.rewardTokenThumbnailUri = ipfs.transformUri(
-              rewardTokenMeta.thumbnailUri
+            depositTokenMeta = farmUtils.overrideMetadata(depositTokenMeta);
+            this.form.depositTokenName =
+              depositTokenMeta.symbol || depositTokenMeta.name;
+            this.form.depositTokenDecimals = depositTokenMeta.decimals;
+            this.form.depositTokenThumbnailUri = ipfs.transformUri(
+              depositTokenMeta.thumbnailUri
             );
           }
         } else {
-          const validation = validateContractAddress(val.rewardTokenAddress);
+          const validation = validateContractAddress(val.depositTokenAddress);
           if (validation !== ValidationResult.VALID) {
-            this.form.rewardTokenThumbnailUri = "";
+            this.form.depositTokenThumbnailUri = "";
           }
         }
       },
@@ -564,36 +590,12 @@ export default {
             }
           }
 
-          let serviceFeeMultiplier = 1.015;
-          if (vm.form.serviceFeeId === "1") {
-            serviceFeeMultiplier = 1.01;
-          } else if (vm.form.serviceFeeId === "2") {
-            serviceFeeMultiplier = 1.005;
-          } else if (vm.form.serviceFeeId === "3") {
-            serviceFeeMultiplier = 1;
-          }
-
           const params = {
             poolToken: {
               tokenType: vm.form.poolTokenType,
               tokenAddress: vm.form.poolTokenAddress,
               tokenId: vm.form.poolTokenId || 0,
             },
-            rewardToken: {
-              tokenType: vm.form.rewardTokenType,
-              tokenAddress: vm.form.rewardTokenAddress,
-              tokenId: vm.form.rewardTokenId || 0,
-            },
-            rewardSupply: BigNumber(vm.form.rewardTokenAmount)
-              .times(BigNumber(10).pow(vm.form.rewardTokenDecimals))
-              .idiv(1)
-              .toNumber(),
-            rewardSupplyApprove: BigNumber(vm.form.rewardTokenAmount)
-              .times(BigNumber(serviceFeeMultiplier))
-              .times(BigNumber(10).pow(vm.form.rewardTokenDecimals))
-              .idiv(1)
-              .toNumber(),
-            rewardPerSec: vm.rewardAmountPerSecond,
             startTime: vm.form.startEndTime[0],
             endTime: vm.form.startEndTime[1],
             lockDuration: 0,
@@ -616,77 +618,38 @@ export default {
       });
     },
 
-    addBonus(index) {
-      this.form.bonuses.splice(index + 1, 0, { endTime: "", multiplier: "" });
+    onchange(file) {
+      this.form.fileList.push(URL.createObjectURL(file.raw));
     },
 
-    removeBonus(index) {
-      this.form.bonuses.splice(index, 1);
+    handleRemove(file) {
+      this.form.fileList.pop();
     },
 
-    queryPoolTokens(keywords, cb) {
-      const matches = [];
-      for (let t of this.farms.priceFeed) {
-        if (
-          (Object.prototype.hasOwnProperty.call(t, "name") &&
-            t.name.toLowerCase().includes(keywords.toLowerCase())) ||
-          (Object.prototype.hasOwnProperty.call(t, "symbol") &&
-            t.symbol.toLowerCase().includes(keywords.toLowerCase()))
-        ) {
-          t = farmUtils.overrideMetadata(t);
-          if (!Object.prototype.hasOwnProperty.call(t, "thumbnailUri")) {
-            t.thumbnailUri =
-              "https://static.thenounproject.com/png/796573-200.png";
-          }
-          t.thumbnailUri = ipfs.transformUri(t.thumbnailUri);
-          matches.push({
-            value: t.symbol || t.name,
-            type: t.type,
-            address: t.tokenAddress,
-            tokenId: t.tokenId || 0,
-            isQuipuLp: false,
-            thumbnailUri: t.thumbnailUri,
-          });
-          matches.push({
-            value: "XTZ/" + (t.symbol || t.name) + " LP",
-            type: t.type,
-            address: t.address,
-            tokenId: 0,
-            isQuipuLp: true,
-            thumbnailUri: t.thumbnailUri,
-          });
-        }
+    beforeUpload(file) {
+      // Perform any necessary validation or checks before uploading the file
+      // Return false to prevent uploading or return true to proceed with uploading
+      // You can also show an error message if the file doesn't meet the requirements
+      // For example, checking the file size or type
+      // Return false if the file doesn't meet the requirements
+      const isJPG = file.type === "image/jpeg";
+      const isPNG = file.type === "image/png";
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG && !isPNG) {
+        this.$message.error("Only JPEG or PNG images are allowed.");
+        return false;
       }
 
-      // liquidity baking
-      if (
-        "liquidity baking".includes(keywords.toLowerCase()) ||
-        "tzbtc".includes(keywords.toLowerCase())
-      ) {
-        matches.push({
-          value: "XTZ/tzBTC LP (Liquidity Baking)",
-          type: "fa1",
-          address: "KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo",
-          tokenId: 0,
-          isQuipuLp: true,
-          thumbnailUri:
-            "https://tzbtc.io/wp-content/uploads/2020/03/tzbtc_logo_single.svg",
-        });
+      if (!isLt2M) {
+        this.$message.error("Image size must be less than 2MB.");
+        return false;
       }
 
-      cb(matches);
+      return true;
     },
 
-    handlePoolTokenSelect(i) {
-      this.form.poolTokenIsQuipuLp = i.isQuipuLp;
-      this.form.poolTokenName = i.value;
-      this.form.poolTokenType = i.type === "fa2" ? "fa2" : "fa1";
-      this.form.poolTokenAddress = i.address;
-      this.form.poolTokenId = i.type === "fa2" ? i.tokenId : "";
-      this.form.poolTokenThumbnailUri = i.thumbnailUri;
-    },
-
-    queryRewardTokens(keywords, cb) {
+    queryDepositTokens(keywords, cb) {
       const matches = [];
       for (let t of this.farms.priceFeed) {
         if (
@@ -714,13 +677,13 @@ export default {
       cb(matches);
     },
 
-    handleRewardTokenSelect(i) {
-      this.form.rewardTokenName = i.value;
-      this.form.rewardTokenType = i.type === "fa2" ? "fa2" : "fa1";
-      this.form.rewardTokenAddress = i.address;
-      this.form.rewardTokenId = i.type === "fa2" ? i.tokenId : "";
-      this.form.rewardTokenDecimals = i.decimals;
-      this.form.rewardTokenThumbnailUri = i.thumbnailUri;
+    handleDepositTokenSelect(i) {
+      this.form.depositTokenName = i.value;
+      this.form.depositTokenType = i.type === "fa2" ? "fa2" : "fa1";
+      this.form.depositTokenAddress = i.address;
+      this.form.depositTokenId = i.type === "fa2" ? i.tokenId : "";
+      this.form.depositTokenDecimals = i.decimals;
+      this.form.depositTokenThumbnailUri = i.thumbnailUri;
     },
   },
 };
