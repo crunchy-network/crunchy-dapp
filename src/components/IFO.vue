@@ -611,7 +611,7 @@ export default {
         }
         if (vm.ifo.data.ended) {
           startTime = new Date(vm.ifo.data.harvestTime).getTime();
-          if (startTime > currentTime) {
+          if (startTime < currentTime) {
             startTime = startTime + vm.ifo.data.harvestDuration;
           }
         }
