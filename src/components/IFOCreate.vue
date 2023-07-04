@@ -107,8 +107,8 @@
 
                 <el-form-item label="Description" prop="desc">
                   <el-input
-                    style="background-color: #191b1f !important"
                     v-model="form.desc"
+                    style="background-color: #191b1f !important"
                     type="textarea"
                     placeholder="Description text...."
                   />
@@ -173,8 +173,8 @@
                   required
                 >
                   <el-input
-                    style="width: 40%"
                     v-model="form.priceXtz"
+                    style="width: 40%"
                     placeholder="0.0002"
                   ></el-input>
                 </el-form-item>
@@ -290,12 +290,6 @@
                     ></el-avatar>
                     {{ form.depositTokenName }}
                   </el-col>
-                  <el-col
-                    v-if="form.depositTokenName.length === 0"
-                    :span="16"
-                    style="display: flex; justify-content: flex-end"
-                    >--</el-col
-                  >
                 </el-row>
                 <el-row
                   type="flex"
@@ -685,7 +679,7 @@ export default {
         }
       });
     },
-
+ 
     onchange(file) {
       this.form.fileList.push(URL.createObjectURL(file.raw));
     },
@@ -695,7 +689,6 @@ export default {
     },
 
     beforeUpload(file) {
-      console.log(file)
       // Perform any necessary validation or checks before uploading the file
       // Return false to prevent uploading or return true to proceed with uploading
       // You can also show an error message if the file doesn't meet the requirements

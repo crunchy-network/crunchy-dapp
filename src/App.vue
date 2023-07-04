@@ -207,6 +207,27 @@ i.fa-icon-right {
   padding-right: 40px !important;
   margin-top: 36px;
 }
+.el-upload-list__item-name {
+  font-size: medium;
+}
+el-upload-list__item {
+  display: flex !important;
+}
+.el-upload-list__item:hover {
+  background: none !important;
+}
+.el-upload-list__item-name {
+  display: inline-block !important;
+  margin-right: 10px !important;
+}
+.el-upload-list__item .el-icon-close {
+  color: red !important;
+  font-weight: 600;
+  font-size: large;
+  display: inline-block !important;
+  left: 100px !important;
+  top: 8px !important;
+}
 .el-header {
   padding: 20px !important;
 }
@@ -1078,14 +1099,13 @@ html[data-theme="dark"] {
     color: var(--primary-text);
   }
   .el-textarea__inner::placeholder {
-      color: #8C8D8F;
+    color: #8c8d8f;
   }
   .el-textarea__inner:focus {
     border-color: #555cff !important;
   }
-  .el-icon-close {
-    color: red;
-    font-weight: 600;
+  .el-upload-list__item-name {
+    color: var(--primary-text);
   }
 }
 </style>
