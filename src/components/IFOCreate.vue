@@ -49,7 +49,7 @@
                       v-for="item in offeringTypes"
                       :key="item.value"
                       :label="item.label"
-                      :value="item.value"
+                      :value="item.label"
                     >
                     </el-option>
                   </el-select>
@@ -224,9 +224,18 @@
                   <el-col :span="8" style="font-weight: bold"
                     >Amount to Raise:</el-col
                   >
-                  <el-col v-if="form.depositTokenAmount" :span="16">{{
-                    form.depositTokenAmount
-                  }}</el-col>
+                  <el-col
+                    v-if="form.depositTokenAmount && form.priceXtz"
+                    :span="16"
+                    >{{
+                      vueNumberFormat(form.depositTokenAmount * form.priceXtz, {
+                        prefix: "",
+                        decimal: ".",
+                        thousand: ",",
+                        precision: 2,
+                      })
+                    }} ꜩ 
+                  </el-col>
                 </el-row>
                 <el-row
                   type="flex"
@@ -512,10 +521,8 @@ export default {
         },
       },
       offeringTypes: [
-        { value: "0", label: "10,000 CRNCHY + 1.5% of tokens" },
-        { value: "1", label: "50,000 CRNCHY + 1.0% of tokens" },
-        { value: "2", label: "100,000 CRNCHY + 0.5% of tokens" },
-        { value: "3", label: "500,000 CRNCHY + 0% of tokens" },
+        { value: "0", label: "Initial farm offerings" },
+        { value: "1", label: "Farm offerings" },
       ],
       rules: {
         depositTokenType: [{ required: true, message: "Select token type" }],
@@ -527,6 +534,15 @@ export default {
           { required: true, message: "Select a start and end date & time" },
         ],
         depositTokenAmount: [
+          { required: true, message: "Enter an amount" },
+          {
+            type: "number",
+            required: true,
+            message: "Enter a valid amount",
+            transform: (v) => Number(v),
+          },
+        ],
+        priceXtz: [
           { required: true, message: "Enter an amount" },
           {
             type: "number",

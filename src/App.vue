@@ -1075,9 +1075,17 @@ html[data-theme="dark"] {
     background-color: #191b1f !important;
     border-color: var(--border-color);
     height: 100px;
+    color: var(--primary-text);
   }
   .el-textarea__inner::placeholder {
       color: #8C8D8F;
+  }
+  .el-textarea__inner:focus {
+    border-color: #555cff !important;
+  }
+  .el-icon-close {
+    color: red;
+    font-weight: 600;
   }
 }
 </style>
