@@ -60,8 +60,8 @@
                   prop="bannerImage"
                 >
                   <el-upload
-                    action=""
                     ref="upload"
+                    action=""
                     :auto-upload="false"
                     :on-change="onchange"
                     :on-remove="handleRemove"
@@ -219,14 +219,20 @@
                 <el-row
                   type="flex"
                   align="middle"
-                  style="font-size: 14px; margin-bottom: 14px"
+                  style="
+                    display: flex;
+                    flex-direction: space-between;
+                    font-size: 14px;
+                    margin-bottom: 14px;
+                  "
                 >
-                  <el-col :span="8" style="font-weight: bold"
-                    >Amount to Raise:</el-col
+                  <el-col :span="12" style="color: #8c8d8f"
+                    >Amount to Raise in XTZ</el-col
                   >
                   <el-col
                     v-if="form.depositTokenAmount && form.priceXtz"
-                    :span="16"
+                    :span="12"
+                    style="display: flex; justify-content: flex-end"
                     >{{
                       vueNumberFormat(form.depositTokenAmount * form.priceXtz, {
                         prefix: "",
@@ -234,30 +240,42 @@
                         thousand: ",",
                         precision: 2,
                       })
-                    }} ꜩ 
+                    }}
                   </el-col>
                 </el-row>
                 <el-row
                   type="flex"
                   align="middle"
-                  style="font-size: 14px; margin-bottom: 14px"
+                  style="
+                    display: flex;
+                    flex-direction: space-between;
+                    font-size: 14px;
+                    margin-bottom: 14px;
+                  "
                 >
-                  <el-col :span="8" style="font-weight: bold"
-                    >Offering Type:</el-col
+                  <el-col :span="8" style="color: #8c8d8f"
+                    >Offering Type</el-col
                   >
-                  <el-col v-if="form.offeringType" :span="16">{{
-                    form.offeringType
-                  }}</el-col>
+                  <el-col
+                    v-if="form.offeringType"
+                    :span="16"
+                    style="display: flex; justify-content: flex-end"
+                    >{{ form.offeringType }}</el-col
+                  >
                 </el-row>
                 <el-row
                   type="flex"
                   align="middle"
                   style="font-size: 14px; margin-bottom: 14px"
                 >
-                  <el-col :span="8" style="font-weight: bold"
-                    >Deposit Token:</el-col
+                  <el-col :span="8" style="color: #8c8d8f"
+                    >Deposit Token</el-col
                   >
-                  <el-col v-if="form.depositTokenName.length" :span="16">
+                  <el-col
+                    v-if="form.depositTokenName.length"
+                    :span="16"
+                    style="display: flex; justify-content: flex-end"
+                  >
                     <el-avatar
                       :src="form.depositTokenThumbnailUri"
                       fit="cover"
@@ -272,7 +290,10 @@
                     ></el-avatar>
                     {{ form.depositTokenName }}
                   </el-col>
-                  <el-col v-if="form.depositTokenName.length === 0" :span="16"
+                  <el-col
+                    v-if="form.depositTokenName.length === 0"
+                    :span="16"
+                    style="display: flex; justify-content: flex-end"
                     >--</el-col
                   >
                 </el-row>
@@ -281,36 +302,48 @@
                   align="middle"
                   style="font-size: 14px; margin-bottom: 14px"
                 >
-                  <el-col :span="12" style="font-weight: bold"
-                    >Amount to Deposit:</el-col
+                  <el-col :span="12" style="color: #8c8d8f"
+                    >Amount to Deposit</el-col
                   >
-                  <el-col v-if="form.depositTokenAmount" :span="16">{{
-                    form.depositTokenAmount
-                  }}</el-col>
+                  <el-col
+                    v-if="form.depositTokenAmount"
+                    :span="16"
+                    style="display: flex; justify-content: flex-end"
+                    >{{ form.depositTokenAmount }}</el-col
+                  >
                 </el-row>
                 <el-row
                   type="flex"
                   align="middle"
                   style="font-size: 14px; margin-bottom: 14px"
                 >
-                  <el-col :span="12" style="font-weight: bold"
-                    >Deposit Token Price in XTZ:</el-col
+                  <el-col :span="12" style="color: #8c8d8f"
+                    >Deposit Token Price in XTZ</el-col
                   >
-                  <el-col v-if="form.priceXtz" :span="16">{{
-                    form.priceXtz
-                  }}</el-col>
+                  <el-col
+                    v-if="form.priceXtz"
+                    :span="16"
+                    style="display: flex; justify-content: flex-end"
+                    >{{ form.priceXtz }}</el-col
+                  >
                 </el-row>
                 <el-row
                   type="flex"
                   style="font-size: 14px; margin-bottom: 14px"
                 >
-                  <el-col :span="8" style="font-weight: bold"
-                    >IFO Funding Start:</el-col
+                  <el-col :span="8" style="color: #8c8d8f"
+                    >IFO Funding Start</el-col
                   >
-                  <el-col v-if="form.startEndTimeIFO" :span="16">{{
-                    form.startEndTimeIFO[0]
-                  }}</el-col>
-                  <el-col v-if="form.startEndTimeIFO === 0" :span="16"
+                  <el-col
+                    v-if="form.startEndTimeIFO"
+                    :span="16"
+                    style="display: flex; justify-content: flex-end"
+                    >{{ form.startEndTimeIFO[0] }}</el-col
+                  >
+                  <el-col
+                    v-if="form.startEndTimeIFO === 0"
+                    :span="16"
+                    style="display: flex; justify-content: flex-end"
                     >--</el-col
                   >
                 </el-row>
@@ -318,13 +351,19 @@
                   type="flex"
                   style="font-size: 14px; margin-bottom: 14px"
                 >
-                  <el-col :span="8" style="font-weight: bold"
-                    >IFO Funding End:</el-col
+                  <el-col :span="8" style="color: #8c8d8f"
+                    >IFO Funding End</el-col
                   >
-                  <el-col v-if="form.startEndTimeIFO" :span="16">{{
-                    form.startEndTimeIFO[1]
-                  }}</el-col>
-                  <el-col v-if="form.startEndTimeIFO === 0" :span="16"
+                  <el-col
+                    v-if="form.startEndTimeIFO"
+                    :span="16"
+                    style="display: flex; justify-content: flex-end"
+                    >{{ form.startEndTimeIFO[1] }}</el-col
+                  >
+                  <el-col
+                    v-if="form.startEndTimeIFO === 0"
+                    :span="16"
+                    style="display: flex; justify-content: flex-end"
                     >--</el-col
                   >
                 </el-row>
@@ -333,13 +372,19 @@
                   type="flex"
                   style="font-size: 14px; margin-bottom: 14px"
                 >
-                  <el-col :span="8" style="font-weight: bold"
-                    >Token Farming Start:</el-col
+                  <el-col :span="8" style="color: #8c8d8f"
+                    >Token Farming Start</el-col
                   >
-                  <el-col v-if="form.startEndTimeFarming" :span="16">{{
-                    form.startEndTimeFarming[0]
-                  }}</el-col>
-                  <el-col v-if="form.startEndTimeFarming === 0" :span="16"
+                  <el-col
+                    v-if="form.startEndTimeFarming"
+                    :span="16"
+                    style="display: flex; justify-content: flex-end"
+                    >{{ form.startEndTimeFarming[0] }}</el-col
+                  >
+                  <el-col
+                    v-if="form.startEndTimeFarming === 0"
+                    :span="16"
+                    style="display: flex; justify-content: flex-end"
                     >--</el-col
                   >
                 </el-row>
@@ -347,13 +392,19 @@
                   type="flex"
                   style="font-size: 14px; margin-bottom: 14px"
                 >
-                  <el-col :span="8" style="font-weight: bold"
-                    >Token Farming End:</el-col
+                  <el-col :span="8" style="color: #8c8d8f"
+                    >Token Farming End</el-col
                   >
-                  <el-col v-if="form.startEndTimeFarming" :span="16">{{
-                    form.startEndTimeFarming[1]
-                  }}</el-col>
-                  <el-col v-if="form.startEndTimeFarming === 0" :span="16"
+                  <el-col
+                    v-if="form.startEndTimeFarming"
+                    :span="16"
+                    style="display: flex; justify-content: flex-end"
+                    >{{ form.startEndTimeFarming[1] }}</el-col
+                  >
+                  <el-col
+                    v-if="form.startEndTimeFarming === 0"
+                    :span="16"
+                    style="display: flex; justify-content: flex-end"
                     >--</el-col
                   >
                 </el-row>
@@ -363,12 +414,13 @@
                   align="middle"
                   style="font-size: 14px; margin-bottom: 14px"
                 >
-                  <el-col :span="8" style="font-weight: bold"
-                    >Website URL:</el-col
+                  <el-col :span="8" style="color: #8c8d8f">Website URL</el-col>
+                  <el-col
+                    v-if="form.websiteURL"
+                    :span="16"
+                    style="display: flex; justify-content: flex-end"
+                    >{{ form.websiteURL }}</el-col
                   >
-                  <el-col v-if="form.websiteURL" :span="16">{{
-                    form.websiteURL
-                  }}</el-col>
                 </el-row>
 
                 <el-row
@@ -376,12 +428,13 @@
                   align="middle"
                   style="font-size: 14px; margin-bottom: 14px"
                 >
-                  <el-col :span="8" style="font-weight: bold"
-                    >Twitter URL:</el-col
+                  <el-col :span="8" style="color: #8c8d8f">Twitter URL</el-col>
+                  <el-col
+                    v-if="form.twitterURL"
+                    :span="16"
+                    style="display: flex; justify-content: flex-end"
+                    >{{ form.twitterURL }}</el-col
                   >
-                  <el-col v-if="form.twitterURL" :span="16">{{
-                    form.twitterURL
-                  }}</el-col>
                 </el-row>
 
                 <el-row
@@ -389,12 +442,13 @@
                   align="middle"
                   style="font-size: 14px; margin-bottom: 14px"
                 >
-                  <el-col :span="8" style="font-weight: bold"
-                    >Discord URL:</el-col
+                  <el-col :span="8" style="color: #8c8d8f">Discord URL</el-col>
+                  <el-col
+                    v-if="form.discordURL"
+                    :span="16"
+                    style="display: flex; justify-content: flex-end"
+                    >{{ form.discordURL }}</el-col
                   >
-                  <el-col v-if="form.discordURL" :span="16">{{
-                    form.discordURL
-                  }}</el-col>
                 </el-row>
 
                 <el-row
@@ -402,8 +456,8 @@
                   align="middle"
                   style="font-size: 14px; margin-bottom: 14px"
                 >
-                  <el-col :span="12" style="font-weight: bold"
-                    >Banner Image Preview:</el-col
+                  <el-col :span="12" style="color: #8c8d8f"
+                    >Banner Image Preview</el-col
                   >
                 </el-row>
                 <el-row
@@ -425,9 +479,7 @@
                   align="middle"
                   style="font-size: 14px; margin-bottom: 14px"
                 >
-                  <el-col :span="12" style="font-weight: bold"
-                    >Description</el-col
-                  >
+                  <el-col :span="12" style="color: #8c8d8f">Description</el-col>
                 </el-row>
                 <el-row
                   type="flex"
@@ -643,6 +695,7 @@ export default {
     },
 
     beforeUpload(file) {
+      console.log(file)
       // Perform any necessary validation or checks before uploading the file
       // Return false to prevent uploading or return true to proceed with uploading
       // You can also show an error message if the file doesn't meet the requirements
