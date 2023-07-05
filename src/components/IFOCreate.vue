@@ -18,7 +18,6 @@
           </div>
         </el-col>
       </el-row>
-
       <el-form
         ref="form"
         :model="form"
@@ -27,7 +26,7 @@
         label-position="top"
       >
         <el-row :gutter="20" type="flex" style="margin-top: 25px">
-          <el-col :span="16">
+          <el-col :span="16" class="farm-input">
             <div class="grid-content" style="height: 100%">
               <el-card
                 v-loading="loading"
@@ -78,8 +77,8 @@
                   </el-upload>
                 </el-form-item>
 
-                <el-row :gutter="20">
-                  <el-col :span="8">
+                <el-row :gutter="20" class="row-input">
+                  <el-col :span="8" class="row-input_item">
                     <el-form-item label="Website URL">
                       <el-input
                         v-model="form.websiteURL"
@@ -87,7 +86,7 @@
                       ></el-input>
                     </el-form-item>
                   </el-col>
-                  <el-col :span="8">
+                  <el-col :span="8" class="row-input_item">
                     <el-form-item label="Twitter URL">
                       <el-input
                         v-model="form.twitterURL"
@@ -95,7 +94,7 @@
                       ></el-input>
                     </el-form-item>
                   </el-col>
-                  <el-col :span="8">
+                  <el-col :span="8" class="row-input_item">
                     <el-form-item label="Discord URL">
                       <el-input
                         v-model="form.discordURL"
@@ -114,8 +113,8 @@
                   />
                 </el-form-item>
 
-                <el-row :gutter="20">
-                  <el-col :span="12">
+                <el-row :gutter="20" class="row-input">
+                  <el-col :span="12" class="row-input_item">
                     <el-form-item
                       label="Deposit token"
                       prop="depositTokenAddress"
@@ -149,7 +148,7 @@
                       </el-autocomplete>
                     </el-form-item>
                   </el-col>
-                  <el-col :span="12">
+                  <el-col :span="12" class="row-input_item">
                     <el-form-item
                       label="Amount to Deposit"
                       prop="depositTokenAmount"
@@ -212,7 +211,7 @@
             </div>
           </el-col>
 
-          <el-col :span="8">
+          <el-col :span="8" class="farm-review">
             <div class="grid-content" style="height: 100%">
               <el-card class="box-card" shadow="always" style="height: 100%">
                 <h3 style="margin-top: 0">Farm Offering Summary</h3>
@@ -488,18 +487,328 @@
         </el-row>
 
         <el-row :gutter="20" type="flex" style="margin-top: 25px">
-          <el-col :span="8" :offset="16" style="text-align: right">
+          <el-col
+            :span="8"
+            :offset="16"
+            class="btn-container"
+            style="text-align: right"
+          >
             <el-button
               v-if="wallet.connected"
+              class="create-farm-btn"
               type="primary"
               style="border-radius: 10px; font-weight: bold"
               @click="onSubmit"
-              >Create Farm</el-button
             >
+              Create Farm Offering
+            </el-button>
             <connect-button v-if="wallet.connected === false" />
+            <el-button
+              class="preview-btn"
+              type="primary"
+              style="width: 100%; border-radius: 10px; font-weight: bold"
+              @click="openDialog"
+            >
+              Preview
+            </el-button>
           </el-col>
         </el-row>
       </el-form>
+        <el-dialog
+        class="dialog"
+        :visible="form.dialogVisible"
+        title="Summary"
+        style="width: 85%; padding:20px"
+        width="100%"
+        @close="closeDialog"
+      >
+      <div class="preview-infor" style="margin-bottom: 24px;margin-top: 16px;">
+        <span style="color: #777e90;
+          font-size: 12px;
+          margin-bottom: 24px;
+          margin-top: 16px;">
+        Review this final summary before you create {{ form.offeringType }}. Once you confirm,
+        </span>
+        <span class="warning-modal" style="font-size: 12px">you cannot make changes.</span>
+      </div>
+        <el-row
+                  type="flex"
+                  align="middle"
+                  style="
+                    display: flex;
+                    flex-direction: space-between;
+                    font-size: 12px;
+                    margin-bottom: 14px;
+                  "
+                >
+                  <el-col :span="12" style="color: #8c8d8f"
+                    >Amount to Raise in XTZ</el-col
+                  >
+                  <el-col
+                    v-if="form.depositTokenAmount && form.priceXtz"
+                    :span="12"
+                    style="display: flex; justify-content: flex-end"
+                    >{{
+                      vueNumberFormat(form.depositTokenAmount * form.priceXtz, {
+                        prefix: "",
+                        decimal: ".",
+                        thousand: ",",
+                        precision: 2,
+                      })
+                    }}
+                  </el-col>
+                </el-row>
+                <el-row
+                  type="flex"
+                  align="middle"
+                  style="
+                    display: flex;
+                    flex-direction: space-between;
+                    font-size: 12px;
+                    margin-bottom: 14px;
+                  "
+                >
+                  <el-col :span="8" style="color: #8c8d8f"
+                    >Offering Type</el-col
+                  >
+                  <el-col
+                    v-if="form.offeringType"
+                    :span="16"
+                    style="display: flex; justify-content: flex-end"
+                    >{{ form.offeringType }}</el-col
+                  >
+                </el-row>
+                <el-row
+                  type="flex"
+                  align="middle"
+                  style="font-size: 12px; margin-bottom: 14px"
+                >
+                  <el-col :span="8" style="color: #8c8d8f"
+                    >Deposit Token</el-col
+                  >
+                  <el-col
+                    v-if="form.depositTokenName.length"
+                    :span="16"
+                    style="display: flex; justify-content: flex-end"
+                  >
+                    <el-avatar
+                      :src="form.depositTokenThumbnailUri"
+                      fit="cover"
+                      shape="circle"
+                      :size="40"
+                      style="
+                        position: relative;
+                        border: 4px solid #fff;
+                        vertical-align: middle;
+                        margin-right: 14px;
+                      "
+                    ></el-avatar>
+                    {{ form.depositTokenName }}
+                  </el-col>
+                </el-row>
+                <el-row
+                  type="flex"
+                  align="middle"
+                  style="font-size: 12px; margin-bottom: 14px"
+                >
+                  <el-col :span="12" style="color: #8c8d8f"
+                    >Amount to Deposit</el-col
+                  >
+                  <el-col
+                    v-if="form.depositTokenAmount"
+                    :span="16"
+                    style="display: flex; justify-content: flex-end"
+                    >{{ form.depositTokenAmount }}</el-col
+                  >
+                </el-row>
+                <el-row
+                  type="flex"
+                  align="middle"
+                  style="font-size: 12px; margin-bottom: 14px"
+                >
+                  <el-col :span="12" style="color: #8c8d8f"
+                    >Deposit Token Price in XTZ</el-col
+                  >
+                  <el-col
+                    v-if="form.priceXtz"
+                    :span="16"
+                    style="display: flex; justify-content: flex-end"
+                    >{{ form.priceXtz }}</el-col
+                  >
+                </el-row>
+                <el-row
+                  type="flex"
+                  style="font-size: 12px; margin-bottom: 14px"
+                >
+                  <el-col :span="12" style="color: #8c8d8f"
+                    >IFO Funding Start</el-col
+                  >
+                  <el-col
+                    v-if="form.startEndTimeIFO"
+                    :span="16"
+                    style="display: flex; justify-content: flex-end"
+                    >{{ form.startEndTimeIFO[0] }}</el-col
+                  >
+                  <el-col
+                    v-if="form.startEndTimeIFO === 0"
+                    :span="16"
+                    style="display: flex; justify-content: flex-end"
+                    >--</el-col
+                  >
+                </el-row>
+                <el-row
+                  type="flex"
+                  style="font-size: 12px; margin-bottom: 14px"
+                >
+                  <el-col :span="12" style="color: #8c8d8f"
+                    >IFO Funding End</el-col
+                  >
+                  <el-col
+                    v-if="form.startEndTimeIFO"
+                    :span="16"
+                    style="display: flex; justify-content: flex-end"
+                    >{{ form.startEndTimeIFO[1] }}</el-col
+                  >
+                  <el-col
+                    v-if="form.startEndTimeIFO === 0"
+                    :span="16"
+                    style="display: flex; justify-content: flex-end"
+                    >--</el-col
+                  >
+                </el-row>
+
+                <el-row
+                  type="flex"
+                  style="font-size: 12px; margin-bottom: 14px"
+                >
+                  <el-col :span="8" style="color: #8c8d8f"
+                    >Token Farming Start</el-col
+                  >
+                  <el-col
+                    v-if="form.startEndTimeFarming"
+                    :span="16"
+                    style="display: flex; justify-content: flex-end"
+                    >{{ form.startEndTimeFarming[0] }}</el-col
+                  >
+                  <el-col
+                    v-if="form.startEndTimeFarming === 0"
+                    :span="16"
+                    style="display: flex; justify-content: flex-end"
+                    >--</el-col
+                  >
+                </el-row>
+                <el-row
+                  type="flex"
+                  style="font-size: 12px; margin-bottom: 14px"
+                >
+                  <el-col :span="8" style="color: #8c8d8f"
+                    >Token Farming End</el-col
+                  >
+                  <el-col
+                    v-if="form.startEndTimeFarming"
+                    :span="16"
+                    style="display: flex; justify-content: flex-end"
+                    >{{ form.startEndTimeFarming[1] }}</el-col
+                  >
+                  <el-col
+                    v-if="form.startEndTimeFarming === 0"
+                    :span="16"
+                    style="display: flex; justify-content: flex-end"
+                    >--</el-col
+                  >
+                </el-row>
+
+                <el-row
+                  type="flex"
+                  align="middle"
+                  style="font-size: 12px; margin-bottom: 14px"
+                >
+                  <el-col :span="8" style="color: #8c8d8f">Website URL</el-col>
+                  <el-col
+                    v-if="form.websiteURL"
+                    :span="16"
+                    style="display: flex; justify-content: flex-end"
+                    >{{ form.websiteURL }}</el-col
+                  >
+                </el-row>
+
+                <el-row
+                  type="flex"
+                  align="middle"
+                  style="font-size: 12px; margin-bottom: 14px"
+                >
+                  <el-col :span="8" style="color: #8c8d8f">Twitter URL</el-col>
+                  <el-col
+                    v-if="form.twitterURL"
+                    :span="16"
+                    style="display: flex; justify-content: flex-end"
+                    >{{ form.twitterURL }}</el-col
+                  >
+                </el-row>
+
+                <el-row
+                  type="flex"
+                  align="middle"
+                  style="font-size: 12px; margin-bottom: 14px"
+                >
+                  <el-col :span="8" style="color: #8c8d8f">Discord URL</el-col>
+                  <el-col
+                    v-if="form.discordURL"
+                    :span="16"
+                    style="display: flex; justify-content: flex-end"
+                    >{{ form.discordURL }}</el-col
+                  >
+                </el-row>
+
+                <el-row
+                  type="flex"
+                  align="middle"
+                  style="font-size: 12px; margin-bottom: 14px"
+                >
+                  <el-col :span="12" style="color: #8c8d8f"
+                    >Banner Image Preview</el-col
+                  >
+                </el-row>
+                <el-row
+                  type="flex"
+                  align="middle"
+                  style="font-size: 12px; margin-bottom: 14px"
+                >
+                  <el-image
+                    v-if="form.fileList.length > 0"
+                    style="width: 100px; height: 100px"
+                    :src="form.fileList[0]"
+                    :preview-src-list="form.fileList"
+                  >
+                  </el-image>
+                </el-row>
+
+                <el-row
+                  type="flex"
+                  align="middle"
+                  style="font-size: 12px; margin-bottom: 14px"
+                >
+                  <el-col :span="12" style="color: #8c8d8f">Description</el-col>
+                </el-row>
+                <el-row
+                  type="flex"
+                  align="middle"
+                  style="font-size: 12px; margin-bottom: 14px"
+                >
+                  {{ form.desc }}
+                </el-row>
+                <div style="display: flex; justify-content: center;">
+                  <el-button
+                          v-if="wallet.connected"
+                          class="create-farm-btn_modal"
+                          type="primary"
+                          style="border-radius: 10px; font-weight: bold"
+                          @click="onSubmit"
+                        >
+                          Create Farm Offering
+                  </el-button>
+                </div>
+      </el-dialog>
     </el-main>
   </div>
 </template>
@@ -560,6 +869,7 @@ export default {
         serviceFeeId: "",
         bannerImage: "",
         fileList: [],
+        dialogVisible: false,
       },
       pickerOptions: {
         disabledDate(d) {
@@ -679,13 +989,20 @@ export default {
         }
       });
     },
- 
+
     onchange(file) {
       this.form.fileList.push(URL.createObjectURL(file.raw));
     },
 
     handleRemove(file) {
       this.form.fileList.pop();
+    },
+
+    openDialog() {
+      this.form.dialogVisible = true; // Set the property to true on button click
+    },
+    closeDialog() {
+      this.form.dialogVisible = false; // Set the property to false on button click
     },
 
     beforeUpload(file) {
@@ -761,5 +1078,47 @@ export default {
   max-width: 1450px;
   margin: 0 auto;
   text-transform: none !important;
+}
+.preview-btn {
+  display: none;
+}
+.create-farm-btn_modal {
+  display: none;
+}
+
+@media (max-width: 991px) {
+  .farm-review {
+    display: none;
+  }
+  .farm-input {
+    width: 100% !important;
+  }
+  .btn-container {
+    width: 100% !important;
+    margin-left: 0px !important;
+  }
+  .create-farm-btn {
+    display: none;
+  }
+  .create-farm-btn_modal {
+    display: block;
+  }
+  .preview-btn {
+    display: block;
+    margin-left: 0px !important;
+  }
+  .row-input {
+    display: flex;
+    flex-direction: column;
+  }
+  .row-input_item {
+    width: 100% !important;
+  }
+  .el-select {
+    width: 100% !important;
+  }
+  .el-range-editor.el-input__inner {
+    width: 100% !important;
+  }
 }
 </style>
