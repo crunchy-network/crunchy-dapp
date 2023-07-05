@@ -331,7 +331,7 @@
                     v-if="form.startEndTimeIFO"
                     :span="16"
                     style="display: flex; justify-content: flex-end"
-                    >{{ form.startEndTimeIFO[0] }}</el-col
+                    >{{ formatDateTime(form.startEndTimeIFO[0]) }}</el-col
                   >
                   <el-col
                     v-if="form.startEndTimeIFO === 0"
@@ -351,7 +351,7 @@
                     v-if="form.startEndTimeIFO"
                     :span="16"
                     style="display: flex; justify-content: flex-end"
-                    >{{ form.startEndTimeIFO[1] }}</el-col
+                    >{{ formatDateTime(form.startEndTimeIFO[1]) }}</el-col
                   >
                   <el-col
                     v-if="form.startEndTimeIFO === 0"
@@ -372,7 +372,7 @@
                     v-if="form.startEndTimeFarming"
                     :span="16"
                     style="display: flex; justify-content: flex-end"
-                    >{{ form.startEndTimeFarming[0] }}</el-col
+                    >{{ formatDateTime(form.startEndTimeFarming[0]) }}</el-col
                   >
                   <el-col
                     v-if="form.startEndTimeFarming === 0"
@@ -392,7 +392,7 @@
                     v-if="form.startEndTimeFarming"
                     :span="16"
                     style="display: flex; justify-content: flex-end"
-                    >{{ form.startEndTimeFarming[1] }}</el-col
+                    >{{ formatDateTime(form.startEndTimeFarming[1]) }}</el-col
                   >
                   <el-col
                     v-if="form.startEndTimeFarming === 0"
@@ -857,6 +857,7 @@ export default {
     return {
       loading: true,
       form: {
+        offeringType: "",
         depositTokenName: "",
         depositTokenType: "",
         depositTokenAddress: "",
@@ -864,7 +865,8 @@ export default {
         depositTokenAmount: "",
         depositTokenDecimals: 0,
         depositTokenThumbnailUri: "",
-        startEndTime: [],
+        startEndTimeFarming: [],
+        startEndTimeIFO: [],
         bonuses: [{ endTime: "", multiplier: "" }],
         serviceFeeId: "",
         bannerImage: "",
@@ -877,8 +879,8 @@ export default {
         },
       },
       offeringTypes: [
-        { value: "0", label: "Initial farm offerings" },
-        { value: "1", label: "Farm offerings" },
+        { value: "0", label: "Initial farm offering" },
+        { value: "1", label: "Farm offering" },
       ],
       rules: {
         depositTokenType: [{ required: true, message: "Select token type" }],
@@ -886,7 +888,10 @@ export default {
           { required: true, validator: validateTokenAddress },
         ],
         depositTokenId: [{ validator: validateDepositTokenId }],
-        startEndTime: [
+        startEndTimeFarming: [
+          { required: true, message: "Select a start and end date & time" },
+        ],
+        startEndTimeIFO: [
           { required: true, message: "Select a start and end date & time" },
         ],
         depositTokenAmount: [
@@ -907,8 +912,22 @@ export default {
             transform: (v) => Number(v),
           },
         ],
+        offeringType: [{ required: true, message: "Select an offering type" }],
         serviceFeeId: [{ required: true, message: "Select a service fee" }],
       },
+      formatDateTime(dateTime) {
+        const options = {
+          weekday: 'short',
+          month: 'short',
+          day: '2-digit',
+          year: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+          timeZoneName: 'short',
+      };
+      
+      return dateTime ? new Date(dateTime).toLocaleString('en-US', options) : "";
+    },
     };
   },
   computed: {
@@ -1027,6 +1046,8 @@ export default {
 
       return true;
     },
+
+    
 
     queryDepositTokens(keywords, cb) {
       const matches = [];

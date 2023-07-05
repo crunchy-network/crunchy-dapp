@@ -225,8 +225,8 @@ el-upload-list__item {
   font-weight: 600;
   font-size: large;
   display: inline-block !important;
-  left: 100px !important;
-  top: 8px !important;
+  position: relative !important;
+  top: -6px !important;
 }
 .el-header {
   padding: 20px !important;
