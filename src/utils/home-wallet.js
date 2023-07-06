@@ -4,7 +4,8 @@ import ipfs from "./ipfs";
 // import teztools from "./teztools";
 import knownContracts from "../knownContracts.json";
 import tzkt from "./tzkt";
-import tokenTracker from "./token-tracker";
+// import tokenTracker from "./token-tracker";
+import dexIndexer from "./dex-indexer";
 
 const SKIP_CONTRACTS = [
   "KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo_0",
@@ -193,7 +194,7 @@ export default {
       let { data: balances } = await axios.get(
         `https://api.tzkt.io/v1/tokens/balances?account=${pkh}&balance.gt=0&limit=10000&select=token,balance`
       );
-      
+
       // Fetch the currrent price of xtz in USD to multiply the price of tokens
       const usdMul = await tzkt.getXtzUsdPrice();
 
@@ -214,8 +215,7 @@ export default {
       // const { contracts: prices } = await teztools.getPricefeed();
 
       // Get token metadata and prices
-      const tokenData = await tokenTracker.getTokenFeed();
-
+      const tokenData = await dexIndexer.getAllTokens();
       // filter out NFTs by checking for artifactURI and token symbol or alias
       const tokens = [];
 
@@ -240,13 +240,17 @@ export default {
         const tokenId = `${balances[i]?.token?.contract?.address}_${
           balances[i]?.token?.tokenId || 0
         }`;
-        const priceObj = tokenData[tokenId];
-
-        // const tokenClose = queryDipdup.filterTokenClose(tokenId, tokensClose);
-        const currentPrice = priceObj?.currentPrice || false;
-        const tokenid = priceObj?.tokenId;
+        
+        const priceObj = tokenData.find(
+          (el) =>
+            (el.token_address === balances[i]?.token?.contract?.address &&
+              String(el.token_id) === balances[i]?.token?.tokenId) ||
+            0
+        );
+        const currentPrice = priceObj?.pools[0]?.quotes_spot?.quote || false;
+        const tokenid = priceObj?.token_id;
         // get token uri from prices :: This is because  balance does not return  some tokens thumbnail
-        const thumbnailUri = priceObj?.thumbnailUri || false;
+        const thumbnailUri = priceObj?.thumbnail_uri || false;
 
         const decimals = priceObj?.decimals || false;
 

@@ -1,0 +1,34 @@
+{
+    "name": "Pepe",
+    "description": "If a picture is worth a thousand words, then a meme is worth a thousand pictures!<br/><br/>Tezos Pepe is no different - Pepes may look alike, but no two Pepes are the same! With Tezos Pepe, tezonians can have fun building, trading, playing, memeing, and using the DAO treasury to fund other projects. Funds from this sale will be used for permanent liquidity given to the Tezos Pepe DAO.<br/><br/>PEPE sold during the IFO will be locked for 30 days and then farmed over the next 90 days.",
+    "swapRate": 0.00020,
+    "startTime": "2023-07-01T14:00:00Z",
+    "endTime": "2023-07-03T14:00:00Z",
+    "projectLogo": "PepeProject.png",
+    "tokenLogo": "PEPE.jpeg",
+    "contractId": "KT18oi9eLPaQMZcMokY4eggTUaLgcQDXnp5J",
+    "tokenName": "TezosPepe",
+    "tokenSymbol": "PEPE",
+    "isIFO": true,
+    "totalSupply": 639000000,
+    "circulatingSupply": 639000000,
+    "decimals": 2,
+    "links": [
+        {
+            "name": "Twitter",
+            "link": "https://twitter.com/TezosPepe"
+        },
+        {
+            "name": "Discord",
+            "link": "https://discord.com/invite/hVp4EP86PJ"
+        },
+        {
+            "name": "Telegram",
+            "link": "https://t.me/TezosPepe"
+        }
+    ],
+    "offeringSupply": 10000000,
+    "accessTypes": [
+        "Initial Farm Offering"
+    ]
+}

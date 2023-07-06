@@ -5,7 +5,9 @@ export default {
   state: {
     loading: false,
     contracts: {
+      default: process.env.VUE_APP_CONTRACTS_IFO_PEPE,
       pixel: process.env.VUE_APP_CONTRACTS_IFO_PIXEL,
+      pepe: process.env.VUE_APP_CONTRACTS_IFO_PEPE,
     },
     data: {
       raisingGoal: 0,
