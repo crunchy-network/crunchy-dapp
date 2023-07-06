@@ -310,7 +310,7 @@ const getModifiedBuffer = async (bufferKey) => {
   return bufferObj;
 };
 
-const buildQuipuV3Pairs = async (dex, inverted = false) => {
+const buildQuipuV3Pairs = async (dex, ticks, buffer, inverted = false) => {
   const aSide = inverted
     ? getParamValue(dex.pools[0].params, "dev_fee_B") !== 0
       ? dex.pools[0]
@@ -326,12 +326,6 @@ const buildQuipuV3Pairs = async (dex, inverted = false) => {
     : getParamValue(dex.pools[0].params, "dev_fee_B") !== 0
     ? dex.pools[0]
     : dex.pools[1];
-
-  const ticksKey = getParamValue(dex.params, "ticksKey");
-  const bufferKey = getParamValue(dex.params, "bufferKey");
-
-  const ticks = await getModifiedTicks(ticksKey);
-  const buffer = await getModifiedBuffer(bufferKey);
 
   return {
     poolId: aSide.pool_id,
@@ -496,6 +490,19 @@ const buildSwapPairs = async (dexes) => {
       continue;
     }
 
+    let ticksKey;
+    let bufferKey;
+
+    let ticks;
+    let buffer;
+    if (dex.dex_type === "quipuswap_v3") {
+      ticksKey = getParamValue(dex.params, "ticksKey");
+      bufferKey = getParamValue(dex.params, "bufferKey");
+
+      ticks = await getModifiedTicks(ticksKey);
+      buffer = await getModifiedBuffer(bufferKey);
+    }
+
     switch (dex.dex_type) {
       case "quipuswap":
       case "vortex":
@@ -539,8 +546,8 @@ const buildSwapPairs = async (dexes) => {
         break;
 
       case "quipuswap_v3":
-        pairs.push(await buildQuipuV3Pairs(dex));
-        pairs.push(await buildQuipuV3Pairs(dex, true));
+        pairs.push(await buildQuipuV3Pairs(dex, ticks, buffer));
+        pairs.push(await buildQuipuV3Pairs(dex, ticks, buffer, true));
         break;
 
       case "quipuswap_stable":
