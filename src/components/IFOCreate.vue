@@ -505,6 +505,7 @@
             </el-button>
             <connect-button v-if="wallet.connected === false" />
             <el-button
+              v-if="wallet.connected"
               class="preview-btn"
               type="primary"
               style="width: 100%; border-radius: 10px; font-weight: bold"
