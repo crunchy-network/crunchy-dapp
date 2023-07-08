@@ -23,6 +23,7 @@
       </el-row>
 
       <el-row
+        class="create-farm-container"
         :gutter="20"
         type="flex"
         align="middle"
@@ -119,5 +120,10 @@ export default {
 <style>
 .el-row {
   font-size: 14px;
+}
+@media (max-width: 991px) {
+  .create-farm-container {
+    justify-content: flex-start !important;
+  }
 }
 </style>
