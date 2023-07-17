@@ -10,6 +10,8 @@ const getSwapOutput = (input, pair) => {
   const outdatedDex = [
     "KT1LCGKA33zGk8GDQbtonGzFMzqx8QPbeZbr",
     "KT1CZj28Xc3Rtg1AsRfsagZyxcLEzAkwGXug",
+    "KT19meKW8ufKiAiCeBkVwirGmX61nxx6D3ZH",
+    "KT1N4a5QCW4hh4b4Rm5ZwZan6wQNfwLAhgNw",
   ];
 
   if (outdatedDex.includes(pair.dexAddress)) {
