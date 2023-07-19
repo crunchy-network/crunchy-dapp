@@ -7,11 +7,15 @@ const { getAmmSwapOutput } = require("../SwapRates/amm");
 const { addTokenApprovalOperators } = require("../TokenTypes");
 
 const DEX_FEE = 0.35;
+const SYSTEM_FEE = 1000;
 
 const getSwapOutput = (input, pair) => {
   const inputAfterFee = input * percentToDecimal(DEX_FEE);
   const feeAmount = input - inputAfterFee;
-  if (!isValidDexFee(feeAmount, pair)) {
+  const systemFee = Math.floor(
+    (inputAfterFee * Math.pow(10, pair.a.decimals)) / SYSTEM_FEE
+  );
+  if (!isValidDexFee(feeAmount, pair) || systemFee <= 0) {
     return 0;
   }
   return getAmmSwapOutput(inputAfterFee, pair);
