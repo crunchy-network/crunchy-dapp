@@ -18,7 +18,7 @@ export default {
   name: "Swap",
   components: { NavMenu, SwapFormMain, SwapFormFoot },
   computed: {
-    ...mapState(["homeWallet", "farms", "swap"]),
+    ...mapState(["homeWallet", "swap"]),
     tokenList() {
       const ownedAssets = this.homeWallet.assets || [];
       const toRet = buildTokenListFromWalletAndPriceFeed(

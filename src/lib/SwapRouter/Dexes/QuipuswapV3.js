@@ -9,7 +9,7 @@ const {
 const getSwapOutput = (input, pair) => {
   const outdatedDex = [
     "KT1LCGKA33zGk8GDQbtonGzFMzqx8QPbeZbr",
-    "KT1CZj28Xc3Rtg1AsRfsagZyxcLEzAkwGXug"
+    "KT1CZj28Xc3Rtg1AsRfsagZyxcLEzAkwGXug",
   ];
 
   if (outdatedDex.includes(pair.dexAddress)) {
@@ -27,6 +27,7 @@ const getSwapOutput = (input, pair) => {
       constants: {
         feeBps: BigNumber(pair.fee.feeBps),
         factoryAddress: pair.factoryAddress,
+        pair: pair,
       },
     },
   };
@@ -38,7 +39,7 @@ const getSwapOutput = (input, pair) => {
     pair.direction === "Direct"
       ? calculateXToY(p.s, BigNumber(bigNumber)).output
       : calculateYToX(p.s, BigNumber(bigNumber)).output;
-  const bigNumberOutput = parseFloat(output / decimalMoverB);
+  const bigNumberOutput = parseFloat(output.toFixed() / decimalMoverB);
   return bigNumberOutput;
 };
 

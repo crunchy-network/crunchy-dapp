@@ -24,7 +24,7 @@ export const swapDirection = {
 export class Nat extends BigNumber {
   // _nat: BigNumber;
   constructor(number) {
-    number = new BigNumber(number);
+    number = new BigNumber(parseInt(number));
     if (number < new BigNumber(0) || !number.isInteger() || number.isNaN()) {
       throw new Error(`Invalid nat: ${number.toString()}`);
     }

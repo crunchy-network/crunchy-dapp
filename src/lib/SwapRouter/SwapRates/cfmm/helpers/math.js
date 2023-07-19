@@ -345,19 +345,18 @@ export function steppedShiftLeft(x, y) {
  *  bps = 0.0001
  */
 export function sqrtPriceForTick(tick) {
-  const absTick = new Nat(tick.abs());
+  const absTick = tick.abs();
   const product = halfBpsPowRec(
     absTick,
-    { v: new Nat(1), offset: new Int(0) },
+    { v: 1, offset: new Int(0) },
     { exp: 0, positive: tick.gt(0) },
     defaultLadder,
   );
-
   const doffset = new BigNumber(-80).minus(product.offset);
   if (doffset.gt(0)) {
-    return new Nat(steppedShiftRight(product.v, new Nat(doffset.abs())));
+    return steppedShiftRight(product.v, doffset.abs());
   } else {
-    return new Nat(steppedShiftLeft(product.v, new Nat(doffset.abs())));
+    return steppedShiftLeft(product.v, doffset.abs());
   }
 }
 export function shiftLeft(x, y) {
@@ -367,6 +366,7 @@ export function shiftLeft(x, y) {
 function sqrtPriceForTickFailSafe(tick) {
   const MIN_TICK_INDEX = new Int(-1048575);
   const MAX_TICK_INDEX = new Int(1048575);
+  console.log(tick.toFixed(), tick.lt(MIN_TICK_INDEX), tick.gt(MAX_TICK_INDEX) )
   if (tick.lt(MIN_TICK_INDEX)) {
     return new BigNumber(0);
   }
@@ -406,7 +406,7 @@ function enhancedDiv(x, y) {
  */
 export function tickForSqrtPrice(
   sqrtPrice,
-  tickSpacing = new Nat(1),
+  tickSpacing = 1,
 ) {
   const MIN_TICK_INDEX = new Int(-1048575);
   const MAX_TICK_INDEX = new Int(1048575);
@@ -684,11 +684,15 @@ export function calcNewPriceX(
     liquidity,
     new BigNumber(80),
   ).plus(dx.multipliedBy(sqrtPriceOld));
-  return new quipuswapV3Types.x80n(
-    shiftedL80
+
+  return shiftedL80
       .dividedBy(shiftedL80PlusDxSqrtPriceOld)
-      .integerValue(BigNumber.ROUND_CEIL),
-  );
+      .integerValue(BigNumber.ROUND_CEIL);
+  // return new quipuswapV3Types.x80n(
+  //   shiftedL80
+  //     .dividedBy(shiftedL80PlusDxSqrtPriceOld)
+  //     .integerValue(BigNumber.ROUND_CEIL),
+  // );
 }
 
 /**
@@ -716,13 +720,11 @@ Calculate the new `sqrt_price` after a deposit of `dy` `y` tokens.
 export function calcNewPriceY(sqrtPriceOld, liquidity, dy) {
   // const shiftedDy80 = shiftLeft(dy, new BigNumber(80)) as Nat;
   const _280 = new BigNumber(2).pow(80);
-  return new Nat(
-    _280
+  return _280
       .multipliedBy(BigNumber(dy))
       .dividedBy(liquidity)
       .plus(sqrtPriceOld)
-      .integerValue(BigNumber.ROUND_FLOOR),
-  );
+      .integerValue(BigNumber.ROUND_FLOOR);
 }
 
 /**

@@ -232,5 +232,13 @@
     "decimals": 18,
     "description": "Temple Key",
     "name": "Temple Key"
+  },
+  {
+    "symbol": "SKULL",
+    "tokenAddress": "KT1BEHqhkuqpBoMKuMZSQNx1fEwWp4dranEH",
+    "tokenId": 0,
+    "decimals": 3,
+    "description": "$SKULL Token",
+    "name": "$SKULL Token"
   }
- ]
+]
