@@ -7,7 +7,7 @@ const { getAmmSwapOutput } = require("../SwapRates/amm");
 const { addTokenApprovalOperators } = require("../TokenTypes");
 
 const DEX_FEE = 0.35;
-const SYSTEM_FEE = 1000;
+const SYSTEM_FEE = 2000;
 
 const getSwapOutput = (input, pair) => {
   const inputAfterFee = input * percentToDecimal(DEX_FEE);
@@ -24,6 +24,7 @@ const getSwapOutput = (input, pair) => {
 const buildDexOperation = async (dex, trade, walletAddress, tezos) => {
   const output = convertToMuTez(trade.minOut, trade.b);
   const input = convertToMuTez(trade.input, trade.a);
+  console.log(output, input)
   const transfers = [
     dex.contract.methods
       .Swap(output, walletAddress, trade.b.tokenAddress, trade.b.tokenId, input)
