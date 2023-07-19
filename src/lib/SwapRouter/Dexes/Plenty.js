@@ -24,7 +24,6 @@ const getSwapOutput = (input, pair) => {
 const buildDexOperation = async (dex, trade, walletAddress, tezos) => {
   const output = convertToMuTez(trade.minOut, trade.b);
   const input = convertToMuTez(trade.input, trade.a);
-  console.log(output, input)
   const transfers = [
     dex.contract.methods
       .Swap(output, walletAddress, trade.b.tokenAddress, trade.b.tokenId, input)
