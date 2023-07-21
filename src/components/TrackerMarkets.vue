@@ -175,31 +175,35 @@ export default {
     },
 
     capitalize(str) {
-      if (str === "lb" || str === "sirius") {
-        return "SIRS (Liquidity Baking)";
-      } else if (
-        str === "quipuswap_v2" ||
-        str === "quipuswap_v3" ||
-        str === "quipuswap_stable" ||
-        str === "quipuswap_token2token"
-      ) {
-        return "Quipuswap";
+      switch (str) {
+        case "lb":
+        case "sirius":
+          return "SIRS (Liquidity Baking)";
+        case "quipuswap":
+          return "Quipuswap";
+        case "quipuswap_v2":
+          return "Quipuswap_v2";
+        case "quipuswap_v3":
+          return "Quipuswap_v3";
+        case "quipuswap_stable":
+          return "Quipuswap_stable";
+        case "quipuswap_token2token":
+          return "Quipuswap_token2token";
+        case "plenty_stable":
+          return "Plenty stable";
+        case "plenty":
+          return "Plenty network";
+        case "plenty_ctez":
+          return "Plenty Ctez";
+        case "plenty_tez":
+          return "Plenty Tez";
+        case "spicy":
+          return "Spicyswap";
+        default:
+          return str.replace(/\b[a-z]/gi, function (char) {
+            return char.toUpperCase();
+          });
       }
-      if (
-        str === "plenty_stable" ||
-        str === "plenty" ||
-        str === "plenty_stable" ||
-        str === "plenty_ctez" ||
-        str === "plenty_tez"
-      ) {
-        return "Plenty network";
-      }
-      if (str === "spicy") {
-        return "Spicyswap";
-      }
-      return str.replace(/\b[a-z]/gi, function (char) {
-        return char.toUpperCase();
-      });
     },
   },
 };

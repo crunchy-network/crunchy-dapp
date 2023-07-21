@@ -222,7 +222,7 @@ function getAggregatedPriceAndVolume(quotes) {
   while (quotes.length > 0) {
     const quote = quotes[0];
     const matchingElements = findElementsWithSameHour(quotes, quote.bucket);
-    
+
     if (matchingElements.length > 0) {
       const totalVolume = matchingElements.reduce(
         (sum, element) => sum + Number(element.volume_quote),
@@ -241,7 +241,7 @@ function getAggregatedPriceAndVolume(quotes) {
         aggregatedClose,
         aggregatedXtzVolume,
       });
-      
+
       quotes = quotes.filter(
         (q) => !matchingElements.some((element) => element.bucket === q.bucket)
       );
@@ -359,7 +359,7 @@ export default {
     const aggregatedQuotes1d = getAggregatedPriceAndVolume(quotes1d);
     const aggregatedQuotes1w = getAggregatedPriceAndVolume(quotes1w);
     const aggregatedQuotes1mo = getAggregatedPriceAndVolume(quotes1mo);
-    
+
     return {
       quotes1h: aggregatedQuotes1h,
       quotes1d: aggregatedQuotes1d,
@@ -373,7 +373,7 @@ export default {
       dexIndexer.getQuotes1D(tokenAddress, tokenId),
     ]);
     const aggregatedQuotes1d = getAggregatedPriceAndVolume(quotes1d);
-    return aggregatedQuotes1d
+    return aggregatedQuotes1d;
   },
 
   async getChartTvl(spicyId, tokenId, exchangeId, symbol, xtzUsdHistory) {
@@ -497,11 +497,7 @@ export default {
   async getTokenFeed() {
     try {
       const xtzUSD = await tzkt.getXtzUsdPrice();
-      const [
-        allTokensMetadata,
-        allTokensSpot,
-        allTokensPools,
-      ] = await Promise.all([
+      const [allTokenMetadata, allTokenSpot, allTokenPool] = await Promise.all([
         dexIndexer.getAllTokens(),
         dexIndexer.getAllTokenSpot(),
         dexIndexer.getAllTokenPools(),
@@ -511,8 +507,8 @@ export default {
 
       const updatedIndexerTokens = {};
 
-      for (let index = 0; index < allTokensMetadata.length; index++) {
-        let el = allTokensMetadata[index];
+      for (let index = 0; index < allTokenMetadata.length; index++) {
+        let el = allTokenMetadata[index];
         el.token_id = el.token_id || 0;
         el.id = el.token_address + "_" + el.token_id;
 
@@ -521,8 +517,8 @@ export default {
         updatedIndexerTokens[el.id] = el;
       }
 
-      for (let index = 0; index < allTokensSpot.length; index++) {
-        const element = allTokensSpot[index];
+      for (let index = 0; index < allTokenSpot.length; index++) {
+        const element = allTokenSpot[index];
         element.id = element.token_address + "_" + element.token_id;
         const tokenMetadata = updatedIndexerTokens[element.id];
 
@@ -553,19 +549,39 @@ export default {
         let tokenTvlUsd = 0;
 
         // Assign exchanges property to pools
-        const tokenPools = allTokensPools.find((el) => el.token_address === element.token_address && el.token_id === element.token_id).pools
-        element.exchanges = tokenPools;
+        const tokenPools = allTokenPool.find(
+          (el) =>
+            el.token_address === element.token_address &&
+            el.token_id === element.token_id
+        ).pools;
+        
+        // Filter pools from dex that stores all pools in 1 contract(QuipV2, QuipStable, QuipToken2Token)
+        const filteredPools = tokenPools.map((e) => {
+          const poolIdToKeep = e.pool_id;
+          // Filter 'dex.pools' based on 'pool_id'
+          e.dex.pools = e.dex.pools.filter(pool => 
+            pool.pool_id === poolIdToKeep
+          )
+          return e;
+        })
+        element.exchanges = filteredPools;
+
         element.exchanges.forEach((e, index) => {
           // Calculate exchanges infor
-          const quoteToken = allTokensSpot.find((ele) => 
-            ele.token_address === e.quotes_1d?.quote_token_address 
-            && ele.token_id === e.quotes_1d?.quote_token_id)
-          const volume = quoteToken?.token_address === "tez" ? 
-                          e.quotes_1d?.volume_quote :
-                          e.quotes_1d?.volume_quote * quoteToken?.pools[0]?.quotes_spot?.quote
-          const midPrice = quoteToken?.token_address === "tez" ? 
-                          e.quotes_spot?.quote :
-                          e.quotes_spot?.quote * quoteToken?.pools[0]?.quotes_spot?.quote
+          const quoteToken = allTokenSpot.find(
+            (ele) =>
+              ele.token_address === e.quotes_1d?.quote_token_address &&
+              ele.token_id === e.quotes_1d?.quote_token_id
+          );
+          const volume =
+            quoteToken?.token_address === "tez"
+              ? e.quotes_1d?.volume_quote
+              : e.quotes_1d?.volume_quote *
+                quoteToken?.pools[0]?.quotes_spot?.quote;
+          const midPrice =
+            quoteToken?.token_address === "tez"
+              ? e.quotes_spot?.quote
+              : e.quotes_spot?.quote * quoteToken?.pools[0]?.quotes_spot?.quote;
           // Assign name and 24h volume for each exchange
           e.name = e.dex.dex_type;
           e.midPrice = midPrice || 0;
@@ -574,23 +590,24 @@ export default {
           volume24Xtz = new BigNumber(volume24Xtz).plus(e.volume24).toNumber();
         });
 
-
         /**
          *Calculate tvl for each exchange
          */
-         element.exchanges.forEach((e, index) => {
-          
+        element.exchanges.forEach((e, index) => {
           const token = element.exchanges[index].dex.pools.find(
-            (ele) => 
+            (ele) =>
               ele.token_address === element.token_address &&
               ele.token_id === element.token_id
-            )
-          const tokenReserves = token.reserves / Math.pow(10, token.token.decimals);
+          );
+          const tokenReserves =
+            token?.reserves / Math.pow(10, token?.token.decimals);
           element.exchanges[index].tokenTvl =
-            new BigNumber(tokenReserves * element.aggregatedPrice).toNumber() || 0;
+            new BigNumber(tokenReserves * element.aggregatedPrice).toNumber() ||
+            0;
           element.exchanges[index].tokenTvlUsd =
-            new BigNumber((tokenReserves * element.aggregatedPrice) * xtzUSD).toNumber() || 0;
-          
+            new BigNumber(
+              tokenReserves * element.aggregatedPrice * xtzUSD
+            ).toNumber() || 0;
         });
         /**
          *Calculate total tvl and volume for each token
@@ -663,7 +680,6 @@ export default {
         .times(element.usdValue)
         .toNumber();
 
-      
       const change1Day = price
         .minus(element?.dayClose)
         .div(element?.dayClose)
@@ -686,7 +702,7 @@ export default {
 
       /**
        *Calculating % changes in Usd
-        */
+       */
       const change1DayUsd = priceUsd
         .minus(element?.dayCloseUsd)
         .div(element?.dayCloseUsd)
@@ -709,7 +725,6 @@ export default {
         change7DayUsd === Infinity ? 0 : change7DayUsd || 0;
       element.change30DayUsd =
         change30DayUsd === Infinity ? 0 : change30DayUsd || 0;
-      
 
       element.volume24 = new BigNumber(element.volume24Xtz).toNumber();
       element.volume24Usd = new BigNumber(element.volume24Xtz)
@@ -725,11 +740,13 @@ export default {
           Number(market.midPrice) * xtzUsd || 0;
         element.exchanges[index].lpPrice = Number(market.midPrice) || 0;
         const quoteToken = element.exchanges[index].dex.pools.find(
-          (ele) => 
+          (ele) =>
             ele.token_address !== element.token_address ||
             ele.token_id !== element.token_id
-          )
-        element.exchanges[index].symbol = `${quoteToken.token.symbol}/${element.symbol}`;
+        );
+        element.exchanges[
+          index
+        ].symbol = `${quoteToken.token.symbol}/${element.symbol}`;
         element.exchanges[index].volume24Usd = new BigNumber(market.volume24)
           .times(xtzUsd)
           .toNumber();

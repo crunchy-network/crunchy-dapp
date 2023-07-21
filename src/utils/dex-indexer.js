@@ -85,14 +85,17 @@ const QUERY_GET_ALL_TOKENS_FEED = `query AllTokens {
         quote
       }
       quotes_1d {
+        open
         close
         volume_quote
       }
       quotes_1w {
+        open
         close
         volume_quote
       }
       quotes_1mo {
+        open
         close
         volume_quote
       }
@@ -124,6 +127,7 @@ const QUERY_GET_ALL_TOKENS_POOLS = `query AllTokens {
             decimals
           }
           reserves
+          pool_id
         }
       }
       quotes_spot{
