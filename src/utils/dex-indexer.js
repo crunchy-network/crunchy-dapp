@@ -16,6 +16,11 @@ const QUERY_GET_ALL_TOKENS = `query AllTokens {
     token_id
     total_supply
     token_type
+    pools(where: {quotes_spot: {quote_token_address: {_eq: "tez"}}}, limit: 1) {
+      quotes_spot {
+        quote
+      }
+    }
   }
 }`;
 
