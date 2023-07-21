@@ -559,7 +559,7 @@ export default {
         const filteredPools = tokenPools.map((e) => {
           const poolIdToKeep = e.pool_id;
           // Filter 'dex.pools' based on 'pool_id'
-          e.dex.pools = e.dex.pools.filter(pool => 
+          e.dex.pools = e.dex.pools.filter((pool) => 
             pool.pool_id === poolIdToKeep
           )
           return e;
