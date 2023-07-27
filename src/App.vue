@@ -515,6 +515,10 @@ header .grid-content button.el-button {
   line-height: 22px;
 }
 
+#create-token .el-form--label-top .el-form-item__label {
+    text-transform: none !important;
+}
+
 .el-table th {
   padding-bottom: 20px !important;
 }
@@ -892,6 +896,20 @@ html[data-theme="light"] {
   .lock-display {
     background: #f4f4f5;
   }
+  .el-textarea__inner {
+    color: var(--primary-text);
+    border-color: var(--border-color);
+    height: 100px;
+  }
+  .el-textarea__inner::placeholder {
+    color: #8c8d8f;
+  }
+  .el-textarea__inner:focus {
+    border-color: #555cff !important;
+  }
+  .warning-modal {
+    color: #23262f;
+  }
 }
 
 /*
@@ -1066,6 +1084,24 @@ html[data-theme="dark"] {
 
   .el-tooltip__popper[x-placement^="right"] .popper__arrow::after {
     border-right-color: var(--border-color) !important;
+  }
+   .el-textarea__inner {
+    background-color: #191b1f !important;
+    border-color: var(--border-color);
+    height: 100px;
+    color: var(--primary-text);
+  }
+  .el-textarea__inner::placeholder {
+    color: #8c8d8f;
+  }
+  .el-textarea__inner:focus {
+    border-color: #555cff !important;
+  }
+  .el-upload-list__item-name {
+    color: var(--primary-text);
+  }
+  .warning-modal {
+    color: var(--primary-text);
   }
 }
 </style>

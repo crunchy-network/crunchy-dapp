@@ -184,6 +184,15 @@
                 <router-link
                   tag="li"
                   class="el-menu-item submenu-item"
+                  :to="{ name: 'create-token' }"
+                  active-class="is-active"
+                >
+                  <i class="fak fa-crunchy-farm-alt"></i>
+                  <span>Create Token</span>
+                </router-link>
+                <router-link
+                  tag="li"
+                  class="el-menu-item submenu-item"
                   :to="{ name: 'farm-listing' }"
                   active-class="is-active"
                 >
@@ -355,6 +364,7 @@ export default {
     "$route.name": function (val) {
       if (
         [
+          "create-token",
           "wtz",
           "deep-freezer-listing",
           "deep-freezer-item",
@@ -383,6 +393,7 @@ export default {
     console.log(
       "--------",
       [
+        "create-token",
         "wtz",
         "deep-freezer-listing",
         "deep-freezer-item",
@@ -415,6 +426,7 @@ export default {
     },
     handleDefiActive() {
       this.defiActive = [
+        "create-token",
         "wtz",
         "deep-freezer-listing",
         "deep-freezer-item",
