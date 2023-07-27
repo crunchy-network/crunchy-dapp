@@ -6,6 +6,20 @@ const makeQuery = async (query) => {
   });
 };
 
+const QUERY_GET_LP_TOKENS = `query LPTokens {
+  tokens(where: {is_lp: {_eq: true}}) {
+    decimals
+    name
+    symbol
+    thumbnail_uri
+    token_address
+    token_id
+    total_supply
+    token_type
+    is_lp
+  }
+}`;
+
 const QUERY_GET_ALL_TOKENS = `query AllTokens {
   tokens {
     decimals
@@ -69,6 +83,13 @@ query MyQuery {
 export default {
   async getAllTokens() {
     return makeQuery(QUERY_GET_ALL_TOKENS).then((res) =>
+      res.data && res.data.data && res.data.data.tokens
+        ? res.data.data.tokens
+        : []
+    );
+  },
+  async getLPTokens() {
+    return makeQuery(QUERY_GET_LP_TOKENS).then((res) =>
       res.data && res.data.data && res.data.data.tokens
         ? res.data.data.tokens
         : []
