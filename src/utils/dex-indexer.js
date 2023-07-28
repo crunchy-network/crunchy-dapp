@@ -7,7 +7,7 @@ const makeQuery = async (query) => {
 };
 
 const QUERY_GET_ALL_TOKENS = `query AllTokens {
-  tokens {
+  tokens(where: {is_lp: {_eq: false}}) {
     decimals
     name
     symbol
@@ -68,7 +68,7 @@ query MyQuery {
 `;
 
 const QUERY_GET_ALL_TOKENS_FEED = `query AllTokens {
-  tokens {
+  tokens(where: {is_lp: {_eq: false}}) {
     decimals
     name
     symbol
@@ -110,7 +110,7 @@ const QUERY_GET_ALL_TOKENS_FEED = `query AllTokens {
 `;
 
 const QUERY_GET_ALL_TOKENS_POOLS = `query AllTokens {
-  tokens {
+  tokens(where: {is_lp: {_eq: false}}) {
     token_address
     token_id
     pools {
