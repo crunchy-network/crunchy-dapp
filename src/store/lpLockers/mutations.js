@@ -20,6 +20,10 @@ export default {
     state.priceFeed = feed;
   },
 
+  updateTokenPools(state, tokenPools) {
+    state.tokenPools = tokenPools;
+  },
+
   updateLpLocksTotalTvlTez(state, total) {
     state.totalTvlTez = total;
   },

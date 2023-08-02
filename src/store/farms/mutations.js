@@ -64,6 +64,10 @@ export default {
     state.priceFeed = feed;
   },
 
+  updateTokenPools(state, tokenPools) {
+    state.tokenPools = tokenPools;
+  },
+
   updateFarmStorage(state, data) {
     state.storage.farms = data;
   },

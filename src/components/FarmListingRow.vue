@@ -95,6 +95,23 @@
             style="font-weight: bold"
           >
             <el-tooltip
+              v-if="farm.poolToken.isQuipuLp"
+              content="Quipuswap"
+              placement="top"
+              effect="light"
+            >
+              <img
+                src="../assets/dex-icons/QuipuSwap.svg"
+                style="
+                  position: absolute;
+                  left: 8px;
+                  top: 22px;
+                  width: 18px;
+                  height: 18px;
+                "
+              />
+            </el-tooltip>
+            <el-tooltip
               v-if="farm.errant"
               content="Farm Error"
               placement="top"

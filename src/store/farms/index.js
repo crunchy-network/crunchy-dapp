@@ -10,6 +10,7 @@ export default {
     lbDexAddress: process.env.VUE_APP_CONTRACTS_LB_DEX,
     lbLpAddress: process.env.VUE_APP_CONTRACTS_LB_LPTOKEN,
     priceFeed: [],
+    tokenPools: [],
     currentPrices: {},
     storage: {
       farms: [],

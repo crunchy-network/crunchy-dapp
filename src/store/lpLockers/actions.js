@@ -1,5 +1,6 @@
 import tzkt from "./../../utils/tzkt";
 import teztools from "./../../utils/teztools";
+import dexIndexer from "./../../utils/dex-indexer";
 import ipfs from "./../../utils/ipfs";
 import farmUtils from "./../../utils/farm";
 import { getContract, getWalletContract, getBatch } from "./../../utils/tezos";
@@ -14,15 +15,25 @@ export default {
   },
 
   async updateLpCurrentPrices({ commit }) {
-    return teztools.getPricefeed().then((feed) => {
+    return dexIndexer.getLPTokens().then(async (feed) => {
       const currentPrices = {};
-      for (const token of feed.contracts) {
-        const tokenId = token.type === "fa1.2" ? "0" : token.tokenId.toString();
-        currentPrices[`${token.tokenAddress}_${tokenId}`] = token.currentPrice;
+      for (const token of feed) {
+        const tokenId =
+          token.token_type === "fa1.2" ? "0" : token.token_id.toString();
+        currentPrices[`${token.token_address}_${tokenId}`] = token.currentPrice;
       }
 
-      commit("updatePriceFeed", feed.contracts);
+      await dexIndexer.getTokenPools().then((tokenPools) => {
+        commit("updateTokenPools", tokenPools);
+      });
+      commit("updatePriceFeed", feed);
       commit("updateCurrentPrices", currentPrices);
+    });
+  },
+
+  async updateTokenPools({ commit }) {
+    return await dexIndexer.getTokenPools().then((tokenPools) => {
+      commit("updateTokenPools", [tokenPools]);
     });
   },
 
@@ -54,6 +65,7 @@ export default {
       commit("updateLpLocksLoading", true);
 
       await dispatch("updateLpCurrentPrices");
+      await dispatch("updateTokenPools");
       const lockStorage = await dispatch("updateLpLockStorage");
 
       const locks = {};

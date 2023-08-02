@@ -1,6 +1,7 @@
 import _ from "lodash";
 import tzkt from "./../../utils/tzkt";
 import teztools from "./../../utils/teztools";
+import dexIndexer from "./../../utils/dex-indexer";
 import tokenTracker from "./../../utils/token-tracker";
 import ipfs from "./../../utils/ipfs";
 import farmUtils from "./../../utils/farm";
@@ -75,10 +76,14 @@ export default {
       setTimeout(() => {
         updateCurrentPricesPromise = dispatch("_updateCurrentPrices");
       }, 60 * 1000);
-    })
+    });
 
-    return teztools.getPricefeed().then((feed) => {
-      commit("updatePriceFeed", [tez, ...feed.contracts]);
+    await dexIndexer.getTokenPools().then((tokenPools) => {
+      commit("updateTokenPools", [tez, ...tokenPools]);
+    });
+
+    return dexIndexer.getAllTokens().then((feed) => {
+      commit("updatePriceFeed", [tez, ...feed]);
     });
   },
 
@@ -290,6 +295,9 @@ export default {
               poolToken: {
                 ...poolTokenMeta,
                 isQuipuLp: isQuipuLp,
+                isQuipuV2Lp: false,
+                isQuipuStableLp: false,
+                isQuipuToken2Token: false,
                 isLbLp: false,
                 isPlentyLp: false,
                 isSpicyLp: false,
@@ -318,6 +326,9 @@ export default {
             merge(farm, {
               poolToken: {
                 isQuipuLp: isQuipuLp,
+                isQuipuV2Lp: false,
+                isQuipuStableLp: false,
+                isQuipuToken2Token: false,
                 isLbLp: false,
                 isPlentyLp: false,
                 isSpicyLp: false,
@@ -364,6 +375,9 @@ export default {
                   ...resp.data,
                   ...poolTokenMeta,
                   isQuipuLp: false,
+                  isQuipuV2Lp: false,
+                  isQuipuStableLp: false,
+                  isQuipuToken2Token: false,
                   isLbLp: true,
                   isPlentyLp: false,
                   isSpicyLp: false,
@@ -389,8 +403,52 @@ export default {
           tzkt.getContractStorage(farm.poolToken.address).then((resp) => {
             const isQuipuLp =
               Object.prototype.hasOwnProperty.call(resp.data, "dex_lambdas") &&
-              Object.prototype.hasOwnProperty.call(resp.data, "token_lambdas");
-
+              Object.prototype.hasOwnProperty.call(
+                resp.data,
+                "token_lambdas"
+              ) &&
+              Object.prototype.hasOwnProperty.call(
+                resp.data.storage,
+                "reward_per_share"
+              ) &&
+              Object.prototype.hasOwnProperty.call(
+                resp.data.storage,
+                "reward_per_sec"
+              );
+            const isQuipuV2Lp =
+              Object.prototype.hasOwnProperty.call(resp.data, "dex_lambdas") &&
+              Object.prototype.hasOwnProperty.call(
+                resp.data,
+                "token_lambdas"
+              ) &&
+              Object.prototype.hasOwnProperty.call(
+                resp.data.storage,
+                "flash_swaps_proxy"
+              ) &&
+              Object.prototype.hasOwnProperty.call(
+                resp.data.storage,
+                "baker_registry"
+              );
+            const isQuipuStableLp =
+              Object.prototype.hasOwnProperty.call(resp.data, "dex_lambdas") &&
+              Object.prototype.hasOwnProperty.call(
+                resp.data,
+                "token_lambdas"
+              ) &&
+              Object.prototype.hasOwnProperty.call(
+                resp.data.storage,
+                "quipu_token"
+              );
+            const isQuipuToken2TokenLp =
+              Object.prototype.hasOwnProperty.call(resp.data, "dex_lambdas") &&
+              Object.prototype.hasOwnProperty.call(
+                resp.data,
+                "token_lambdas"
+              ) &&
+              Object.prototype.hasOwnProperty.call(
+                resp.data.storage,
+                "pairs_count"
+              );
             const isPlentyLp =
               Object.prototype.hasOwnProperty.call(
                 resp.data,
@@ -420,6 +478,9 @@ export default {
                     poolToken: {
                       ...values[0],
                       isQuipuLp: isQuipuLp,
+                      isQuipuV2Lp: false,
+                      isQuipuStableLp: false,
+                      isQuipuToken2Token: false,
                       isLbLp: false,
                       isPlentyLp: false,
                       isSpicyLp: false,
@@ -468,6 +529,9 @@ export default {
                       merge(farm, {
                         poolToken: {
                           isQuipuLp: false,
+                          isQuipuV2Lp: false,
+                          isQuipuStableLp: false,
+                          isQuipuToken2Token: false,
                           isLbLp: false,
                           isPlentyLp: true,
                           isSpicyLp: false,
@@ -525,6 +589,9 @@ export default {
                   merge(farm, {
                     poolToken: {
                       isQuipuLp: false,
+                      isQuipuV2Lp: false,
+                      isQuipuStableLp: false,
+                      isQuipuToken2Token: false,
                       isLbLp: false,
                       isPlentyLp: false,
                       isSpicyLp: true,
@@ -567,6 +634,9 @@ export default {
                   merge(farm, {
                     poolToken: {
                       isQuipuLp: false,
+                      isQuipuV2Lp: false,
+                      isQuipuStableLp: false,
+                      isQuipuToken2Token: false,
                       isLbLp: false,
                       isPlentyLp: false,
                       isSpicyLp: false,
@@ -676,7 +746,7 @@ export default {
         }
       } else if (farm.poolToken.isSpicyLp) {
         if (!rootState.wtz.totalTvlTez) {
-          await dispatch('loadWtzData');
+          await dispatch("loadWtzData");
         }
 
         const xtzPerLp = BigNumber(farm.poolToken.token1Pool)
@@ -685,7 +755,7 @@ export default {
           .div(rootState.wtz.swapRatio)
           .times(1 - 0.001)
           .div(farm.poolToken.totalSupply)
-          .toNumber()
+          .toNumber();
 
         tvlTez = BigNumber(farmStorage.poolBalance)
           .times(xtzPerLp)
@@ -844,7 +914,7 @@ export default {
         }
       } else if (farm.poolToken.isSpicyLp) {
         if (!rootState.wtz.totalTvlTez) {
-          await dispatch('loadWtzData');
+          await dispatch("loadWtzData");
         }
 
         const xtzPerLp = BigNumber(farm.poolToken.token1Pool)
@@ -853,7 +923,7 @@ export default {
           .div(rootState.wtz.swapRatio)
           .times(1 - 0.001)
           .div(farm.poolToken.totalSupply)
-          .toNumber()
+          .toNumber();
 
         tvlTez = BigNumber(farmStorage.poolBalance)
           .times(xtzPerLp)

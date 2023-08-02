@@ -1437,7 +1437,7 @@ export default {
         };
       }
 
-      console.log("tokenObjkt", tokenObjkt);
+      // console.log("tokenObjkt", tokenObjkt);
       return { ...updatedIndexerTokens, ...tokenObjkt };
     } catch (error) {
       console.log();
@@ -1471,7 +1471,7 @@ export default {
     // });
 
     // const element = tokenPrice;
-    console.log("element", element);
+    // console.log("element", element);
 
     if (element) {
       element.thumbnailUri = ipfs.transformUri(

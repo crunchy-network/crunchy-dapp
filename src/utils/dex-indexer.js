@@ -20,6 +20,25 @@ const QUERY_GET_LP_TOKENS = `query LPTokens {
   }
 }`;
 
+const QUERY_GET_ALL_TOKEN_POOLS = `query TokenPools {
+  token_pools(limit: 1000000) {
+    token_address
+    token {
+      symbol
+      name
+      thumbnail_uri
+    }
+    token_id
+    reserves
+    lp_token_address
+    lp_token_id
+    params {
+      name
+      value
+    }
+  }
+}`;
+
 const QUERY_GET_ALL_TOKENS = `query AllTokens {
   tokens {
     decimals
@@ -30,6 +49,7 @@ const QUERY_GET_ALL_TOKENS = `query AllTokens {
     token_id
     total_supply
     token_type
+    is_lp
     pools(where: {quotes_spot: {quote_token_address: {_eq: "tez"}}}, limit: 1) {
       quotes_spot {
         quote
@@ -92,6 +112,13 @@ export default {
     return makeQuery(QUERY_GET_LP_TOKENS).then((res) =>
       res.data && res.data.data && res.data.data.tokens
         ? res.data.data.tokens
+        : []
+    );
+  },
+  async getTokenPools() {
+    return makeQuery(QUERY_GET_ALL_TOKEN_POOLS).then((res) =>
+      res.data && res.data.data && res.data.data.token_pools
+        ? res.data.data.token_pools
         : []
     );
   },
