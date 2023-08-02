@@ -181,7 +181,7 @@ export default {
     const nowD = new Date();
     const harvestTimeD = new Date(state.data.harvestTime);
     const harvestEndTimeD = new Date(
-      harvestTimeD.getTime() + state.data.harvestDuration * 1000
+      harvestTimeD.getTime() + state.data.harvestDuration
     );
     const isHarvestingEnded = harvestEndTimeD < nowD;
     const isHarvesting = harvestTimeD < nowD;
@@ -195,7 +195,7 @@ export default {
     }
 
     const harvestPerSec =
-      userRecord.projectedHarvest / state.data.harvestDuration;
+      (userRecord.projectedHarvest / state.data.harvestDuration) * 1000;
     const numSec = (nowD - userRecord.lastHarvest) / 1000;
     userRecord.pendingHarvest = harvestPerSec * numSec;
 
