@@ -53,6 +53,7 @@
                             position: relative;
                             margin-right: 10px;
                             width: 30px;
+                            height: 29px;
                           "
                         />
 
@@ -168,7 +169,10 @@ export default {
         case "lb":
         case "sirius":
           return "https://res.cloudinary.com/melvin-manni/image/upload/v1663433569/lcmsyxatxezrrcovuklr.png";
-
+        case "alien":
+          return "https://lh3.googleusercontent.com/drive-viewer/AITFw-wJLI6KDrTfx-KKskNIiVXnO7o48eoIUCgO1Vxu2e6_eNz8MRexBTCkB2rPZ5qzqiQ7NktcUipFDkcjy8gmcIDca1f8Ig=s2560";
+        case "flame":
+          return "https://lh3.googleusercontent.com/drive-viewer/AITFw-zV_wN-tJD5iFfUCG2srWTvrh0rW-nQ8Tq_htOyqWfm5lGtEBJsPyBCoI6aVjMcC-JNWnxFY0m6vkxaV8LwfQolgU63AA=s2560";
         default:
           return "";
       }
@@ -182,13 +186,13 @@ export default {
         case "quipuswap":
           return "Quipuswap";
         case "quipuswap_v2":
-          return "Quipuswap_v2";
+          return "Quipuswap V2";
         case "quipuswap_v3":
-          return "Quipuswap_v3";
+          return "Quipuswap V3";
         case "quipuswap_stable":
-          return "Quipuswap_stable";
+          return "Quipuswap Stable";
         case "quipuswap_token2token":
-          return "Quipuswap_token2token";
+          return "Quipuswap Token to Token";
         case "plenty_stable":
           return "Plenty stable";
         case "plenty":
