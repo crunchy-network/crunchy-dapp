@@ -5,6 +5,7 @@ import dexIndexer from "./dex-indexer";
 import ipfs from "./ipfs";
 import tzkt from "./tzkt";
 
+const ALIEN_FEE_DENOMINATOR = new BigNumber(1000000000000000000n);
 const twentyFourHrs = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
 const fourtyEightHrs = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
 const oneHourInMiliSecond = 60 * 60 * 1000;
@@ -28,17 +29,22 @@ async function getSpicyTokenDailyMetrics(tag = "") {
   return res;
 }
 
-function getAggregatedClose(pools, quote) {
+function getAggregatedOpen(pools, quote, wtzTokenPrice) {
   let totalReserves = 0;
-  let aggregatedClose = 0;
+  let aggregatedOpen = 0;
   for (const pool of pools) {
     const reserves = parseFloat(pool[quote]?.volume_quote);
-    const close = pool[quote]?.close;
-
+    let open = 0;
+    if (pool?.quote_spot?.quote_token_address === "tez") {
+      open = pool[quote]?.open;
+      // Token has pool paired with wtz
+    } else {
+      open = pool[quote]?.open * wtzTokenPrice;
+    }
     totalReserves += reserves;
-    aggregatedClose += reserves * close;
+    aggregatedOpen += reserves * open;
   }
-  return totalReserves > 0 ? aggregatedClose / totalReserves : 0;
+  return totalReserves > 0 ? aggregatedOpen / totalReserves : 0;
 }
 
 function sameDay(d1, d2) {
@@ -497,11 +503,15 @@ export default {
   async getTokenFeed() {
     try {
       const xtzUSD = await tzkt.getXtzUsdPrice();
-      const [allTokenMetadata, allTokenSpot, allTokenPool] = await Promise.all([
-        dexIndexer.getAllTokens(),
-        dexIndexer.getAllTokenSpot(),
-        dexIndexer.getAllTokenPools(),
-      ]);
+      const [allTokenMetadata, allTokenSpot, allTokenPool, wtzToken] =
+        await Promise.all([
+          dexIndexer.getAllTokens(),
+          dexIndexer.getAllTokenSpot(),
+          dexIndexer.getAllTokenPools(),
+          dexIndexer.getToken("KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn", "0"),
+        ]);
+
+      const wtzTokenPrice = wtzToken.pools[0].quotes_spot.quote;
 
       const tokenObjkt = {};
 
@@ -530,19 +540,31 @@ export default {
       */
         let totalReserves = 0;
         let aggregatedClose = 0;
+        let close = 0;
 
         for (const pool of element.pools) {
           const reserves = parseFloat(pool.reserves);
-          const close = pool.quotes_spot.quote;
-
-          totalReserves += reserves;
-          aggregatedClose += reserves * close;
+          
+          // Token has pool paired with xtz
+          if (pool?.quote_spot?.quote_token_address === "tez") {
+            close = pool.quotes_spot.quote;
+            // Token has pool paired with wtz
+          } else {
+            close = pool.quotes_spot.quote * wtzTokenPrice;
+          }
+          // totalReserves += reserves;
+          // aggregatedClose += reserves * close;
         }
 
-        element.aggregatedPrice = aggregatedClose / totalReserves;
-        element.dayClose = getAggregatedClose(element.pools, "quotes_1d");
-        element.weekClose = getAggregatedClose(element.pools, "quotes_1w");
-        element.monthClose = getAggregatedClose(element.pools, "quotes_1mo");
+        element.aggregatedPrice = close;
+        element.dayClose = getAggregatedOpen(element.pools, "quotes_1d", wtzTokenPrice);
+        element.weekClose = getAggregatedOpen(element.pools, "quotes_1w", wtzTokenPrice);
+        element.monthClose = getAggregatedOpen(element.pools, "quotes_1mo", wtzTokenPrice);
+
+        element.dayCloseUsd = element.dayClose * xtzUSD;
+        element.weekCloseUsd = element.weekClose * xtzUSD;
+        element.monthCloseUsd = element.monthClose * xtzUSD;
+
 
         let volume24Xtz = 0;
         let tokenTvl = 0;
@@ -554,16 +576,16 @@ export default {
             el.token_address === element.token_address &&
             el.token_id === element.token_id
         ).pools;
-        
+
         // Filter pools from dex that stores all pools in 1 contract(QuipV2, QuipStable, QuipToken2Token)
         const filteredPools = tokenPools.map((e) => {
           const poolIdToKeep = e.pool_id;
           // Filter 'dex.pools' based on 'pool_id'
-          e.dex.pools = e.dex.pools.filter((pool) => 
-            pool.pool_id === poolIdToKeep
-          )
+          e.dex.pools = e.dex.pools.filter(
+            (pool) => pool.pool_id === poolIdToKeep
+          );
           return e;
-        })
+        });
         element.exchanges = filteredPools;
 
         element.exchanges.forEach((e, index) => {
@@ -599,8 +621,16 @@ export default {
               ele.token_address === element.token_address &&
               ele.token_id === element.token_id
           );
-          const tokenReserves =
-            token?.reserves / Math.pow(10, token?.token.decimals);
+
+          let tokenReserves = 0;
+          if (e.dex.dex_type === "alien") {
+            tokenReserves =
+              token?.reserves /
+              (ALIEN_FEE_DENOMINATOR * Math.pow(10, token?.token.decimals));
+          } else {
+            tokenReserves =
+              token?.reserves / Math.pow(10, token?.token.decimals);
+          }
           element.exchanges[index].tokenTvl =
             new BigNumber(tokenReserves * element.aggregatedPrice).toNumber() ||
             0;
@@ -666,9 +696,10 @@ export default {
       element.currentPrice = currentPrice;
 
       const price = new BigNumber(currentPrice);
+      
       const priceUsd = price.times(xtzUsd);
       element.usdValue = price.times(xtzUsd).toNumber();
-
+      
       element.calcSupply = new BigNumber(element.totalSupply)
         .div(new BigNumber(10).pow(element.decimals))
         .toNumber();
@@ -751,7 +782,9 @@ export default {
           .times(xtzUsd)
           .toNumber();
       }
-
+      if(element.tokenAddress === "KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV" || element.tokenAddress === "KT1BEHqhkuqpBoMKuMZSQNx1fEwWp4dranEH") {
+        console.log(element)
+      }
       if (element.mktCap < 800000000 && element.mktCap > 0) return element;
     }
   },
