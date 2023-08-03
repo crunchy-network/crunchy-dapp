@@ -16,9 +16,13 @@ const QUERY_GET_ALL_TOKENS = `query AllTokens {
     token_id
     total_supply
     token_type
-    pools(where: {quotes_spot: {quote_token_address: {_eq: "tez"}}}, limit: 1) {
+    pools(
+      where: {_or: [{quotes_spot: {quote_token_address: {_eq: "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn"}}}, {quotes_spot: {quote_token_address: {_eq: "tez"}}}]}
+      limit: 1
+    ) {
       quotes_spot {
         quote
+        quote_token_address
       }
     }
   }
@@ -63,6 +67,15 @@ query MyQuery {
     total_supply
     token_address
     token_id
+    pools(
+      where: {_or: [{quotes_spot: {quote_token_address: {_eq: "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn"}}}, {quotes_spot: {quote_token_address: {_eq: "tez"}}}]}
+      limit: 1
+    ) {
+      quotes_spot {
+        quote
+        quote_token_address
+      }
+    }
   }
 }
 `;
@@ -77,7 +90,10 @@ const QUERY_GET_ALL_TOKENS_FEED = `query AllTokens {
     token_id
     total_supply
     token_type
-    pools(where: {quotes_spot: {quote_token_address: {_eq: "tez"}}}) {
+    pools(
+      where: {_or: [{quotes_spot: {quote_token_address: {_eq: "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn"}}}, {quotes_spot: {quote_token_address: {_eq: "tez"}}}], quotes_spot: {quote: {_neq: "NaN"}}}
+      limit: 1
+    ) {
       dex_address
       pool_id
       reserves
@@ -88,21 +104,25 @@ const QUERY_GET_ALL_TOKENS_FEED = `query AllTokens {
       }
       quotes_spot {
         quote
+        quote_token_address
       }
       quotes_1d {
         open
         close
         volume_quote
+        quote_token_address
       }
       quotes_1w {
         open
         close
         volume_quote
+        quote_token_address
       }
       quotes_1mo {
         open
         close
         volume_quote
+        quote_token_address
       }
     }
   }
