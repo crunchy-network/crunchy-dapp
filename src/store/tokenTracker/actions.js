@@ -138,7 +138,7 @@ export default {
   },
 
   async fetchChartData({ commit, state }, token) {
-    const xtzUsdHistory = await tzkt.getXtzUsdHistory();
+    // const xtzUsdHistory = await tzkt.getXtzUsdHistory();
     commit("updateChartDataLoading", true);
     const chartData = {};
     // const exchangeId = state.tokensTracked[token.id].exchanges[0].address || "";
