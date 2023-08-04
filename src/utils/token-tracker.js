@@ -782,9 +782,7 @@ export default {
           .times(xtzUsd)
           .toNumber();
       }
-      if(element.tokenAddress === "KT1K9gCRgaLRFKTErYt1wVxA3Frb9FjasjTV" || element.tokenAddress === "KT1BEHqhkuqpBoMKuMZSQNx1fEwWp4dranEH") {
-        console.log(element)
-      }
+
       if (element.mktCap < 800000000 && element.mktCap > 0) return element;
     }
   },
