@@ -42,6 +42,27 @@ export default {
       meta.thumbnailUri = meta.icon;
     }
 
+    if (
+      !Object.prototype.hasOwnProperty.call(meta, "thumbnailUri") &&
+      Object.prototype.hasOwnProperty.call(meta, "thumbnail_uri")
+    ) {
+      meta.thumbnailUri = meta.thumbnail_uri;
+    }
+
+    if (
+      !Object.prototype.hasOwnProperty.call(meta, "tokenAddress") &&
+      Object.prototype.hasOwnProperty.call(meta, "token_address")
+    ) {
+      meta.tokenAddress = meta.token_address;
+    }
+
+    if (
+      !Object.prototype.hasOwnProperty.call(meta, "tokenId") &&
+      Object.prototype.hasOwnProperty.call(meta, "token_id")
+    ) {
+      meta.tokenId = meta.token_id;
+    }
+
     if (meta.tokenAddress === "KT1BHCumksALJQJ8q8to2EPigPW6qpyTr7Ng") {
       meta.name = "Crunchy";
     }
