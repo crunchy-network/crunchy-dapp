@@ -1,4 +1,5 @@
 import axios from "axios";
+import farmUtils from "./farm";
 
 const makeQuery = async (query) => {
   return axios.post("https://dex-indexer.crunchy.network/v1/graphql", {
@@ -20,8 +21,33 @@ const QUERY_GET_LP_TOKENS = `query LPTokens {
   }
 }`;
 
+const QUERY_GET_SPECIFIC_TOKEN_POOLS = (
+  dexType
+) => `query TokenPools {
+  token_pools(where: {dex: {dex_type: {_eq: "${dexType}"}}}) {
+    dex {
+      dex_type
+      dex_address
+    }
+    token_address
+    token {
+      symbol
+      name
+      thumbnail_uri
+    }
+    token_id
+    reserves
+    lp_token_address
+    lp_token_id
+    params {
+      name
+      value
+    }
+  }
+}`;
+
 const QUERY_GET_ALL_TOKEN_POOLS = `query TokenPools {
-  token_pools(limit: 1000000) {
+  token_pools {
     token_address
     token {
       symbol
@@ -100,6 +126,7 @@ query MyQuery {
   }
 }
 `;
+
 export default {
   async getAllTokens() {
     return makeQuery(QUERY_GET_ALL_TOKENS).then((res) =>
@@ -112,6 +139,13 @@ export default {
     return makeQuery(QUERY_GET_LP_TOKENS).then((res) =>
       res.data && res.data.data && res.data.data.tokens
         ? res.data.data.tokens
+        : []
+    );
+  },
+  async getSpecificTokenPools(dexType) {
+    return makeQuery(QUERY_GET_SPECIFIC_TOKEN_POOLS(dexType)).then((res) =>
+      res.data && res.data.data && res.data.data.token_pools
+        ? res.data.data.token_pools
         : []
     );
   },
@@ -134,5 +168,23 @@ export default {
     return makeQuery(QUERY_GET_ALL_DEXES).then((res) =>
       res.data && res.data.data && res.data.data.dexs ? res.data.data.dexs : []
     );
+  },
+
+  findTokenInPriceFeed(token, feed) {
+    if (farmUtils.isFa1(token)) {
+      return feed.find((el) => {
+        return (
+          el.token_address === token.address || el.address === token.address
+        );
+      });
+    } else {
+      return feed.find((el) => {
+        return (
+          (el.token_address === token.address &&
+            el.token_id === parseInt(token.tokenId)) ||
+          el.address === token.address
+        );
+      });
+    }
   },
 };
