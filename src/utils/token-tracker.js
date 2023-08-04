@@ -538,12 +538,12 @@ export default {
      *Calculate aggregated price 
      weighted on tvl from Plenty, Spicy and Quipu
       */
-        let totalReserves = 0;
-        let aggregatedClose = 0;
+        // let totalReserves = 0;
+        // let aggregatedClose = 0;
         let close = 0;
 
         for (const pool of element.pools) {
-          const reserves = parseFloat(pool.reserves);
+          // const reserves = parseFloat(pool.reserves);
           
           // Token has pool paired with xtz
           if (pool?.quote_spot?.quote_token_address === "tez") {
