@@ -181,7 +181,7 @@ export default {
       }
       this.form.loading = true;
       this.form.visible = true;
-      await this.initFarm(farmId);
+      await this.initFarm({ farmId });
       const bal = await this.getPoolTokenBalance(farmId);
       this.form.farm = this.farms.data[farmId];
       this.form.farm.poolToken.balance = bal;

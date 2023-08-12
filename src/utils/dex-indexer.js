@@ -21,19 +21,25 @@ const QUERY_GET_LP_TOKENS = `query LPTokens {
   }
 }`;
 
-const QUERY_GET_SPECIFIC_TOKEN_POOLS = (
-  dexType
-) => `query TokenPools {
+const QUERY_GET_SPECIFIC_TOKEN_POOLS = (dexType) => `query TokenPools {
   token_pools(where: {dex: {dex_type: {_eq: "${dexType}"}}}) {
     dex {
       dex_type
       dex_address
+      params {
+        name
+        value
+      }
     }
     token_address
     token {
       symbol
+      decimals
       name
       thumbnail_uri
+      token_address
+      token_id
+      token_type
     }
     token_id
     reserves

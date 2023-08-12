@@ -829,7 +829,7 @@ export default {
           t.thumbnailUri = ipfs.transformUri(t.thumbnail_uri);
           if(t.is_lp) {
             const tokenPools = this.farms.tokenPools.filter((el) => el.lp_token_address === t.token_address && el.lp_token_id === t.token_id)
-            const thumbnailUris = tokenPools.map((el) => ipfs.transformUri(el.token.thumbnail_uri));
+            const thumbnailUris = tokenPools.map((el) => el?.token?.thumbnail_uri !== null ? ipfs.transformUri(el.token.thumbnail_uri) : el.token.thumbnail_uri);
             matches.push({
               value: t.name || t.symbol,
               type: t.token_type,

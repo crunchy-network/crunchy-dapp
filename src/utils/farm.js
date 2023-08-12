@@ -3,11 +3,17 @@ import { BigNumber } from "bignumber.js";
 
 export default {
   isFa1(token) {
-    return Object.prototype.hasOwnProperty.call(token.tokenType, "fa1");
+    return (
+      Object.prototype.hasOwnProperty.call(token.tokenType, "fa1") ||
+      token.tokenType === "fa1.2"
+    );
   },
 
   isFa2(token) {
-    return Object.prototype.hasOwnProperty.call(token.tokenType, "fa2");
+    return (
+      Object.prototype.hasOwnProperty.call(token.tokenType, "fa2") ||
+      token.tokenType === "fa2"
+    );
   },
 
   getTokenLedgerKey(address) {
@@ -61,6 +67,13 @@ export default {
       Object.prototype.hasOwnProperty.call(meta, "token_id")
     ) {
       meta.tokenId = meta.token_id;
+    }
+
+    if (
+      !Object.prototype.hasOwnProperty.call(meta, "tokenType") &&
+      Object.prototype.hasOwnProperty.call(meta, "token_type")
+    ) {
+      meta.tokenType = meta.token_type;
     }
 
     if (meta.tokenAddress === "KT1BHCumksALJQJ8q8to2EPigPW6qpyTr7Ng") {
