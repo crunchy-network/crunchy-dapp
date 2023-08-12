@@ -234,12 +234,11 @@ function getAggregatedPriceAndVolume(quotes) {
       const totalVolume = matchingElements.reduce((sum, element) => {
         element.volume_quote =
           element.volume_quote === "NaN" ? 0 : element.volume_quote;
+        element.close = element.close === "NaN" ? 0 : element.close;
         if (element.quote_token_address !== "tez") {
           const quotePrice = element.quote_token.pools[0]?.quotes_spot?.quote;
-          element.volume_quote_xtz = quotePrice
-            ? element.volume_quote *
-              element.quote_token.pools[0]?.quotes_spot?.quote
-            : 0;
+          element.volume_quote_xtz =
+            quotePrice && element.close ? element.volume_quote * quotePrice : 0;
         }
 
         return (
