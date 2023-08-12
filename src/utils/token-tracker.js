@@ -230,23 +230,57 @@ function getAggregatedPriceAndVolume(quotes) {
     const matchingElements = findElementsWithSameHour(quotes, quote.bucket);
 
     if (matchingElements.length > 0) {
-      const totalVolume = matchingElements.reduce(
-        (sum, element) => sum + Number(element.volume_quote),
-        Number(quote.volume_quote)
-      );
-      const weightedCloseSum = matchingElements.reduce(
-        (sum, element) =>
-          sum + Number(element.close) * Number(element.volume_quote),
-        Number(quote.close) * Number(quote.volume_quote)
-      );
+      // Get total volume in xtz
+      const totalVolume = matchingElements.reduce((sum, element) => {
+        element.volume_quote =
+          element.volume_quote === "NaN" ? 0 : element.volume_quote;
+        if (element.quote_token_address !== "tez") {
+          const quotePrice = element.quote_token.pools[0]?.quotes_spot?.quote;
+          element.volume_quote_xtz = quotePrice
+            ? element.volume_quote *
+              element.quote_token.pools[0]?.quotes_spot?.quote
+            : 0;
+        }
+
+        return (
+          sum +
+          (element.quote_token_address !== "tez"
+            ? element.volume_quote_xtz
+            : element.volume_quote)
+        );
+      }, 0);
+
+      // Get weighted price sum in xtz
+      const weightedCloseSum = matchingElements.reduce((sum, element) => {
+        element.volume_quote =
+          element.volume_quote === "NaN" ? 0 : element.volume_quote;
+        element.close = element.close === "NaN" ? 0 : element.close;
+        let weightedClose = 0;
+
+        if (element.quote_token_address !== "tez") {
+          const quotePrice = element.quote_token.pools[0]?.quotes_spot?.quote;
+          element.volume_quote_xtz = quotePrice
+            ? element.volume_quote * quotePrice
+            : 0;
+          // Convert to weighted xtz price
+          weightedClose = element.close * quotePrice * element.volume_quote_xtz;
+        } else {
+          weightedClose = element.close * element.volume_quote;
+        }
+
+        return sum + weightedClose;
+      }, 0);
+
       const aggregatedClose = weightedCloseSum / totalVolume;
       const aggregatedXtzVolume = totalVolume;
 
-      aggregatedQuotes.push({
-        ...quote,
-        aggregatedClose,
-        aggregatedXtzVolume,
-      });
+      if (!isNaN(aggregatedClose)) {
+        aggregatedQuotes.push({
+          ...quote,
+          aggregatedClose,
+          aggregatedXtzVolume,
+        });
+      }
 
       quotes = quotes.filter(
         (q) => !matchingElements.some((element) => element.bucket === q.bucket)
@@ -256,7 +290,6 @@ function getAggregatedPriceAndVolume(quotes) {
       quotes.shift();
     }
   }
-
   return aggregatedQuotes;
 }
 
@@ -544,7 +577,7 @@ export default {
 
         for (const pool of element.pools) {
           // const reserves = parseFloat(pool.reserves);
-          
+
           // Token has pool paired with xtz
           if (pool?.quote_spot?.quote_token_address === "tez") {
             close = pool.quotes_spot.quote;
@@ -557,14 +590,25 @@ export default {
         }
 
         element.aggregatedPrice = close;
-        element.dayClose = getAggregatedOpen(element.pools, "quotes_1d", wtzTokenPrice);
-        element.weekClose = getAggregatedOpen(element.pools, "quotes_1w", wtzTokenPrice);
-        element.monthClose = getAggregatedOpen(element.pools, "quotes_1mo", wtzTokenPrice);
+        element.dayClose = getAggregatedOpen(
+          element.pools,
+          "quotes_1d",
+          wtzTokenPrice
+        );
+        element.weekClose = getAggregatedOpen(
+          element.pools,
+          "quotes_1w",
+          wtzTokenPrice
+        );
+        element.monthClose = getAggregatedOpen(
+          element.pools,
+          "quotes_1mo",
+          wtzTokenPrice
+        );
 
         element.dayCloseUsd = element.dayClose * xtzUSD;
         element.weekCloseUsd = element.weekClose * xtzUSD;
         element.monthCloseUsd = element.monthClose * xtzUSD;
-
 
         let volume24Xtz = 0;
         let tokenTvl = 0;
@@ -696,10 +740,10 @@ export default {
       element.currentPrice = currentPrice;
 
       const price = new BigNumber(currentPrice);
-      
+
       const priceUsd = price.times(xtzUsd);
       element.usdValue = price.times(xtzUsd).toNumber();
-      
+
       element.calcSupply = new BigNumber(element.totalSupply)
         .div(new BigNumber(10).pow(element.decimals))
         .toNumber();

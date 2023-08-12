@@ -195,7 +195,16 @@ query AllTokens {
     close
     token_address
     token_id
-    volume_quote    
+    volume_quote 
+    quote_token_address
+    quote_token_id
+    quote_token {
+      pools(where: {quotes_spot: {quote_token_address: {_eq: "tez"}}}, limit: 1) {
+        quotes_spot {
+          quote
+        }
+      }
+    }     
   }
 }
 `;
@@ -203,7 +212,7 @@ const QUERY_GET_QUOTES_1H = (tokenAddress, tokenId, oneMonthAgo) =>
   `
 query AllTokens {
   quotes_1h(
-    where: {token_address: {_eq: "${tokenAddress}"}, token_id: {_eq: "${tokenId}"}, quote_token_address: {_eq: "tez"}, bucket: {_gt: "${oneMonthAgo}"}}
+    where: {token_address: {_eq: "${tokenAddress}"}, token_id: {_eq: "${tokenId}"}, bucket: {_gt: "${oneMonthAgo}"}}
     order_by: {bucket: asc} 
   ) {
     dex {
@@ -213,7 +222,16 @@ query AllTokens {
     close
     token_address
     token_id
-    volume_quote    
+    volume_quote  
+    quote_token_address
+    quote_token_id
+    quote_token {
+      pools(where: {quotes_spot: {quote_token_address: {_eq: "tez"}}}, limit: 1) {
+        quotes_spot {
+          quote
+        }
+      }
+    }  
   }
 }
 `;
@@ -233,7 +251,16 @@ query AllTokens {
     close
     token_address
     token_id
-    volume_quote    
+    volume_quote 
+    quote_token_address
+    quote_token_id
+    quote_token {
+      pools(where: {quotes_spot: {quote_token_address: {_eq: "tez"}}}, limit: 1) {
+        quotes_spot {
+          quote
+        }
+      }
+    }     
   }
 }
 `;
@@ -254,6 +281,15 @@ query AllTokens {
     token_address
     token_id
     volume_quote    
+    quote_token_address
+    quote_token_id
+    quote_token {
+      pools(where: {quotes_spot: {quote_token_address: {_eq: "tez"}}}, limit: 1) {
+        quotes_spot {
+          quote
+        }
+      }
+    }  
   }
 }
 `;
