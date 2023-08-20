@@ -208,7 +208,6 @@ export default {
     },
   },
   data() {
-    console.log(this.locker.token);
     return {
       localAbbrevTimeZone: new Date()
         .toLocaleTimeString("en-us", { timeZoneName: "short" })
