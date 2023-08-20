@@ -517,6 +517,7 @@ export default {
       this.loading = true;
       this.visible = true;
 
+      const vm = this;
       this.updateLpCurrentPrices().then(() => {
         vm.loading = false;
       });
@@ -584,7 +585,6 @@ export default {
       this.form.lpTokenThumbnailUri = i.thumbnailUri;
       this.form.lpDexType = i.dexType;
 
-      const vm = this;
       this.loading = true;
       this.getLpBalance({ tokenAddress: i.address, tokenId: i.type === "fa2" ? i.tokenId : "", dexType: i.dexType })
         .then((bal) => {
