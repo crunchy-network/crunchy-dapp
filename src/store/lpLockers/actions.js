@@ -1,11 +1,21 @@
 import tzkt from "./../../utils/tzkt";
-import teztools from "./../../utils/teztools";
 import dexIndexer from "./../../utils/dex-indexer";
 import ipfs from "./../../utils/ipfs";
 import farmUtils from "./../../utils/farm";
 import { getContract, getWalletContract, getBatch } from "./../../utils/tezos";
 import merge from "deepmerge";
 import { BigNumber } from "bignumber.js";
+
+const DEX_TYPES = [
+  "spicy",
+  "quipuswap",
+  "quipuswap_v2",
+  "quipuswap_token2token",
+  "quipuswap_stable",
+  "plenty",
+  "plenty_ctez",
+  "plenty_stable",
+];
 
 export default {
   async updateLpXtzUsdVwap({ commit }) {
@@ -23,18 +33,30 @@ export default {
         currentPrices[`${token.token_address}_${tokenId}`] = token.currentPrice;
       }
 
-      await dexIndexer.getTokenPools().then((tokenPools) => {
-        commit("updateTokenPools", tokenPools);
-      });
       commit("updatePriceFeed", feed);
       commit("updateCurrentPrices", currentPrices);
     });
   },
 
   async updateTokenPools({ commit }) {
-    return await dexIndexer.getTokenPools().then((tokenPools) => {
-      commit("updateTokenPools", [tokenPools]);
-    });
+    let allTokenPools = [];
+    try {
+      allTokenPools = await Promise.all(
+        DEX_TYPES.map(async (dexType) => {
+          const tokenPools = await dexIndexer.getSpecificTokenPools(dexType);
+          return tokenPools;
+        })
+      );
+
+      // Flatten the array of arrays into a single array of token pools
+      allTokenPools = allTokenPools.flat();
+
+      // Call commit with the updated allTokenPools array
+      commit("updateTokenPools", allTokenPools);
+    } catch (error) {
+      console.error("Error fetching all token pools:", error);
+      return [];
+    }
   },
 
   async updateLpLockStorage({ state }) {
@@ -84,25 +106,210 @@ export default {
           }
         );
 
-        let tokenMeta = teztools.findTokenInPriceFeed(l.token, state.priceFeed);
+        let tokenMeta = dexIndexer.findTokenInPriceFeed(
+          l.token,
+          state.priceFeed
+        );
         if (tokenMeta) {
-          if (tokenMeta.thumbnailUri) {
-            tokenMeta.thumbnailUri = ipfs.transformUri(tokenMeta.thumbnailUri);
+          const tokenPools = state.tokenPools.filter(
+            (el) =>
+              el.lp_token_address === tokenMeta.token_address &&
+              el.lp_token_id === tokenMeta.token_id
+          );
+          const dexType = tokenPools[0]?.dex?.dex_type;
+
+          let isQuipuLp = false;
+          let isQuipuV2Lp = false;
+          let isQuipuToken2TokenLp = false;
+          let isQuipuStableLp = false;
+          let isSpicyLp = false;
+          let isPlentyLp = false;
+          let isPlentyCtezLp = false;
+          let isPlentyTezLp = false;
+          let isPlentyStableLp = false;
+
+          switch (dexType) {
+            case "quipuswap":
+              isQuipuLp = true;
+              break;
+            case "quipuswap_v2":
+              isQuipuV2Lp = true;
+              break;
+            case "quipuswap_token2token":
+              isQuipuToken2TokenLp = true;
+              break;
+            case "quipuswap_stable":
+              isQuipuStableLp = true;
+              break;
+            case "spicy":
+              isSpicyLp = true;
+              break;
+            case "plenty":
+              isPlentyLp = true;
+              break;
+            case "plenty_ctez":
+              isPlentyCtezLp = true;
+              break;
+            case "plenty_tez":
+              isPlentyTezLp = true;
+              break;
+            case "plenty_stable":
+              isPlentyStableLp = true;
+              break;
+            default:
+              // Handle other cases here if needed
+              break;
           }
 
-          // fallback to rpc storage
+          if (
+            isQuipuLp ||
+            isQuipuV2Lp ||
+            isQuipuStableLp ||
+            isQuipuToken2TokenLp ||
+            isSpicyLp ||
+            isPlentyLp ||
+            isPlentyCtezLp ||
+            isPlentyTezLp ||
+            isPlentyStableLp
+          ) {
+            tokenPools[0].token = farmUtils.overrideMetadata(
+              tokenPools[0].token
+            );
+            tokenPools[1].token = farmUtils.overrideMetadata(
+              tokenPools[1].token
+            );
+            tokenPools[0].token.thumbnailUri =
+              tokenPools[0].token.thumbnailUri !== null
+                ? ipfs.transformUri(tokenPools[0].token.thumbnailUri)
+                : null;
+            tokenPools[1].token.thumbnailUri =
+              tokenPools[1].token.thumbnailUri !== null
+                ? ipfs.transformUri(tokenPools[1].token.thumbnailUri)
+                : null;
+          }
+
+          const tokenProperties = {
+            isQuipuLp: false,
+            isQuipuV2Lp: false,
+            isQuipuStableLp: false,
+            isQuipuToken2TokenLp: false,
+            isLbLp: false,
+            isPlentyLp: false,
+            isSpicyLp: false,
+            decimals: 6,
+            name: tokenPools[0].token.name + "/" + tokenPools[1].token.name,
+            symbol:
+              tokenPools[0].token.symbol + "/" + tokenPools[1].token.symbol,
+            token1: tokenPools[0].token,
+            token1Pool: tokenPools[0].reserves,
+            token2: tokenPools[1].token,
+            token2Pool: tokenPools[1].reserves,
+          };
+
+          let tezPool = 0;
+          const totalSupply = tokenPools[0]?.dex?.params.find(
+            (el) => el.name === "qptTokenSupply"
+          )?.value;
+
+          switch (true) {
+            case isQuipuLp:
+              tezPool = tokenPools[0]?.dex?.params.find(
+                (el) => el.name === "tezPool"
+              )?.value;
+
+              tokenMeta = {
+                ...tokenProperties,
+                ...tokenMeta,
+                isQuipuLp: true,
+                realTokenAddress: tokenMeta.tokenAddress,
+                realTokenId: tokenMeta.tokenId,
+                tezPool: tezPool,
+                qptTokenSupply: totalSupply,
+              };
+              break;
+            case isQuipuV2Lp:
+              tokenMeta = {
+                ...tokenProperties,
+                ...tokenMeta,
+                isQuipuV2Lp: true,
+                qptTokenSupply: totalSupply,
+              };
+              break;
+            case isQuipuToken2TokenLp:
+              tokenMeta = {
+                ...tokenProperties,
+                ...tokenMeta,
+                isQuipuToken2TokenLp: true,
+                qptTokenSupply: totalSupply,
+              };
+              break;
+            case isQuipuStableLp:
+              tokenMeta = {
+                ...tokenProperties,
+                ...tokenMeta,
+                isQuipuStableLp: true,
+                qptTokenSupply: totalSupply,
+              };
+              break;
+            case isSpicyLp:
+              tokenMeta = {
+                ...tokenProperties,
+                ...tokenMeta,
+                decimals: 18,
+                isSpicyLp: true,
+                qptTokenSupply: totalSupply,
+              };
+              break;
+            case isPlentyLp:
+              tokenMeta = {
+                ...tokenProperties,
+                ...tokenMeta,
+                decimals: 18,
+                isPlentyLp: true,
+                qptTokenSupply: totalSupply,
+              };
+              break;
+            case isPlentyCtezLp:
+              tokenMeta = {
+                ...tokenProperties,
+                ...tokenMeta,
+                decimals: 6,
+                isPlentyCtezLp: true,
+                qptTokenSupply: totalSupply,
+              };
+              break;
+            case isPlentyTezLp:
+              tokenMeta = {
+                ...tokenProperties,
+                ...tokenMeta,
+                decimals: 18,
+                isPlentyTezLp: true,
+                qptTokenSupply: totalSupply,
+              };
+              break;
+            case isPlentyStableLp:
+              tokenMeta = {
+                ...tokenProperties,
+                ...tokenMeta,
+                decimals: 12,
+                isPlentyStableLp: true,
+                qptTokenSupply: totalSupply,
+              };
+              break;
+            default:
+              break;
+          }
         } else {
           tokenMeta = {};
         }
 
         let totalLiquidityTez = 0;
         let tvlTez = 0;
-        if (
-          !tokenMeta ||
-          !Object.prototype.hasOwnProperty.call(tokenMeta, "qptTokenSupply")
-        ) {
+
+        if (!tokenMeta || !tokenMeta.qptTokenSupply || !tokenMeta.tezPool) {
           const poolK = await tzkt.getContractStorage(l.token.address);
           tokenMeta = {
+            ...tokenMeta,
             tezPool: BigNumber(poolK.data.storage.tez_pool)
               .div(BigNumber(10).pow(6))
               .toNumber(),
@@ -155,14 +362,22 @@ export default {
     }
   },
 
-  async getLpBalance({ rootState }, tokenAddress) {
+  async getLpBalance({ rootState }, { tokenAddress, tokenId, dexType }) {
+    const isFactoryDex = ["quipuswap_v2", "quipuswap_token2token"].includes(
+      dexType
+    );
+    const key = isFactoryDex
+      ? { address: rootState.wallet.pkh }
+      : rootState.wallet.pkh;
+
     return tzkt
       .getContractBigMapKeys(
         tokenAddress,
         farmUtils.getTokenLedgerKey(tokenAddress),
-        { key: rootState.wallet.pkh, active: "true" }
+        { key: key, active: "true" }
       )
       .then((tokenLedger) => {
+        console.log(tokenLedger);
         let tokenBal = BigNumber(0);
         if (tokenLedger.data.length) {
           if (typeof tokenLedger.data[0].value === "object") {
