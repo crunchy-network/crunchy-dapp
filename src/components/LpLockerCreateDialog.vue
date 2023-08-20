@@ -557,16 +557,17 @@ export default {
           }
           t.thumbnailUri = ipfs.transformUri(t.thumbnail_uri);
           if(t.is_lp) {
-            console.log(t)
             const tokenPools = this.lpLockers.tokenPools.filter((el) => el.lp_token_address === t.token_address && el.lp_token_id === t.token_id)
-            const thumbnailUris = tokenPools.map((el) => ipfs.transformUri(el.token.thumbnail_uri));
-            console.log(tokenPools, thumbnailUris)
+            const thumbnailUris = tokenPools.map((el) => el?.token?.thumbnail_uri !== null ? ipfs.transformUri(el.token.thumbnail_uri) : el.token.thumbnail_uri);
+            const dexType = tokenPools[0]?.dex?.dex_type;
+
             matches.push({
               value: t.name || t.symbol,
               type: t.token_type,
               address: t.token_address,
               tokenId: t.token_id || 0,
               isLp: true,
+              dexType: dexType,
               thumbnailUri: thumbnailUris,
             });
           }
@@ -582,13 +583,15 @@ export default {
       this.form.lpTokenAddress = i.address;
       this.form.lpTokenId = i.type === "fa2" ? i.tokenId : "";
       this.form.lpTokenThumbnailUri = i.thumbnailUri;
+      this.form.lpDexType = i.dexType;
 
       const vm = this;
       this.loading = true;
-      this.getLpBalance(this.form.lpTokenAddress).then((bal) => {
-        vm.form.lpBalance = bal;
-        vm.loading = false;
-      });
+      this.getLpBalance({ tokenAddress: i.address, tokenId: i.type === "fa2" ? i.tokenId : "", dexType: i.dexType })
+        .then((bal) => {
+          this.form.lpBalance = bal;
+          this.loading = false;
+        });
     },
 
     async createLock() {
