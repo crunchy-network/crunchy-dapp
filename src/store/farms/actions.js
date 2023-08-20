@@ -1381,7 +1381,8 @@ export default {
           await dispatch("loadWtzData");
         }
 
-        const xtzPerLp = BigNumber(farm.poolToken.token1Pool)
+        if(rootState.wtz.swapRatio.toFixed() !== "1") {
+          const xtzPerLp = BigNumber(farm.poolToken.token1Pool)
           .div(BigNumber(10).pow(farm.poolToken.token1.decimals))
           .times(rootState.wtz.swapRatioPrecision)
           .div(rootState.wtz.swapRatio)
@@ -1393,6 +1394,7 @@ export default {
           .times(xtzPerLp)
           .times(2)
           .toNumber();
+        }
       } else {
         if (
           Object.prototype.hasOwnProperty.call(
@@ -1592,9 +1594,8 @@ export default {
         if (!rootState.wtz.totalTvlTez) {
           await dispatch("loadWtzData");
         }
-        console.log(farm.poolToken.token1Pool, farm.poolToken.token1.decimals, rootState.wtz.swapRatioPrecision.toFixed(), rootState.wtz.swapRatio.toFixed(),farm.poolToken.totalSupply )
-
-        const xtzPerLp = BigNumber(farm.poolToken.token1Pool)
+        if(rootState.wtz.swapRatio.toFixed() !== "1") {
+          const xtzPerLp = BigNumber(farm.poolToken.token1Pool)
           .div(BigNumber(10).pow(farm.poolToken.token1.decimals))
           .times(rootState.wtz.swapRatioPrecision)
           .div(rootState.wtz.swapRatio)
@@ -1606,6 +1607,7 @@ export default {
           .times(xtzPerLp)
           .times(2)
           .toNumber();
+        }
       } else {
         if (
           Object.prototype.hasOwnProperty.call(
