@@ -517,7 +517,6 @@ export default {
       this.loading = true;
       this.visible = true;
 
-      const vm = this;
       this.updateLpCurrentPrices().then(() => {
         vm.loading = false;
       });
