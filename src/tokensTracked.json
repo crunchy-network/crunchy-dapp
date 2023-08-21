@@ -240,5 +240,13 @@
     "decimals": 3,
     "description": "$SKULL Token",
     "name": "$SKULL Token"
+  },
+  {
+    "symbol": "STARtz",
+    "tokenAddress": "KT1GS3uEWWVkAxVfq66EtUn1g6uGX1J72K5Y",
+    "tokenId": 0,
+    "decimals": 0,
+    "description": "STARtz",
+    "name": "STARtz"
   }
 ]
