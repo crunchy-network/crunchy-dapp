@@ -178,7 +178,7 @@ export default {
   },
   data() {
     return {
-      loading: true,
+      loading: false,
       form: {
         tokenType: "",
         tokenName: "",
