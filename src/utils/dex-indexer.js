@@ -92,7 +92,6 @@ const QUERY_GET_ALL_TOKENS_FEED = `query AllTokens {
     token_type
     pools(
       where: {_or: [{quotes_spot: {quote_token_address: {_eq: "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn"}}}, {quotes_spot: {quote_token_address: {_eq: "tez"}}}], quotes_spot: {quote: {_neq: "NaN"}}}
-      limit: 1
     ) {
       dex_address
       pool_id
@@ -186,7 +185,7 @@ query AllTokens {
     where: {token_address: {_eq: "${tokenAddress}"}, token_id: {_eq: ${Number(
     tokenId
   )}}}
-  order_by: {bucket: asc}
+  order_by: {bucket: desc}
   ) {
     dex {
       dex_type
@@ -199,7 +198,10 @@ query AllTokens {
     quote_token_address
     quote_token_id
     quote_token {
-      pools(where: {quotes_spot: {quote_token_address: {_eq: "tez"}}}, limit: 1) {
+      pools(
+        where: {_or: [{quotes_spot: {quote_token_address: {_eq: "tez"}}}], quotes_spot: {quote: {_neq: "NaN"}}}
+        limit: 1
+      ) {
         quotes_spot {
           quote
         }
@@ -213,7 +215,7 @@ const QUERY_GET_QUOTES_1H = (tokenAddress, tokenId, oneMonthAgo) =>
 query AllTokens {
   quotes_1h(
     where: {token_address: {_eq: "${tokenAddress}"}, token_id: {_eq: "${tokenId}"}, bucket: {_gt: "${oneMonthAgo}"}}
-    order_by: {bucket: asc} 
+    order_by: {bucket: desc} 
   ) {
     dex {
       dex_type
@@ -226,7 +228,10 @@ query AllTokens {
     quote_token_address
     quote_token_id
     quote_token {
-      pools(where: {quotes_spot: {quote_token_address: {_eq: "tez"}}}, limit: 1) {
+      pools(
+        where: {_or: [{quotes_spot: {quote_token_address: {_eq: "tez"}}}], quotes_spot: {quote: {_neq: "NaN"}}}
+        limit: 1
+      ) {
         quotes_spot {
           quote
         }
@@ -242,7 +247,7 @@ query AllTokens {
     where: {token_address: {_eq: "${tokenAddress}"}, token_id: {_eq: ${Number(
     tokenId
   )}}}
-  order_by: {bucket: asc}
+  order_by: {bucket: desc}
   ) {
     dex {
       dex_type
@@ -255,7 +260,10 @@ query AllTokens {
     quote_token_address
     quote_token_id
     quote_token {
-      pools(where: {quotes_spot: {quote_token_address: {_eq: "tez"}}}, limit: 1) {
+      pools(
+        where: {_or: [{quotes_spot: {quote_token_address: {_eq: "tez"}}}], quotes_spot: {quote: {_neq: "NaN"}}}
+        limit: 1
+      ) {
         quotes_spot {
           quote
         }
@@ -271,7 +279,7 @@ query AllTokens {
     where: {token_address: {_eq: "${tokenAddress}"}, token_id: {_eq: ${Number(
     tokenId
   )}}}
-  order_by: {bucket: asc}
+  order_by: {bucket: desc}
   ) {
     dex {
       dex_type
@@ -284,7 +292,10 @@ query AllTokens {
     quote_token_address
     quote_token_id
     quote_token {
-      pools(where: {quotes_spot: {quote_token_address: {_eq: "tez"}}}, limit: 1) {
+      pools(
+        where: {_or: [{quotes_spot: {quote_token_address: {_eq: "tez"}}}], quotes_spot: {quote: {_neq: "NaN"}}}
+        limit: 1
+      ) {
         quotes_spot {
           quote
         }

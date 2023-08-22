@@ -35,7 +35,7 @@ function getAggregatedOpen(pools, quote, wtzTokenPrice) {
   for (const pool of pools) {
     const reserves = parseFloat(pool[quote]?.volume_quote);
     let open = 0;
-    if (pool?.quote_spot?.quote_token_address === "tez") {
+    if (pool?.quotes_spot?.quote_token_address === "tez") {
       open = pool[quote]?.open;
       // Token has pool paired with wtz
     } else {
@@ -227,11 +227,17 @@ function getAggregatedPriceAndVolume(quotes) {
 
   while (quotes.length > 0) {
     const quote = quotes[0];
-    const matchingElements = findElementsWithSameHour(quotes, quote.bucket);
 
-    if (matchingElements.length > 0) {
+    // Get all quote from same time
+    const matchingElements = findElementsWithSameHour(quotes, quote.bucket);
+    // Exclude elment having pools as empty array
+    const filteredElements = matchingElements.filter(
+      (item) => item.quote_token.pools.length > 0
+    );
+
+    if (filteredElements.length > 0) {
       // Get total volume in xtz
-      const totalVolume = matchingElements.reduce((sum, element) => {
+      const totalVolume = filteredElements.reduce((sum, element) => {
         element.volume_quote =
           element.volume_quote === "NaN" ? 0 : element.volume_quote;
         element.close = element.close === "NaN" ? 0 : element.close;
@@ -250,7 +256,7 @@ function getAggregatedPriceAndVolume(quotes) {
       }, 0);
 
       // Get weighted price sum in xtz
-      const weightedCloseSum = matchingElements.reduce((sum, element) => {
+      const weightedCloseSum = filteredElements.reduce((sum, element) => {
         element.volume_quote =
           element.volume_quote === "NaN" ? 0 : element.volume_quote;
         element.close = element.close === "NaN" ? 0 : element.close;
@@ -289,6 +295,7 @@ function getAggregatedPriceAndVolume(quotes) {
       quotes.shift();
     }
   }
+
   return aggregatedQuotes;
 }
 
@@ -386,12 +393,20 @@ export default {
   },
 
   async getPriceAndVolumeQuotes(tokenAddress, tokenId) {
-    const [quotes1h, quotes1d, quotes1w, quotes1mo] = await Promise.all([
+    let [quotes1h, quotes1d, quotes1w, quotes1mo] = await Promise.all([
       dexIndexer.getQuotes1H(tokenAddress, tokenId, oneMonthAgo),
       dexIndexer.getQuotes1D(tokenAddress, tokenId),
       dexIndexer.getQuotes1W(tokenAddress, tokenId),
       dexIndexer.getQuotes1MO(tokenAddress, tokenId),
     ]);
+
+    // Reverse order of quotes in Chronological order
+    [quotes1h, quotes1d, quotes1w, quotes1mo] = [
+      quotes1h.reverse(),
+      quotes1d.reverse(),
+      quotes1w.reverse(),
+      quotes1mo.reverse(),
+    ];
 
     const aggregatedQuotes1h = getAggregatedPriceAndVolume(quotes1h);
     const aggregatedQuotes1d = getAggregatedPriceAndVolume(quotes1d);
@@ -564,31 +579,29 @@ export default {
         element.id = element.token_address + "_" + element.token_id;
         const tokenMetadata = updatedIndexerTokens[element.id];
 
-        // const tokenId = element.id;
-        // const closes = queryDipdup.filterTokenClose(tokenId, tokensCloseData);
         /**
      *Calculate aggregated price 
      weighted on tvl from Plenty, Spicy and Quipu
       */
-        // let totalReserves = 0;
-        // let aggregatedClose = 0;
+        let totalReserves = 0;
+        let aggregatedClose = 0;
         let close = 0;
 
         for (const pool of element.pools) {
-          // const reserves = parseFloat(pool.reserves);
-
+          const reserves = parseFloat(pool.reserves);
+          
           // Token has pool paired with xtz
-          if (pool?.quote_spot?.quote_token_address === "tez") {
+          if (pool?.quotes_spot?.quote_token_address === "tez") {
             close = pool.quotes_spot.quote;
             // Token has pool paired with wtz
           } else {
             close = pool.quotes_spot.quote * wtzTokenPrice;
           }
-          // totalReserves += reserves;
-          // aggregatedClose += reserves * close;
+          totalReserves += reserves;
+          aggregatedClose += reserves * close;
         }
 
-        element.aggregatedPrice = close;
+        element.aggregatedPrice = aggregatedClose / totalReserves;
         element.dayClose = getAggregatedOpen(
           element.pools,
           "quotes_1d",
