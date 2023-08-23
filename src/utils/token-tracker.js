@@ -222,25 +222,42 @@ function modifyPlentyMetrics(plentyMetrics, xtzUsdHistory) {
   return modifiedPlentyMetrics;
 }
 
-function getAggregatedPriceAndVolume(quotes) {
+function getAggregatedPriceAndVolume(quotes, type) {
   const aggregatedQuotes = [];
+  let prevAggCloseSum = 0;
+  let prevAggVol = 0;
+  // Exclude elment having pools as empty array or close and volume quote is NaN
+  let filteredQuotes = quotes.filter(
+    (item) =>
+      item.quote_token_address === "tez" ||
+      (item.quote_token_address !== "tez" && item.quote_token.pools.length > 0)
+  );
+  filteredQuotes = filteredQuotes.filter(
+    (item) => item.close !== "NaN" && item.volume_quote !== "NaN"
+  );
 
-  while (quotes.length > 0) {
-    const quote = quotes[0];
-
-    // Get all quote from same time
-    const matchingElements = findElementsWithSameHour(quotes, quote.bucket);
-    // Exclude elment having pools as empty array
-    const filteredElements = matchingElements.filter(
-      (item) => item.quote_token.pools.length > 0
+  while (filteredQuotes.length > 0) {
+    // Get first element of quotes, remove the quote
+    // and find all quote with same time
+    const quote = filteredQuotes[0];
+    filteredQuotes.shift();
+    const matchingElements = findElementsWithSameHour(
+      filteredQuotes,
+      quote?.bucket
     );
-
-    if (filteredElements.length > 0) {
+    // Get aggregated close and volume
+    if (matchingElements.length > 0) {
+      // Volume and price of matched quote
+      const quoteVolume =
+        quote.quote_token_address !== "tez"
+          ? quote.volume_quote * quote.quote_token.pools[0]?.quotes_spot?.quote
+          : quote.volume_quote;
+      const quotePrice =
+        quote.quote_token_address !== "tez"
+          ? quote.close * quote.quote_token.pools[0]?.quotes_spot?.quote
+          : quote.close;
       // Get total volume in xtz
-      const totalVolume = filteredElements.reduce((sum, element) => {
-        element.volume_quote =
-          element.volume_quote === "NaN" ? 0 : element.volume_quote;
-        element.close = element.close === "NaN" ? 0 : element.close;
+      const totalVolume = matchingElements.reduce((sum, element) => {
         if (element.quote_token_address !== "tez") {
           const quotePrice = element.quote_token.pools[0]?.quotes_spot?.quote;
           element.volume_quote_xtz =
@@ -253,13 +270,10 @@ function getAggregatedPriceAndVolume(quotes) {
             ? element.volume_quote_xtz
             : element.volume_quote)
         );
-      }, 0);
+      }, quoteVolume);
 
       // Get weighted price sum in xtz
-      const weightedCloseSum = filteredElements.reduce((sum, element) => {
-        element.volume_quote =
-          element.volume_quote === "NaN" ? 0 : element.volume_quote;
-        element.close = element.close === "NaN" ? 0 : element.close;
+      const weightedCloseSum = matchingElements.reduce((sum, element) => {
         let weightedClose = 0;
 
         if (element.quote_token_address !== "tez") {
@@ -274,11 +288,12 @@ function getAggregatedPriceAndVolume(quotes) {
         }
 
         return sum + weightedClose;
-      }, 0);
+      }, quotePrice * quoteVolume);
 
       const aggregatedClose = weightedCloseSum / totalVolume;
       const aggregatedXtzVolume = totalVolume;
-
+      prevAggCloseSum = weightedCloseSum;
+      prevAggVol = aggregatedXtzVolume;
       if (!isNaN(aggregatedClose)) {
         aggregatedQuotes.push({
           ...quote,
@@ -287,15 +302,32 @@ function getAggregatedPriceAndVolume(quotes) {
         });
       }
 
-      quotes = quotes.filter(
+      // Remove quote
+      filteredQuotes = filteredQuotes.filter(
         (q) => !matchingElements.some((element) => element.bucket === q.bucket)
       );
     } else {
-      aggregatedQuotes.push(quote);
-      quotes.shift();
+      if (quote) {
+        const quotePrice =
+          quote.quote_token_address !== "tez"
+            ? quote.close * quote.quote_token.pools[0]?.quotes_spot?.quote
+            : quote.close;
+
+        const quoteVolume =
+          quote.quote_token_address !== "tez"
+            ? quote.volume_quote *
+              quote.quote_token.pools[0]?.quotes_spot?.quote
+            : quote.volume_quote;
+
+        const weightedCloseSum = quotePrice * quoteVolume + prevAggCloseSum;
+        const aggregatedXtzVolume = quoteVolume + prevAggVol;
+
+        quote.aggregatedClose = weightedCloseSum / aggregatedXtzVolume;
+        quote.aggregatedXtzVolume = quoteVolume;
+        aggregatedQuotes.push(quote);
+      }
     }
   }
-
   return aggregatedQuotes;
 }
 
@@ -408,7 +440,7 @@ export default {
       quotes1mo.reverse(),
     ];
 
-    const aggregatedQuotes1h = getAggregatedPriceAndVolume(quotes1h);
+    const aggregatedQuotes1h = getAggregatedPriceAndVolume(quotes1h, "1h");
     const aggregatedQuotes1d = getAggregatedPriceAndVolume(quotes1d);
     const aggregatedQuotes1w = getAggregatedPriceAndVolume(quotes1w);
     const aggregatedQuotes1mo = getAggregatedPriceAndVolume(quotes1mo);
@@ -589,7 +621,7 @@ export default {
 
         for (const pool of element.pools) {
           const reserves = parseFloat(pool.reserves);
-          
+
           // Token has pool paired with xtz
           if (pool?.quotes_spot?.quote_token_address === "tez") {
             close = pool.quotes_spot.quote;
