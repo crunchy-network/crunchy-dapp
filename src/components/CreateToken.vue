@@ -364,9 +364,6 @@ export default {
 .preview-btn {
   display: none;
 }
-.create-token-btn_modal {
-  display: none;
-}
 .el-avatar img {
   height: 95% !important;
 }
@@ -381,12 +378,6 @@ export default {
   .btn-container {
     width: 100% !important;
     margin-left: 0px !important;
-  }
-  .create-token-btn {
-    display: none;
-  }
-  .create-token-btn_modal {
-    display: block;
   }
   .preview-btn {
     display: block;
