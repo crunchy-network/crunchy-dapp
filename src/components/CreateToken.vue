@@ -146,10 +146,21 @@
                   >
                     <el-button
                       v-if="wallet.connected"
+                      v-loading="loading"
                       class="create-token-btn"
                       type="primary"
                       style="border-radius: 10px; font-weight: bold"
-                      @click="onSubmit"
+                      @click="
+                        createAToken(
+                          form.tokenType,
+                          form.tokenName,
+                          form.totalSupply,
+                          form.tokenSymbol,
+                          form.tokenIcon,
+                          form.decimals,
+                          form.tokenDesc
+                        )
+                      "
                     >
                       Create Your Token
                     </el-button>
@@ -178,6 +189,12 @@ export default {
   },
   data() {
     return {
+      notifyDefaults: {
+        duration: 10000,
+        showClose: true,
+        customClass: "custom-notify-blurb",
+        position: "bottom-right",
+      },
       loading: false,
       form: {
         tokenType: "",
@@ -187,11 +204,6 @@ export default {
         tokenIcon: "",
         decimals: "",
         tokenDesc: "",
-      },
-      pickerOptions: {
-        disabledDate(d) {
-          return d <= new Date();
-        },
       },
       tokenTypes: [
         { value: "0", label: "FA1.2" },
@@ -223,56 +235,116 @@ export default {
     };
   },
   computed: {
-    ...mapState(["wallet", "createToken", "tokenTracker"]),
+    ...mapState(["wallet", "createToken"]),
   },
-  watch: {
-    form: {
-      deep: true,
-    },
-  },
-  created() {
-    
-  },
+  
   methods: {
-    ...mapActions(["connectWallet", "createFarm"]),
+    ...mapActions(["connectWallet", "createTokenContract"]),
 
-    onSubmit() {
+    async createAToken(
+      tokenType,
+      tokenName,
+      totalSupply,
+      tokenSymbol,
+      tokenIcon,
+      decimals,
+      tokenDesc
+    ) {
       const vm = this;
       this.$refs.form.validate((valid) => {
         if (valid) {
-          const bonuses = [];
-          for (const b of vm.form.bonuses) {
-            if (b.endTime && b.multiplier) {
-              bonuses.push(b);
-            }
-          }
-
-          const params = {
-            poolToken: {
-              tokenType: vm.form.poolTokenType,
-              tokenAddress: vm.form.poolTokenAddress,
-              tokenId: vm.form.poolTokenId || 0,
-            },
-            startTime: vm.form.startEndTime[0],
-            endTime: vm.form.startEndTime[1],
-            lockDuration: 0,
-            bonuses: bonuses,
-            serviceFeeId: vm.form.serviceFeeId,
-          };
           vm.loading = true;
-          vm.createFarm(params)
-            .then(() => {
+          vm.form.visible = false;
+          vm.createTokenContract({
+            tokenType: tokenType,
+            tokenName: tokenName,
+            totalSupply: totalSupply,
+            tokenSymbol: tokenSymbol,
+            tokenIcon: tokenIcon,
+            decimals: decimals,
+            tokenDesc: tokenDesc,
+          })
+            .then(async (tx) => {
               vm.loading = false;
-              vm.$router.push({ name: "farm-listing" });
+              vm.$notify({
+                message: vm.getMessageVNode(
+                  "Transaction Pending",
+                  "The blockchain will process your transaction in 15-30 seconds."
+                ),
+                ...vm.notifyDefaults,
+              });
+              const confirmation = await tx.confirmation();
+              if (confirmation.completed) {
+                vm.loading = false;
+                vm.$notify({
+                  message: vm.getMessageVNode("Transaction Complete!", [
+                    "Transaction ",
+                    vm.getTxLink(tx.opHash),
+                    " has been confirmed on the blockchain.",
+                  ]),
+                  ...vm.notifyDefaults,
+                  type: "success",
+                });
+              } else {
+                vm.loading = false;
+                console.log("confirmation", confirmation);
+                vm.$notify({
+                  message: vm.getMessageVNode("Error", [
+                    "Something went wrong. check out the transaction here",
+                    vm.getTxLink(tx.opHash),
+                  ]),
+                  ...vm.notifyDefaults,
+                  type: "error",
+                });
+              }
             })
-            .catch((e) => {
-              console.log(e);
+            .catch((err) => {
               vm.loading = false;
+              console.error(err);
+              vm.$notify({
+                message: vm.getMessageVNode(err.title, err.message),
+                ...vm.notifyDefaults,
+                type: "error",
+              });
             });
         } else {
-          return false;
+          vm.loading = false;
+          vm.$notify({
+            message: vm.getMessageVNode("Error", [
+              "Please validate the form submitting again!",
+            ]),
+            ...vm.notifyDefaults,
+            type: "error",
+          });
         }
       });
+    },
+    getTxLink(hash) {
+      const h = this.$createElement;
+      const text = `${hash.slice(0, 5)}...${hash.slice(-8)}`;
+      return h(
+        "a",
+        {
+          attrs: {
+            href: `https://tzstats.com/${hash}`,
+            target: "_blank",
+            class: "op-hash-link",
+          },
+        },
+        text
+      );
+    },
+    getMessageVNode(title, text) {
+      const h = this.$createElement;
+      const msgTitle = h("span", { attrs: { class: "message-title" } }, title);
+      const mstText = h("span", { attrs: { class: "message-text" } }, text);
+      return h(
+        "div",
+        {
+          attrs: { class: "message-wrapper" },
+        },
+        [msgTitle, mstText]
+      );
     },
   },
 };
