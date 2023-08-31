@@ -21,6 +21,31 @@
           </div>
         </el-col>
       </el-row>
+
+      <el-row
+        class="create-farm-container"
+        :gutter="20"
+        type="flex"
+        align="middle"
+        style="
+          justify-content: end;
+          margin-bottom: 24px;
+          flex-wrap: wrap;
+          row-gap: 10px;
+        "
+      >
+        <el-col :span="8" style="text-align: right">
+          <el-button
+            type="primary"
+            round
+            style="font-weight: bold"
+            @click="$router.push({ name: 'ifo-create' })"
+          >
+            CREATE FARM OFFERING
+          </el-button>
+        </el-col>
+      </el-row>
+
       <div class="responsive-table">
         <div>
           <el-row type="flex" class="ifo-list" style="margin-top: 25px">
@@ -95,5 +120,10 @@ export default {
 <style>
 .el-row {
   font-size: 14px;
+}
+@media (max-width: 991px) {
+  .create-farm-container {
+    justify-content: flex-start !important;
+  }
 }
 </style>

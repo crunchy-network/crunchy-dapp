@@ -207,6 +207,27 @@ i.fa-icon-right {
   padding-right: 40px !important;
   margin-top: 36px;
 }
+.el-upload-list__item-name {
+  font-size: medium;
+}
+el-upload-list__item {
+  display: flex !important;
+}
+.el-upload-list__item:hover {
+  background: none !important;
+}
+.el-upload-list__item-name {
+  display: inline-block !important;
+  margin-right: 10px !important;
+}
+.el-upload-list__item .el-icon-close {
+  color: red !important;
+  font-weight: 600;
+  font-size: large;
+  display: inline-block !important;
+  position: relative !important;
+  top: -6px !important;
+}
 .el-header {
   padding: 20px !important;
 }
@@ -513,6 +534,10 @@ header .grid-content button.el-button {
   font-weight: bold;
   text-transform: uppercase;
   line-height: 22px;
+}
+
+#ifo-create .el-form--label-top .el-form-item__label {
+  text-transform: none !important;
 }
 
 .el-table th {
@@ -892,6 +917,21 @@ html[data-theme="light"] {
   .lock-display {
     background: #f4f4f5;
   }
+
+  .el-textarea__inner {
+    color: var(--primary-text);
+    border-color: var(--border-color);
+    height: 100px;
+  }
+  .el-textarea__inner::placeholder {
+    color: #8c8d8f;
+  }
+  .el-textarea__inner:focus {
+    border-color: #555cff !important;
+  }
+  .warning-modal {
+    color: #23262f;
+  }
 }
 
 /*
@@ -1066,6 +1106,24 @@ html[data-theme="dark"] {
 
   .el-tooltip__popper[x-placement^="right"] .popper__arrow::after {
     border-right-color: var(--border-color) !important;
+  }
+  .el-textarea__inner {
+    background-color: #191b1f !important;
+    border-color: var(--border-color);
+    height: 100px;
+    color: var(--primary-text);
+  }
+  .el-textarea__inner::placeholder {
+    color: #8c8d8f;
+  }
+  .el-textarea__inner:focus {
+    border-color: #555cff !important;
+  }
+  .el-upload-list__item-name {
+    color: var(--primary-text);
+  }
+  .warning-modal {
+    color: var(--primary-text);
   }
 }
 </style>
