@@ -242,6 +242,14 @@
     "name": "$SKULL Token"
   },
   {
+    "symbol": "STARtz",
+    "tokenAddress": "KT1GS3uEWWVkAxVfq66EtUn1g6uGX1J72K5Y",
+    "tokenId": 0,
+    "decimals": 0,
+    "description": "STARtz",
+    "name": "STARtz"
+  },
+  {
     "symbol": "TEIA",
     "tokenAddress": "KT1QrtA753MSv8VGxkDrKKyJniG5JtuHHbtV",
     "tokenId": 0,
