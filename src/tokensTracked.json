@@ -248,5 +248,13 @@
     "decimals": 0,
     "description": "STARtz",
     "name": "STARtz"
+  },
+  {
+    "symbol": "TEIA",
+    "tokenAddress": "KT1QrtA753MSv8VGxkDrKKyJniG5JtuHHbtV",
+    "tokenId": 0,
+    "decimals": 6,
+    "description": "Teia DAO tokenn",
+    "name": "Teia DAO token"
   }
 ]
