@@ -596,6 +596,28 @@ header .grid-content button.el-button {
   width: 100% !important;
 }
 
+.el-upload-list__item-name {
+  font-size: medium;
+}
+el-upload-list__item {
+  display: flex !important;
+}
+.el-upload-list__item:hover {
+  background: none !important;
+}
+.el-upload-list__item-name {
+  display: inline-block !important;
+  margin-right: 10px !important;
+}
+.el-upload-list__item .el-icon-close {
+  color: red !important;
+  font-weight: 600;
+  font-size: large;
+  display: inline-block !important;
+  position: relative !important;
+  top: -6px !important;
+}
+
 @media (min-width: 991px) {
   .divider .el-divider.el-divider--horizontal {
     display: none;

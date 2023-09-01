@@ -43,8 +43,11 @@ export default {
     let batch = null;
 
     if (tokenType === "FA2") {
+      const ledgerBigMap = MichelsonMap.fromLiteral({});
+      ledgerBigMap.set([rootState.wallet.pkh, 0], Number(totalSupply));
+
       batch = getBatch()
-        .withTransfer({ to: state.buyBackAndBurnAddress, amount: 5 })
+        // .withTransfer({ to: state.buyBackAndBurnAddress, amount: 5 })
         .withOrigination({
           code: fa2,
           storage: {
@@ -54,7 +57,7 @@ export default {
               paused: false,
             },
             assets: {
-              ledger: new MichelsonMap(),
+              ledger: ledgerBigMap,
               operators: new MichelsonMap(),
               token_total_supply: tokenTotalSupplyBigMap,
               token_metadata: tokenMetadataBigMap,
@@ -63,6 +66,8 @@ export default {
           },
         });
     } else {
+      const ledgerBigMap = MichelsonMap.fromLiteral({});
+      ledgerBigMap.set(rootState.wallet.pkh, Number(totalSupply));
       batch = getBatch()
         .withTransfer({ to: state.buyBackAndBurnAddress, amount: 5 })
         .withOrigination({
@@ -74,7 +79,7 @@ export default {
               paused: false,
             },
             assets: {
-              ledger: new MichelsonMap(),
+              ledger: ledgerBigMap,
               operators: new MichelsonMap(),
               token_metadata: tokenMetadataBigMap,
               total_supply: Number(totalSupply),

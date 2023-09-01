@@ -187,7 +187,10 @@
                   :to="{ name: 'create-token' }"
                   active-class="is-active"
                 >
-                  <i class="fak fa-crunchy-farm-alt"></i>
+                  <img
+                    src="./../assets/svg-icons/coin.svg"
+                    style="color: #8c8d8f; margin-right: 14px"
+                  />
                   <span>Create Token</span>
                 </router-link>
                 <router-link
