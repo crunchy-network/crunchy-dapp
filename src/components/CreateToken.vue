@@ -112,8 +112,8 @@
                       <el-switch
                         v-model="form.tokenFixedSupply"
                         class="mb-2"
-                        active-text="Mintable"
-                        inactive-text="Fixed"
+                        active-text="Fixed"
+                        inactive-text="Mintable"
                       />
                     </el-form-item>
                   </el-col>
@@ -193,7 +193,8 @@
                           form.tokenSymbol,
                           form.tokenIcon,
                           form.decimals,
-                          form.tokenDesc
+                          form.tokenDesc,
+                          form.tokenFixedSupply
                         )
                       "
                     >
@@ -212,7 +213,13 @@
         class="dialog"
         :visible="dialog.visible"
         title="Creating Token"
-        style="width: 30%; padding: 20px; margin: 0 auto; margin-top: 25vh"
+        style="
+          width: 20%;
+          padding: 20px;
+          margin: 0 auto;
+          margin-top: 25vh;
+          overflow: hidden;
+        "
         width="100%"
         @close="closeDialog"
       >
@@ -242,7 +249,13 @@
         class="dialog"
         :visible="dialog.visible"
         title="Token Created!"
-        style="width: 20%; padding: 20px; margin: 0 auto; margin-top: 25vh"
+        style="
+          width: 20%;
+          padding: 20px;
+          margin: 0 auto;
+          margin-top: 25vh;
+          overflow: hidden;
+        "
         width="100%"
         @close="closeDialog"
       >
@@ -262,11 +275,7 @@
                 Token Contract Address
               </div>
               <div
-                style="
-                  display: flex;
-
-                  cursor: pointer;
-                "
+                style="display: flex; cursor: pointer"
                 :href="`https://tzkt.io/${form.tokenContractAddress}`"
                 target="_blank"
               >
@@ -274,9 +283,7 @@
                   style="color: #555cff; font-weight: 700; font-size: 16px"
                   :href="`https://tzkt.io/${form.tokenContractAddress}`"
                   target="_blank"
-                  >{{
-                    formatLongString("KT1PLqCLjGJRggB7TDyZtDtqDh5fVB3Mu2nm")
-                  }}
+                  >{{ formatLongString(String(form.tokenContractAddress)) }}
                 </el-link>
 
                 <el-tooltip
@@ -321,7 +328,6 @@
 import { mapState, mapActions } from "vuex";
 import NavMenu from "./NavMenu.vue";
 import ConnectButton from "./ConnectButton.vue";
-import IPFS from "ipfs-mini";
 
 export default {
   name: "CreateToken",
@@ -346,7 +352,7 @@ export default {
       },
       tabActiveName: "first",
       dialog: {
-        visible: true,
+        visible: false,
         loading: false,
         toolTip: false,
       },
@@ -359,13 +365,10 @@ export default {
         tokenIcon: "",
         decimals: "",
         tokenDesc: "",
-        tokenFixedSupply: "",
-        fileList: [],
+        tokenFixedSupply: true,
+        file: null,
       },
-      tokenTypes: [
-        { value: "0", label: "FA1.2" },
-        { value: "1", label: "FA2" },
-      ],
+      tokenTypes: [{ value: "0", label: "FA2" }],
       rules: {
         tokenType: [{ required: true, message: "Select token type" }],
         tokenName: [{ required: true, message: "Enter token name" }],
@@ -405,13 +408,15 @@ export default {
       tokenSymbol,
       tokenIcon,
       decimals,
-      tokenDesc
+      tokenDesc,
+      tokenFixedSupply,
+      uploadedFile
     ) {
       const vm = this;
       this.$refs.form.validate((valid) => {
         if (valid) {
           vm.form.loading = true;
-          vm.form.visible = false;
+
           vm.createTokenContract({
             tokenType: tokenType,
             tokenName: tokenName,
@@ -420,22 +425,22 @@ export default {
             tokenIcon: tokenIcon,
             decimals: decimals,
             tokenDesc: tokenDesc,
+            tokenFixedSupply: tokenFixedSupply,
+            uploadedFile: this.form.file,
           })
             .then(async (tx) => {
-              const confirmation = await tx.confirmation();
-              vm.form.loading = false;
+              // Display the creat token dialog
+              vm.dialog.loading = true;
               vm.dialog.visible = true;
-              if (confirmation.completed) {
-                vm.$notify({
-                  message: vm.getMessageVNode("Transaction Complete!", [
-                    "Transaction ",
-                    vm.getTxLink(tx.opHash),
-                    " has been confirmed on the blockchain.",
-                  ]),
-                  ...vm.notifyDefaults,
-                  type: "success",
-                });
-              } else {
+
+              const confirmation = await tx.confirmation();
+              const contractArr = await tx.getOriginatedContractAddresses();
+              vm.form.tokenContractAddress = contractArr[0];
+              // Display the token created dialog
+              vm.dialog.loading = false;
+              vm.form.loading = false;
+
+              if (!confirmation.completed) {
                 console.log("confirmation", confirmation);
                 vm.$notify({
                   message: vm.getMessageVNode("Error", [
@@ -496,36 +501,7 @@ export default {
       );
     },
     async onUploadChange(file, fileList) {
-      this.form.fileList.push(URL.createObjectURL(file.raw));
-      const uploadedFile = file.raw;
-
-      if (uploadedFile) {
-        try {
-          const ipfsLink = await this.uploadFileToIPFS(uploadedFile);
-          console.log("IPFS Link:", ipfsLink);
-          // Handle the IPFS link as needed (e.g., store it in a database)
-        } catch (error) {
-          console.error("Error uploading to IPFS:", error);
-        }
-      }
-    },
-    async uploadFileToIPFS(file) {
-      const ipfs = new IPFS({
-        host: "ipfs.infura.io",
-        port: 5001,
-        protocol: "https",
-      });
-
-      return new Promise((resolve, reject) => {
-        ipfs.add("strng", (err, result) => {
-          if (err) {
-            reject(err);
-          } else {
-            const ipfsLink = result[0].hash;
-            resolve(ipfsLink);
-          }
-        });
-      });
+      this.form.file = file.raw;
     },
     handleRemove(file) {
       this.form.fileList.pop();
@@ -557,18 +533,20 @@ export default {
     },
     toggleToolTip() {
       const textarea = document.createElement("textarea");
-      textarea.value =
-        this.form.tokenContractAddress ||
-        "KT1PLqCLjGJRggB7TDyZtDtqDh5fVB3Mu2nm";
+      textarea.value = this.form.tokenContractAddress || "";
       document.body.appendChild(textarea);
       textarea.select();
       document.execCommand("copy");
       document.body.removeChild(textarea);
 
-      // Show tooltip or some kind of feedback to the user
+      // Show tooltip
       this.dialog.toolTip = true;
 
-      // You can also use a setTimeout to hide the tooltip after a few seconds
+      this.$notify({
+        message: this.getMessageVNode("Copied", ""),
+        ...this.notifyDefaults,
+        type: "success",
+      });
       setTimeout(() => {
         this.dialog.toolTip = false;
       }, 2000); // Hide after 2 seconds
