@@ -207,7 +207,11 @@ const buildQuipuToken2TokenPair = (
   };
 };
 
-const buildQuipuV2Pair = (dex, token1Pool, token2Pool, inverted = false) => {
+const buildQuipuV2Pair = (dex, token1Pool, token2Pool) => {
+  const inverted =
+    // eslint-disable-next-line no-unneeded-ternary
+    getParamValue(token1Pool.params, "token_a_price_cml") !== 0 ? false : true;
+
   return {
     poolId: token1Pool.pool_id,
     dex: getDexName(dex.dex_type),
@@ -266,7 +270,7 @@ const buildQuipuV2Pairs = (dex) => {
       (el) => el.pool_id === token1.pool_id && el !== token1
     )[0];
     if (poolIds.includes(token1.pool_id)) {
-      p = buildQuipuV2Pair(dex, token1, token2, true);
+      p = buildQuipuV2Pair(dex, token1, token2);
     } else {
       p = buildQuipuV2Pair(dex, token1, token2);
       poolIds.push(token1.pool_id);
