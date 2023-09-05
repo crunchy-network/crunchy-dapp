@@ -9,7 +9,7 @@
         <el-col :span="24">
           <div class="grid-content">
             <h2 style="margin-top: 0; margin-bottom: 5px">
-              Create A Tezos TOKEN
+              Create A Tezos Token
             </h2>
             <span style="font-size: 14px"
               >Create your own token on the Tezos blockchain. There is a 5 $XTZ
@@ -119,7 +119,7 @@
                   </el-col>
                 </el-row>
 
-                <hr style="border: 5px solid rgb(37, 39, 42)" />
+                <hr style="border: 0.5px solid rgb(37, 39, 42)" />
 
                 <el-row :gutter="20" class="row-input">
                   <el-col :span="12" class="row-input_item">
@@ -214,7 +214,7 @@
         :visible="dialog.visible"
         title="Creating Token"
         style="
-          width: 20%;
+          width: 30%;
           padding: 20px;
           margin: 0 auto;
           margin-top: 25vh;
@@ -238,7 +238,7 @@
           data-html="true"
           class="tooltip"
         >
-          <i class="el-icon-loading"> </i>
+          <i class="el-icon-loading" style="color: #8c8d8f"> </i>
           <div class="tooltiptext" data-html="true">
             <span>Loading Data</span>
           </div>
@@ -250,7 +250,7 @@
         :visible="dialog.visible"
         title="Token Created!"
         style="
-          width: 20%;
+          width: 30%;
           padding: 20px;
           margin: 0 auto;
           margin-top: 25vh;
@@ -583,7 +583,7 @@ export default {
   height: 95% !important;
 }
 .dialog-infor {
-  color: #ffffff;
+  color: #8c8d8f;
   opacity: 80%;
 }
 .el-dialog__headerbtn {
