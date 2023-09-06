@@ -37,20 +37,15 @@
               >
                 <el-row :gutter="20" class="row-input">
                   <el-col :span="12" class="row-input_item">
-                    <el-form-item label="Token Type" prop="tokenType" required>
-                      <el-select
-                        v-model="form.tokenType"
-                        placeholder="Select your token type"
-                        style="width: 400px"
-                      >
-                        <el-option
-                          v-for="item in tokenTypes"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.label"
-                        >
-                        </el-option>
-                      </el-select>
+                    <el-form-item
+                      label="Whats the name of your token? (ex: Crunchy.Network, Tezos)"
+                      prop="tokenName"
+                      required
+                    >
+                      <el-input
+                        v-model="form.tokenName"
+                        placeholder="Token Name"
+                      ></el-input>
                     </el-form-item>
                   </el-col>
                   <el-col :span="10" class="row-input_item">
@@ -71,14 +66,13 @@
                 <el-row :gutter="20" class="row-input">
                   <el-col :span="12" class="row-input_item">
                     <el-form-item
-                      label="Whats the name of your token? (ex: Crunchy.Network, Tezos)"
-                      prop="tokenName"
-                      required
+                      label="What is your token symbol? (ex: CRUNCHY, XTZ)"
+                      prop="tokenSymbol"
                     >
                       <el-input
-                        v-model="form.tokenName"
-                        placeholder="Token Name"
-                      ></el-input>
+                        v-model="form.tokenSymbol"
+                        placeholder="Token symbol"
+                      />
                     </el-form-item>
                   </el-col>
                   <el-col :span="10" class="row-input_item">
@@ -95,49 +89,16 @@
                 <el-row :gutter="20" class="row-input">
                   <el-col :span="12" class="row-input_item">
                     <el-form-item
-                      label="What is your token symbol? (ex: CRUNCHY, XTZ)"
-                      prop="tokenSymbol"
-                    >
-                      <el-input
-                        v-model="form.tokenSymbol"
-                        placeholder="Token symbol"
-                      />
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="12" class="row-input_item">
-                    <el-form-item
-                      label="Fixed token supply or mintable so you can mint more?"
-                      prop="tokenFixedSupply"
-                    >
-                      <el-switch
-                        v-model="form.tokenFixedSupply"
-                        class="mb-2"
-                        active-text="Fixed"
-                        inactive-text="Mintable"
-                      />
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-
-                <hr style="border: 0.5px solid rgb(37, 39, 42)" />
-
-                <el-row :gutter="20" class="row-input">
-                  <el-col :span="12" class="row-input_item">
-                    <el-form-item
-                      label="What is your tokens icon URL? (Optional)"
+                      label="What is your tokens icon URL?"
                       prop="tokenIcon"
                     >
                       <el-tabs v-model="tabActiveName">
-                        <el-tab-pane label="Post Image URL" name="first"
-                          ><el-input
-                            v-model="form.tokenIcon"
-                            placeholder="https://tokenicon.com/image.png"
-                        /></el-tab-pane>
-                        <el-tab-pane label="Upload Image" name="second"
+                        <el-tab-pane label="Upload Image" name="first"
                           ><el-upload
                             ref="upload"
                             action=""
                             :auto-upload="false"
+                            :limit="1"
                             :on-change="onUploadChange"
                             :on-remove="handleRemove"
                             :before-upload="beforeUpload"
@@ -152,10 +113,30 @@
                             </el-button>
                           </el-upload></el-tab-pane
                         >
+                        <el-tab-pane label="Post Image URL" name="second"
+                          ><el-input
+                            v-model="form.tokenIcon"
+                            placeholder="https://tokenicon.com/image.png"
+                        /></el-tab-pane>
                       </el-tabs>
                     </el-form-item>
                   </el-col>
+                  <el-col :span="12" class="row-input_item">
+                    <el-form-item
+                      label="Fixed token supply or mintable so you can mint more?"
+                      prop="tokenMintableSupply"
+                    >
+                      <el-switch
+                        v-model="form.tokenMintableSupply"
+                        class="mb-2"
+                        active-text="Mintable"
+                        inactive-text="Fixed"
+                      />
+                    </el-form-item>
+                  </el-col>
                 </el-row>
+
+                <hr class="ruler" />
 
                 <el-row :gutter="20" class="row-input">
                   <el-col :span="12" class="row-input_item">
@@ -187,18 +168,17 @@
                       style="border-radius: 10px; font-weight: bold"
                       @click="
                         createAToken(
-                          form.tokenType,
                           form.tokenName,
                           form.totalSupply,
                           form.tokenSymbol,
                           form.tokenIcon,
                           form.decimals,
                           form.tokenDesc,
-                          form.tokenFixedSupply
+                          form.tokenMintableSupply
                         )
                       "
                     >
-                      Create Your Token
+                      CREATE YOUR TOKEN
                     </el-button>
                     <connect-button v-if="wallet.connected === false" />
                   </el-col>
@@ -365,12 +345,12 @@ export default {
         tokenIcon: "",
         decimals: "",
         tokenDesc: "",
-        tokenFixedSupply: true,
+        tokenMintableSupply: false,
         file: null,
       },
       tokenTypes: [{ value: "0", label: "FA2" }],
       rules: {
-        tokenType: [{ required: true, message: "Select token type" }],
+        // tokenType: [{ required: true, message: "Select token type" }],
         tokenName: [{ required: true, message: "Enter token name" }],
         tokenSymbol: [{ required: true, message: "Enter token symbol" }],
         totalSupply: [
@@ -380,6 +360,33 @@ export default {
             required: true,
             message: "Enter a valid amount",
             transform: (v) => Number(v),
+          },
+        ],
+        tokenIcon: [
+          {
+            required: true,
+            validator: (rule, value, callback) => {
+              // Check if the value is a valid file object
+              if (this.form.file) {
+                const isJPG = this.form.file.type === "image/jpeg";
+                const isPNG = this.form.file.type === "image/png";
+                if (isJPG || isPNG) {
+                  callback();
+                } else {
+                  callback(new Error("Only JPEG or PNG images are allowed"));
+                }
+              } else {
+                const urlPattern = /^(https:\/\/|ipfs:\/\/)[^\s/$.?#].[^\s]*$/i;
+                if (urlPattern.test(value)) {
+                  callback();
+                } else {
+                  callback(
+                    new Error("Please provide a URL for the token icon.")
+                  );
+                }
+              }
+            },
+            message: "Please provide a valid file or URL for the token icon.",
           },
         ],
         decimals: [
@@ -402,14 +409,13 @@ export default {
     ...mapActions(["connectWallet", "createTokenContract"]),
 
     async createAToken(
-      tokenType,
       tokenName,
       totalSupply,
       tokenSymbol,
       tokenIcon,
       decimals,
       tokenDesc,
-      tokenFixedSupply,
+      tokenMintableSupply,
       uploadedFile
     ) {
       const vm = this;
@@ -418,14 +424,13 @@ export default {
           vm.form.loading = true;
 
           vm.createTokenContract({
-            tokenType: tokenType,
             tokenName: tokenName,
             totalSupply: totalSupply,
             tokenSymbol: tokenSymbol,
             tokenIcon: tokenIcon,
             decimals: decimals,
             tokenDesc: tokenDesc,
-            tokenFixedSupply: tokenFixedSupply,
+            tokenMintableSupply: tokenMintableSupply,
             uploadedFile: this.form.file,
           })
             .then(async (tx) => {
@@ -504,7 +509,7 @@ export default {
       this.form.file = file.raw;
     },
     handleRemove(file) {
-      this.form.fileList.pop();
+      this.form.file = null;
     },
     openDialog() {
       this.dialog.visible = true; // Set the property to true on button click

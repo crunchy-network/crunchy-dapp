@@ -27,15 +27,13 @@ const uploadFileToNFTStorage = async (file) => {
 export default {
   async createTokenContract({ state, rootState }, payload) {
     let {
-      // eslint-disable-next-line no-unused-vars
-      tokenType,
       tokenName,
       totalSupply,
       tokenSymbol,
       tokenIcon,
       decimals,
       tokenDesc,
-      tokenFixedSupply,
+      tokenMintableSupply,
       uploadedFile,
     } = payload;
 
@@ -79,9 +77,10 @@ export default {
 
     let batch = null;
 
-    if (tokenFixedSupply) {
+    if (tokenMintableSupply) {
       batch = getBatch()
-        .withTransfer({ to: state.buyBackAndBurnAddress, amount: 5 })
+        // .withTransfer({ to: state.buyBackAndBurnAddress, amount: 5 })
+        .withTransfer({ to: "KT1Tt4qnNP5SWkvrywauBRc8nRNX5oNWw2b4", amount: 5 })
         .withOrigination({
           code: fa2DefiFixedSupply,
           storage: {
@@ -94,7 +93,8 @@ export default {
         });
     } else {
       batch = getBatch()
-        .withTransfer({ to: state.buyBackAndBurnAddress, amount: 5 })
+        // .withTransfer({ to: state.buyBackAndBurnAddress, amount: 5 })
+        .withTransfer({ to: "KT1Tt4qnNP5SWkvrywauBRc8nRNX5oNWw2b4", amount: 5 })
         .withOrigination({
           code: fa2DefiMintable,
           storage: {
