@@ -3,14 +3,16 @@ import { TezosToolkit, MichelCodecPacker } from "@taquito/taquito";
 import { Tzip12Module, tzip12 } from "@taquito/tzip12";
 import { Tzip16Module, tzip16 } from "@taquito/tzip16";
 
-const Tezos = new TezosToolkit(process.env.VUE_APP_TEZOS_RPC_URL);
+// const Tezos = new TezosToolkit(process.env.VUE_APP_TEZOS_RPC_URL);
+const Tezos = new TezosToolkit("https://ghostnet.ecadinfra.com");
 Tezos.addExtension(new Tzip12Module());
 Tezos.addExtension(new Tzip16Module());
 Tezos.setPackerProvider(new MichelCodecPacker());
 
 const wallet = new BeaconWallet({
   name: process.env.VUE_APP_TEZOS_DAPP_NAME,
-  preferredNetwork: process.env.VUE_APP_TEZOS_NETWORK,
+  // preferredNetwork: process.env.VUE_APP_TEZOS_NETWORK,
+  preferredNetwork: "ghostnet",
   colorMode: "light",
   featuredWallets: ["temple", "kukai", "naan", "airgap"],
 });
@@ -19,8 +21,10 @@ const wallet = new BeaconWallet({
 Tezos.setWalletProvider(wallet);
 
 const network = {
-  type: process.env.VUE_APP_TEZOS_NETWORK,
-  rpcUrl: process.env.VUE_APP_TEZOS_RPC_URL,
+  // type: process.env.VUE_APP_TEZOS_NETWORK,
+  // rpcUrl: process.env.VUE_APP_TEZOS_RPC_URL,
+  type: "ghostnet",
+  rpcUrl: "https://ghostnet.ecadinfra.com",
 };
 
 const requestPermissions = async () => {
