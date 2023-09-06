@@ -14,7 +14,8 @@ const uploadFileToNFTStorage = async (file) => {
     formData,
     {
       headers: {
-        Authorization: `Bearer ${process.env.VUE_APP_NFT_STORAGE_API_KEY}`,
+        Authorization: `Bearer ${process.env.VUE_APP_NFT_STORAGE_UCAN_TOKEN}`,
+        "x-agent-did": `${process.env.VUE_APP_NFT_STORAGE_DID_KEY}`,
       },
     }
   );
