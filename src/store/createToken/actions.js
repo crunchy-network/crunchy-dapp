@@ -46,6 +46,7 @@ export default {
         // Handle the IPFS link as needed (e.g., store it in a database)
       } catch (error) {
         console.error("Error uploading to IPFS:", error);
+        return error;
       }
     }
 
