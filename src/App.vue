@@ -467,11 +467,9 @@ header .grid-content button.el-button {
 .el-switch__label:not(.is-active) span {
   color: #8c8d8f;
 }
-.el-switch.is-checked .el-switch__core {
-  background: #dcdfe6 !important;
-}
-.el-switch__core::after {
+.el-switch__core {
   background: #555cff !important;
+  border-color: #555cff !important;
 }
 .el-tabs__active-bar {
   background-color: var(--color-menu-active) !important;

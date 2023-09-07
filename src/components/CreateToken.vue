@@ -89,7 +89,7 @@
                 <el-row :gutter="20" class="row-input">
                   <el-col :span="12" class="row-input_item">
                     <el-form-item
-                      label="What is your tokens icon URL?"
+                      label="What is your tokens icon URL? (PNG or JPEG only)"
                       prop="tokenIcon"
                     >
                       <el-tabs v-model="tabActiveName">
