@@ -239,7 +239,7 @@
         width="100%"
         @close="closeDialog"
       >
-        <div class="dialog-infor" style="margin-bottom: 24px; margin-top: 16px">
+        <div class="dialog-infor" style="margin-bottom: 24px; margin-top: 16px; opacity: 80% !important">
           Your token has been created and should be in your wallet. If it
           doesn’t auto populate in your wallet, you can manually add the token
           using your token details below.
@@ -607,7 +607,7 @@ export default {
 }
 .dialog-infor {
   color: #8c8d8f;
-  opacity: 80%;
+  opacity: 80% !important;
 }
 .el-dialog__headerbtn {
   top: 5px !important;
