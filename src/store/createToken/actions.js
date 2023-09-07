@@ -1,6 +1,7 @@
 import { getBatch } from "./../../utils/tezos";
 import { MichelsonMap } from "@taquito/taquito";
 import { char2Bytes } from "@taquito/utils";
+import { BigNumber } from "bignumber.js";
 import fa2DefiFixedSupply from "./fa2-defi-fixed-supply.json";
 import fa2DefiMintable from "./fa2-defi-mintable.json";
 import axios from "axios";
@@ -69,11 +70,14 @@ export default {
     });
 
     const tokenTotalSupplyBigMap = MichelsonMap.fromLiteral({
-      0: Number(totalSupply),
+      0: BigNumber(totalSupply).times(BigNumber(10).pow(decimals)).toNumber(),
     });
 
     const ledgerBigMap = MichelsonMap.fromLiteral({});
-    ledgerBigMap.set([rootState.wallet.pkh, 0], Number(totalSupply));
+    ledgerBigMap.set(
+      [rootState.wallet.pkh, 0],
+      BigNumber(totalSupply).times(BigNumber(10).pow(decimals)).toNumber()
+    );
 
     let batch = null;
 

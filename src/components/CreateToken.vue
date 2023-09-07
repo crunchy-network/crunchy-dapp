@@ -589,7 +589,7 @@ export default {
 }
 .dialog-infor {
   color: #8c8d8f;
-  opacity: 80%;
+  opacity: 82%;
 }
 .el-dialog__headerbtn {
   top: 5px !important;

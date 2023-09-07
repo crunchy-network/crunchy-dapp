@@ -464,6 +464,9 @@ header .grid-content button.el-button {
   border: var(--line-border);
 }
 
+.el-switch__label:not(.is-active) span {
+  color: #8c8d8f;
+}
 .el-switch.is-checked .el-switch__core {
   background: #dcdfe6 !important;
 }
