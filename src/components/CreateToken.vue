@@ -12,8 +12,8 @@
               Create A Tezos Token
             </h2>
             <span style="font-size: 14px"
-              >Create your own token on the Tezos blockchain. There is a 5 $XTZ
-              fee to create a token that will be deposited in the Crunchy
+              >Create your own FA2.0 token on the Tezos blockchain. There is a 5
+              $XTZ fee to create a token that will be deposited in the Crunchy
               DAO.</span
             >
           </div>

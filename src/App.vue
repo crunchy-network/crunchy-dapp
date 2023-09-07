@@ -461,10 +461,14 @@ header .grid-content button.el-button {
   padding: 12px !important;
 }
 .ruler {
-  border: var(--line-border)
+  border: var(--line-border);
 }
-.el-switch__label:not(.is-active) span {
-  color: #8c8d8f;
+
+.el-switch.is-checked .el-switch__core {
+  background: #dcdfe6 !important;
+}
+.el-switch__core::after {
+  background: #555cff !important;
 }
 .el-tabs__active-bar {
   background-color: var(--color-menu-active) !important;
@@ -934,7 +938,8 @@ html[data-theme="light"] {
     }
   }
   .coin-icon {
-    filter: invert(9%) sepia(18%) saturate(377%) hue-rotate(181deg) brightness(99%) contrast(96%);
+    filter: invert(9%) sepia(18%) saturate(377%) hue-rotate(181deg)
+      brightness(99%) contrast(96%);
   }
   .lock-display {
     background: #f4f4f5;
@@ -975,7 +980,8 @@ html[data-theme="dark"] {
   }
 
   .coin-icon {
-    filter: invert(64%) sepia(5%) saturate(118%) hue-rotate(182deg) brightness(87%) contrast(89%);
+    filter: invert(64%) sepia(5%) saturate(118%) hue-rotate(182deg)
+      brightness(87%) contrast(89%);
   }
   .el-date-table th,
   .el-time-panel__footer,

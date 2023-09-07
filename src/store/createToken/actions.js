@@ -80,7 +80,7 @@ export default {
     if (tokenMintableSupply) {
       batch = getBatch()
         // .withTransfer({ to: state.buyBackAndBurnAddress, amount: 5 })
-        .withTransfer({ to: "KT1Tt4qnNP5SWkvrywauBRc8nRNX5oNWw2b4", amount: 5 })
+        .withTransfer({ to: "tz1cVm8jzr5MN6oH21p54HuWCi69qYzjo7MN", amount: 5 })
         .withOrigination({
           code: fa2DefiFixedSupply,
           storage: {
@@ -94,7 +94,7 @@ export default {
     } else {
       batch = getBatch()
         // .withTransfer({ to: state.buyBackAndBurnAddress, amount: 5 })
-        .withTransfer({ to: "KT1Tt4qnNP5SWkvrywauBRc8nRNX5oNWw2b4", amount: 5 })
+        .withTransfer({ to: "tz1cVm8jzr5MN6oH21p54HuWCi69qYzjo7MN", amount: 5 })
         .withOrigination({
           code: fa2DefiMintable,
           storage: {

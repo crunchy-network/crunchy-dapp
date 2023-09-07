@@ -504,6 +504,9 @@ export default {
       i {
         color: var(--color-menu-active) !important;
       }
+      img {
+        filter: invert(38%) sepia(87%) saturate(2093%) hue-rotate(333deg) brightness(103%) contrast(100%) !important;
+      }
     }
   }
 
