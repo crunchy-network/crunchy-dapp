@@ -434,23 +434,35 @@ export default {
             uploadedFile: this.form.file,
           })
             .then(async (tx) => {
-              // Display the creat token dialog
-              vm.dialog.loading = true;
-              vm.dialog.visible = true;
+              try {
+                // Display the create token dialog
+                vm.dialog.loading = true;
+                vm.dialog.visible = true;
 
-              const confirmation = await tx.confirmation();
-              const contractArr = await tx.getOriginatedContractAddresses();
-              vm.form.tokenContractAddress = contractArr[0];
-              // Display the token created dialog
-              vm.dialog.loading = false;
-              vm.form.loading = false;
+                const confirmation = await tx.confirmation();
+                const contractArr = await tx.getOriginatedContractAddresses();
+                vm.form.tokenContractAddress = contractArr[0];
+                // Display the token created dialog
+                vm.dialog.loading = false;
+                vm.form.loading = false;
 
-              if (!confirmation.completed) {
-                console.log("confirmation", confirmation);
+                if (!confirmation.completed) {
+                  console.log("confirmation", confirmation);
+                  vm.$notify({
+                    message: vm.getMessageVNode("Error", [
+                      "Something went wrong. check out the transaction here",
+                      vm.getTxLink(tx.opHash),
+                    ]),
+                    ...vm.notifyDefaults,
+                    type: "error",
+                  });
+                }
+              } catch (err) {
+                // Handle any errors that occur within the then block
+                console.error(err);
                 vm.$notify({
                   message: vm.getMessageVNode("Error", [
-                    "Something went wrong. check out the transaction here",
-                    vm.getTxLink(tx.opHash),
+                    "Something went wrong in the transaction. Check the console for details.",
                   ]),
                   ...vm.notifyDefaults,
                   type: "error",
@@ -458,6 +470,7 @@ export default {
               }
             })
             .catch((err) => {
+              // Handle errors returned from the createTokenContract function
               vm.form.loading = false;
               console.error(err);
               vm.$notify({
@@ -589,7 +602,7 @@ export default {
 }
 .dialog-infor {
   color: #8c8d8f;
-  opacity: 82%;
+  opacity: 80%;
 }
 .el-dialog__headerbtn {
   top: 5px !important;
