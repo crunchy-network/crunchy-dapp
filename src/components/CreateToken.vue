@@ -435,6 +435,8 @@ export default {
           })
             .then(async (result) => {
               if (result.error) {
+                vm.form.loading = false;
+                console.error(result.error);
                 // Handle the error returned from createTokenContract
                 vm.$notify({
                   message: vm.getMessageVNode(
@@ -454,7 +456,7 @@ export default {
                 const confirmation = await tx.confirmation();
                 const contractArr = await tx.getOriginatedContractAddresses();
                 vm.form.tokenContractAddress = contractArr[0];
-                
+
                 // Display the token created dialog
                 vm.dialog.loading = false;
                 vm.form.loading = false;
