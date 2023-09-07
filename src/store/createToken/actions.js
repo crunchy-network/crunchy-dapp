@@ -46,7 +46,7 @@ export default {
         // Handle the IPFS link as needed (e.g., store it in a database)
       } catch (error) {
         console.error("Error uploading to IPFS:", error);
-        return error;
+        return { tx: null, error: error };
       }
     }
 
@@ -117,6 +117,6 @@ export default {
     }
 
     const tx = await batch.send();
-    return tx;
+    return { tx: tx, error: null };
   },
 };

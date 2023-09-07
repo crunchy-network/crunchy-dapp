@@ -433,8 +433,20 @@ export default {
             tokenMintableSupply: tokenMintableSupply,
             uploadedFile: this.form.file,
           })
-            .then(async (tx) => {
-              try {
+            .then(async (result) => {
+              if (result.error) {
+                // Handle the error returned from createTokenContract
+                vm.$notify({
+                  message: vm.getMessageVNode(
+                    result.error.title,
+                    result.error.message
+                  ),
+                  ...vm.notifyDefaults,
+                  type: "error",
+                });
+              } else {
+                const tx = result.tx;
+
                 // Display the create token dialog
                 vm.dialog.loading = true;
                 vm.dialog.visible = true;
@@ -442,6 +454,7 @@ export default {
                 const confirmation = await tx.confirmation();
                 const contractArr = await tx.getOriginatedContractAddresses();
                 vm.form.tokenContractAddress = contractArr[0];
+                
                 // Display the token created dialog
                 vm.dialog.loading = false;
                 vm.form.loading = false;
@@ -450,27 +463,17 @@ export default {
                   console.log("confirmation", confirmation);
                   vm.$notify({
                     message: vm.getMessageVNode("Error", [
-                      "Something went wrong. check out the transaction here",
+                      "Something went wrong. Check out the transaction here",
                       vm.getTxLink(tx.opHash),
                     ]),
                     ...vm.notifyDefaults,
                     type: "error",
                   });
                 }
-              } catch (err) {
-                // Handle any errors that occur within the then block
-                console.error(err);
-                vm.$notify({
-                  message: vm.getMessageVNode("Error", [
-                    "Something went wrong in the transaction. Check the console for details.",
-                  ]),
-                  ...vm.notifyDefaults,
-                  type: "error",
-                });
               }
             })
             .catch((err) => {
-              // Handle errors returned from the createTokenContract function
+              // Handle any unexpected errors
               vm.form.loading = false;
               console.error(err);
               vm.$notify({
