@@ -6,17 +6,15 @@ import fa2DefiFixedSupply from "./fa2-defi-fixed-supply.json";
 import fa2DefiMintable from "./fa2-defi-mintable.json";
 import axios from "axios";
 
-const uploadFileToNFTStorage = async (file) => {
-  const formData = new FormData();
-  formData.append("file", file);
-
+const uploadFileToNFTStorage = async (file) => { 
   const response = await axios.post(
     "https://api.nft.storage/upload",
-    formData,
+    file,
     {
       headers: {
         Authorization: `Bearer ${process.env.VUE_APP_NFT_STORAGE_UCAN_TOKEN}`,
         "x-agent-did": `${process.env.VUE_APP_NFT_STORAGE_DID_KEY}`,
+        "Content-Type": file.type,
       },
     }
   );
