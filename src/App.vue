@@ -460,6 +460,30 @@ header .grid-content button.el-button {
   border-radius: 12px !important;
   padding: 12px !important;
 }
+.ruler {
+  border: var(--line-border);
+}
+
+.el-switch__label:not(.is-active) span {
+  color: #8c8d8f;
+}
+.el-switch__core {
+  background: #555cff !important;
+  border-color: #555cff !important;
+}
+.el-tabs__active-bar {
+  background-color: var(--color-menu-active) !important;
+}
+.el-tabs__item:hover {
+  color: #8c8d8f !important;
+}
+
+.el-tabs__item.is-active {
+  color: var(--color-menu-active) !important;
+}
+.el-tabs__item:not(.is-active) {
+  color: #8c8d8f !important;
+}
 
 .el-dialog {
   border-radius: 18px !important;
@@ -513,6 +537,10 @@ header .grid-content button.el-button {
   font-weight: bold;
   text-transform: uppercase;
   line-height: 22px;
+}
+
+#create-token .el-form--label-top .el-form-item__label {
+  text-transform: none !important;
 }
 
 .el-table th {
@@ -590,6 +618,28 @@ header .grid-content button.el-button {
 
 .divider .el-divider.el-divider--horizontal {
   width: 100% !important;
+}
+
+.el-upload-list__item-name {
+  font-size: medium;
+}
+el-upload-list__item {
+  display: flex !important;
+}
+.el-upload-list__item:hover {
+  background: none !important;
+}
+.el-upload-list__item-name {
+  display: inline-block !important;
+  margin-right: 10px !important;
+}
+.el-upload-list__item .el-icon-close {
+  color: red !important;
+  font-weight: 600;
+  font-size: large;
+  display: inline-block !important;
+  position: relative !important;
+  top: -6px !important;
 }
 
 @media (min-width: 991px) {
@@ -888,9 +938,27 @@ html[data-theme="light"] {
       color: #4a4a4a;
     }
   }
-
+  .coin-icon {
+    filter: invert(9%) sepia(18%) saturate(377%) hue-rotate(181deg)
+      brightness(99%) contrast(96%);
+  }
   .lock-display {
     background: #f4f4f5;
+  }
+  .el-textarea__inner {
+    color: var(--primary-text);
+    border-color: var(--border-color);
+    height: 100px;
+    border-radius: 0px;
+  }
+  .el-textarea__inner::placeholder {
+    color: #8c8d8f;
+  }
+  .el-textarea__inner:focus {
+    border-color: #555cff !important;
+  }
+  .warning-modal {
+    color: #23262f;
   }
 }
 
@@ -912,6 +980,10 @@ html[data-theme="dark"] {
     }
   }
 
+  .coin-icon {
+    filter: invert(64%) sepia(5%) saturate(118%) hue-rotate(182deg)
+      brightness(87%) contrast(89%);
+  }
   .el-date-table th,
   .el-time-panel__footer,
   .el-time-panel__content::after,
@@ -1066,6 +1138,24 @@ html[data-theme="dark"] {
 
   .el-tooltip__popper[x-placement^="right"] .popper__arrow::after {
     border-right-color: var(--border-color) !important;
+  }
+  .el-textarea__inner {
+    background-color: #191b1f !important;
+    border-color: var(--border-color);
+    height: 100px;
+    color: var(--primary-text);
+  }
+  .el-textarea__inner::placeholder {
+    color: #8c8d8f;
+  }
+  .el-textarea__inner:focus {
+    border-color: #555cff !important;
+  }
+  .el-upload-list__item-name {
+    color: var(--primary-text);
+  }
+  .warning-modal {
+    color: var(--primary-text);
   }
 }
 </style>
