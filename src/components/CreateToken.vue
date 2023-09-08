@@ -609,6 +609,8 @@ export default {
   height: 95% !important;
 }
 .dialog-infor {
+  display: inline-block;
+  word-break: break-word;
   color: #8c8d8f;
   opacity: 0.8 !important;
 }
