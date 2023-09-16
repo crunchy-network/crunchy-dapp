@@ -13,7 +13,7 @@ import swap from "./swap";
 import tokenTracker from "./tokenTracker";
 import usdXtzSwitch from "./usdXtzSwitch";
 import theme from "./theme";
-
+import createToken from "./createToken";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -31,5 +31,6 @@ export default new Vuex.Store({
     swap: swap,
     tokenTracker: tokenTracker,
     theme: theme,
+    createToken: createToken,
   },
 });
