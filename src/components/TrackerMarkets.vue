@@ -58,7 +58,7 @@
                         />
 
                         <a
-                          :href="`https://tzkt.io/${item.dex_address}`"
+                          :href="`https://tzkt.io/${item.dex.address}`"
                           target="_blank"
                           style="
                             font-weight: 600;
