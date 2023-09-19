@@ -56,7 +56,7 @@ function modifyQuotes(quotes, allTokenSpot, type) {
     quoteTokenPriceInTez = quoteToken?.quotes.find(
       (el) => el.token.tokenAddress === "tez"
     )?.quote;
-    
+
     // Only get element from one month for 1h chart
     if (type === "1h") {
       quote.buckets = quote.buckets.filter(
@@ -98,8 +98,8 @@ function getAggregatedOpen(quotes, allTokenSpot) {
     if (quote.token.tokenAddress === "tez") {
       open = quote.buckets[0].open;
       volume = parseFloat(quote.buckets[0].quoteVolume);
-      quote.open_xtz = open
-      quote.volume_xtz = volume
+      quote.open_xtz = open;
+      quote.volume_xtz = volume;
       // Token has quote paired with wtz
     } else {
       quoteToken = allTokenSpot.find(
@@ -119,8 +119,8 @@ function getAggregatedOpen(quotes, allTokenSpot) {
       volume = isNaN(quoteTokenPriceInTez)
         ? parseFloat(quote.buckets[0].quoteVolume) * quoteTokenPriceInWTZ
         : parseFloat(quote.buckets[0].quoteVolume) * quoteTokenPriceInTez;
-      quote.open_xtz = open
-      quote.volume_xtz = volume
+      quote.open_xtz = open;
+      quote.volume_xtz = volume;
     }
     if (isNaN(open) || isNaN(volume)) {
       continue;
@@ -447,7 +447,7 @@ export default {
     ];
 
     // const aggregatedQuotes1h = getAggregatedPriceAndVolume(quotes1h);
-    const aggregatedQuotes1h = getAggregatedPriceAndVolume(quotes1h);;
+    const aggregatedQuotes1h = getAggregatedPriceAndVolume(quotes1h);
     const aggregatedQuotes1d = getAggregatedPriceAndVolume(quotes1d);
     const aggregatedQuotes1w = getAggregatedPriceAndVolume(quotes1w);
     const aggregatedQuotes1mo = getAggregatedPriceAndVolume(quotes1mo);
@@ -637,7 +637,7 @@ export default {
         let totalReserves = 0;
         let aggregatedClose = 0;
         let close = 0;
-        
+
         for (const quoteData of element.quotes) {
           const foundPool = allTokenPool.find(
             (el) =>
@@ -688,8 +688,7 @@ export default {
         }
 
         element.aggregatedPrice = aggregatedClose / totalReserves;
-        
-        
+
         const tokenQuote1D = allQuotes1D.find(
           (ele) =>
             ele.tokenAddress === element.tokenAddress &&
@@ -705,15 +704,30 @@ export default {
             ele.tokenAddress === element.tokenAddress &&
             ele.tokenId === element.tokenId
         ).quotes;
-        
-        const filteredTokenQuote1D = tokenQuote1D.filter((quote) => new Date(quote.buckets[0].bucket) >= new Date(oneDayAgo));
-        const filteredTokenQuote1W = tokenQuote1W.filter((quote) => new Date(quote.buckets[0].bucket) >= new Date(oneWeekAgo));
-        const filteredTokenQuote1MO = tokenQuote1MO.filter((quote) => new Date(quote.buckets[0].bucket) >= new Date(oneMonthAgo));
 
-        element.dayClose = getAggregatedOpen(filteredTokenQuote1D, allTokenSpot);
-        element.weekClose = getAggregatedOpen(filteredTokenQuote1W, allTokenSpot);
-        element.monthClose = getAggregatedOpen(filteredTokenQuote1MO, allTokenSpot);
-        
+        const filteredTokenQuote1D = tokenQuote1D.filter(
+          (quote) => new Date(quote.buckets[0].bucket) >= new Date(oneDayAgo)
+        );
+        const filteredTokenQuote1W = tokenQuote1W.filter(
+          (quote) => new Date(quote.buckets[0].bucket) >= new Date(oneWeekAgo)
+        );
+        const filteredTokenQuote1MO = tokenQuote1MO.filter(
+          (quote) => new Date(quote.buckets[0].bucket) >= new Date(oneMonthAgo)
+        );
+
+        element.dayClose = getAggregatedOpen(
+          filteredTokenQuote1D,
+          allTokenSpot
+        );
+        element.weekClose = getAggregatedOpen(
+          filteredTokenQuote1W,
+          allTokenSpot
+        );
+        element.monthClose = getAggregatedOpen(
+          filteredTokenQuote1MO,
+          allTokenSpot
+        );
+
         const timeUsdValueDay1 = binarySearch(xtzUsdHistory, day1);
         const timeUsdValueDay7 = binarySearch(xtzUsdHistory, day7);
         const timeUsdValueDay30 = binarySearch(xtzUsdHistory, day30);
@@ -744,8 +758,8 @@ export default {
 
         // Assign it to element.exchanges
         element.exchanges = deepCopyOfTokenPools;
-        if( element.tokenAddress === "KT1XnTn74bUtxHfDtBmm2bGZAQfhPbvKWR8o") {
-        console.log(element)
+        if (element.tokenAddress === "KT1XnTn74bUtxHfDtBmm2bGZAQfhPbvKWR8o") {
+          console.log(element);
         }
 
         element.exchanges.forEach((e, index) => {
