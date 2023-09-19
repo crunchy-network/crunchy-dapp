@@ -758,9 +758,6 @@ export default {
 
         // Assign it to element.exchanges
         element.exchanges = deepCopyOfTokenPools;
-        if (element.tokenAddress === "KT1XnTn74bUtxHfDtBmm2bGZAQfhPbvKWR8o") {
-          console.log(element);
-        }
 
         element.exchanges.forEach((e, index) => {
           // Calculate exchanges infor
