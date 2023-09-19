@@ -216,6 +216,8 @@ export default {
 
       // Get token metadata and prices
       const tokenData = await dexIndexer.getAllTokens();
+      const allTokenSpot = await dexIndexer.getAllTokenSpot();
+
       // filter out NFTs by checking for artifactURI and token symbol or alias
       const tokens = [];
 
@@ -241,16 +243,31 @@ export default {
           balances[i]?.token?.tokenId || 0
         }`;
 
+        const quoteToken = allTokenSpot.find(
+          (el) =>
+            balances[i]?.token?.contract?.address === el.tokenAddress &&
+            balances[i]?.token?.tokenId === String(el.tokenId)
+        );
+        const quoteTokenPriceInTez = quoteToken?.quotes.find(
+          (el) => el.token.tokenAddress === "tez"
+        )?.quote;
+        const quoteTokenPriceInWTZ = quoteToken?.quotes.find(
+          (el) =>
+            el.token.tokenAddress === "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn"
+        )?.quote;
+
         const priceObj = tokenData.find(
           (el) =>
-            (el.token_address === balances[i]?.token?.contract?.address &&
-              String(el.token_id) === balances[i]?.token?.tokenId) ||
+            (el.tokenAddress === balances[i]?.token?.contract?.address &&
+              String(el.tokenId) === balances[i]?.token?.tokenId) ||
             0
         );
-        const currentPrice = priceObj?.pools[0]?.quotes_spot?.quote || false;
-        const tokenid = priceObj?.token_id;
+        const currentPrice = isNaN(quoteTokenPriceInTez)
+          ? quoteTokenPriceInWTZ
+          : quoteTokenPriceInTez;
+        const tokenid = priceObj?.tokenId;
         // get token uri from prices :: This is because  balance does not return  some tokens thumbnail
-        const thumbnailUri = priceObj?.thumbnail_uri || false;
+        const thumbnailUri = priceObj?.thumbnailUri || false;
 
         const decimals = priceObj?.decimals || false;
 

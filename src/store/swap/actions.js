@@ -5,6 +5,32 @@ import {
   buildQuipuStablePairs,
 } from "../../lib/SwapRouter";
 import dexIndexer from "./../../utils/dex-indexer";
+
+const modifyDexPools = (dexPools) => {
+  const modifiedDexPools = dexPools.map(item => {
+    return {
+      dex_address: item.dex.address,
+      dex_type: item.dex.type,
+      params: item.params,
+      pools: item.tokens.map(tokenItem => {
+        return {
+          pool_id: item.poolId,
+          reserves: tokenItem.reserves,
+          params: tokenItem.params,
+          token_address: tokenItem.token.tokenAddress,
+          token_id: tokenItem.token.tokenId,
+          token: {
+            decimals: tokenItem.token.decimals,
+            symbol: tokenItem.token.symbol,
+            token_type: tokenItem.token.tokenType
+          }
+        };
+      })
+    };
+  });
+  return modifiedDexPools;
+}
+
 export default {
   async loadTokenList(state) {
     const tokenList = await dexIndexer.getAllTokens();
@@ -33,11 +59,12 @@ export default {
 
   async loadSwapPairs(state) {
     const dex = "core";
-    const dexPools = await dexIndexer.getAllDexes();
-    
+    const dexPools = await dexIndexer.getAllTokenPools();
+    const modifiedDexPools = modifyDexPools(dexPools)
+
     state.commit("updateDexPairs", {
       dex,
-      pairs: await buildSwapPairs(dexPools),
+      pairs: await buildSwapPairs(modifiedDexPools),
     });
     state.commit("updateDexLoading", { dex, loading: false });
   },
