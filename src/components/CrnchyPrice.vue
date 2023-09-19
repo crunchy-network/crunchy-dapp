@@ -80,7 +80,7 @@ export default {
           (el) => el.token.tokenAddress === "tez"
         )?.quote;
 
-        this.price = priceXTZ;
+        this.price = Number(priceXTZ);
         this.priceUsd = xtzUsd * priceXTZ;
       } catch (error) {
         console.log("\n\n------ begin:  ------");
