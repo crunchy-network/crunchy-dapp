@@ -1,9 +1,8 @@
 import axios from "axios";
 import homeWallet from "../../utils/home-wallet";
 import homeWalletStake from "../../utils/home-wallet-stake";
-import queryDipdup from "../../utils/queryDipdup";
 import tzkt from "../../utils/tzkt";
-// import teztools from "../../utils/teztools";
+import tokenTracker from "../../utils/token-tracker";
 
 async function fetchAssetsBalWithRetry(pkh, commit) {
   return homeWallet.fetchAssetsBal(pkh).then((res) => {
@@ -81,8 +80,6 @@ export default {
 
   async loadStakeAssets({ dispatch, commit }, pkh) {
     commit("updateStakeLoading", true);
-    // const { contract: priceFeed } = await teztools.getPricefeed();
-    // commit("updateFeed", priceFeed);
     await Promise.all([
       dispatch("loadCrunchyStake", pkh),
       dispatch("loadDogamiStake", pkh),
@@ -158,7 +155,8 @@ export default {
         `https://staging.api.tzkt.io/v1/tokens/balances?account=${account}&balance.gt=0&limit=10000&select=token,balance`
       );
 
-      const priceFeed = await queryDipdup.getAllTokenAndQuotes();
+      // const priceFeed = await queryDipdup.getAllTokenAndQuotes();
+      const priceFeed = await tokenTracker.getTokenFeed();
 
       const xtzUsd = await tzkt.getXtzUsdPrice();
 
@@ -190,7 +188,7 @@ export default {
         `https://staging.api.tzkt.io/v1/tokens/balances?account=${account}&balance.gt=0&limit=10000&select=token,balance`
       );
 
-      const priceFeed = await queryDipdup.getAllTokenAndQuotes();
+      const priceFeed = await tokenTracker.getTokenFeed();
       const xtzUsd = await tzkt.getXtzUsdPrice();
 
       const [quipuswap, vortex, plenty, spicyswap, sirius] = await Promise.all([
