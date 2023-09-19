@@ -15,9 +15,9 @@ export default {
       const crnchy = await dexIndexer.getToken(
         process.env.VUE_APP_CONTRACTS_CRNCHY,
         0
-      );
+      )[0];
 
-      const totalSupply = new BigNumber(crnchy.total_supply).div(
+      const totalSupply = new BigNumber(crnchy.totalSupply).div(
         new BigNumber(10).pow(crnchy.decimals)
       );
 
