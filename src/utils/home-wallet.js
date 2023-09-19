@@ -216,7 +216,6 @@ export default {
 
       // Get token metadata and prices
       const tokenData = await dexIndexer.getAllTokens();
-      const allTokenSpot = await dexIndexer.getAllTokenSpot();
       const tokenFeed = await tokenTracker.getTokenFeed();
 
       // filter out NFTs by checking for artifactURI and token symbol or alias
@@ -252,7 +251,7 @@ export default {
         );
         // get token uri from prices :: This is because  balance does not return  some tokens thumbnail
         const thumbnailUri = priceObj?.thumbnailUri || false;
-
+        const tokenid = priceObj?.tokenId;
         const decimals = priceObj?.decimals || false;
 
         // Data filter and calculations
@@ -266,12 +265,7 @@ export default {
         );
 
         // Find dayclose, weekclose, monthclose
-        const id =
-          balances[i]?.token?.contract?.address +
-          "_" +
-          balances[i]?.token?.tokenId;
-
-        const token = tokenFeed[id];
+        const token = tokenFeed[tokenId];
         let currentPrice;
         if (priceObj) {
           priceObj.dayClose = token?.dayClose;
@@ -292,8 +286,8 @@ export default {
         );
 
         var assetSlug;
-        if (tokenId !== undefined) {
-          assetSlug = `${balances[i]?.token?.contract?.address}_${tokenId}`;
+        if (tokenid !== undefined) {
+          assetSlug = `${balances[i]?.token?.contract?.address}_${tokenid}`;
         } else {
           assetSlug = balances[i]?.token?.contract?.address;
         }
@@ -344,7 +338,7 @@ export default {
           valueUsd: valueUsd.toNumber() || 0,
           value: value.toNumber() || 0,
           contract: balances[i]?.token?.contract?.address,
-          tokenId,
+          tokenid,
           assetSlug,
           decimals: balances[i]?.token?.metadata?.decimals,
         };
