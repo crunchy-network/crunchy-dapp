@@ -4,7 +4,7 @@ import ipfs from "./ipfs";
 // import teztools from "./teztools";
 import knownContracts from "../knownContracts.json";
 import tzkt from "./tzkt";
-// import tokenTracker from "./token-tracker";
+import tokenTracker from "./token-tracker";
 import dexIndexer from "./dex-indexer";
 import _ from "lodash";
 
@@ -217,6 +217,7 @@ export default {
       // Get token metadata and prices
       const tokenData = await dexIndexer.getAllTokens();
       const allTokenSpot = await dexIndexer.getAllTokenSpot();
+      const tokenFeed = await tokenTracker.getTokenFeed();
 
       // filter out NFTs by checking for artifactURI and token symbol or alias
       const tokens = [];
@@ -243,29 +244,12 @@ export default {
           balances[i]?.token?.tokenId || 0
         }`;
 
-        const quoteToken = allTokenSpot.find(
-          (el) =>
-            balances[i]?.token?.contract?.address === el.tokenAddress &&
-            balances[i]?.token?.tokenId === String(el.tokenId)
-        );
-        const quoteTokenPriceInTez = quoteToken?.quotes.find(
-          (el) => el.token.tokenAddress === "tez"
-        )?.quote;
-        const quoteTokenPriceInWTZ = quoteToken?.quotes.find(
-          (el) =>
-            el.token.tokenAddress === "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn"
-        )?.quote;
-
         const priceObj = tokenData.find(
           (el) =>
             (el.tokenAddress === balances[i]?.token?.contract?.address &&
               String(el.tokenId) === balances[i]?.token?.tokenId) ||
             0
         );
-        const currentPrice = isNaN(quoteTokenPriceInTez)
-          ? quoteTokenPriceInWTZ
-          : quoteTokenPriceInTez;
-        const tokenid = priceObj?.tokenId;
         // get token uri from prices :: This is because  balance does not return  some tokens thumbnail
         const thumbnailUri = priceObj?.thumbnailUri || false;
 
@@ -281,6 +265,24 @@ export default {
           )
         );
 
+        // Find dayclose, weekclose, monthclose
+        const id =
+          balances[i]?.token?.contract?.address +
+          "_" +
+          balances[i]?.token?.tokenId;
+
+        const token = tokenFeed[id];
+        let currentPrice;
+        if (priceObj) {
+          priceObj.dayClose = token?.dayClose;
+          priceObj.weekClose = token?.weekClose;
+          priceObj.monthClose = token?.monthClose;
+          priceObj.dayCloseUsd = token?.dayCloseUsd;
+          priceObj.weekCloseUsd = token?.weekCloseUsd;
+          priceObj.monthCloseUsd = token?.monthCloseUsd;
+          currentPrice = token.currentPrice
+        }
+
         const price = new BigNumber(currentPrice);
         const priceUsd = new BigNumber(currentPrice).times(usdMul);
         const value = balance.multipliedBy(price);
@@ -288,12 +290,10 @@ export default {
         const icon = ipfs.transformUri(
           balances[i]?.token?.metadata?.thumbnailUri || thumbnailUri || ""
         );
-        // const pricePair = priceObj?.pairs?.find(
-        //   (el) => el.dex === "Quipuswap" && el.sides[1].symbol === "XTZ"
-        // );
+
         var assetSlug;
-        if (tokenid !== undefined) {
-          assetSlug = `${balances[i]?.token?.contract?.address}_${tokenid}`;
+        if (tokenId !== undefined) {
+          assetSlug = `${balances[i]?.token?.contract?.address}_${tokenId}`;
         } else {
           assetSlug = balances[i]?.token?.contract?.address;
         }
@@ -344,7 +344,7 @@ export default {
           valueUsd: valueUsd.toNumber() || 0,
           value: value.toNumber() || 0,
           contract: balances[i]?.token?.contract?.address,
-          tokenid,
+          tokenId,
           assetSlug,
           decimals: balances[i]?.token?.metadata?.decimals,
         };
