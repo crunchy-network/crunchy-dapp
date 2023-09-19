@@ -4,15 +4,21 @@ import utils from ".";
 import dexIndexer from "./dex-indexer";
 import ipfs from "./ipfs";
 import tzkt from "./tzkt";
+import _ from "lodash";
 
 const ALIEN_FEE_DENOMINATOR = new BigNumber(1000000000000000000n);
-const twentyFourHrs = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-const fourtyEightHrs = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
+const day1 = new Date(new Date().setDate(new Date().getDate() - 1)).getTime();
+const day7 = new Date(new Date().setDate(new Date().getDate() - 7)).getTime();
+const day30 = new Date(new Date().setDate(new Date().getDate() - 30)).getTime();
 const oneHourInMiliSecond = 60 * 60 * 1000;
 const oneDayInMiliSecond = oneHourInMiliSecond * 24;
 const oneWeekInMiliSecond = oneDayInMiliSecond * 7;
 const oneMonthInMiliSecond = oneDayInMiliSecond * 30;
+const twoMonthInMiliSecond = oneDayInMiliSecond * 60;
+const oneDayAgo = new Date(Date.now() - oneDayInMiliSecond).toISOString();
+const oneWeekAgo = new Date(Date.now() - oneWeekInMiliSecond).toISOString();
 const oneMonthAgo = new Date(Date.now() - oneMonthInMiliSecond).toISOString();
+const twoMonthAgo = new Date(Date.now() - twoMonthInMiliSecond).toISOString();
 const PLY_TOKEN_ID = "KT1JVjgXPMMSaa6FkzeJcgb8q9cUaLmwaJUX_0";
 
 async function getPlentyTokenDailyMetrics(symbol = "") {
@@ -29,22 +35,101 @@ async function getSpicyTokenDailyMetrics(tag = "") {
   return res;
 }
 
-function getAggregatedOpen(pools, quote, wtzTokenPrice) {
-  let totalReserves = 0;
-  let aggregatedOpen = 0;
-  for (const pool of pools) {
-    const reserves = parseFloat(pool[quote]?.volume_quote);
-    let open = 0;
-    if (pool?.quotes_spot?.quote_token_address === "tez") {
-      open = pool[quote]?.open;
-      // Token has pool paired with wtz
-    } else {
-      open = pool[quote]?.open * wtzTokenPrice;
+function aggregateQuotes(quotes) {
+  let modifiedQuotes = [];
+  quotes.forEach((quote, index) => {
+    modifiedQuotes.push(quote.buckets);
+  });
+  modifiedQuotes = [].concat(...modifiedQuotes);
+  return modifiedQuotes;
+}
+
+function modifyQuotes(quotes, allTokenSpot, type) {
+  let quoteToken;
+  let quoteTokenPriceInTez;
+  quotes.forEach((quote, index) => {
+    quoteToken = allTokenSpot.find(
+      (el) =>
+        quote.token.tokenAddress === el.tokenAddress &&
+        quote.token.tokenId === el.tokenId
+    );
+    quoteTokenPriceInTez = quoteToken?.quotes.find(
+      (el) => el.token.tokenAddress === "tez"
+    )?.quote;
+    
+    // Only get element from one month for 1h chart
+    if (type === "1h") {
+      quote.buckets = quote.buckets.filter(
+        (bucket) => new Date(bucket.bucket) > new Date(oneMonthAgo)
+      );
     }
-    totalReserves += reserves;
-    aggregatedOpen += reserves * open;
+    // Only get element from two months for 1d chart
+    if (type === "1d") {
+      quote.buckets = quote.buckets.filter(
+        (bucket) => new Date(bucket.bucket) > new Date(twoMonthAgo)
+      );
+    }
+    quote.buckets.map((bucket) => {
+      bucket.dex_type = quote.pool.dex.type;
+      bucket.quote_token_address = quote.token.tokenAddress;
+      bucket.quote_token_id = quote.token.tokenId;
+      bucket.close_xtz =
+        quote.token.tokenAddress === "tez"
+          ? Number(bucket.close)
+          : Number(bucket.close) * Number(quoteTokenPriceInTez);
+      bucket.volume_quote_xtz =
+        quote.token.tokenAddress === "tez"
+          ? Number(bucket.quoteVolume)
+          : Number(bucket.quoteVolume) * Number(quoteTokenPriceInTez);
+    });
+  });
+  return quotes;
+}
+
+function getAggregatedOpen(quotes, allTokenSpot) {
+  let totalVolume = 0;
+  let aggregatedOpen = 0;
+  for (const quote of quotes) {
+    let volume = 0;
+    let open = 0;
+    let quoteToken;
+    let quoteTokenPriceInTez;
+    let quoteTokenPriceInWTZ;
+    if (quote.token.tokenAddress === "tez") {
+      open = quote.buckets[0].open;
+      volume = parseFloat(quote.buckets[0].quoteVolume);
+      quote.open_xtz = open
+      quote.volume_xtz = volume
+      // Token has quote paired with wtz
+    } else {
+      quoteToken = allTokenSpot.find(
+        (el) =>
+          quote.token.tokenAddress === el.tokenAddress &&
+          quote.token.tokenId === el.tokenId
+      );
+      quoteTokenPriceInTez = quoteToken?.quotes.find(
+        (el) => el.token.tokenAddress === "tez"
+      )?.quote;
+      quoteTokenPriceInWTZ = quoteToken?.quotes.find(
+        (el) => el.token.tokenAddress === "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn"
+      )?.quote;
+      open = isNaN(quoteTokenPriceInTez)
+        ? quote.buckets[0].open * quoteTokenPriceInWTZ
+        : quote.buckets[0].open * quoteTokenPriceInTez;
+      volume = isNaN(quoteTokenPriceInTez)
+        ? parseFloat(quote.buckets[0].quoteVolume) * quoteTokenPriceInWTZ
+        : parseFloat(quote.buckets[0].quoteVolume) * quoteTokenPriceInTez;
+      quote.open_xtz = open
+      quote.volume_xtz = volume
+    }
+    if (isNaN(open) || isNaN(volume)) {
+      continue;
+    }
+
+    totalVolume += volume;
+    aggregatedOpen += volume * open;
   }
-  return totalReserves > 0 ? aggregatedOpen / totalReserves : 0;
+  return totalVolume > 0 ? aggregatedOpen / totalVolume : 0;
 }
 
 function sameDay(d1, d2) {
@@ -226,16 +311,10 @@ function getAggregatedPriceAndVolume(quotes, type) {
   const aggregatedQuotes = [];
   let prevAggCloseSum = 0;
   let prevAggVol = 0;
-  // Exclude elment having pools as empty array or close and volume quote is NaN
+  // Exclude elment having no close price in xtz and volume quote is NaN
   let filteredQuotes = quotes.filter(
-    (item) =>
-      item.quote_token_address === "tez" ||
-      (item.quote_token_address !== "tez" && item.quote_token.pools.length > 0)
+    (item) => !isNaN(item.close_xtz) && !isNaN(item.volume_quote_xtz)
   );
-  filteredQuotes = filteredQuotes.filter(
-    (item) => item.close !== "NaN" && item.volume_quote !== "NaN"
-  );
-
   while (filteredQuotes.length > 0) {
     // Get first element of quotes, remove the quote
     // and find all quote with same time
@@ -247,53 +326,27 @@ function getAggregatedPriceAndVolume(quotes, type) {
     );
     // Get aggregated close and volume
     if (matchingElements.length > 0) {
-      // Volume and price of matched quote
-      const quoteVolume =
-        quote.quote_token_address !== "tez"
-          ? quote.volume_quote * quote.quote_token.pools[0]?.quotes_spot?.quote
-          : quote.volume_quote;
-      const quotePrice =
-        quote.quote_token_address !== "tez"
-          ? quote.close * quote.quote_token.pools[0]?.quotes_spot?.quote
-          : quote.close;
+      const quoteVolume = parseFloat(quote.volume_quote_xtz);
+      const quoteWeightedClose =
+        parseFloat(quote.close_xtz) * parseFloat(quote.volume_quote_xtz);
       // Get total volume in xtz
       const totalVolume = matchingElements.reduce((sum, element) => {
-        if (element.quote_token_address !== "tez") {
-          const quotePrice = element.quote_token.pools[0]?.quotes_spot?.quote;
-          element.volume_quote_xtz =
-            quotePrice && element.close ? element.volume_quote * quotePrice : 0;
-        }
-
-        return (
-          sum +
-          (element.quote_token_address !== "tez"
-            ? element.volume_quote_xtz
-            : element.volume_quote)
-        );
+        return sum + parseFloat(element.volume_quote_xtz);
       }, quoteVolume);
 
       // Get weighted price sum in xtz
       const weightedCloseSum = matchingElements.reduce((sum, element) => {
-        let weightedClose = 0;
-
-        if (element.quote_token_address !== "tez") {
-          const quotePrice = element.quote_token.pools[0]?.quotes_spot?.quote;
-          element.volume_quote_xtz = quotePrice
-            ? element.volume_quote * quotePrice
-            : 0;
-          // Convert to weighted xtz price
-          weightedClose = element.close * quotePrice * element.volume_quote_xtz;
-        } else {
-          weightedClose = element.close * element.volume_quote;
-        }
-
-        return sum + weightedClose;
-      }, quotePrice * quoteVolume);
+        return (
+          sum +
+          parseFloat(element.close_xtz) * parseFloat(element.volume_quote_xtz)
+        );
+      }, quoteWeightedClose);
 
       const aggregatedClose = weightedCloseSum / totalVolume;
       const aggregatedXtzVolume = totalVolume;
       prevAggCloseSum = weightedCloseSum;
       prevAggVol = aggregatedXtzVolume;
+
       if (!isNaN(aggregatedClose)) {
         aggregatedQuotes.push({
           ...quote,
@@ -302,28 +355,18 @@ function getAggregatedPriceAndVolume(quotes, type) {
         });
       }
 
-      // Remove quote
+      // Use the filter method to remove elements in matchingElements from quotes
       filteredQuotes = filteredQuotes.filter(
-        (q) => !matchingElements.some((element) => element.bucket === q.bucket)
+        (element) => !matchingElements.includes(element)
       );
     } else {
       if (quote) {
-        const quotePrice =
-          quote.quote_token_address !== "tez"
-            ? quote.close * quote.quote_token.pools[0]?.quotes_spot?.quote
-            : quote.close;
-
-        const quoteVolume =
-          quote.quote_token_address !== "tez"
-            ? quote.volume_quote *
-              quote.quote_token.pools[0]?.quotes_spot?.quote
-            : quote.volume_quote;
-
-        const weightedCloseSum = quotePrice * quoteVolume + prevAggCloseSum;
-        const aggregatedXtzVolume = quoteVolume + prevAggVol;
+        const weightedCloseSum =
+          quote.close_xtz * quote.volume_quote_xtz + prevAggCloseSum;
+        const aggregatedXtzVolume = quote.volume_quote_xtz + prevAggVol;
 
         quote.aggregatedClose = weightedCloseSum / aggregatedXtzVolume;
-        quote.aggregatedXtzVolume = quoteVolume;
+        quote.aggregatedXtzVolume = quote.volume_quote_xtz;
         aggregatedQuotes.push(quote);
       }
     }
@@ -379,68 +422,32 @@ function getPlentyTokenChartData(indexes, kind, timeInterval, xtzUsdHistory) {
 }
 
 export default {
-  async getQuotes() {
-    const query = `
-    query MyQuery {
-      quotesTotal(distinct_on: tokenId) {
-        high
-        low
-        tokenId
-      }
-     
-      statsTotal(distinct_on: tokenId) {
-        tokenId
-        tvlUsd
-      }
-    }
-    `;
-    const {
-      data: {
-        data: { quotesTotal, statsTotal },
-      },
-    } = await axios.post("https://dex.dipdup.net/v1/graphql", { query });
-
-    return { quotesTotal, totalTvl: statsTotal };
-  },
-  async getDayBeforeVolume() {
-    const query = `
-    query MyQuery {
-      quotes1dNogaps(
-        where: {bucket: {_gte: "${fourtyEightHrs}",  _lt: "${twentyFourHrs}"}}
-        distinct_on: tokenId
-      ) {
-        volume
-        tokenId
-      }
-    }
-    `;
-
-    const {
-      data: {
-        data: { quotes1dNogaps },
-      },
-    } = await axios.post("https://dex.dipdup.net/v1/graphql", { query });
-
-    return quotes1dNogaps;
-  },
-
   async getPriceAndVolumeQuotes(tokenAddress, tokenId) {
-    let [quotes1h, quotes1d, quotes1w, quotes1mo] = await Promise.all([
-      dexIndexer.getQuotes1H(tokenAddress, tokenId, oneMonthAgo),
-      dexIndexer.getQuotes1D(tokenAddress, tokenId),
-      dexIndexer.getQuotes1W(tokenAddress, tokenId),
-      dexIndexer.getQuotes1MO(tokenAddress, tokenId),
-    ]);
+    let [quotes1h, quotes1d, quotes1w, quotes1mo, allTokenSpot] =
+      await Promise.all([
+        dexIndexer.getQuotes1H(tokenAddress, tokenId),
+        dexIndexer.getQuotes1D(tokenAddress, tokenId),
+        dexIndexer.getQuotes1W(tokenAddress, tokenId),
+        dexIndexer.getQuotes1MO(tokenAddress, tokenId),
+        dexIndexer.getAllTokenSpot(),
+      ]);
 
-    // Reverse order of quotes in Chronological order
     [quotes1h, quotes1d, quotes1w, quotes1mo] = [
-      quotes1h.reverse(),
-      quotes1d.reverse(),
-      quotes1w.reverse(),
-      quotes1mo.reverse(),
+      modifyQuotes(quotes1h[0].quotes, allTokenSpot, "1h"),
+      modifyQuotes(quotes1d[0].quotes, allTokenSpot, "1d"),
+      modifyQuotes(quotes1w[0].quotes, allTokenSpot),
+      modifyQuotes(quotes1mo[0].quotes, allTokenSpot),
     ];
 
-    const aggregatedQuotes1h = getAggregatedPriceAndVolume(quotes1h, "1h");
+    [quotes1h, quotes1d, quotes1w, quotes1mo] = [
+      aggregateQuotes(quotes1h),
+      aggregateQuotes(quotes1d),
+      aggregateQuotes(quotes1w),
+      aggregateQuotes(quotes1mo),
+    ];
+
+    // const aggregatedQuotes1h = getAggregatedPriceAndVolume(quotes1h);
+    const aggregatedQuotes1h = getAggregatedPriceAndVolume(quotes1h);;
     const aggregatedQuotes1d = getAggregatedPriceAndVolume(quotes1d);
     const aggregatedQuotes1w = getAggregatedPriceAndVolume(quotes1w);
     const aggregatedQuotes1mo = getAggregatedPriceAndVolume(quotes1mo);
@@ -454,9 +461,14 @@ export default {
   },
 
   async getAllQuotes1d(tokenAddress, tokenId) {
-    const [quotes1d] = await Promise.all([
+    let [quotes1d, allTokenSpot] = await Promise.all([
       dexIndexer.getQuotes1D(tokenAddress, tokenId),
+      dexIndexer.getAllTokenSpot(),
     ]);
+
+    quotes1d = modifyQuotes(quotes1d[0].quotes, allTokenSpot, "1d");
+    quotes1d = aggregateQuotes(quotes1d);
+
     const aggregatedQuotes1d = getAggregatedPriceAndVolume(quotes1d);
     return aggregatedQuotes1d;
   },
@@ -582,15 +594,22 @@ export default {
   async getTokenFeed() {
     try {
       const xtzUSD = await tzkt.getXtzUsdPrice();
-      const [allTokenMetadata, allTokenSpot, allTokenPool, wtzToken] =
-        await Promise.all([
-          dexIndexer.getAllTokens(),
-          dexIndexer.getAllTokenSpot(),
-          dexIndexer.getAllTokenPools(),
-          dexIndexer.getToken("KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn", "0"),
-        ]);
-
-      const wtzTokenPrice = wtzToken.pools[0].quotes_spot.quote;
+      const xtzUsdHistory = await tzkt.getXtzUsdHistory();
+      const [
+        allTokenMetadata,
+        allTokenSpot,
+        allTokenPool,
+        allQuotes1D,
+        allQuotes1W,
+        allQuotes1Mo,
+      ] = await Promise.all([
+        dexIndexer.getAllTokens(),
+        dexIndexer.getAllTokenSpot(),
+        dexIndexer.getAllTokenPools(),
+        dexIndexer.getAllQuotes1D(),
+        dexIndexer.getAllQuotes1W(),
+        dexIndexer.getAllQuotes1MO(),
+      ]);
 
       const tokenObjkt = {};
 
@@ -598,17 +617,17 @@ export default {
 
       for (let index = 0; index < allTokenMetadata.length; index++) {
         let el = allTokenMetadata[index];
-        el.token_id = el.token_id || 0;
-        el.id = el.token_address + "_" + el.token_id;
+        el.tokenId = el.tokenId || 0;
+        el.id = el.tokenAddress + "_" + el.tokenId;
 
         el = utils.convertObjSnakeToCamel(el);
 
         updatedIndexerTokens[el.id] = el;
       }
 
-      for (let index = 0; index < allTokenSpot.length; index++) {
-        const element = allTokenSpot[index];
-        element.id = element.token_address + "_" + element.token_id;
+      for (let outerIndex = 0; outerIndex < allTokenSpot.length; outerIndex++) {
+        const element = allTokenSpot[outerIndex];
+        element.id = element.tokenAddress + "_" + element.tokenId;
         const tokenMetadata = updatedIndexerTokens[element.id];
 
         /**
@@ -618,82 +637,159 @@ export default {
         let totalReserves = 0;
         let aggregatedClose = 0;
         let close = 0;
+        
+        for (const quoteData of element.quotes) {
+          const foundPool = allTokenPool.find(
+            (el) =>
+              quoteData.pool.poolId === el.poolId &&
+              quoteData.pool.dex.address === el.dex.address &&
+              quoteData.pool.dex.type === el.dex.type
+          );
+          const foundToken = foundPool.tokens.find(
+            (el) =>
+              element.tokenAddress === el.token.tokenAddress &&
+              element.tokenId === el.token.tokenId
+          );
+          const reserves = parseFloat(foundToken.reserves);
 
-        for (const pool of element.pools) {
-          const reserves = parseFloat(pool.reserves);
-
-          // Token has pool paired with xtz
-          if (pool?.quotes_spot?.quote_token_address === "tez") {
-            close = pool.quotes_spot.quote;
-            // Token has pool paired with wtz
-          } else {
-            close = pool.quotes_spot.quote * wtzTokenPrice;
+          let quoteToken;
+          let quoteTokenPriceInTez;
+          let quoteTokenPriceInWTZ;
+          // Token has quote paired with xtz
+          if (quoteData.token.tokenAddress === "tez") {
+            close = quoteData.quote;
           }
+          // Token has quote paired with other tokens
+          else {
+            quoteToken = allTokenSpot.find(
+              (el) =>
+                quoteData.token.tokenAddress === el.tokenAddress &&
+                quoteData.token.tokenId === el.tokenId
+            );
+            quoteTokenPriceInTez = quoteToken?.quotes.find(
+              (el) => el.token.tokenAddress === "tez"
+            )?.quote;
+            quoteTokenPriceInWTZ = quoteToken?.quotes.find(
+              (el) =>
+                el.token.tokenAddress === "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn"
+            )?.quote;
+            close = isNaN(quoteTokenPriceInTez)
+              ? quoteData.quote * quoteTokenPriceInWTZ
+              : quoteData.quote * quoteTokenPriceInTez;
+          }
+
+          // NaN and Alien dex type error
+          if (isNaN(close) || quoteData.pool.dex.type === "alien") {
+            continue;
+          }
+
           totalReserves += reserves;
           aggregatedClose += reserves * close;
         }
 
         element.aggregatedPrice = aggregatedClose / totalReserves;
-        element.dayClose = getAggregatedOpen(
-          element.pools,
-          "quotes_1d",
-          wtzTokenPrice
-        );
-        element.weekClose = getAggregatedOpen(
-          element.pools,
-          "quotes_1w",
-          wtzTokenPrice
-        );
-        element.monthClose = getAggregatedOpen(
-          element.pools,
-          "quotes_1mo",
-          wtzTokenPrice
-        );
+        
+        
+        const tokenQuote1D = allQuotes1D.find(
+          (ele) =>
+            ele.tokenAddress === element.tokenAddress &&
+            ele.tokenId === element.tokenId
+        ).quotes;
+        const tokenQuote1W = allQuotes1W.find(
+          (ele) =>
+            ele.tokenAddress === element.tokenAddress &&
+            ele.tokenId === element.tokenId
+        ).quotes;
+        const tokenQuote1MO = allQuotes1Mo.find(
+          (ele) =>
+            ele.tokenAddress === element.tokenAddress &&
+            ele.tokenId === element.tokenId
+        ).quotes;
+        
+        const filteredTokenQuote1D = tokenQuote1D.filter((quote) => new Date(quote.buckets[0].bucket) >= new Date(oneDayAgo));
+        const filteredTokenQuote1W = tokenQuote1W.filter((quote) => new Date(quote.buckets[0].bucket) >= new Date(oneWeekAgo));
+        const filteredTokenQuote1MO = tokenQuote1MO.filter((quote) => new Date(quote.buckets[0].bucket) >= new Date(oneMonthAgo));
 
-        element.dayCloseUsd = element.dayClose * xtzUSD;
-        element.weekCloseUsd = element.weekClose * xtzUSD;
-        element.monthCloseUsd = element.monthClose * xtzUSD;
+        element.dayClose = getAggregatedOpen(filteredTokenQuote1D, allTokenSpot);
+        element.weekClose = getAggregatedOpen(filteredTokenQuote1W, allTokenSpot);
+        element.monthClose = getAggregatedOpen(filteredTokenQuote1MO, allTokenSpot);
+        
+        const timeUsdValueDay1 = binarySearch(xtzUsdHistory, day1);
+        const timeUsdValueDay7 = binarySearch(xtzUsdHistory, day7);
+        const timeUsdValueDay30 = binarySearch(xtzUsdHistory, day30);
+
+        element.dayCloseUsd = element.dayClose * timeUsdValueDay1;
+        element.weekCloseUsd = element.weekClose * timeUsdValueDay7;
+        element.monthCloseUsd = element.monthClose * timeUsdValueDay30;
 
         let volume24Xtz = 0;
         let tokenTvl = 0;
         let tokenTvlUsd = 0;
 
         // Assign exchanges property to pools
-        const tokenPools = allTokenPool.find(
-          (el) =>
-            el.token_address === element.token_address &&
-            el.token_id === element.token_id
-        ).pools;
-
-        // Filter pools from dex that stores all pools in 1 contract(QuipV2, QuipStable, QuipToken2Token)
-        const filteredPools = tokenPools.map((e) => {
-          const poolIdToKeep = e.pool_id;
-          // Filter 'dex.pools' based on 'pool_id'
-          e.dex.pools = e.dex.pools.filter(
-            (pool) => pool.pool_id === poolIdToKeep
-          );
-          return e;
+        const tokenPools = allTokenPool.filter((el) => {
+          // Check if either of the two tokens in the "tokens" field matches the criteria
+          const tokenMatches = el.tokens.some((token) => {
+            return (
+              token.token.tokenAddress === element.tokenAddress &&
+              token.token.tokenId === element.tokenId
+            );
+          });
+          // Return true if either token matches the criteria
+          return tokenMatches;
         });
-        element.exchanges = filteredPools;
+
+        // Create a deep copy of tokenPools (avoid same reference between 2 elements)
+        const deepCopyOfTokenPools = _.cloneDeep(tokenPools);
+
+        // Assign it to element.exchanges
+        element.exchanges = deepCopyOfTokenPools;
+        if( element.tokenAddress === "KT1XnTn74bUtxHfDtBmm2bGZAQfhPbvKWR8o") {
+        console.log(element)
+        }
 
         element.exchanges.forEach((e, index) => {
           // Calculate exchanges infor
-          const quoteToken = allTokenSpot.find(
+          const pool1D = tokenQuote1D.find(
             (ele) =>
-              ele.token_address === e.quotes_1d?.quote_token_address &&
-              ele.token_id === e.quotes_1d?.quote_token_id
+              ele.pool.poolId === e.poolId &&
+              ele.pool.dex.address === e.dex.address &&
+              ele.pool.dex.type === e.dex.type
           );
-          const volume =
-            quoteToken?.token_address === "tez"
-              ? e.quotes_1d?.volume_quote
-              : e.quotes_1d?.volume_quote *
-                quoteToken?.pools[0]?.quotes_spot?.quote;
-          const midPrice =
-            quoteToken?.token_address === "tez"
-              ? e.quotes_spot?.quote
-              : e.quotes_spot?.quote * quoteToken?.pools[0]?.quotes_spot?.quote;
+          let volume;
+          let midPrice;
+          let quoteToken;
+          let quoteTokenPriceInTez;
+          let quoteTokenPriceInWTZ;
+          if (pool1D) {
+            quoteToken = allTokenSpot.find(
+              (el) =>
+                pool1D.token.tokenAddress === el.tokenAddress &&
+                pool1D.token.tokenId === el.tokenId
+            );
+            quoteTokenPriceInTez = quoteToken?.quotes.find(
+              (el) => el.token.tokenAddress === "tez"
+            )?.quote;
+            quoteTokenPriceInWTZ = quoteToken?.quotes.find(
+              (el) =>
+                el.token.tokenAddress === "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn"
+            )?.quote;
+            volume =
+              pool1D.token.tokenAddress === "tez"
+                ? pool1D.buckets[0].quoteVolume
+                : isNaN(quoteTokenPriceInTez)
+                ? pool1D.buckets[0].quoteVolume * quoteTokenPriceInWTZ
+                : pool1D.buckets[0].quoteVolume * quoteTokenPriceInTez;
+            midPrice =
+              pool1D.token.tokenAddress === "tez"
+                ? pool1D.buckets[0].close
+                : isNaN(quoteTokenPriceInTez)
+                ? pool1D.buckets[0].close * quoteTokenPriceInWTZ
+                : pool1D.buckets[0].close * quoteTokenPriceInTez;
+          }
+
           // Assign name and 24h volume for each exchange
-          e.name = e.dex.dex_type;
+          e.name = e.dex.type;
           e.midPrice = midPrice || 0;
           e.volume24 = new BigNumber(volume || 0);
           // Calculate total volume 24h in xtz
@@ -704,20 +800,19 @@ export default {
          *Calculate tvl for each exchange
          */
         element.exchanges.forEach((e, index) => {
-          const token = element.exchanges[index].dex.pools.find(
+          const token = e.tokens.find(
             (ele) =>
-              ele.token_address === element.token_address &&
-              ele.token_id === element.token_id
+              ele.token.tokenAddress === element.tokenAddress &&
+              ele.token.tokenId === element.tokenId
           );
 
           let tokenReserves = 0;
-          if (e.dex.dex_type === "alien") {
+          if (e.dex.type === "alien") {
             tokenReserves =
-              token?.reserves /
-              (ALIEN_FEE_DENOMINATOR * Math.pow(10, token?.token.decimals));
+              token.reserves /
+              (ALIEN_FEE_DENOMINATOR * Math.pow(10, token.token.decimals));
           } else {
-            tokenReserves =
-              token?.reserves / Math.pow(10, token?.token.decimals);
+            tokenReserves = token.reserves / Math.pow(10, token.token.decimals);
           }
           element.exchanges[index].tokenTvl =
             new BigNumber(tokenReserves * element.aggregatedPrice).toNumber() ||
@@ -858,10 +953,10 @@ export default {
         element.exchanges[index].lpPriceUsd =
           Number(market.midPrice) * xtzUsd || 0;
         element.exchanges[index].lpPrice = Number(market.midPrice) || 0;
-        const quoteToken = element.exchanges[index].dex.pools.find(
+        const quoteToken = element.exchanges[index].tokens.find(
           (ele) =>
-            ele.token_address !== element.token_address ||
-            ele.token_id !== element.token_id
+            ele.token.tokenAddress !== element.tokenAddress ||
+            ele.token.tokenId !== element.tokenId
         );
         element.exchanges[
           index
