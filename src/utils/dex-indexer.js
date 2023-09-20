@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://dex-indexer-api.onrender.com/v1";
+const BASE_URL = "https://api.crunchy.network/v1";
 
 export default {
   async getAllTokens() {
