@@ -1,8 +1,6 @@
 import tokenTracker from "../../utils/token-tracker";
 import tokensToTrack from "../../tokensTracked.json";
 import _ from "lodash";
-// import coingecko from "../../utils/coingecko";
-// import dexIndexer from "../../utils/dex-indexer";
 import tzkt from "../../utils/tzkt";
 
 export default {
@@ -21,16 +19,8 @@ export default {
   async _setTokenTracked({ commit, state, dispatch }, payload) {
     !payload?.softLoad && commit("updateLoading", true);
     try {
-      // const allTokensMetadata = await dexIndexer.getAllTokens();
       const xtzUsd = await tzkt.getXtzUsdPrice();
-      // const xtzUsdHistory = await coingecko.getXtzUsdHistory();
       const xtzUsdHistory = await tzkt.getXtzUsdHistory();
-      // const formattedXtzUsdHistory = [];
-      // for (let i = 0; i < xtzUsdHistory.length; i++) {
-      //   const bucket = new Date(xtzUsdHistory[i][0]).getTime();
-      //   const xtzUsdPrice = xtzUsdHistory[i][1].usd;
-      //   formattedXtzUsdHistory.push([bucket,xtzUsdPrice]);
-      // }
 
       commit("updateXtzUsdPrice", xtzUsd);
       commit("updateXtzUsdHistory", xtzUsdHistory);
@@ -57,7 +47,7 @@ export default {
           // tokenVolumesYesterday
         );
 
-        console.log("tokenFeed", element);
+        // console.log("tokenFeed", element);
 
         if (token) {
           tokens.push({
@@ -138,14 +128,14 @@ export default {
   },
 
   async fetchChartData({ commit, state }, token) {
-    const xtzUsdHistory = await tzkt.getXtzUsdHistory();
+    // const xtzUsdHistory = await tzkt.getXtzUsdHistory();
     commit("updateChartDataLoading", true);
     const chartData = {};
-    const exchangeId = state.tokensTracked[token.id].exchanges[0].address || "";
-    token.spicyId = token.id.replace(":", "_");
-    if (token.standard === "fa12") {
-      token.spicyId = token.spicyId.replace("0", "null");
-    }
+    // const exchangeId = state.tokensTracked[token.id].exchanges[0].address || "";
+    // token.spicyId = token.id.replace(":", "_");
+    // if (token.standard === "fa12") {
+    //   token.spicyId = token.spicyId.replace("0", "null");
+    // }
     try {
       const [
         {
@@ -155,27 +145,17 @@ export default {
           quotes1mo: volumeAndPrice30Day,
         },
         allVolumeAndPrice,
-        { tvl1Day, tvl7Day, tvl30Day, tvlAll },
+        // { tvl1Day, tvl7Day, tvl30Day, tvlAll },
       ] = await Promise.all([
-        tokenTracker.getPriceAndVolumeQuotes(
-          token.spicyId,
-          token.id,
-          token.symbol,
-          xtzUsdHistory
-        ),
-        tokenTracker.getAllQuotes1d(
-          token.spicyId,
-          token.id,
-          token.symbol,
-          xtzUsdHistory
-        ),
-        tokenTracker.getChartTvl(
-          token.spicyId,
-          token.id,
-          exchangeId,
-          token.symbol,
-          xtzUsdHistory
-        ),
+        tokenTracker.getPriceAndVolumeQuotes(token.tokenAddress, token.tokenId),
+        tokenTracker.getAllQuotes1d(token.tokenAddress, token.tokenId),
+        // tokenTracker.getChartTvl(
+        //   token.spicyId,
+        //   token.id,
+        //   exchangeId,
+        //   token.symbol,
+        //   xtzUsdHistory
+        // ),
       ]);
       
       chartData.allVolumeAndPrice = allVolumeAndPrice;
@@ -183,10 +163,10 @@ export default {
       chartData.volumeAndPrice1Day = volumeAndPrice1Day;
       chartData.volumeAndPrice7Day = volumeAndPrice7Day;
       chartData.volumeAndPrice30Day = volumeAndPrice30Day;
-      chartData.tvl1Day = tvl1Day;
-      chartData.tvl7Day = tvl7Day;
-      chartData.tvl30Day = tvl30Day;
-      chartData.tvlAll = tvlAll;
+      chartData.tvl1Day = [];
+      chartData.tvl7Day = [];
+      chartData.tvl30Day = [];
+      chartData.tvlAll = [];
 
       commit("updateChartData", chartData);
     } catch (error) {
