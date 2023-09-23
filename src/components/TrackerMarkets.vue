@@ -170,9 +170,9 @@ export default {
         case "sirius":
           return "https://res.cloudinary.com/melvin-manni/image/upload/v1663433569/lcmsyxatxezrrcovuklr.png";
         case "alien":
-          return "https://lh3.googleusercontent.com/drive-viewer/AITFw-wJLI6KDrTfx-KKskNIiVXnO7o48eoIUCgO1Vxu2e6_eNz8MRexBTCkB2rPZ5qzqiQ7NktcUipFDkcjy8gmcIDca1f8Ig=s2560";
+          return "https://res.cloudinary.com/dwwegv8my/image/upload/v1695438640/Alien_fgj9fp.png";
         case "flame":
-          return "https://lh3.googleusercontent.com/drive-viewer/AITFw-zV_wN-tJD5iFfUCG2srWTvrh0rW-nQ8Tq_htOyqWfm5lGtEBJsPyBCoI6aVjMcC-JNWnxFY0m6vkxaV8LwfQolgU63AA=s2560";
+          return "https://res.cloudinary.com/dwwegv8my/image/upload/v1695438720/Flame_qv4kzy.png";
         default:
           return "";
       }
