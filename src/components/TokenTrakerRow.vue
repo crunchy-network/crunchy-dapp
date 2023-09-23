@@ -32,7 +32,8 @@
           <el-col :span="23">
             <router-link :to="'/token/' + asset.id" exact>
               <el-row type="flex" align="middle">
-                <el-col :span="2"> {{ asset.order }} </el-col>
+                <el-col :span="2" v-if="asset.isRanked">{{ asset.order }}</el-col>
+                <el-col :span="2" v-else>-</el-col>
                 <el-col style="text-align: left" :span="4">
                   <el-row type="flex" style="align-items: center">
                     <el-avatar

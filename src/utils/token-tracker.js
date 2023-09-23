@@ -18,7 +18,7 @@ const twoMonthInMiliSecond = oneDayInMiliSecond * 60;
 const oneDayAgo = new Date(Date.now() - oneDayInMiliSecond).toISOString();
 const oneWeekAgo = new Date(Date.now() - oneWeekInMiliSecond).toISOString();
 const oneMonthAgo = new Date(Date.now() - oneMonthInMiliSecond).toISOString();
-const twoMonthAgo = new Date(Date.now() - twoMonthInMiliSecond).toISOString();
+const twoMonthAgo = new Date(Date.now() - twoMonthInMiliSecond);
 const PLY_TOKEN_ID = "KT1JVjgXPMMSaa6FkzeJcgb8q9cUaLmwaJUX_0";
 
 async function getPlentyTokenDailyMetrics(symbol = "") {
@@ -66,7 +66,7 @@ function modifyQuotes(quotes, allTokenSpot, type) {
     // Only get element from two months for 1d chart
     if (type === "1d") {
       quote.buckets = quote.buckets.filter(
-        (bucket) => new Date(bucket.bucket) > new Date(twoMonthAgo)
+        (bucket) => new Date(bucket.bucket) > twoMonthAgo
       );
     }
     quote.buckets.map((bucket) => {
@@ -876,7 +876,7 @@ export default {
     return token;
   },
 
-  async calculateTokenData(element, token, tokenFeed, xtzUsd) {
+  async calculateTokenData(element, tokenFeed, xtzUsd) {
     // console.log("element", element);
 
     if (element) {
