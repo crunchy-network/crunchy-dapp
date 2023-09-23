@@ -187,12 +187,11 @@ const buildQuipuStablePair = (dex, token1Pool, token2Pool) => {
   };
 };
 
-const buildQuipuToken2TokenPair = (
-  dex,
-  token1Pool,
-  token2Pool,
-  inverted = false
-) => {
+const buildQuipuToken2TokenPair = (dex, token1Pool, token2Pool) => {
+  const inverted =
+    // eslint-disable-next-line no-unneeded-ternary
+    getParamValue(token1Pool.params, "token_a_pool") !== 0 ? false : true;
+
   return {
     poolId: token1Pool.pool_id,
     dex: getDexName(dex.dex_type),
@@ -240,7 +239,11 @@ const buildQuipuV2Pair = (dex, token1Pool, token2Pool) => {
   };
 };
 
-const buildFlamePair = (dex, token1Pool, token2Pool, inverted = false) => {
+const buildFlamePair = (dex, token1Pool, token2Pool) => {
+  const inverted =
+    // eslint-disable-next-line no-unneeded-ternary
+    getParamValue(token1Pool.params, "token_a_res") !== 0 ? false : true;
+
   return {
     poolId: token1Pool.pool_id,
     dex: getDexName(dex.dex_type),
@@ -390,7 +393,7 @@ const buildQuipuToken2TokenPairs = (dex) => {
     )[0];
 
     if (poolIds.includes(token1.pool_id)) {
-      p = buildQuipuToken2TokenPair(dex, token1, token2, true);
+      p = buildQuipuToken2TokenPair(dex, token1, token2);
     } else {
       p = buildQuipuToken2TokenPair(dex, token1, token2);
       poolIds.push(token1.pool_id);
@@ -413,7 +416,7 @@ const buildFlamePairs = (dex) => {
     )[0];
 
     if (poolIds.includes(token1.pool_id)) {
-      p = buildFlamePair(dex, token1, token2, true);
+      p = buildFlamePair(dex, token1, token2);
     } else {
       p = buildFlamePair(dex, token1, token2);
       poolIds.push(token1.pool_id);

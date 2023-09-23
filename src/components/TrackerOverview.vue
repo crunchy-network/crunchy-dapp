@@ -71,13 +71,13 @@
           >
             Volume
           </button>
-          <button
+          <!-- <button
             class="tab-text"
             :style="isActiveTab('tvl', legendTab)"
             @click="setLegendTab('tvl')"
           >
             TVL
-          </button>
+          </button> -->
         </div>
       </el-row>
       <TrackerOverviewChart

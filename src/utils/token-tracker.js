@@ -3,159 +3,26 @@ import BigNumber from "bignumber.js";
 import utils from ".";
 import dexIndexer from "./dex-indexer";
 import ipfs from "./ipfs";
-import queryDipdup from "./queryDipdup";
 import tzkt from "./tzkt";
+import _ from "lodash";
 
+const ALIEN_FEE_DENOMINATOR = new BigNumber(1000000000000000000n);
 const day1 = new Date(new Date().setDate(new Date().getDate() - 1)).getTime();
 const day7 = new Date(new Date().setDate(new Date().getDate() - 7)).getTime();
 const day30 = new Date(new Date().setDate(new Date().getDate() - 30)).getTime();
-const twentyFourHrs = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-const fourtyEightHrs = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
 const oneHourInMiliSecond = 60 * 60 * 1000;
 const oneDayInMiliSecond = oneHourInMiliSecond * 24;
 const oneWeekInMiliSecond = oneDayInMiliSecond * 7;
 const oneMonthInMiliSecond = oneDayInMiliSecond * 30;
+const twoMonthInMiliSecond = oneDayInMiliSecond * 60;
+const oneDayAgo = new Date(Date.now() - oneDayInMiliSecond).toISOString();
+const oneWeekAgo = new Date(Date.now() - oneWeekInMiliSecond).toISOString();
 const oneMonthAgo = new Date(Date.now() - oneMonthInMiliSecond).toISOString();
-const PLY_SYMBOL = "PLY";
-const TKEY_SYMBOL = "TKEY";
+const twoMonthAgo = new Date(Date.now() - twoMonthInMiliSecond).toISOString();
 const PLY_TOKEN_ID = "KT1JVjgXPMMSaa6FkzeJcgb8q9cUaLmwaJUX_0";
-const TRACKED_MARKETS_NAME = {
-  plentyNetwork: {
-    name: "plenty network",
-  },
-  spicyswap: {
-    name: "spicyswap",
-  },
-};
-
-function modifyPlentyToken(token, xtzUsdHistory, xtzUSD) {
-  const updatedToken = token.map((obj) => {
-    return {
-      exchanges: [],
-      address: obj.contract,
-      decimals: obj.decimals,
-      id: `${obj.contract}_0`,
-      name: obj.name,
-      tokenId: 0,
-      symbol: obj.token,
-      thumbnailUri: "",
-    };
-  });
-  const modifiedTokenMetrics = modifyPlentyMetrics(token[0], xtzUsdHistory);
-
-  const price1Day = findElementWithSameDate(
-    modifiedTokenMetrics.price.history,
-    new Date(day1).toISOString()
-  );
-  const price7Day = findElementWithSameDate(
-    modifiedTokenMetrics.price.history,
-    new Date(day7).toISOString()
-  );
-  const price30Day = findElementWithSameDate(
-    modifiedTokenMetrics.price.history,
-    new Date(day30).toISOString()
-  );
-
-  const timeUsdValueDay1 = binarySearch(xtzUsdHistory, day1);
-  const timeUsdValueDay7 = binarySearch(xtzUsdHistory, day7);
-  const timeUsdValueDay30 = binarySearch(xtzUsdHistory, day30);
-
-  updatedToken[0].dayCloseUsd = price1Day ? price1Day.xtzClose : 0;
-  updatedToken[0].weekCloseUsd = price7Day ? price7Day.xtzClose : 0;
-  updatedToken[0].monthCloseUsd = price30Day ? price30Day.xtzClose : 0;
-  updatedToken[0].dayClose = updatedToken[0].dayCloseUsd / timeUsdValueDay1;
-  updatedToken[0].weekClose = updatedToken[0].weekCloseUsd / timeUsdValueDay7;
-  updatedToken[0].monthClose =
-    updatedToken[0].monthCloseUsd / timeUsdValueDay30;
-
-  const currentPrice = new BigNumber(token[0].price.value).toNumber() || false;
-  const price = new BigNumber(currentPrice);
-  const priceXtz = new BigNumber(price.div(xtzUSD));
-
-  const change1Day = priceXtz
-    .minus(updatedToken[0].dayClose)
-    .div(updatedToken[0].dayClose)
-    .times(100)
-    .toNumber();
-  const change7Day = priceXtz
-    .minus(updatedToken[0].weekClose)
-    .div(updatedToken[0].weekClose)
-    .times(100)
-    .toNumber();
-  const change30Day = priceXtz
-    .minus(updatedToken[0].monthClose)
-    .div(updatedToken[0].monthClose)
-    .times(100)
-    .toNumber();
-
-  const change1DayUsd = price
-    .minus(updatedToken[0].dayCloseUsd)
-    .div(updatedToken[0].dayCloseUsd)
-    .times(100)
-    .toNumber();
-  const change7DayUsd = price
-    .minus(updatedToken[0].weekCloseUsd)
-    .div(updatedToken[0].weekCloseUsd)
-    .times(100)
-    .toNumber();
-  const change30DayUsd = price
-    .minus(updatedToken[0].monthCloseUsd)
-    .div(updatedToken[0].monthCloseUsd)
-    .times(100)
-    .toNumber();
-
-  updatedToken[0].change1Day = change1Day === Infinity ? 0 : change1Day || 0;
-  updatedToken[0].change7Day = change7Day === Infinity ? 0 : change7Day || 0;
-  updatedToken[0].change30Day = change30Day === Infinity ? 0 : change30Day || 0;
-
-  updatedToken[0].change1DayUsd =
-    change1DayUsd === Infinity ? 0 : change1DayUsd || 0;
-  updatedToken[0].change7DayUsd =
-    change7DayUsd === Infinity ? 0 : change7DayUsd || 0;
-  updatedToken[0].change30DayUsd =
-    change30DayUsd === Infinity ? 0 : change30DayUsd || 0;
-
-  return updatedToken;
-}
-
-async function queryXtzVolume() {
-  const query = `
-  query MyQuery {
-    trade(where: { timestamp: {_gte: "${twentyFourHrs}"}}) {
-      tezQty
-      timestamp
-      tokenId
-      exchangeId
-    }
-  }`;
-
-  const {
-    data: {
-      data: { trade },
-    },
-  } = await axios.post("https://dex.dipdup.net/v1/graphql", {
-    query,
-  });
-
-  return trade;
-}
-
-async function getPlentyPools() {
-  const uri = `https://api.analytics.plenty.network/analytics/pools`;
-  const res = await (await axios.get(uri)).data;
-
-  return res;
-}
 
 async function getPlentyTokenDailyMetrics(symbol = "") {
   const uri = `https://api.analytics.plenty.network/analytics/tokens/${symbol}?priceHistory=day`;
-  const res = await (await axios.get(uri)).data;
-
-  return res;
-}
-
-async function getPlentyTokenHourlyMetrics(symbol = "") {
-  const uri = `https://api.analytics.plenty.network/analytics/tokens/${symbol}`;
   const res = await (await axios.get(uri)).data;
 
   return res;
@@ -168,20 +35,101 @@ async function getSpicyTokenDailyMetrics(tag = "") {
   return res;
 }
 
-async function getSpicyTokens() {
-  const uri = `https://spicyb.sdaotools.xyz/api/rest/TokenList`;
-  const res = await (await axios.get(uri)).data;
-
-  return res;
+function aggregateQuotes(quotes) {
+  let modifiedQuotes = [];
+  quotes.forEach((quote, index) => {
+    modifiedQuotes.push(quote.buckets);
+  });
+  modifiedQuotes = [].concat(...modifiedQuotes);
+  return modifiedQuotes;
 }
 
-async function getSpicyPools() {
-  const uri = `https://spicyb.sdaotools.xyz/api/rest/PoolListAll?hour_agg_start=${Math.floor(
-    day1 / 1000
-  )}`;
-  const res = await (await axios.get(uri)).data;
+function modifyQuotes(quotes, allTokenSpot, type) {
+  let quoteToken;
+  let quoteTokenPriceInTez;
+  quotes.forEach((quote, index) => {
+    quoteToken = allTokenSpot.find(
+      (el) =>
+        quote.token.tokenAddress === el.tokenAddress &&
+        quote.token.tokenId === el.tokenId
+    );
+    quoteTokenPriceInTez = quoteToken?.quotes.find(
+      (el) => el.token.tokenAddress === "tez"
+    )?.quote;
 
-  return res;
+    // Only get element from one month for 1h chart
+    if (type === "1h") {
+      quote.buckets = quote.buckets.filter(
+        (bucket) => new Date(bucket.bucket) > new Date(oneMonthAgo)
+      );
+    }
+    // Only get element from two months for 1d chart
+    if (type === "1d") {
+      quote.buckets = quote.buckets.filter(
+        (bucket) => new Date(bucket.bucket) > new Date(twoMonthAgo)
+      );
+    }
+    quote.buckets.map((bucket) => {
+      bucket.dex_type = quote.pool.dex.type;
+      bucket.quote_token_address = quote.token.tokenAddress;
+      bucket.quote_token_id = quote.token.tokenId;
+      bucket.close_xtz =
+        quote.token.tokenAddress === "tez"
+          ? Number(bucket.close)
+          : Number(bucket.close) * Number(quoteTokenPriceInTez);
+      bucket.volume_quote_xtz =
+        quote.token.tokenAddress === "tez"
+          ? Number(bucket.quoteVolume)
+          : Number(bucket.quoteVolume) * Number(quoteTokenPriceInTez);
+    });
+  });
+  return quotes;
+}
+
+function getAggregatedOpen(quotes, allTokenSpot) {
+  let totalVolume = 0;
+  let aggregatedOpen = 0;
+  for (const quote of quotes) {
+    let volume = 0;
+    let open = 0;
+    let quoteToken;
+    let quoteTokenPriceInTez;
+    let quoteTokenPriceInWTZ;
+    if (quote.token.tokenAddress === "tez") {
+      open = quote.buckets[0].open;
+      volume = parseFloat(quote.buckets[0].quoteVolume);
+      quote.open_xtz = open;
+      quote.volume_xtz = volume;
+      // Token has quote paired with wtz
+    } else {
+      quoteToken = allTokenSpot.find(
+        (el) =>
+          quote.token.tokenAddress === el.tokenAddress &&
+          quote.token.tokenId === el.tokenId
+      );
+      quoteTokenPriceInTez = quoteToken?.quotes.find(
+        (el) => el.token.tokenAddress === "tez"
+      )?.quote;
+      quoteTokenPriceInWTZ = quoteToken?.quotes.find(
+        (el) => el.token.tokenAddress === "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn"
+      )?.quote;
+      open = isNaN(quoteTokenPriceInTez)
+        ? quote.buckets[0].open * quoteTokenPriceInWTZ
+        : quote.buckets[0].open * quoteTokenPriceInTez;
+      volume = isNaN(quoteTokenPriceInTez)
+        ? parseFloat(quote.buckets[0].quoteVolume) * quoteTokenPriceInWTZ
+        : parseFloat(quote.buckets[0].quoteVolume) * quoteTokenPriceInTez;
+      quote.open_xtz = open;
+      quote.volume_xtz = volume;
+    }
+    if (isNaN(open) || isNaN(volume)) {
+      continue;
+    }
+
+    totalVolume += volume;
+    aggregatedOpen += volume * open;
+  }
+  return totalVolume > 0 ? aggregatedOpen / totalVolume : 0;
 }
 
 function sameDay(d1, d2) {
@@ -201,24 +149,6 @@ function sameHour(d1, d2) {
   );
 }
 
-function aggregate(num1, num2, index1, index2) {
-  return (
-    (Number(num1) * Number(index1) + Number(num2) * Number(index2)) /
-    (Number(index1) + Number(index2))
-  );
-}
-
-function aggregateMultiple(array) {
-  let aggreagatedDividend = 0;
-  let aggregatedQuotient = 0;
-  for (let index = 0; index < array.length; index++) {
-    aggreagatedDividend +=
-      Number(array[index].num) * Number(array[index].index);
-    aggregatedQuotient += Number(array[index].index);
-  }
-  return aggreagatedDividend / aggregatedQuotient;
-}
-
 function findElementWithSameDate(array, targetDate) {
   return array.find((element) => {
     const date = element.bucket;
@@ -226,8 +156,8 @@ function findElementWithSameDate(array, targetDate) {
   });
 }
 
-function findElementWithSameHour(array, targetDate) {
-  return array.find((element) => {
+function findElementsWithSameHour(array, targetDate) {
+  return array.filter((element) => {
     const date = element.bucket;
     return sameHour(new Date(date), new Date(targetDate));
   });
@@ -377,70 +307,71 @@ function modifyPlentyMetrics(plentyMetrics, xtzUsdHistory) {
   return modifiedPlentyMetrics;
 }
 
-function getAggregatedPriceAndVolume1h(quotesNogaps, tokens) {
-  const aggregatedQuotesNoGaps = quotesNogaps.map((quote) => {
-    for (let index = 0; index < tokens.length; index++) {
-      if (tokens[index] === null) {
-        continue;
+function getAggregatedPriceAndVolume(quotes, type) {
+  const aggregatedQuotes = [];
+  let prevAggCloseSum = 0;
+  let prevAggVol = 0;
+  // Exclude elment having no close price in xtz and volume quote is NaN
+  let filteredQuotes = quotes.filter(
+    (item) => !isNaN(item.close_xtz) && !isNaN(item.volume_quote_xtz)
+  );
+  while (filteredQuotes.length > 0) {
+    // Get first element of quotes, remove the quote
+    // and find all quote with same time
+    const quote = filteredQuotes[0];
+    filteredQuotes.shift();
+    const matchingElements = findElementsWithSameHour(
+      filteredQuotes,
+      quote?.bucket
+    );
+    // Get aggregated close and volume
+    if (matchingElements.length > 0) {
+      const quoteVolume = parseFloat(quote.volume_quote_xtz);
+      const quoteWeightedClose =
+        parseFloat(quote.close_xtz) * parseFloat(quote.volume_quote_xtz);
+      // Get total volume in xtz
+      const totalVolume = matchingElements.reduce((sum, element) => {
+        return sum + parseFloat(element.volume_quote_xtz);
+      }, quoteVolume);
+
+      // Get weighted price sum in xtz
+      const weightedCloseSum = matchingElements.reduce((sum, element) => {
+        return (
+          sum +
+          parseFloat(element.close_xtz) * parseFloat(element.volume_quote_xtz)
+        );
+      }, quoteWeightedClose);
+
+      const aggregatedClose = weightedCloseSum / totalVolume;
+      const aggregatedXtzVolume = totalVolume;
+      prevAggCloseSum = weightedCloseSum;
+      prevAggVol = aggregatedXtzVolume;
+
+      if (!isNaN(aggregatedClose)) {
+        aggregatedQuotes.push({
+          ...quote,
+          aggregatedClose,
+          aggregatedXtzVolume,
+        });
       }
-      const price = findElementWithSameHour(
-        tokens[index].price.history,
-        quote.bucket
-      );
-      const volume = findElementWithSameHour(
-        tokens[index].volume.history,
-        quote.bucket
-      );
 
-      quote.aggregatedClose =
-        price?.bucket && volume?.bucket
-          ? aggregate(
-              price.xtzClose,
-              quote.aggregatedClose,
-              volume.xtzVolume,
-              quote.xtzVolume
-            )
-          : Number(quote.aggregatedClose);
-      quote.aggregatedXtzVolume = volume?.bucket
-        ? Number(volume.xtzVolume) + Number(quote.aggregatedXtzVolume)
-        : Number(quote.aggregatedXtzVolume);
-    }
-    return quote;
-  });
-  return aggregatedQuotesNoGaps;
-}
+      // Use the filter method to remove elements in matchingElements from quotes
+      filteredQuotes = filteredQuotes.filter(
+        (element) => !matchingElements.includes(element)
+      );
+    } else {
+      if (quote) {
+        const weightedCloseSum =
+          quote.close_xtz * quote.volume_quote_xtz + prevAggCloseSum;
+        const aggregatedXtzVolume = quote.volume_quote_xtz + prevAggVol;
 
-function getAggregatedPriceAndVolume(quotesNogaps, tokens) {
-  const aggregatedQuotesNoGaps = quotesNogaps.map((quote) => {
-    for (let index = 0; index < tokens.length; index++) {
-      if (tokens[index] === null) {
-        continue;
+        quote.aggregatedClose = weightedCloseSum / aggregatedXtzVolume;
+        quote.aggregatedXtzVolume = quote.volume_quote_xtz;
+        aggregatedQuotes.push(quote);
       }
-      const price = findElementWithSameDate(
-        tokens[index].price.history,
-        quote.bucket
-      );
-      const volume = findElementWithSameDate(
-        tokens[index].volume.history,
-        quote.bucket
-      );
-
-      quote.aggregatedClose =
-        price?.bucket && volume?.bucket
-          ? aggregate(
-              price.xtzClose,
-              quote.aggregatedClose,
-              volume.xtzVolume,
-              quote.xtzVolume
-            )
-          : Number(quote.aggregatedClose);
-      quote.aggregatedXtzVolume = volume?.bucket
-        ? Number(volume.xtzVolume) + Number(quote.aggregatedXtzVolume)
-        : Number(quote.aggregatedXtzVolume);
     }
-    return quote;
-  });
-  return aggregatedQuotesNoGaps;
+  }
+  return aggregatedQuotes;
 }
 
 function getAggregatedTvl(stats, tokens) {
@@ -491,430 +422,55 @@ function getPlentyTokenChartData(indexes, kind, timeInterval, xtzUsdHistory) {
 }
 
 export default {
-  async getQuotes() {
-    const query = `
-    query MyQuery {
-      quotesTotal(distinct_on: tokenId) {
-        high
-        low
-        tokenId
-      }
-     
-      statsTotal(distinct_on: tokenId) {
-        tokenId
-        tvlUsd
-      }
-    }
-    `;
-    const {
-      data: {
-        data: { quotesTotal, statsTotal },
-      },
-    } = await axios.post("https://dex.dipdup.net/v1/graphql", { query });
+  async getPriceAndVolumeQuotes(tokenAddress, tokenId) {
+    let [quotes1h, quotes1d, quotes1w, quotes1mo, allTokenSpot] =
+      await Promise.all([
+        dexIndexer.getQuotes1H(tokenAddress, tokenId),
+        dexIndexer.getQuotes1D(tokenAddress, tokenId),
+        dexIndexer.getQuotes1W(tokenAddress, tokenId),
+        dexIndexer.getQuotes1MO(tokenAddress, tokenId),
+        dexIndexer.getAllTokenSpot(),
+      ]);
 
-    return { quotesTotal, totalTvl: statsTotal };
-  },
-  async getDayBeforeVolume() {
-    const query = `
-    query MyQuery {
-      quotes1dNogaps(
-        where: {bucket: {_gte: "${fourtyEightHrs}",  _lt: "${twentyFourHrs}"}}
-        distinct_on: tokenId
-      ) {
-        volume
-        tokenId
-      }
-    }
-    `;
-
-    const {
-      data: {
-        data: { quotes1dNogaps },
-      },
-    } = await axios.post("https://dex.dipdup.net/v1/graphql", { query });
-
-    return quotes1dNogaps;
-  },
-
-  async getPriceAndVolumeQuotes(spicyId, tokenId, symbol, xtzUsdHistory) {
-    const query = `
-    query MyQuery($tokenId: String) {
-      quotes1hNogaps (
-        where: {tokenId: {_eq: $tokenId}, bucket: {_gt: "${oneMonthAgo}"}}
-        distinct_on: bucket
-        order_by: {bucket: asc}
-      ) {
-        bucket
-        close
-        volume
-        xtzVolume
-        tokenId
-      }
-      quotes1dNogaps (
-        where: {tokenId: {_eq: $tokenId}}
-        distinct_on: bucket
-        order_by: {bucket: asc}
-      ) {
-        bucket
-        close
-        volume
-        xtzVolume
-        tokenId
-      }
-      quotes1wNogaps(
-        where: {tokenId: {_eq: $tokenId}}
-        distinct_on: bucket
-        order_by: {bucket: asc}
-      ) {
-        bucket
-        close
-        tokenId
-        xtzVolume
-        volume
-      }
-      quotes1mo(
-        distinct_on: bucket
-        order_by: {bucket: asc}
-        where: {tokenId: {_eq: $tokenId}}
-      ) {
-        close
-        volume
-        tokenId
-        xtzVolume
-        bucket
-      }
-      }
-    `;
-    const [
-      {
-        data: {
-          data: { quotes1hNogaps, quotes1dNogaps, quotes1wNogaps, quotes1mo },
-        },
-      },
-      plentyToken,
-      hourlyPlentyToken,
-      spicyTokenMetrics,
-    ] = await Promise.all([
-      axios.post("https://dex.dipdup.net/v1/graphql", {
-        query,
-        variables: { tokenId: tokenId },
-      }),
-      getPlentyTokenDailyMetrics(symbol),
-      getPlentyTokenHourlyMetrics(symbol),
-      getSpicyTokenDailyMetrics(spicyId),
-    ]);
-
-    const keyPairs = [
-      {
-        newKey: "aggregatedClose",
-        oldKey: "close",
-      },
-      {
-        newKey: "aggregatedXtzVolume",
-        oldKey: "xtzVolume",
-      },
+    [quotes1h, quotes1d, quotes1w, quotes1mo] = [
+      modifyQuotes(quotes1h[0].quotes, allTokenSpot, "1h"),
+      modifyQuotes(quotes1d[0].quotes, allTokenSpot, "1d"),
+      modifyQuotes(quotes1w[0].quotes, allTokenSpot),
+      modifyQuotes(quotes1mo[0].quotes, allTokenSpot),
     ];
 
-    const modifiedHourlySpicyMetrics = !isEmptyArray(
-      spicyTokenMetrics.token_hour_data
-    )
-      ? modifySpicyMetrics(spicyTokenMetrics.token_hour_data, xtzUsdHistory)
-      : null;
-    const modifiedHourlyPlentyMetrics = !isEmptyArray(
-      hourlyPlentyToken[0]?.price.history
-    )
-      ? modifyPlentyMetrics(hourlyPlentyToken[0], xtzUsdHistory)
-      : null;
-    const hourlyTokenList = [
-      modifiedHourlySpicyMetrics,
-      modifiedHourlyPlentyMetrics,
+    [quotes1h, quotes1d, quotes1w, quotes1mo] = [
+      aggregateQuotes(quotes1h),
+      aggregateQuotes(quotes1d),
+      aggregateQuotes(quotes1w),
+      aggregateQuotes(quotes1mo),
     ];
 
-    const modifiedDailySpicyMetrics = !isEmptyArray(
-      spicyTokenMetrics.token_day_data
-    )
-      ? modifySpicyMetrics(spicyTokenMetrics.token_day_data, xtzUsdHistory)
-      : null;
-    const modifiedDailyPlentyMetrics = !isEmptyArray(
-      plentyToken[0]?.price.history
-    )
-      ? modifyPlentyMetrics(plentyToken[0], xtzUsdHistory)
-      : null;
-    const dailyTokenList = [
-      modifiedDailySpicyMetrics,
-      modifiedDailyPlentyMetrics,
-    ];
-
-    let aggregatedQuotes1hNoGaps = modifyObject(quotes1hNogaps, keyPairs);
-    aggregatedQuotes1hNoGaps =
-      isEmptyArray(quotes1hNogaps) &&
-      isEmptyArray(spicyTokenMetrics.token_hour_data)
-        ? aggregatedQuotes1hNoGaps
-        : getAggregatedPriceAndVolume1h(quotes1hNogaps, hourlyTokenList);
-
-    let aggregatedQuotes1dNoGaps = modifyObject(quotes1dNogaps, keyPairs);
-    aggregatedQuotes1dNoGaps =
-      isEmptyArray(quotes1dNogaps) &&
-      isEmptyArray(spicyTokenMetrics.token_day_data)
-        ? aggregatedQuotes1dNoGaps
-        : getAggregatedPriceAndVolume(quotes1dNogaps, dailyTokenList);
-
-    let aggregatedQuotes1wNoGaps = modifyObject(quotes1wNogaps, keyPairs);
-    aggregatedQuotes1wNoGaps =
-      isEmptyArray(quotes1wNogaps) &&
-      isEmptyArray(spicyTokenMetrics.token_day_data)
-        ? aggregatedQuotes1wNoGaps
-        : getAggregatedPriceAndVolume(quotes1wNogaps, dailyTokenList);
-
-    let aggregatedQuotes1moNoGaps = modifyObject(quotes1mo, keyPairs);
-    aggregatedQuotes1moNoGaps =
-      isEmptyArray(quotes1mo) && isEmptyArray(spicyTokenMetrics.token_day_data)
-        ? aggregatedQuotes1moNoGaps
-        : getAggregatedPriceAndVolume(quotes1mo, dailyTokenList);
-
-    /*
-     *Calculate PLY price and volume for chart data
-     */
-    let plyPriceAndVolumeChartData1h = [];
-    let plyPriceAndVolumeChartData1d = [];
-    let plyPriceAndVolumeChartData1w = [];
-    let plyPriceAndVolumeChartData1mo = [];
-    if (tokenId === PLY_TOKEN_ID) {
-      const plyPriceChartData1h = getPlentyTokenChartData(
-        hourlyPlentyToken[0].price.history,
-        "aggregatedClose",
-        oneHourInMiliSecond,
-        xtzUsdHistory
-      );
-
-      const plyVolumeChartData1h = getPlentyTokenChartData(
-        hourlyPlentyToken[0].volume.history,
-        "aggregatedXtzVolume",
-        oneHourInMiliSecond,
-        xtzUsdHistory
-      );
-      plyPriceAndVolumeChartData1h = plyPriceChartData1h.map((item, i) => {
-        const index = plyVolumeChartData1h.findIndex(
-          (volumeItem) => volumeItem.bucket === item.bucket
-        );
-        if (index !== -1) {
-          return Object.assign({}, item, plyVolumeChartData1h[index]);
-        }
-        return item;
-      });
-
-      const plyPriceChartData1d = getPlentyTokenChartData(
-        plentyToken[0].price.history,
-        "aggregatedClose",
-        oneDayInMiliSecond,
-        xtzUsdHistory
-      );
-      const plyVolumeChartData1d = getPlentyTokenChartData(
-        plentyToken[0].volume.history,
-        "aggregatedXtzVolume",
-        oneDayInMiliSecond,
-        xtzUsdHistory
-      );
-      plyPriceAndVolumeChartData1d = plyPriceChartData1d.map((item, i) =>
-        Object.assign({}, item, plyVolumeChartData1d[i])
-      );
-
-      const plyPriceChartData1w = getPlentyTokenChartData(
-        plentyToken[0].price.history,
-        "aggregatedClose",
-        oneWeekInMiliSecond,
-        xtzUsdHistory
-      );
-      const plyVolumeChartData1w = getPlentyTokenChartData(
-        plentyToken[0].volume.history,
-        "aggregatedXtzVolume",
-        oneWeekInMiliSecond,
-        xtzUsdHistory
-      );
-      plyPriceAndVolumeChartData1w = plyPriceChartData1w.map((item, i) =>
-        Object.assign({}, item, plyVolumeChartData1w[i])
-      );
-
-      const plyPriceChartData1mo = getPlentyTokenChartData(
-        plentyToken[0].price.history,
-        "aggregatedClose",
-        oneMonthInMiliSecond,
-        xtzUsdHistory
-      );
-      const plyVolumeChartData1mo = getPlentyTokenChartData(
-        plentyToken[0].volume.history,
-        "aggregatedXtzVolume",
-        oneMonthInMiliSecond,
-        xtzUsdHistory
-      );
-      plyPriceAndVolumeChartData1mo = plyPriceChartData1mo.map((item, i) =>
-        Object.assign({}, item, plyVolumeChartData1mo[i])
-      );
-    }
+    // const aggregatedQuotes1h = getAggregatedPriceAndVolume(quotes1h);
+    const aggregatedQuotes1h = getAggregatedPriceAndVolume(quotes1h);
+    const aggregatedQuotes1d = getAggregatedPriceAndVolume(quotes1d);
+    const aggregatedQuotes1w = getAggregatedPriceAndVolume(quotes1w);
+    const aggregatedQuotes1mo = getAggregatedPriceAndVolume(quotes1mo);
 
     return {
-      quotes1h:
-        tokenId === PLY_TOKEN_ID
-          ? plyPriceAndVolumeChartData1h
-          : aggregatedQuotes1hNoGaps,
-      quotes1d:
-        tokenId === PLY_TOKEN_ID
-          ? plyPriceAndVolumeChartData1d
-          : aggregatedQuotes1dNoGaps,
-      quotes1w:
-        tokenId === PLY_TOKEN_ID
-          ? plyPriceAndVolumeChartData1w
-          : aggregatedQuotes1wNoGaps,
-      quotes1mo:
-        tokenId === PLY_TOKEN_ID
-          ? plyPriceAndVolumeChartData1mo
-          : aggregatedQuotes1moNoGaps,
+      quotes1h: aggregatedQuotes1h,
+      quotes1d: aggregatedQuotes1d,
+      quotes1w: aggregatedQuotes1w,
+      quotes1mo: aggregatedQuotes1mo,
     };
   },
 
-  async getQuotes1dNogaps(tokenId, startTime) {
-    const query = `
-    query MyQuery($tokenId: String, $startTime: timestamptz) {
-      quotes1dNogaps(
-        order_by: {bucket: asc}
-        where: {tokenId: {_eq: $tokenId},
-                bucket: {_gt: $startTime}}
-        distinct_on: bucket
-      ) {
-          bucket
-          volume
-          xtzVolume
-          close
-        }
-      }
-    `;
-    const {
-      data: {
-        data: { quotes1dNogaps },
-      },
-    } = await axios.post("https://dex.dipdup.net/v1/graphql", {
-      query,
-      variables: { tokenId: tokenId, startTime: startTime },
-    });
-    return quotes1dNogaps;
-  },
-
-  async getAllQuotes1d(spicyId, tokenId, symbol, xtzUsdHistory) {
-    const query = `
-    query MyQuery($tokenId: String) {
-      quotes1dNogaps(
-        order_by: {bucket: asc}
-        where: {tokenId: {_eq: $tokenId}}
-        distinct_on: bucket
-      ) {
-          bucket
-          volume
-          xtzVolume
-          close
-        }
-      }
-    `;
-    const [
-      {
-        data: {
-          data: { quotes1dNogaps },
-        },
-      },
-      plentyToken,
-      spicyTokenMetrics,
-    ] = await Promise.all([
-      axios.post("https://dex.dipdup.net/v1/graphql", {
-        query,
-        variables: { tokenId: tokenId },
-      }),
-      getPlentyTokenDailyMetrics(symbol),
-      getSpicyTokenDailyMetrics(spicyId),
+  async getAllQuotes1d(tokenAddress, tokenId) {
+    let [quotes1d, allTokenSpot] = await Promise.all([
+      dexIndexer.getQuotes1D(tokenAddress, tokenId),
+      dexIndexer.getAllTokenSpot(),
     ]);
 
-    const keyPairs = [
-      {
-        newKey: "aggregatedXtzVolume",
-        oldKey: "xtzVolume",
-      },
-    ];
+    quotes1d = modifyQuotes(quotes1d[0].quotes, allTokenSpot, "1d");
+    quotes1d = aggregateQuotes(quotes1d);
 
-    const modifiedSpicyMetrics = !isEmptyArray(spicyTokenMetrics.token_day_data)
-      ? modifySpicyMetrics(spicyTokenMetrics.token_day_data, xtzUsdHistory)
-      : null;
-    const modifiedPlentyMetrics = !isEmptyArray(plentyToken[0]?.price.history)
-      ? modifyPlentyMetrics(plentyToken[0], xtzUsdHistory)
-      : null;
-    const tokenList = [modifiedSpicyMetrics, modifiedPlentyMetrics];
-
-    let aggregatedQuotes1dNoGaps = modifyObject(quotes1dNogaps, keyPairs);
-    aggregatedQuotes1dNoGaps =
-      isEmptyArray(quotes1dNogaps) &&
-      isEmptyArray(spicyTokenMetrics.token_day_data)
-        ? aggregatedQuotes1dNoGaps
-        : getAggregatedPriceAndVolume(quotes1dNogaps, tokenList);
-
-    if (tokenId === "KT1JVjgXPMMSaa6FkzeJcgb8q9cUaLmwaJUX_0") {
-      return getPlentyTokenChartData(
-        plentyToken[0].volume.history,
-        "aggregatedXtzVolume",
-        oneDayInMiliSecond,
-        xtzUsdHistory
-      );
-    }
-    return aggregatedQuotes1dNoGaps;
-  },
-
-  async getActivity(tokenId, startTime) {
-    const query = `
-    query MyQuery($tokenId: String, $startTime: timestamptz) {
-      activity(
-        order_by: {timestamp: asc}
-        where: {tokenId: {_eq: $tokenId},
-                timestamp: {_gt: $startTime}}
-        distinct_on: timestamp
-        limit: 300
-      ) {
-          tvl
-          tvlUsd
-          timestamp
-        }
-      }
-    `;
-    const {
-      data: {
-        data: { activity },
-      },
-    } = await axios.post("https://dex.dipdup.net/v1/graphql", {
-      query,
-      variables: { tokenId: tokenId, startTime: startTime },
-    });
-    return activity;
-  },
-
-  async getAllActivity(tokenId) {
-    const query = `
-    query MyQuery($tokenId: String) {
-      activity(
-        order_by: {timestamp: asc}
-        where: {tokenId: {_eq: $tokenId},}
-        distinct_on: timestamp
-        limit: 300
-      ) {
-          tvl
-          tvlUsd
-          timestamp
-        }
-      }
-    `;
-    const {
-      data: {
-        data: { activity },
-      },
-    } = await axios.post("https://dex.dipdup.net/v1/graphql", {
-      query,
-      variables: { tokenId: tokenId },
-    });
-    return activity;
+    const aggregatedQuotes1d = getAggregatedPriceAndVolume(quotes1d);
+    return aggregatedQuotes1d;
   },
 
   async getChartTvl(spicyId, tokenId, exchangeId, symbol, xtzUsdHistory) {
@@ -1038,375 +594,245 @@ export default {
   async getTokenFeed() {
     try {
       const xtzUSD = await tzkt.getXtzUsdPrice();
-      // const xtzUsdHistory = await coingecko.getXtzUsdHistory();
       const xtzUsdHistory = await tzkt.getXtzUsdHistory();
-
-      const query = `
-    query MyQuery {
-     trade(
-        distinct_on: [exchangeId, tokenId]
-        order_by: [{exchangeId: asc, tokenId: asc}, {timestamp: desc}]
-      ) {
-        price
-        exchangeId
-        tokenId
-        token {
-          name
-          symbol
-        }
-      }
-     statsTotal {
-       tvlUsd
-       tvl
-       exchangeId
-       tokenId
-     }
-     token {
-       exchanges{
-         address
-         name
-         tokenId
-         tezPool
-         tokenPool
-         tradeVolume
-         midPrice
-       }
-       address
-       decimals
-       id
-       name
-       symbol
-       thumbnailUri
-       tokenId
-       standard
-     }
-   }`;
-
       const [
-        allTokensMetadata,
-
-        {
-          data: {
-            data: { trade, statsTotal, token },
-          },
-        },
-        tokensCloseData,
-        plentyTokens,
-        PLY,
-        plentyPools,
-        spicyTokens,
-        spicyPools,
-        TKEY,
+        allTokenMetadata,
+        allTokenSpot,
+        allTokenPool,
+        allQuotes1D,
+        allQuotes1W,
+        allQuotes1Mo,
       ] = await Promise.all([
         dexIndexer.getAllTokens(),
-        axios.post("https://dex.dipdup.net/v1/graphql", {
-          query,
-        }),
-        queryDipdup.getTokensPriceClose(),
-        getPlentyTokenDailyMetrics(),
-        getPlentyTokenDailyMetrics(PLY_SYMBOL),
-        getPlentyPools(),
-        getSpicyTokens(),
-        getSpicyPools(),
-        getPlentyTokenDailyMetrics(TKEY_SYMBOL),
+        dexIndexer.getAllTokenSpot(),
+        dexIndexer.getAllTokenPools(),
+        dexIndexer.getAllQuotes1D(),
+        dexIndexer.getAllQuotes1W(),
+        dexIndexer.getAllQuotes1MO(),
       ]);
-
-      /*
-        Convert Spicy Tokens WTZ price to XTZ price
-      */
-      const WTZPrice = trade.filter(
-        (element) =>
-          element.tokenId === "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn_0"
-      )[0].price;
-
-      spicyTokens.tokens.map((token) => {
-        token.price = token.derivedxtz * WTZPrice;
-        return token;
-      });
-
-      /*
-        Change field name and
-        add PLY, TKEY tokens to token list from Dipdup
-      */
-      const quotesTotal = trade.map((element) => {
-        element.close = element.price;
-        return element;
-      });
-
-      quotesTotal.push({
-        close: PLY[0]?.price?.value / xtzUSD,
-        tokenId: `${PLY[0]?.contract}_0`,
-      });
-      quotesTotal.push({
-        close: TKEY[0]?.price?.value / xtzUSD,
-        tokenId: `${TKEY[0]?.contract}_0`,
-      });
-
-      /*
-       *Calculate PLY data and push to token list
-       */
-      const updatedPLY = modifyPlentyToken(PLY, xtzUsdHistory, xtzUSD);
-      const updatedTKEY = modifyPlentyToken(TKEY, xtzUsdHistory, xtzUSD);
-      token.push(updatedPLY[0]);
-      token.push(updatedTKEY[0]);
-
-      /*
-       *Format plenty pools and spicy pools for integration
-       */
-      const updatedPlentyPools = plentyPools.map(function (obj) {
-        const baseSymbol = obj.symbol.split("/")[0];
-        const quoteSymbol = obj.symbol.split("/")[1];
-        const baseToken = plentyTokens.filter(
-          (token) => token.token.toLowerCase() === baseSymbol.toLowerCase()
-        );
-        const quoteToken = plentyTokens.filter(
-          (token) => token.token.toLowerCase() === quoteSymbol.toLowerCase()
-        );
-        const basePriceUsd = baseToken.length ? baseToken[0].price.value : null;
-        const quotePriceUsd = quoteToken.length
-          ? quoteToken[0].price.value
-          : null;
-
-        return {
-          address: obj.pool,
-          name: TRACKED_MARKETS_NAME.plentyNetwork.name,
-          symbol: obj.symbol,
-          volume24: obj.volume.value24H / xtzUSD,
-          baseSymbol: baseSymbol,
-          quoteSymbol: quoteSymbol,
-          basePrice: basePriceUsd / xtzUSD,
-          quotePrice: quotePriceUsd / xtzUSD,
-          tokenTvl: obj.tvl.value / xtzUSD,
-          tokenTvlUsd: obj.tvl.value,
-        };
-      });
-
-      let updatedSpicyPools = spicyPools.pair_info.map(function (obj) {
-        const baseSymbol = token.filter((element) => {
-          const tokenId = obj.token0.split(":")[1];
-          obj.token0Id = obj.token0.replace(":", "_");
-          if (tokenId === "null") {
-            obj.token0Id = obj.token0Id.replace("null", "0");
-          }
-          return element.id === obj.token0Id;
-        })[0]?.symbol;
-
-        const quoteSymbol = token.filter((element) => {
-          const tokenId = obj.token1.split(":")[1];
-          obj.token1Id = obj.token1.replace(":", "_");
-          if (tokenId === "null") {
-            obj.token1Id = obj.token1Id.replace("null", "0");
-          }
-          return element.id === obj.token1Id;
-        })[0]?.symbol;
-
-        const poolSymbol = baseSymbol + "/" + quoteSymbol;
-
-        if (poolSymbol.includes("undefined")) {
-          return null;
-        } else {
-          const baseToken = spicyTokens.tokens.filter(
-            (token) => token.symbol.toLowerCase() === baseSymbol.toLowerCase()
-          );
-          const quoteToken = spicyTokens.tokens.filter(
-            (token) => token.symbol.toLowerCase() === quoteSymbol.toLowerCase()
-          );
-          return {
-            address: obj.contract,
-            name: TRACKED_MARKETS_NAME.spicyswap.name,
-            symbol: poolSymbol,
-            volume24:
-              obj.pairHourData_aggregate.aggregate.sum.hourlyvolumextz !== null
-                ? obj.pairHourData_aggregate.aggregate.sum.hourlyvolumextz
-                : 0,
-            volume24Usd:
-              obj.pairHourData_aggregate.aggregate.sum.hourlyvolumeusd !== null
-                ? obj.pairHourData_aggregate.aggregate.sum.hourlyvolumeusd
-                : 0,
-            baseSymbol: baseSymbol,
-            quoteSymbol: quoteSymbol,
-            basePrice: baseToken[0]?.price
-              ? baseToken[0]?.price
-              : baseToken[0]?.tokenDayData[0]?.last_price,
-            quotePrice: quoteToken[0]?.price
-              ? quoteToken[0]?.price
-              : quoteToken[0]?.tokenDayData[0]?.last_price,
-            basePriceUsd: baseToken[0]?.derivedusd
-              ? baseToken[0]?.derivedusd
-              : baseToken[0]?.tokenDayData[0]?.last_price,
-            quotePriceUsd: quoteToken[0]?.derivedusd
-              ? quoteToken[0]?.derivedusd
-              : quoteToken[0]?.tokenDayData[0]?.last_price,
-            tokenTvl: obj.reservextz,
-            tokenTvlUsd: obj.reserveusd,
-          };
-        }
-      });
-      updatedSpicyPools = updatedSpicyPools.filter((n) => n);
-
-      token.forEach((t) => {
-        updatedPlentyPools.forEach(async (p) => {
-          if (
-            p.baseSymbol.toLowerCase() === t.symbol.toLowerCase() ||
-            p.quoteSymbol.toLowerCase() === t.symbol.toLowerCase()
-          ) {
-            const exchange = {
-              ...p,
-              midPrice:
-                p.baseSymbol.toLowerCase() === t.symbol.toLowerCase()
-                  ? p.basePrice
-                  : p.quotePrice,
-            };
-            t.exchanges.push(exchange);
-          }
-        });
-        updatedSpicyPools.forEach(async (p) => {
-          if (
-            p.baseSymbol.toLowerCase() === t.symbol.toLowerCase() ||
-            p.quoteSymbol.toLowerCase() === t.symbol.toLowerCase()
-          ) {
-            const exchange = {
-              ...p,
-              midPrice:
-                p.baseSymbol.toLowerCase() === t.symbol.toLowerCase()
-                  ? p.basePrice
-                  : p.quotePrice,
-              midPriceUsd:
-                p.baseSymbol.toLowerCase() === t.symbol.toLowerCase()
-                  ? p.basePriceUsd
-                  : p.quotePriceUsd,
-            };
-            t.exchanges.push(exchange);
-          }
-        });
-      });
-
-      const tokensVolume = await queryXtzVolume();
 
       const tokenObjkt = {};
 
       const updatedIndexerTokens = {};
 
-      for (let index = 0; index < allTokensMetadata.length; index++) {
-        let el = allTokensMetadata[index];
-        el.token_id = el.token_id || 0;
-        el.id = el.token_address + "_" + el.token_id;
+      for (let index = 0; index < allTokenMetadata.length; index++) {
+        let el = allTokenMetadata[index];
+        el.tokenId = el.tokenId || 0;
+        el.id = el.tokenAddress + "_" + el.tokenId;
 
         el = utils.convertObjSnakeToCamel(el);
 
         updatedIndexerTokens[el.id] = el;
       }
 
-      for (let index = 0; index < token.length; index++) {
-        const element = token[index];
+      for (let outerIndex = 0; outerIndex < allTokenSpot.length; outerIndex++) {
+        const element = allTokenSpot[outerIndex];
+        element.id = element.tokenAddress + "_" + element.tokenId;
         const tokenMetadata = updatedIndexerTokens[element.id];
 
-        const tokenId = element.id;
-        const closes = queryDipdup.filterTokenClose(tokenId, tokensCloseData);
         /**
      *Calculate aggregated price 
      weighted on tvl from Plenty, Spicy and Quipu
       */
-        let tokenTvl1Day = [];
-        const tokenQuotesTotal = quotesTotal.find(
-          (quote) => quote.tokenId === tokenId
-        );
-        if (tokenQuotesTotal !== undefined) {
-          tokenTvl1Day = statsTotal.filter((stat) => {
-            return stat.tokenId === tokenQuotesTotal.tokenId;
-          });
-          tokenQuotesTotal.tvl = tokenTvl1Day.reduce(
-            (totalTvl, exchange) => Number(totalTvl) + Number(exchange.tvl),
-            0
+        let totalReserves = 0;
+        let aggregatedClose = 0;
+        let close = 0;
+
+        for (const quoteData of element.quotes) {
+          const foundPool = allTokenPool.find(
+            (el) =>
+              quoteData.pool.poolId === el.poolId &&
+              quoteData.pool.dex.address === el.dex.address &&
+              quoteData.pool.dex.type === el.dex.type
           );
+          const foundToken = foundPool.tokens.find(
+            (el) =>
+              element.tokenAddress === el.token.tokenAddress &&
+              element.tokenId === el.token.tokenId
+          );
+          const reserves = parseFloat(foundToken.reserves);
 
-          const tokenOnPlenty = plentyTokens.find((token) => {
-            const contract = tokenQuotesTotal.tokenId.split("_")[0];
-            const id = tokenQuotesTotal.tokenId.split("_")[1];
-            return token.standard === "FA2"
-              ? token.contract === contract &&
-                  String(token.tokenId) === String(id)
-              : token.contract === contract;
-          });
-          if (tokenOnPlenty !== undefined) {
-            tokenQuotesTotal.plentyClose = tokenOnPlenty.price.value / xtzUSD;
-            tokenQuotesTotal.plentyTvl = tokenOnPlenty.tvl.value / xtzUSD;
-          } else {
-            tokenQuotesTotal.plentyClose = 0;
-            tokenQuotesTotal.plentyTvl = 0;
+          let quoteToken;
+          let quoteTokenPriceInTez;
+          let quoteTokenPriceInWTZ;
+          // Token has quote paired with xtz
+          if (quoteData.token.tokenAddress === "tez") {
+            close = quoteData.quote;
+          }
+          // Token has quote paired with other tokens
+          else {
+            quoteToken = allTokenSpot.find(
+              (el) =>
+                quoteData.token.tokenAddress === el.tokenAddress &&
+                quoteData.token.tokenId === el.tokenId
+            );
+            quoteTokenPriceInTez = quoteToken?.quotes.find(
+              (el) => el.token.tokenAddress === "tez"
+            )?.quote;
+            quoteTokenPriceInWTZ = quoteToken?.quotes.find(
+              (el) =>
+                el.token.tokenAddress === "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn"
+            )?.quote;
+            close = isNaN(quoteTokenPriceInTez)
+              ? quoteData.quote * quoteTokenPriceInWTZ
+              : quoteData.quote * quoteTokenPriceInTez;
           }
 
-          const tokenOnSpicy = spicyTokens.tokens.find((token) => {
-            const contract = tokenQuotesTotal.tokenId.split("_")[0];
-            const id = tokenQuotesTotal.tokenId.split("_")[1];
-            const spicyContract = token.tag.split(":")[0];
-            let spicyId = token.tag.split(":")[1];
-            if (spicyId === "null") {
-              spicyId = 0;
-            }
-            return spicyContract === contract && String(spicyId) === String(id);
-          });
-          if (tokenOnSpicy !== undefined) {
-            tokenQuotesTotal.spicyClose = tokenOnSpicy?.price
-              ? tokenOnSpicy?.price
-              : tokenOnSpicy?.tokenDayData[0]?.last_price;
-            tokenQuotesTotal.spicyTvl = tokenOnSpicy.totalliquidityxtz;
-          } else {
-            tokenQuotesTotal.spicyClose = 0;
-            tokenQuotesTotal.spicyTvl = 0;
+          // NaN and Alien dex type error
+          if (isNaN(close) || quoteData.pool.dex.type === "alien") {
+            continue;
           }
 
-          const arr = [
-            {
-              num: tokenQuotesTotal.spicyClose,
-              index: tokenQuotesTotal.spicyTvl,
-            },
-            {
-              num: tokenQuotesTotal.plentyClose,
-              index: tokenQuotesTotal.plentyTvl,
-            },
-            {
-              num: tokenQuotesTotal.close,
-              index: tokenQuotesTotal.tvl,
-            },
-          ];
-
-          tokenQuotesTotal.aggregatedClose = aggregateMultiple(arr);
+          totalReserves += reserves;
+          aggregatedClose += reserves * close;
         }
+
+        element.aggregatedPrice = aggregatedClose / totalReserves;
+
+        const tokenQuote1D = allQuotes1D.find(
+          (ele) =>
+            ele.tokenAddress === element.tokenAddress &&
+            ele.tokenId === element.tokenId
+        ).quotes;
+        const tokenQuote1W = allQuotes1W.find(
+          (ele) =>
+            ele.tokenAddress === element.tokenAddress &&
+            ele.tokenId === element.tokenId
+        ).quotes;
+        const tokenQuote1MO = allQuotes1Mo.find(
+          (ele) =>
+            ele.tokenAddress === element.tokenAddress &&
+            ele.tokenId === element.tokenId
+        ).quotes;
+
+        const filteredTokenQuote1D = tokenQuote1D.filter(
+          (quote) => new Date(quote.buckets[0].bucket) >= new Date(oneDayAgo)
+        );
+        const filteredTokenQuote1W = tokenQuote1W.filter(
+          (quote) => new Date(quote.buckets[0].bucket) >= new Date(oneWeekAgo)
+        );
+        const filteredTokenQuote1MO = tokenQuote1MO.filter(
+          (quote) => new Date(quote.buckets[0].bucket) >= new Date(oneMonthAgo)
+        );
+
+        element.dayClose = getAggregatedOpen(
+          filteredTokenQuote1D,
+          allTokenSpot
+        );
+        element.weekClose = getAggregatedOpen(
+          filteredTokenQuote1W,
+          allTokenSpot
+        );
+        element.monthClose = getAggregatedOpen(
+          filteredTokenQuote1MO,
+          allTokenSpot
+        );
+
+        const timeUsdValueDay1 = binarySearch(xtzUsdHistory, day1);
+        const timeUsdValueDay7 = binarySearch(xtzUsdHistory, day7);
+        const timeUsdValueDay30 = binarySearch(xtzUsdHistory, day30);
+
+        element.dayCloseUsd = element.dayClose * timeUsdValueDay1;
+        element.weekCloseUsd = element.weekClose * timeUsdValueDay7;
+        element.monthCloseUsd = element.monthClose * timeUsdValueDay30;
 
         let volume24Xtz = 0;
         let tokenTvl = 0;
         let tokenTvlUsd = 0;
 
-        tokensVolume.forEach((o) => {
-          if (o.tokenId === tokenId) {
-            volume24Xtz = new BigNumber(o.tezQty).plus(volume24Xtz).toNumber();
-            element.exchanges.forEach((e, index) => {
-              if (e.address === o.exchangeId) {
-                element.exchanges[index].volume24 = new BigNumber(
-                  element.exchanges[index].volume24 || 0
-                )
-                  .plus(o.tezQty)
-                  .toNumber();
-              }
-            });
+        // Assign exchanges property to pools
+        const tokenPools = allTokenPool.filter((el) => {
+          // Check if either of the two tokens in the "tokens" field matches the criteria
+          const tokenMatches = el.tokens.some((token) => {
+            return (
+              token.token.tokenAddress === element.tokenAddress &&
+              token.token.tokenId === element.tokenId
+            );
+          });
+          // Return true if either token matches the criteria
+          return tokenMatches;
+        });
+
+        // Create a deep copy of tokenPools (avoid same reference between 2 elements)
+        const deepCopyOfTokenPools = _.cloneDeep(tokenPools);
+
+        // Assign it to element.exchanges
+        element.exchanges = deepCopyOfTokenPools;
+
+        element.exchanges.forEach((e, index) => {
+          // Calculate exchanges infor
+          const pool1D = tokenQuote1D.find(
+            (ele) =>
+              ele.pool.poolId === e.poolId &&
+              ele.pool.dex.address === e.dex.address &&
+              ele.pool.dex.type === e.dex.type
+          );
+          let volume;
+          let midPrice;
+          let quoteToken;
+          let quoteTokenPriceInTez;
+          let quoteTokenPriceInWTZ;
+          if (pool1D) {
+            quoteToken = allTokenSpot.find(
+              (el) =>
+                pool1D.token.tokenAddress === el.tokenAddress &&
+                pool1D.token.tokenId === el.tokenId
+            );
+            quoteTokenPriceInTez = quoteToken?.quotes.find(
+              (el) => el.token.tokenAddress === "tez"
+            )?.quote;
+            quoteTokenPriceInWTZ = quoteToken?.quotes.find(
+              (el) =>
+                el.token.tokenAddress === "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn"
+            )?.quote;
+            volume =
+              pool1D.token.tokenAddress === "tez"
+                ? pool1D.buckets[0].quoteVolume
+                : isNaN(quoteTokenPriceInTez)
+                ? pool1D.buckets[0].quoteVolume * quoteTokenPriceInWTZ
+                : pool1D.buckets[0].quoteVolume * quoteTokenPriceInTez;
+            midPrice =
+              pool1D.token.tokenAddress === "tez"
+                ? pool1D.buckets[0].close
+                : isNaN(quoteTokenPriceInTez)
+                ? pool1D.buckets[0].close * quoteTokenPriceInWTZ
+                : pool1D.buckets[0].close * quoteTokenPriceInTez;
           }
+
+          // Assign name and 24h volume for each exchange
+          e.name = e.dex.type;
+          e.midPrice = midPrice || 0;
+          e.volume24 = new BigNumber(volume || 0);
+          // Calculate total volume 24h in xtz
+          volume24Xtz = new BigNumber(volume24Xtz).plus(e.volume24).toNumber();
         });
 
         /**
          *Calculate tvl for each exchange
          */
-        statsTotal.forEach((s) => {
-          element.exchanges.forEach((e, index) => {
-            if (s.tokenId === tokenId && s.exchangeId === e.address) {
-              element.exchanges[index].tokenTvl =
-                new BigNumber(s?.tvl).toNumber() || 0;
-              element.exchanges[index].tokenTvlUsd =
-                new BigNumber(s?.tvlUsd).toNumber() || 0;
-            }
-          });
-        });
+        element.exchanges.forEach((e, index) => {
+          const token = e.tokens.find(
+            (ele) =>
+              ele.token.tokenAddress === element.tokenAddress &&
+              ele.token.tokenId === element.tokenId
+          );
 
+          let tokenReserves = 0;
+          if (e.dex.type === "alien") {
+            tokenReserves =
+              token.reserves /
+              (ALIEN_FEE_DENOMINATOR * Math.pow(10, token.token.decimals));
+          } else {
+            tokenReserves = token.reserves / Math.pow(10, token.token.decimals);
+          }
+          element.exchanges[index].tokenTvl =
+            new BigNumber(tokenReserves * element.aggregatedPrice).toNumber() ||
+            0;
+          element.exchanges[index].tokenTvlUsd =
+            new BigNumber(
+              tokenReserves * element.aggregatedPrice * xtzUSD
+            ).toNumber() || 0;
+        });
         /**
          *Calculate total tvl and volume for each token
          */
@@ -1415,21 +841,16 @@ export default {
           tokenTvlUsd = new BigNumber(tokenTvlUsd)
             .plus(e.tokenTvl * xtzUSD)
             .toNumber();
-          if (
-            e.name === TRACKED_MARKETS_NAME.plentyNetwork.name ||
-            e.name === TRACKED_MARKETS_NAME.spicyswap.name
-          ) {
-            volume24Xtz = new BigNumber(volume24Xtz)
-              .plus(e.volume24)
-              .toNumber();
-          }
         });
+        /**
+         *Calculate price changes
+         */
 
         tokenObjkt[element.id] = {
           ...element,
           ...tokenMetadata,
-          ...closes,
-          currentPrice: Number(tokenQuotesTotal?.aggregatedClose),
+          // ...closes,
+          currentPrice: Number(element.aggregatedPrice),
           // allTimeLow: tokenQuotesTotal?.low || 0,
           tokenTvl,
           tokenTvlUsd,
@@ -1444,7 +865,6 @@ export default {
       console.log("error", error);
     }
   },
-
   async calcHolders(token) {
     const [address, tokenId] = token.id?.split("_");
 
@@ -1457,20 +877,6 @@ export default {
   },
 
   async calculateTokenData(element, token, tokenFeed, xtzUsd) {
-    // const tokenPrice = tokenFeed[token.id];
-
-    // tokenPrice.currentPrice = currentPrice;
-
-    // const tokenMetadata = allTokensMetadata.find((el) => {
-    //   return (
-    //     el.token_address === token.tokenAddress &&
-    //     (el.token_id !== undefined
-    //       ? el.token_id === (token.tokenId || 0)
-    //       : true)
-    //   );
-    // });
-
-    // const element = tokenPrice;
     // console.log("element", element);
 
     if (element) {
@@ -1484,6 +890,7 @@ export default {
       element.currentPrice = currentPrice;
 
       const price = new BigNumber(currentPrice);
+
       const priceUsd = price.times(xtzUsd);
       element.usdValue = price.times(xtzUsd).toNumber();
 
@@ -1498,53 +905,51 @@ export default {
         .times(element.usdValue)
         .toNumber();
 
-      if (element.symbol !== PLY_SYMBOL && element.symbol !== TKEY_SYMBOL) {
-        const change1Day = price
-          .minus(element?.dayClose)
-          .div(element?.dayClose)
-          .times(100)
-          .toNumber();
-        const change7Day = price
-          .minus(element?.weekClose)
-          .div(element?.weekClose)
-          .times(100)
-          .toNumber();
-        const change30Day = price
-          .minus(element?.monthClose)
-          .div(element?.monthClose)
-          .times(100)
-          .toNumber();
+      const change1Day = price
+        .minus(element?.dayClose)
+        .div(element?.dayClose)
+        .times(100)
+        .toNumber();
+      const change7Day = price
+        .minus(element?.weekClose)
+        .div(element?.weekClose)
+        .times(100)
+        .toNumber();
+      const change30Day = price
+        .minus(element?.monthClose)
+        .div(element?.monthClose)
+        .times(100)
+        .toNumber();
 
-        element.change1Day = change1Day === Infinity ? 0 : change1Day || 0;
-        element.change7Day = change7Day === Infinity ? 0 : change7Day || 0;
-        element.change30Day = change30Day === Infinity ? 0 : change30Day || 0;
+      element.change1Day = change1Day === Infinity ? 0 : change1Day || 0;
+      element.change7Day = change7Day === Infinity ? 0 : change7Day || 0;
+      element.change30Day = change30Day === Infinity ? 0 : change30Day || 0;
 
-        /**
-         *Calculating % changes in Usd
-         */
-        const change1DayUsd = priceUsd
-          .minus(element?.dayCloseUsd)
-          .div(element?.dayCloseUsd)
-          .times(100)
-          .toNumber();
-        const change7DayUsd = priceUsd
-          .minus(element?.weekCloseUsd)
-          .div(element?.weekCloseUsd)
-          .times(100)
-          .toNumber();
-        const change30DayUsd = priceUsd
-          .minus(element?.monthCloseUsd)
-          .div(element?.monthCloseUsd)
-          .times(100)
-          .toNumber();
+      /**
+       *Calculating % changes in Usd
+       */
+      const change1DayUsd = priceUsd
+        .minus(element?.dayCloseUsd)
+        .div(element?.dayCloseUsd)
+        .times(100)
+        .toNumber();
+      const change7DayUsd = priceUsd
+        .minus(element?.weekCloseUsd)
+        .div(element?.weekCloseUsd)
+        .times(100)
+        .toNumber();
+      const change30DayUsd = priceUsd
+        .minus(element?.monthCloseUsd)
+        .div(element?.monthCloseUsd)
+        .times(100)
+        .toNumber();
 
-        element.change1DayUsd =
-          change1DayUsd === Infinity ? 0 : change1DayUsd || 0;
-        element.change7DayUsd =
-          change7DayUsd === Infinity ? 0 : change7DayUsd || 0;
-        element.change30DayUsd =
-          change30DayUsd === Infinity ? 0 : change30DayUsd || 0;
-      }
+      element.change1DayUsd =
+        change1DayUsd === Infinity ? 0 : change1DayUsd || 0;
+      element.change7DayUsd =
+        change7DayUsd === Infinity ? 0 : change7DayUsd || 0;
+      element.change30DayUsd =
+        change30DayUsd === Infinity ? 0 : change30DayUsd || 0;
 
       element.volume24 = new BigNumber(element.volume24Xtz).toNumber();
       element.volume24Usd = new BigNumber(element.volume24Xtz)
@@ -1555,17 +960,18 @@ export default {
 
       for (let index = 0; index < element?.exchanges.length; index++) {
         const market = element?.exchanges[index];
+
         element.exchanges[index].lpPriceUsd =
-          market.name === "spicyswap"
-            ? Number(market.midPriceUsd)
-            : Number(market.midPrice) * xtzUsd || 0;
-
+          Number(market.midPrice) * xtzUsd || 0;
         element.exchanges[index].lpPrice = Number(market.midPrice) || 0;
-
-        element.exchanges[index].symbol =
-          market.name === "plenty network" || market.name === "spicyswap"
-            ? market.symbol
-            : `XTZ/${element.symbol}`;
+        const quoteToken = element.exchanges[index].tokens.find(
+          (ele) =>
+            ele.token.tokenAddress !== element.tokenAddress ||
+            ele.token.tokenId !== element.tokenId
+        );
+        element.exchanges[
+          index
+        ].symbol = `${quoteToken.token.symbol}/${element.symbol}`;
         element.exchanges[index].volume24Usd = new BigNumber(market.volume24)
           .times(xtzUsd)
           .toNumber();

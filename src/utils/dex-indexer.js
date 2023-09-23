@@ -1,179 +1,49 @@
 import axios from "axios";
 import farmUtils from "./farm";
 
-const makeQuery = async (query) => {
-  return axios.post("https://dex-indexer.crunchy.network/v1/graphql", {
-    query,
-  });
-};
-
-const QUERY_GET_LP_TOKENS = `query LPTokens {
-  tokens(where: {is_lp: {_eq: true}}) {
-    decimals
-    name
-    symbol
-    thumbnail_uri
-    token_address
-    token_id
-    total_supply
-    token_type
-    is_lp
-  }
-}`;
-
-const QUERY_GET_SPECIFIC_TOKEN_POOLS = (dexType) => `query TokenPools {
-  token_pools(where: {dex: {dex_type: {_eq: "${dexType}"}}}) {
-    dex {
-      dex_type
-      dex_address
-      params {
-        name
-        value
-      }
-    }
-    token_address
-    token {
-      symbol
-      decimals
-      name
-      thumbnail_uri
-      token_address
-      token_id
-      token_type
-    }
-    token_id
-    reserves
-    lp_token_address
-    lp_token_id
-    params {
-      name
-      value
-    }
-  }
-}`;
-
-const QUERY_GET_ALL_TOKEN_POOLS = `query TokenPools {
-  token_pools {
-    token_address
-    token {
-      symbol
-      name
-      thumbnail_uri
-    }
-    token_id
-    reserves
-    lp_token_address
-    lp_token_id
-    params {
-      name
-      value
-    }
-  }
-}`;
-
-const QUERY_GET_ALL_TOKENS = `query AllTokens {
-  tokens {
-    decimals
-    name
-    symbol
-    thumbnail_uri
-    token_address
-    token_id
-    total_supply
-    token_type
-    is_lp
-    pools(where: {quotes_spot: {quote_token_address: {_eq: "tez"}}}, limit: 1) {
-      quotes_spot {
-        quote
-      }
-    }
-  }
-}`;
-
-const QUERY_GET_ALL_DEXES = `query AllDexes {
-  dexs {
-    dex_address
-    dex_type
-    params {
-      name
-      value
-    }
-    pools {
-      pool_id
-      reserves
-      params {
-        name
-        value
-      }
-      token_address
-      token_id
-      token {
-        decimals
-        symbol
-        token_type
-      }
-    }
-  }
-}`;
-
-const QUERY_GET_A_TOKEN = (tokenAddress, tokenId) => `
-query MyQuery {
-  tokens(where: {token_address: {_eq: "${tokenAddress}"}, token_id: {_eq: ${Number(
-  tokenId
-)}}}){
-    decimals
-    name
-    symbol
-    thumbnail_uri
-    token_type
-    total_supply
-    token_address
-    token_id
-  }
-}
-`;
+const BASE_URL = "https://api.crunchy.network/v1";
 
 export default {
   async getAllTokens() {
-    return makeQuery(QUERY_GET_ALL_TOKENS).then((res) =>
-      res.data && res.data.data && res.data.data.tokens
-        ? res.data.data.tokens
-        : []
-    );
+    try {
+      const response = await axios.get(`${BASE_URL}/tokens`);
+      if (response.data) {
+        return response.data;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.error("Error fetching all tokens:", error);
+      return [];
+    }
   },
   async getLPTokens() {
-    return makeQuery(QUERY_GET_LP_TOKENS).then((res) =>
-      res.data && res.data.data && res.data.data.tokens
-        ? res.data.data.tokens
-        : []
-    );
-  },
-  async getSpecificTokenPools(dexType) {
-    return makeQuery(QUERY_GET_SPECIFIC_TOKEN_POOLS(dexType)).then((res) =>
-      res.data && res.data.data && res.data.data.token_pools
-        ? res.data.data.token_pools
-        : []
-    );
-  },
-  async getTokenPools() {
-    return makeQuery(QUERY_GET_ALL_TOKEN_POOLS).then((res) =>
-      res.data && res.data.data && res.data.data.token_pools
-        ? res.data.data.token_pools
-        : []
-    );
-  },
-  async getToken(tokenAddress, tokenId) {
-    return makeQuery(QUERY_GET_A_TOKEN(tokenAddress, tokenId)).then((res) =>
-      res.data && res.data.data && res.data.data.tokens
-        ? res.data.data.tokens[0]
-        : {}
-    );
-  },
+    try {
+      const response = await axios.get(`${BASE_URL}/pools`);
 
-  async getAllDexes() {
-    return makeQuery(QUERY_GET_ALL_DEXES).then((res) =>
-      res.data && res.data.data && res.data.data.dexs ? res.data.data.dexs : []
-    );
+      if (response.data) {
+        return response.data;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.error("Error fetching all token spot:", error);
+      return [];
+    }
+  },
+  async getAllTokenSpot() {
+    try {
+      const response = await axios.get(`${BASE_URL}/tokens/quotes/spot`);
+
+      if (response.data) {
+        return response.data;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.error("Error fetching all token spot:", error);
+      return [];
+    }
   },
 
   findTokenInPriceFeed(token, feed) {
@@ -193,4 +63,140 @@ export default {
       });
     }
   },
+  async getAllTokenPools() {
+    try {
+      const response = await axios.get(`${BASE_URL}/pools`);
+
+      if (response.data) {
+        return response.data;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.error("Error fetching all token spot:", error);
+      return [];
+    }
+  },
+  async getAllQuotes1D() {
+    try {
+      const response = await axios.get(`${BASE_URL}/tokens/quotes/last/1d`);
+
+      if (response.data) {
+        return response.data;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.error("Error fetching all quotes 1 day:", error);
+      return [];
+    }
+  },
+  async getAllQuotes1W() {
+    try {
+      const response = await axios.get(`${BASE_URL}/tokens/quotes/last/1w`);
+
+      if (response.data) {
+        return response.data;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.error("Error fetching all quotes 1 week:", error);
+      return [];
+    }
+  },
+  async getAllQuotes1MO() {
+    try {
+      const response = await axios.get(`${BASE_URL}/tokens/quotes/last/1mo`);
+
+      if (response.data) {
+        return response.data;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.error("Error fetching all quotes 1 month:", error);
+      return [];
+    }
+  },
+  async getQuotes1H(tokenAddress, tokenId) {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/tokens/${tokenAddress}/${tokenId}/quotes/1h`
+      );
+
+      if (response.data) {
+        return response.data;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.error("Error fetching all quotes 1h:", error);
+      return [];
+    }
+  },
+  async getQuotes1D(tokenAddress, tokenId) {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/tokens/${tokenAddress}/${tokenId}/quotes/1d`
+      );
+
+      if (response.data) {
+        return response.data;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.error("Error fetching all quotes 1 day:", error);
+      return [];
+    }
+  },
+  async getQuotes1W(tokenAddress, tokenId) {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/tokens/${tokenAddress}/${tokenId}/quotes/1w`
+      );
+
+      if (response.data) {
+        return response.data;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.error("Error fetching all quotes 1 week:", error);
+      return [];
+    }
+  },
+  async getQuotes1MO(tokenAddress, tokenId) {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/tokens/${tokenAddress}/${tokenId}/quotes/1mo`
+      );
+
+      if (response.data) {
+        return response.data;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.error("Error fetching all quotes 1 month:", error);
+      return [];
+    }
+  },
+  async getToken(tokenAddress, tokenId) {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/tokens/${tokenAddress}/${tokenId}/quotes/spot`
+      );
+
+      if (response.data) {
+        return response.data;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.error("Error fetching a token:", error);
+      return [];
+    }
+  }
 };

@@ -53,11 +53,12 @@
                             position: relative;
                             margin-right: 10px;
                             width: 30px;
+                            height: 29px;
                           "
                         />
 
                         <a
-                          :href="`https://tzkt.io/${item.address}`"
+                          :href="`https://tzkt.io/${item.dex.address}`"
                           target="_blank"
                           style="
                             font-weight: 600;
@@ -143,9 +144,17 @@ export default {
     handleDexUri(dex = "") {
       switch (dex?.toLowerCase()) {
         case "plenty network":
+        case "plenty_stable":
+        case "plenty":
+        case "plenty_tez":
+        case "plenty_ctez":
           return "https://res.cloudinary.com/melvin-manni/image/upload/v1677417526/nstgjnest4jrhcsgwymf.png";
 
         case "quipuswap":
+        case "quipuswap_v2":
+        case "quipuswap_v3":
+        case "quipuswap_stable":
+        case "quipuswap_token2token":
           return "https://res.cloudinary.com/melvin-manni/image/upload/v1645292809/c1rutxlzllilmtuibcdo.png";
 
         case "youves":
@@ -155,22 +164,50 @@ export default {
           return "https://www.gitbook.com/cdn-cgi/image/width=40,height=40,fit=contain,dpr=1,format=auto/https%3A%2F%2F3533877337-files.gitbook.io%2F~%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FyX7WTYr0YMeQcemP26Of%252Ficon%252F76rbNGaJiDxSJwFIjsLQ%252FGroup%25201494.png%3Falt%3Dmedia%26token%3D829a380f-2d70-4ceb-ac23-8c2aaddf8fe5";
 
         case "spicyswap":
+        case "spicy":
           return "https://docs.spicyswap.xyz/img/spicy.png";
         case "lb":
+        case "sirius":
           return "https://res.cloudinary.com/melvin-manni/image/upload/v1663433569/lcmsyxatxezrrcovuklr.png";
-
+        case "alien":
+          return "https://lh3.googleusercontent.com/drive-viewer/AITFw-wJLI6KDrTfx-KKskNIiVXnO7o48eoIUCgO1Vxu2e6_eNz8MRexBTCkB2rPZ5qzqiQ7NktcUipFDkcjy8gmcIDca1f8Ig=s2560";
+        case "flame":
+          return "https://lh3.googleusercontent.com/drive-viewer/AITFw-zV_wN-tJD5iFfUCG2srWTvrh0rW-nQ8Tq_htOyqWfm5lGtEBJsPyBCoI6aVjMcC-JNWnxFY0m6vkxaV8LwfQolgU63AA=s2560";
         default:
           return "";
       }
     },
 
     capitalize(str) {
-      if (str === "lb") {
-        return "SIRS (Liquidity Baking)";
+      switch (str) {
+        case "lb":
+        case "sirius":
+          return "SIRS (Liquidity Baking)";
+        case "quipuswap":
+          return "Quipuswap";
+        case "quipuswap_v2":
+          return "Quipuswap V2";
+        case "quipuswap_v3":
+          return "Quipuswap V3";
+        case "quipuswap_stable":
+          return "Quipuswap Stable";
+        case "quipuswap_token2token":
+          return "Quipuswap Token to Token";
+        case "plenty_stable":
+          return "Plenty stable";
+        case "plenty":
+          return "Plenty network";
+        case "plenty_ctez":
+          return "Plenty Ctez";
+        case "plenty_tez":
+          return "Plenty Tez";
+        case "spicy":
+          return "Spicyswap";
+        default:
+          return str.replace(/\b[a-z]/gi, function (char) {
+            return char.toUpperCase();
+          });
       }
-      return str.replace(/\b[a-z]/gi, function (char) {
-        return char.toUpperCase();
-      });
     },
   },
 };
