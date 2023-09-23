@@ -41,12 +41,7 @@ export default {
   async updateTokenPools({ commit }) {
     let allTokenPools = [];
     try {
-      allTokenPools = await Promise.all(
-        DEX_TYPES.map(async (dexType) => {
-          const tokenPools = await dexIndexer.getSpecificTokenPools(dexType);
-          return tokenPools;
-        })
-      );
+      allTokenPools = await dexIndexer.getAllTokenPools();
 
       // Flatten the array of arrays into a single array of token pools
       allTokenPools = allTokenPools.flat();

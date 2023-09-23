@@ -16,16 +16,7 @@ import { BigNumber } from "bignumber.js";
 let updateXtzUsdVwapPromise;
 let updateCurrentPricesPromise;
 let updateFarmStoragePromise;
-const DEX_TYPES = [
-  "spicy",
-  "quipuswap",
-  "quipuswap_v2",
-  "quipuswap_token2token",
-  "quipuswap_stable",
-  "plenty",
-  "plenty_ctez",
-  "plenty_stable",
-];
+
 
 const tokenMetadataCache = {};
 const getFarmTokenMetadata = async (address, tokenId) => {
@@ -83,15 +74,7 @@ export default {
 
     let allTokenPools = [];
     try {
-      allTokenPools = await Promise.all(
-        DEX_TYPES.map(async (dexType) => {
-          const tokenPools = await dexIndexer.getSpecificTokenPools(dexType);
-          return tokenPools;
-        })
-      );
-
-      // Flatten the array of arrays into a single array of token pools
-      allTokenPools = allTokenPools.flat();
+      allTokenPools = await dexIndexer.getAllTokenPools();
 
       // Call commit with the updated allTokenPools array
       commit("updateTokenPools", [tez, ...allTokenPools]);
@@ -128,16 +111,7 @@ export default {
     
     let allTokenPools = [];
     try {
-      allTokenPools = await Promise.all(
-        DEX_TYPES.map(async (dexType) => {
-          const tokenPools = await dexIndexer.getSpecificTokenPools(dexType);
-          return tokenPools;
-        })
-      );
-
-      // Flatten the array of arrays into a single array of token pools
-      allTokenPools = allTokenPools.flat();
-
+      allTokenPools = await dexIndexer.getAllTokenPools();
       // Call commit with the updated allTokenPools array
       commit("updateTokenPools", [tez, ...allTokenPools]);
     } catch (error) {
