@@ -7,7 +7,7 @@
 <script lang="js">
 import { createChart } from "lightweight-charts";
 import { mapGetters } from "vuex";
-import numberFormat from "../utils/number-format";
+// import numberFormat from "../utils/number-format";
 import tokenTracker from "../utils/token-tracker";
 
 export default {
@@ -512,7 +512,7 @@ export default {
         const container = document.getElementById("chart");
         const toolTipWidth = 80;
         const toolTipMargin = 15;
-        let toolTipHeight = 80;
+        const toolTipHeight = 80;
         const toolTipHeightSupport = 100;
         // Create and style the tooltip html element
         const toolTip = document.createElement("div");
