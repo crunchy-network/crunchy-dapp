@@ -175,6 +175,8 @@ export default {
           return require("../assets/dex-icons/Flame.png");
         case "wtz":
           return require("../assets/dex-icons/Wtz.png");
+        case "ctez":
+          return require("../assets/dex-icons/Ctez.png");
         default:
           return "";
       }
