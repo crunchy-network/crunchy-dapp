@@ -572,7 +572,7 @@ export default {
           }
         });
 
-        //auto expand to fill the chart
+        // auto expand to fill the chart
         chart.timeScale().fitContent();
       } catch (error) {
         console.log("ERROR", error);
