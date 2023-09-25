@@ -45,24 +45,6 @@ export default {
       return [];
     }
   },
-
-  findTokenInPriceFeed(token, feed) {
-    if (farmUtils.isFa1(token)) {
-      return feed.find((el) => {
-        return (
-          el.token_address === token.address || el.address === token.address
-        );
-      });
-    } else {
-      return feed.find((el) => {
-        return (
-          (el.token_address === token.address &&
-            el.token_id === parseInt(token.tokenId)) ||
-          el.address === token.address
-        );
-      });
-    }
-  },
   async getAllTokenPools() {
     try {
       const response = await axios.get(`${BASE_URL}/pools`);
@@ -198,5 +180,22 @@ export default {
       console.error("Error fetching a token:", error);
       return [];
     }
-  }
+  },
+  findTokenInPriceFeed(token, feed) {
+    if (farmUtils.isFa1(token)) {
+      return feed.find((el) => {
+        return (
+          el.tokenAddress === token.address || el.address === token.address
+        );
+      });
+    } else {
+      return feed.find((el) => {
+        return (
+          (el.tokenAddress === token.address &&
+            el.tokenId === parseInt(token.tokenId)) ||
+          el.address === token.address
+        );
+      });
+    }
+  },
 };
