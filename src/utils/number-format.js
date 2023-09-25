@@ -8,15 +8,20 @@ export default {
       return { value: number, suffix: "" };
     } else if (number < 1000000) {
       const value = number / 1000;
-      return { value, suffix: "K" };
+      const precisedValue = parseFloat(value).toFixed(precision)
+      return { value: precisedValue, suffix: "K" };
     } else if (number < 1000000000) {
       const value = number / 1000000;
-      return { value, suffix: "M" };
+      const precisedValue = parseFloat(value).toFixed(precision)
+      return { value: precisedValue, suffix: "M" };
     } else if (number < 1000000000000) {
       const value = number / 1000000000;
-      return { value, suffix: "B" };
+      const precisedValue = parseFloat(value).toFixed(precision)
+      return { value: precisedValue, suffix: "B" };
     } else {
-      return { value: number / 1000000000000, suffix: "T" };
+      const value = number / 1000000000000;
+      const precisedValue = parseFloat(value).toFixed(precision)
+      return { value: precisedValue, suffix: "T" };
     }
   },
 };
