@@ -210,7 +210,10 @@ export default {
           );
           return {
             time: new Date(element.bucket).getTime() / 1000,
-            value: Number(element.aggregatedClose) * timeUsdValue,
+            close: Number(element.aggregatedClose) * timeUsdValue,
+            open: Number(element.aggregatedOpen) * timeUsdValue,
+            high: Number(element.aggregatedHigh) * timeUsdValue,
+            low: Number(element.aggregatedLow) * timeUsdValue,
           };
         });
 
@@ -222,7 +225,10 @@ export default {
           );
           return {
             time: new Date(element.bucket).getTime() / 1000,
-            value: Number(element.aggregatedClose) * timeUsdValue,
+            close: Number(element.aggregatedClose) * timeUsdValue,
+            open: Number(element.aggregatedOpen) * timeUsdValue,
+            high: Number(element.aggregatedHigh) * timeUsdValue,
+            low: Number(element.aggregatedLow) * timeUsdValue,
           };
         });
 
@@ -230,7 +236,10 @@ export default {
         this.getChartData.volumeAndPrice1Hour.map((element) => {
           return {
             time: new Date(element.bucket).getTime() / 1000,
-            value: Number(element.aggregatedClose),
+            close: Number(element.aggregatedClose),
+            open: Number(element.aggregatedOpen),
+            high: Number(element.aggregatedHigh),
+            low: Number(element.aggregatedLow),
           };
         });
 
@@ -238,7 +247,10 @@ export default {
         this.getChartData.volumeAndPrice1Day.map((element) => {
           return {
             time: new Date(element.bucket).getTime() / 1000,
-            value: Number(element.aggregatedClose),
+            close: Number(element.aggregatedClose),
+            open: Number(element.aggregatedOpen),
+            high: Number(element.aggregatedHigh),
+            low: Number(element.aggregatedLow),
           };
         });
 
@@ -282,17 +294,6 @@ export default {
           };
         });
 
-      // this.updatedChartData.price.days7 =
-      //   this.getChartData.volumeAndPrice7Day.map((element) => {
-      //     const timeUsdValue = tokenTracker.binarySearch(
-      //       this.getXtzUsdHistory,
-      //       new Date(element.bucket).getTime()
-      //     );
-      //     return {
-      //       time: new Date(element.bucket).getTime(),
-      //       value: Number(element.close) * timeUsdValue,
-      //     };
-      //   });
       this.updatedChartData.volume.days7 =
         this.getChartData.volumeAndPrice7Day.map((element) => {
           const timeUsdValue = tokenTracker.binarySearch(
@@ -312,17 +313,6 @@ export default {
           };
         });
 
-      // this.updatedChartData.price.days30 =
-      //   this.getChartData.volumeAndPrice30Day.map((element) => {
-      //     const timeUsdValue = tokenTracker.binarySearch(
-      //       this.getXtzUsdHistory,
-      //       new Date(element.bucket).getTime()
-      //     );
-      //     return {
-      //       time: new Date(element.bucket).getTime(),
-      //       value: Number(element.close) * timeUsdValue,
-      //     };
-      //   });
       this.updatedChartData.volume.days30 =
         this.getChartData.volumeAndPrice30Day.map((element) => {
           const timeUsdValue = tokenTracker.binarySearch(
@@ -341,19 +331,6 @@ export default {
             value: Number(element.aggregatedXtzVolume),
           };
         });
-
-      // this.updatedChartData.price.all = this.getChartData.allVolumeAndPrice.map(
-      //   (element) => {
-      //     const timeUsdValue = tokenTracker.binarySearch(
-      //       this.getXtzUsdHistory,
-      //       new Date(element.bucket).getTime()
-      //     );
-      //     return {
-      //       time: new Date(element.bucket).getTime(),
-      //       value: Number(element.close) * timeUsdValue,
-      //     };
-      //   }
-      // );
 
       this.updatedChartData.volumeXtz.all =
         this.getChartData.allVolumeAndPrice.map((element) => {
@@ -377,7 +354,7 @@ export default {
     },
 
     async getPrices() {
-    this.setLoading(true);
+      this.setLoading(true);
       try {
         await this.sortTokenData();
 
@@ -444,8 +421,6 @@ export default {
               : null;
         }
 
-        const areaSeriesData = this.tokenData;
-
         document.getElementById("chart").innerHTML = "";
 
         var chart = createChart(document.getElementById("chart"), {
@@ -488,29 +463,56 @@ export default {
           },
         });
 
-        var areaSeries = chart.addAreaSeries({
+        var areaSeries = chart.addCandlestickSeries({
           topColor: "rgba(85,92,255,.5)",
           bottomColor: "rgba(85,92,255,.04)",
           lineColor: "rgba(85,92,255,1)",
           lineWidth: 2,
         });
 
-        if (this.legendTab === "price") {
-          areaSeries.applyOptions({
-            priceFormat: {
-              type: "price",
-              precision: this.handlePrecision(this.tokenTracked.usdValue)
-                .precision,
-              minMove: this.handlePrecision(this.tokenTracked.usdValue).minMove,
-            },
-          });
-        }
+        var candlestickSeries = chart.addCandlestickSeries({
+          upColor: '#26a69a',
+          downColor: '#ef5350',
+          borderVisible: false,
+          wickUpColor: '#26a69a',
+          wickDownColor: '#ef5350',
+        }); 
 
-        areaSeries.setData(areaSeriesData);
+        if (this.legendTab === "price") {
+        // Create and set data for the candlestick series
+        candlestickSeries = chart.addCandlestickSeries({
+          upColor: '#26a69a',
+          downColor: '#ef5350',
+          borderVisible: false,
+          wickUpColor: '#26a69a',
+          wickDownColor: '#ef5350',
+        });
+
+        candlestickSeries.setData(this.tokenData);
+
+        // Apply price formatting options if needed
+        candlestickSeries.applyOptions({
+          priceFormat: {
+            type: "price",
+            precision: this.handlePrecision(this.tokenTracked.usdValue).precision,
+            minMove: this.handlePrecision(this.tokenTracked.usdValue).minMove,
+          },
+        });
+      } else if (this.legendTab === "volume") {
+        // Create and set data for the area series
+        areaSeries = chart.addAreaSeries({
+          topColor: "rgba(85,92,255,.5)",
+          bottomColor: "rgba(85,92,255,.04)",
+          lineColor: "rgba(85,92,255,1)",
+          lineWidth: 2,
+        });
+
+        areaSeries.setData(this.tokenData);
+      }
         const container = document.getElementById("chart");
         const toolTipWidth = 80;
         const toolTipMargin = 15;
-        const toolTipHeight = 80;
+        let toolTipHeight = 80;
         const toolTipHeightSupport = 100;
         // Create and style the tooltip html element
         const toolTip = document.createElement("div");
@@ -529,25 +531,71 @@ export default {
             param.point.y < 0 ||
             param.point.y > container.clientHeight
           ) {
-            toolTip.style.display = "none";
+            toolTip.style.display = "block";
           } else {
             const dateStr = this.formatDate(param.time);
             toolTip.style.display = "block";
-            const price = Number(param.seriesPrices.get(areaSeries)).toFixed(
-              this.handlePrecision(param.seriesPrices.get(areaSeries)).precision
-            );
-            const precision = this.handlePrecision(price).precision
-            toolTip.innerHTML = `<div style="color:var(--color-primary)">${
+
+            let price;
+            let priceObj;
+            let precision;
+            let contentHtml = `<div style="color:var(--color-primary)">${
               this.tokenTracked.symbol || this.tokenTracked.name
-            }.</div><div style="font-size: 24px; margin: 0px 0px; color: ${"black"}">
-            ${this.getShowUsd ? "$" : ""}${
-              this.formatNumShorthand(price, precision).value
-            }${this.formatNumShorthand(price, precision).suffix}${
-              !this.getShowUsd ? "ꜩ" : ""
+            }.</div><div style="font-size: 24px; margin: 0px 0px; color: ${"black"}">`;
+
+            if (this.legendTab === "price") {
+              // Set tooltip height
+              toolTip.style.height = "200px";
+              // Calculate price and precision for the "price" legend tab
+              priceObj = param.seriesPrices.get(candlestickSeries);
+              let { open, high, low, close } = priceObj;
+              open = Number(open).toFixed(
+                this.handlePrecision(open).precision
+              );
+              close = Number(close).toFixed(
+                this.handlePrecision(close).precision
+              );
+              high = Number(high).toFixed(
+                this.handlePrecision(high).precision
+              );
+              low = Number(low).toFixed(
+                this.handlePrecision(low).precision
+              );
+              precision = this.handlePrecision(price).precision;
+              contentHtml += `
+                <div>Open: ${this.getShowUsd ? "$" : ""}${
+                this.formatNumShorthand(open, precision).value
+              }${this.formatNumShorthand(open, precision).suffix}${this.getShowUsd ? "" : "ꜩ"}</div>
+                <div>High: ${this.getShowUsd ? "$" : ""}${
+                this.formatNumShorthand(high, precision).value
+              }${this.formatNumShorthand(high, precision).suffix}${this.getShowUsd ? "" : "ꜩ"}</div>
+                <div>Low: ${this.getShowUsd ? "$" : ""}${
+                this.formatNumShorthand(low, precision).value
+              }${this.formatNumShorthand(low, precision).suffix}${this.getShowUsd ? "" : "ꜩ"}</div>
+                <div>Close: ${this.getShowUsd ? "$" : ""}${
+                this.formatNumShorthand(close, precision).value
+              }${this.formatNumShorthand(close, precision).suffix}${this.getShowUsd ? "" : "ꜩ"}</div>`;
+            } 
+            
+            else {
+              // Set tooltip height
+              toolTip.style.height = "100px";
+              // Calculate price and precision for the "volume" legend tab
+              price = Number(param.seriesPrices.get(areaSeries)).toFixed(
+                this.handlePrecision(param.seriesPrices.get(areaSeries)).precision
+              );
+              precision = this.handlePrecision(price).precision;
+              contentHtml += `${this.getShowUsd ? "$" : ""}${
+                this.formatNumShorthand(price, precision).value
+              }${this.formatNumShorthand(price, precision).suffix}${
+                !this.getShowUsd ? "ꜩ" : ""
+              }<br>`;
             }
-            </div><div style="color: ${"black"}">
-            ${dateStr}
-            </div>`;
+
+            contentHtml += `</div><div style="color: ${"black"}">${dateStr}</div>`;
+
+            toolTip.innerHTML = contentHtml;
+
             const mediaMaxWidth = 990;
             const tokenMetrics = document.getElementById("token-metrics");
             const tokenMetricsMargin = {};
@@ -571,6 +619,9 @@ export default {
             toolTip.style.top = top + "px";
           }
         });
+
+        // auto expand to fill the chart
+        chart.timeScale().fitContent();
       } catch (error) {
         console.log("ERROR", error);
       }
@@ -619,8 +670,30 @@ export default {
       return { precision, minMove };
     },
 
-    formatNumShorthand(val, precision) {
-      return numberFormat.shorthand(val, precision);
+    formatNumShorthand(value, precision) {
+      const number = precision
+        ? parseFloat(value).toFixed(precision)
+        : Number(value);
+      if (isNaN(number)) return { value: 0, suffix: "" };
+      if (number < 1000) {
+        return { value: number, suffix: "" };
+      } else if (number < 1000000) {
+        const value = number / 1000;
+        const precisedValue = parseFloat(value).toFixed(precision)
+        return { value: precisedValue, suffix: "K" };
+      } else if (number < 1000000000) {
+        const value = number / 1000000;
+        const precisedValue = parseFloat(value).toFixed(precision)
+        return { value: precisedValue, suffix: "M" };
+      } else if (number < 1000000000000) {
+        const value = number / 1000000000;
+        const precisedValue = parseFloat(value).toFixed(precision)
+        return { value: precisedValue, suffix: "B" };
+      } else {
+        const value = number / 1000000000000;
+        const precisedValue = parseFloat(value).toFixed(precision)
+        return { value: precisedValue, suffix: "T" };
+      }
     },
   },
 };

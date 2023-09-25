@@ -77,6 +77,18 @@ function modifyQuotes(quotes, allTokenSpot, type) {
         quote.token.tokenAddress === "tez"
           ? Number(bucket.close)
           : Number(bucket.close) * Number(quoteTokenPriceInTez);
+      bucket.open_xtz =
+        quote.token.tokenAddress === "tez"
+          ? Number(bucket.open)
+          : Number(bucket.open) * Number(quoteTokenPriceInTez);
+      bucket.high_xtz =
+        quote.token.tokenAddress === "tez"
+          ? Number(bucket.high)
+          : Number(bucket.high) * Number(quoteTokenPriceInTez);
+      bucket.low_xtz =
+        quote.token.tokenAddress === "tez"
+          ? Number(bucket.low)
+          : Number(bucket.low) * Number(quoteTokenPriceInTez);
       bucket.volume_quote_xtz =
         quote.token.tokenAddress === "tez"
           ? Number(bucket.quoteVolume)
@@ -310,6 +322,9 @@ function modifyPlentyMetrics(plentyMetrics, xtzUsdHistory) {
 function getAggregatedPriceAndVolume(quotes, type) {
   const aggregatedQuotes = [];
   let prevAggCloseSum = 0;
+  let prevAggOpenSum = 0;
+  let prevAggHighSum = 0;
+  let prevAggLowSum = 0;
   let prevAggVol = 0;
   // Exclude elment having no close price in xtz and volume quote is NaN
   let filteredQuotes = quotes.filter(
@@ -329,6 +344,12 @@ function getAggregatedPriceAndVolume(quotes, type) {
       const quoteVolume = parseFloat(quote.volume_quote_xtz);
       const quoteWeightedClose =
         parseFloat(quote.close_xtz) * parseFloat(quote.volume_quote_xtz);
+      const quoteWeightedOpen =
+        parseFloat(quote.open_xtz) * parseFloat(quote.volume_quote_xtz);
+      const quoteWeightedHigh =
+        parseFloat(quote.high_xtz) * parseFloat(quote.volume_quote_xtz);
+      const quoteWeightedLow =
+        parseFloat(quote.low_xtz) * parseFloat(quote.volume_quote_xtz);
       // Get total volume in xtz
       const totalVolume = matchingElements.reduce((sum, element) => {
         return sum + parseFloat(element.volume_quote_xtz);
@@ -341,16 +362,44 @@ function getAggregatedPriceAndVolume(quotes, type) {
           parseFloat(element.close_xtz) * parseFloat(element.volume_quote_xtz)
         );
       }, quoteWeightedClose);
+      const weightedOpenSum = matchingElements.reduce((sum, element) => {
+        return (
+          sum +
+          parseFloat(element.open_xtz) * parseFloat(element.volume_quote_xtz)
+        );
+      }, quoteWeightedOpen);
+      const weightedHighSum = matchingElements.reduce((sum, element) => {
+        return (
+          sum +
+          parseFloat(element.high_xtz) * parseFloat(element.volume_quote_xtz)
+        );
+      }, quoteWeightedHigh);
+      const weightedLowSum = matchingElements.reduce((sum, element) => {
+        return (
+          sum +
+          parseFloat(element.low_xtz) * parseFloat(element.volume_quote_xtz)
+        );
+      }, quoteWeightedLow);
 
       const aggregatedClose = weightedCloseSum / totalVolume;
+      const aggregatedOpen = weightedOpenSum / totalVolume;
+      const aggregatedHigh = weightedHighSum / totalVolume;
+      const aggregatedLow = weightedLowSum / totalVolume;
+
       const aggregatedXtzVolume = totalVolume;
       prevAggCloseSum = weightedCloseSum;
+      prevAggOpenSum = weightedOpenSum;
+      prevAggHighSum = weightedHighSum;
+      prevAggLowSum = weightedLowSum;
       prevAggVol = aggregatedXtzVolume;
 
       if (!isNaN(aggregatedClose)) {
         aggregatedQuotes.push({
           ...quote,
           aggregatedClose,
+          aggregatedOpen,
+          aggregatedHigh,
+          aggregatedLow,
           aggregatedXtzVolume,
         });
       }
@@ -363,9 +412,18 @@ function getAggregatedPriceAndVolume(quotes, type) {
       if (quote) {
         const weightedCloseSum =
           quote.close_xtz * quote.volume_quote_xtz + prevAggCloseSum;
+        const weightedOpenSum =
+          quote.open_xtz * quote.volume_quote_xtz + prevAggOpenSum;
+        const weightedHighSum =
+          quote.high_xtz * quote.volume_quote_xtz + prevAggHighSum;
+        const weightedLowSum =
+          quote.low_xtz * quote.volume_quote_xtz + prevAggLowSum;
         const aggregatedXtzVolume = quote.volume_quote_xtz + prevAggVol;
 
         quote.aggregatedClose = weightedCloseSum / aggregatedXtzVolume;
+        quote.aggregatedOpen = weightedOpenSum / aggregatedXtzVolume;
+        quote.aggregatedHigh = weightedHighSum / aggregatedXtzVolume;
+        quote.aggregatedLow = weightedLowSum / aggregatedXtzVolume;
         quote.aggregatedXtzVolume = quote.volume_quote_xtz;
         aggregatedQuotes.push(quote);
       }
@@ -447,6 +505,7 @@ export default {
     ];
 
     // const aggregatedQuotes1h = getAggregatedPriceAndVolume(quotes1h);
+
     const aggregatedQuotes1h = getAggregatedPriceAndVolume(quotes1h);
     const aggregatedQuotes1d = getAggregatedPriceAndVolume(quotes1d);
     const aggregatedQuotes1w = getAggregatedPriceAndVolume(quotes1w);
