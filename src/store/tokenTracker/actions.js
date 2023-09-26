@@ -19,14 +19,10 @@ export default {
   async _setTokenTracked({ commit, state, dispatch }, payload) {
     !payload?.softLoad && commit("updateLoading", true);
     try {
-      const [
-        xtzUsd,
-        xtzUsdHistory,
-        tokenFeed
-      ] = await Promise.all([
+      const [xtzUsd, xtzUsdHistory, tokenFeed] = await Promise.all([
         tzkt.getXtzUsdPrice(),
         tzkt.getXtzUsdHistory(),
-        tokenTracker.getTokenFeed()
+        tokenTracker.getTokenFeed(),
       ]);
 
       commit("updateXtzUsdPrice", xtzUsd);
@@ -66,7 +62,11 @@ export default {
     for (const [i, token] of Object.entries(tokens)) {
       tokens[i].isRanked = token.tokenTvl >= 5000 ? 1 : 0;
     }
-    const orderedTokens = _.orderBy(tokens, ["isRanked", "mktCap"], ["desc", "desc"]);
+    const orderedTokens = _.orderBy(
+      tokens,
+      ["isRanked", "mktCap"],
+      ["desc", "desc"]
+    );
     const tokenList = [];
     const lsData = JSON.parse(localStorage.getItem(state.LS_FAVORITES_KEY));
     for (let index = 0; index < orderedTokens.length; index++) {
@@ -134,20 +134,32 @@ export default {
     // if (token.standard === "fa12") {
     //   token.spicyId = token.spicyId.replace("0", "null");
     // }
+
     try {
+      // Load the 1d price data first
+      const volumeAndPrice1Day = await tokenTracker.getAllQuotes1d(
+        token.tokenAddress,
+        token.tokenId
+      );
+
+      // Assign the 1d price data to chartData
+      chartData.volumeAndPrice1Day = volumeAndPrice1Day;
+      chartData.allVolumeAndPrice = volumeAndPrice1Day;
+      // Set chart loading to false as soon as has 1d price data
+      commit("updateChartDataLoading", false);
+      // Commit the updated chartData
+      commit("updateChartData", chartData);
+      // Continue loading the other data in the background
       const [
         {
           quotes1h: volumeAndPrice1Hour,
           quotes4h: volumeAndPrice4Hour,
-          quotes1d: volumeAndPrice1Day,
           quotes1w: volumeAndPrice7Day,
           quotes1mo: volumeAndPrice30Day,
         },
-        allVolumeAndPrice,
         // { tvl1Day, tvl7Day, tvl30Day, tvlAll },
       ] = await Promise.all([
         tokenTracker.getPriceAndVolumeQuotes(token.tokenAddress, token.tokenId),
-        tokenTracker.getAllQuotes1d(token.tokenAddress, token.tokenId),
         // tokenTracker.getChartTvl(
         //   token.spicyId,
         //   token.id,
@@ -156,11 +168,10 @@ export default {
         //   xtzUsdHistory
         // ),
       ]);
-      
-      chartData.allVolumeAndPrice = allVolumeAndPrice;
+
+      // Assign the other data to chartData
       chartData.volumeAndPrice1Hour = volumeAndPrice1Hour;
       chartData.volumeAndPrice4Hour = volumeAndPrice4Hour;
-      chartData.volumeAndPrice1Day = volumeAndPrice1Day;
       chartData.volumeAndPrice7Day = volumeAndPrice7Day;
       chartData.volumeAndPrice30Day = volumeAndPrice30Day;
       chartData.tvl1Day = [];
@@ -168,6 +179,7 @@ export default {
       chartData.tvl30Day = [];
       chartData.tvlAll = [];
 
+      // Commit the updated chartData
       commit("updateChartData", chartData);
     } catch (error) {
       console.log(error);
