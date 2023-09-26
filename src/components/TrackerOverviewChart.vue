@@ -592,7 +592,7 @@ export default {
             param.point.y < 0 ||
             param.point.y > container.clientHeight
           ) {
-            toolTip.style.display = "block";
+            toolTip.style.display = "none";
           } else {
             const dateStr = this.formatDate(param.time);
             toolTip.style.display = "block";
