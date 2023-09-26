@@ -334,10 +334,24 @@ function getAggregatedPriceAndVolume(quotes, type) {
   let prevAggHighSum = 0;
   let prevAggLowSum = 0;
   let prevAggVol = 0;
-  // Exclude elment having no close price in xtz and volume quote is NaN
-  let filteredQuotes = quotes.filter(
-    (item) => !isNaN(item.close_xtz) && !isNaN(item.volume_quote_xtz)
-  );
+
+  // Exclude elment having invalid close, open, high, low price in xtz and volume quote
+  let filteredQuotes = quotes.filter((quote) => {
+    const hasValidClosePrice = !isNaN(quote.close_xtz);
+    const hasValidOpenPrice = !isNaN(quote.open_xtz);
+    const hasValidHighPrice = !isNaN(quote.high_xtz);
+    const hasValidLowPrice = !isNaN(quote.low_xtz);
+    const hasValidVolumeQuote = !isNaN(quote.volume_quote_xtz);
+
+    return (
+      hasValidClosePrice &&
+      hasValidOpenPrice &&
+      hasValidHighPrice &&
+      hasValidLowPrice &&
+      hasValidVolumeQuote
+    );
+  });
+  
   while (filteredQuotes.length > 0) {
     // Get first element of quotes, remove the quote
     // and find all quote with same time
