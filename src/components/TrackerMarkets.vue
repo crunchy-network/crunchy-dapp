@@ -123,7 +123,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["getTokenOverview"]),
+    ...mapGetters(["getTokenOverview", "getTheme"]),
     sortedExchanges() {
       return (
         _.orderBy(this.getTokenOverview.exchanges, "tokenTvl", "desc") || []
@@ -158,7 +158,9 @@ export default {
           return require("../assets/dex-icons/QuipuswapUpdate.png");
 
         case "youves":
-          return require("../assets/dex-icons/YouvesUpdate.png");
+          return this.getTheme === "light"
+            ? require("../assets/dex-icons/YouvesLight.svg")
+            : require("../assets/dex-icons/YouvesDark.svg");
 
         case "vortex":
           return require("../assets/dex-icons/Vortex.svg");
@@ -174,7 +176,7 @@ export default {
         case "flame":
           return require("../assets/dex-icons/Flame.png");
         case "wtz":
-          return require("../assets/dex-icons/Wtz.png");
+          return require("../assets/dex-icons/WtzUpdate.png");
         case "ctez":
           return require("../assets/dex-icons/Ctez.png");
         default:
