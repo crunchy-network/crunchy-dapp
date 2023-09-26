@@ -22,7 +22,7 @@ export default {
     },
     legendTab: {
       type: String,
-      default: "volume",
+      default: "price",
     },
     setLoading: {
       type: Function,
@@ -606,7 +606,7 @@ export default {
 
             if (this.legendTab === "price") {
               // Set tooltip height
-              toolTip.style.height = "200px";
+              toolTip.style.height = "140px";
               // Calculate price and precision for the "price" legend tab
               priceObj = param.seriesPrices.get(candlestickSeries);
               let { open, high, low, close } = priceObj;
@@ -624,16 +624,16 @@ export default {
               );
               precision = this.handlePrecision(price).precision;
               contentHtml += `
-                <div>Open: ${this.getShowUsd ? "$" : ""}${
+                <div style="font-size: 14px;">Open: ${this.getShowUsd ? "$" : ""}${
                 this.formatNumShorthand(open, precision).value
               }${this.formatNumShorthand(open, precision).suffix}${this.getShowUsd ? "" : "ꜩ"}</div>
-                <div>High: ${this.getShowUsd ? "$" : ""}${
+                <div style="font-size: 14px;">High: ${this.getShowUsd ? "$" : ""}${
                 this.formatNumShorthand(high, precision).value
               }${this.formatNumShorthand(high, precision).suffix}${this.getShowUsd ? "" : "ꜩ"}</div>
-                <div>Low: ${this.getShowUsd ? "$" : ""}${
+                <div style="font-size: 14px;">Low: ${this.getShowUsd ? "$" : ""}${
                 this.formatNumShorthand(low, precision).value
               }${this.formatNumShorthand(low, precision).suffix}${this.getShowUsd ? "" : "ꜩ"}</div>
-                <div>Close: ${this.getShowUsd ? "$" : ""}${
+                <div style="font-size: 14px;">Close: ${this.getShowUsd ? "$" : ""}${
                 this.formatNumShorthand(close, precision).value
               }${this.formatNumShorthand(close, precision).suffix}${this.getShowUsd ? "" : "ꜩ"}</div>`;
             } 
