@@ -148,17 +148,17 @@ export default {
         case "plenty":
         case "plenty_tez":
         case "plenty_ctez":
-          return require("../assets/dex-icons/PlentyNetwork.svg");
+          return require("../assets/dex-icons/Plenty.png");
 
         case "quipuswap":
         case "quipuswap_v2":
         case "quipuswap_v3":
         case "quipuswap_stable":
         case "quipuswap_token2token":
-          return require("../assets/dex-icons/QuipuSwap.png");
+          return require("../assets/dex-icons/QuipuswapUpdate.png");
 
         case "youves":
-          return require("../assets/dex-icons/Youves.svg");
+          return require("../assets/dex-icons/YouvesUpdate.png");
 
         case "vortex":
           return require("../assets/dex-icons/Vortex.svg");
