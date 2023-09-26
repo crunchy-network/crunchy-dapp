@@ -810,6 +810,7 @@ export default {
     },
 
     queryPoolTokens(keywords, cb) {
+      console.log(this.farms.lpTokens)
       const matches = [];
       for (let t of this.farms.priceFeed) {
         if (
@@ -817,48 +818,54 @@ export default {
             t?.name?.toLowerCase().includes(keywords.toLowerCase())) ||
           (Object.prototype.hasOwnProperty.call(t, "symbol") &&
             t?.symbol?.toLowerCase().includes(keywords.toLowerCase())) ||
-          (Object.prototype.hasOwnProperty.call(t, "token_address") &&
-            t.token_address.toLowerCase().includes(keywords.toLowerCase()))
+          (Object.prototype.hasOwnProperty.call(t, "tokenAddress") &&
+            t.tokenAddress.toLowerCase().includes(keywords.toLowerCase()))
         ) {
                     
           t = farmUtils.overrideMetadata(t);
-          if (!Object.prototype.hasOwnProperty.call(t, "thumbnail_uri") || t.thumbnail_uri === null || !t.thumbnail_uri) {
-            t.thumbnail_uri =
+          if (!Object.prototype.hasOwnProperty.call(t, "thumbnailUri") || t.thumbnailUri === null || !t.thumbnailUri) {
+            t.thumbnailUri =
               "https://static.thenounproject.com/png/796573-200.png";
           }
-          t.thumbnailUri = ipfs.transformUri(t.thumbnail_uri);
-          if(t.is_lp) {
-            const tokenPools = this.farms.tokenPools.filter((el) => el.lp_token_address === t.token_address && el.lp_token_id === t.token_id)
-            const thumbnailUris = tokenPools.map((el) => el?.token?.thumbnail_uri !== null ? ipfs.transformUri(el.token.thumbnail_uri) : el.token.thumbnail_uri);
-            matches.push({
-              value: t.name || t.symbol,
-              type: t.token_type,
-              address: t.token_address,
-              tokenId: t.token_id || 0,
-              isLp: true,
-              thumbnailUri: thumbnailUris,
-            });
-          } else {
-            matches.push({
-              value: t.name || t.symbol,
-              type: t.token_type,
-              address: t.token_address,
-              tokenId: t.token_id || 0,
-              isLp: false,
-              thumbnailUri: t.thumbnailUri,
-            });
-          }
-          // matches.push({
-          //   value: "XTZ/" + (t.symbol || t.name) + " LP",
-          //   type: t.type,
-          //   address: t.address,
-          //   tokenId: 0,
-          //   isLp: true,
-          //   thumbnailUri: t.thumbnail_uri,
-          // });
+          t.thumbnailUri = ipfs.transformUri(t.thumbnailUri);
+          matches.push({
+            value: t.name || t.symbol,
+            type: t.tokenType,
+            address: t.tokenAddress,
+            tokenId: t.tokenId || 0,
+            isLp: false,
+            thumbnailUri: t.thumbnailUri,
+          });
         }
       }
-
+      for (let t of this.farms.lpTokens) {
+        if (
+          (Object.prototype.hasOwnProperty.call(t, "name") &&
+            t?.name?.toLowerCase().includes(keywords.toLowerCase())) ||
+          (Object.prototype.hasOwnProperty.call(t, "symbol") &&
+            t?.symbol?.toLowerCase().includes(keywords.toLowerCase())) ||
+          (Object.prototype.hasOwnProperty.call(t, "tokenAddress") &&
+            t.tokenAddress.toLowerCase().includes(keywords.toLowerCase()))
+        ) {
+                    
+          t = farmUtils.overrideMetadata(t);
+          if (!Object.prototype.hasOwnProperty.call(t, "thumbnailUri") || t.thumbnailUri === null || !t.thumbnailUri) {
+            t.thumbnailUri =
+              "https://static.thenounproject.com/png/796573-200.png";
+          }
+          t.thumbnailUri = ipfs.transformUri(t.thumbnailUri);
+          const tokenPools = this.farms.tokenPools.filter((el) => el.lpToken?.tokenAddress === t.tokenAddress && el.lpToken?.tokenId === t.tokenId)
+          const thumbnailUris = tokenPools[0]?.tokens.map((el) => el?.token?.thumbnailUri !== null ? ipfs.transformUri(el.token.thumbnailUri) : el.token.thumbnailUri);
+          matches.push({
+            value: t.name || t.symbol,
+            type: t.tokenType,
+            address: t.tokenAddress,
+            tokenId: t.tokenId || 0,
+            isLp: true,
+            thumbnailUri: thumbnailUris,
+          });
+        }
+      }
       // liquidity baking
       if (
         "liquidity baking".includes(keywords.toLowerCase()) ||
@@ -895,22 +902,23 @@ export default {
             t?.name?.toLowerCase().includes(keywords.toLowerCase())) ||
           (Object.prototype.hasOwnProperty.call(t, "symbol") &&
             t?.symbol?.toLowerCase().includes(keywords.toLowerCase())) ||
-          (Object.prototype.hasOwnProperty.call(t, "token_address") &&
-            t.token_address.toLowerCase().includes(keywords.toLowerCase()))
+          (Object.prototype.hasOwnProperty.call(t, "tokenAddress") &&
+            t.tokenAddress.toLowerCase().includes(keywords.toLowerCase()))
         ) {
+                    
           t = farmUtils.overrideMetadata(t);
-          if (!Object.prototype.hasOwnProperty.call(t, "thumbnail_uri") || t.thumbnail_uri === null || !t.thumbnail_uri) {
-            t.thumbnail_uri =
+          if (!Object.prototype.hasOwnProperty.call(t, "thumbnailUri") || t.thumbnailUri === null || !t.thumbnailUri) {
+            t.thumbnailUri =
               "https://static.thenounproject.com/png/796573-200.png";
           }
-          t.thumbnailUri = ipfs.transformUri(t.thumbnail_uri);
+          t.thumbnailUri = ipfs.transformUri(t.thumbnailUri);
           matches.push({
             value: t.name || t.symbol,
-            type: t.token_type,
-            address: t.token_address,
-            tokenId: t.token_id || 0,
+            type: t.tokenType,
+            address: t.tokenAddress,
+            tokenId: t.tokenId || 0,
+            isLp: false,
             thumbnailUri: t.thumbnailUri,
-            decimals: t.decimals || 0,
           });
         }
       }

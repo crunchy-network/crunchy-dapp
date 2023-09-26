@@ -29,8 +29,8 @@ export default {
       const currentPrices = {};
       for (const token of feed) {
         const tokenId =
-          token.token_type === "fa1.2" ? "0" : token.token_id.toString();
-        currentPrices[`${token.token_address}_${tokenId}`] = token.currentPrice;
+          token.tokenType === "fa1.2" ? "0" : token.tokenId.toString();
+        currentPrices[`${token.tokenAddress}_${tokenId}`] = token.currentPrice;
       }
 
       commit("updatePriceFeed", feed);
@@ -39,12 +39,8 @@ export default {
   },
 
   async updateTokenPools({ commit }) {
-    let allTokenPools = [];
     try {
-      allTokenPools = await dexIndexer.getAllTokenPools();
-
-      // Flatten the array of arrays into a single array of token pools
-      allTokenPools = allTokenPools.flat();
+      const allTokenPools = await dexIndexer.getAllTokenPools();
 
       // Call commit with the updated allTokenPools array
       commit("updateTokenPools", allTokenPools);
@@ -101,17 +97,15 @@ export default {
           }
         );
 
-        let tokenMeta = dexIndexer.findTokenInPriceFeed(
-          l.token,
-          state.priceFeed
-        );
+        const allTokens = state.priceFeed.concat(state.lpTokens);
+        let tokenMeta = dexIndexer.findTokenInPriceFeed(l.token, allTokens);
         if (tokenMeta) {
           const tokenPools = state.tokenPools.filter(
             (el) =>
-              el.lp_token_address === tokenMeta.token_address &&
-              el.lp_token_id === tokenMeta.token_id
-          );
-          const dexType = tokenPools[0]?.dex?.dex_type;
+              el?.lpToken?.tokenAddress === tokenMeta.tokenAddress &&
+              el?.lpToken?.tokenId === tokenMeta.tokenId
+          )[0];
+          const dexType = tokenPools?.dex?.type;
 
           let isQuipuLp = false;
           let isQuipuV2Lp = false;
@@ -167,19 +161,19 @@ export default {
             isPlentyTezLp ||
             isPlentyStableLp
           ) {
-            tokenPools[0].token = farmUtils.overrideMetadata(
-              tokenPools[0].token
+            tokenPools.tokens[0].token = farmUtils.overrideMetadata(
+              tokenPools.tokens[0].token
             );
-            tokenPools[1].token = farmUtils.overrideMetadata(
-              tokenPools[1].token
+            tokenPools.tokens[1].token = farmUtils.overrideMetadata(
+              tokenPools.tokens[1].token
             );
-            tokenPools[0].token.thumbnailUri =
-              tokenPools[0].token.thumbnailUri !== null
-                ? ipfs.transformUri(tokenPools[0].token.thumbnailUri)
+            tokenPools.tokens[0].token.thumbnailUri =
+              tokenPools.tokens[0].token.thumbnailUri !== null
+                ? ipfs.transformUri(tokenPools.tokens[0].token.thumbnailUri)
                 : null;
-            tokenPools[1].token.thumbnailUri =
-              tokenPools[1].token.thumbnailUri !== null
-                ? ipfs.transformUri(tokenPools[1].token.thumbnailUri)
+            tokenPools.tokens[1].token.thumbnailUri =
+              tokenPools.tokens[1].token.thumbnailUri !== null
+                ? ipfs.transformUri(tokenPools.tokens[1].token.thumbnailUri)
                 : null;
           }
 
@@ -192,23 +186,28 @@ export default {
             isPlentyLp: false,
             isSpicyLp: false,
             decimals: 6,
-            name: tokenPools[0].token.name + "/" + tokenPools[1].token.name,
+            name:
+              tokenPools.tokens[0].token.name +
+              "/" +
+              tokenPools.tokens[1].token.name,
             symbol:
-              tokenPools[0].token.symbol + "/" + tokenPools[1].token.symbol,
-            token1: tokenPools[0].token,
-            token1Pool: tokenPools[0].reserves,
-            token2: tokenPools[1].token,
-            token2Pool: tokenPools[1].reserves,
+              tokenPools.tokens[0].token.symbol +
+              "/" +
+              tokenPools.tokens[1].token.symbol,
+            token1: tokenPools.tokens[0].token,
+            token1Pool: tokenPools.tokens[0].reserves,
+            token2: tokenPools.tokens[1].token,
+            token2Pool: tokenPools.tokens[1].reserves,
           };
 
           let tezPool = 0;
-          const totalSupply = tokenPools[0]?.dex?.params.find(
+          const totalSupply = tokenPools.tokens[0]?.dex?.params.find(
             (el) => el.name === "qptTokenSupply"
           )?.value;
 
           switch (true) {
             case isQuipuLp:
-              tezPool = tokenPools[0]?.dex?.params.find(
+              tezPool = tokenPools.tokens[0]?.dex?.params.find(
                 (el) => el.name === "tezPool"
               )?.value;
 
@@ -411,7 +410,7 @@ export default {
             add_operator: {
               owner: rootState.wallet.pkh,
               operator: state.contract,
-              token_id: 0,
+              tokenId: 0,
             },
           },
         ])
@@ -423,7 +422,7 @@ export default {
                 add_operator: {
                   owner: rootState.wallet.pkh,
                   operator: state.contract,
-                  token_id: params.lpToken.tokenId,
+                  tokenId: params.lpToken.tokenId,
                 },
               },
             ])
@@ -454,7 +453,7 @@ export default {
                 remove_operator: {
                   owner: rootState.wallet.pkh,
                   operator: state.contract,
-                  token_id: params.lpToken.tokenId,
+                  tokenId: params.lpToken.tokenId,
                 },
               },
             ])
@@ -466,7 +465,7 @@ export default {
             remove_operator: {
               owner: rootState.wallet.pkh,
               operator: state.contract,
-              token_id: 0,
+              tokenId: 0,
             },
           },
         ])

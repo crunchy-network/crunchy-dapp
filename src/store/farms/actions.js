@@ -17,7 +17,6 @@ let updateXtzUsdVwapPromise;
 let updateCurrentPricesPromise;
 let updateFarmStoragePromise;
 
-
 const tokenMetadataCache = {};
 const getFarmTokenMetadata = async (address, tokenId) => {
   const cacheKey = `${address}:${tokenId}`;
@@ -108,7 +107,7 @@ export default {
         updateCurrentPricesPromise = dispatch("_updateCurrentPrices");
       }, 60 * 1000);
     });
-    
+
     let allTokenPools = [];
     try {
       allTokenPools = await dexIndexer.getAllTokenPools();
@@ -302,19 +301,20 @@ export default {
     if (!farm.loading) {
       commit("updateFarmLoading", { farmId, loading: true });
 
+      const allTokens = state.priceFeed.concat(state.lpTokens);
       let poolTokenMeta = dexIndexer.findTokenInPriceFeed(
         farm.poolToken,
-        state.priceFeed
+        allTokens
       );
 
       if (poolTokenMeta) {
         const tokenPools = state.tokenPools.filter(
           (el) =>
-            el.lp_token_address === poolTokenMeta.token_address &&
-            el.lp_token_id === poolTokenMeta.token_id
-        );
+            el?.lpToken?.tokenAddress === poolTokenMeta.tokenAddress &&
+            el?.lpToken?.tokenId === poolTokenMeta.tokenId
+        )[0];
 
-        const dexType = tokenPools[0]?.dex?.dex_type;
+        const dexType = tokenPools?.dex.type;
 
         let isQuipuLp = false;
         let isQuipuV2Lp = false;
@@ -370,15 +370,19 @@ export default {
           isPlentyTezLp ||
           isPlentyStableLp
         ) {
-          tokenPools[0].token = farmUtils.overrideMetadata(tokenPools[0].token);
-          tokenPools[1].token = farmUtils.overrideMetadata(tokenPools[1].token);
-          tokenPools[0].token.thumbnailUri =
-            tokenPools[0].token.thumbnailUri !== null
-              ? ipfs.transformUri(tokenPools[0].token.thumbnailUri)
+          tokenPools.tokens[0].token = farmUtils.overrideMetadata(
+            tokenPools.tokens[0].token
+          );
+          tokenPools.tokens[1].token = farmUtils.overrideMetadata(
+            tokenPools.tokens[1].token
+          );
+          tokenPools.tokens[0].token.thumbnailUri =
+            tokenPools.tokens[0].token.thumbnailUri !== null
+              ? ipfs.transformUri(tokenPools.tokens[0].token.thumbnailUri)
               : null;
-          tokenPools[1].token.thumbnailUri =
-            tokenPools[1].token.thumbnailUri !== null
-              ? ipfs.transformUri(tokenPools[1].token.thumbnailUri)
+          tokenPools.tokens[1].token.thumbnailUri =
+            tokenPools.tokens[1].token.thumbnailUri !== null
+              ? ipfs.transformUri(tokenPools.tokens[1].token.thumbnailUri)
               : null;
         }
         let rewardTokenMeta = dexIndexer.findTokenInPriceFeed(
@@ -413,18 +417,18 @@ export default {
           );
         }
 
-        const lpToken = state.priceFeed.filter(
+        const lpToken = state.lpTokens.filter(
           (el) =>
-            el.token_address === poolTokenMeta.token_address &&
-            el.token_id === poolTokenMeta.token_id
+            el.tokenAddress === poolTokenMeta.tokenAddress &&
+            el.tokenId === poolTokenMeta.tokenId
         );
-        const totalSupply = lpToken.length ? lpToken[0].total_supply : 0;
+        const totalSupply = lpToken.length ? lpToken[0].totalSupply : 0;
 
         if (isQuipuLp) {
           const tezPool =
-            tokenPools[0].token.token_address === "tez"
-              ? tokenPools[0].reserves
-              : tokenPools[1].reserves;
+            tokenPools.tokens[0].token.tokenAddress === "tez"
+              ? tokenPools.tokens[0].reserves
+              : tokenPools.tokens[1].reserves;
           commit(
             "updateFarm",
             merge(farm, {
@@ -442,13 +446,18 @@ export default {
                 realTokenAddress: poolTokenMeta.tokenAddress,
                 realTokenId: poolTokenMeta.tokenId,
 
-                name: tokenPools[0].token.name + "/" + tokenPools[1].token.name,
+                name:
+                  tokenPools.tokens[0].token.name +
+                  "/" +
+                  tokenPools.tokens[1].token.name,
                 symbol:
-                  tokenPools[0].token.symbol + "/" + tokenPools[1].token.symbol,
-                token1: tokenPools[0].token,
-                token1Pool: tokenPools[0].reserves,
-                token2: tokenPools[1].token,
-                token2Pool: tokenPools[1].reserves,
+                  tokenPools.tokens[0].token.symbol +
+                  "/" +
+                  tokenPools.tokens[1].token.symbol,
+                token1: tokenPools.tokens[0].token,
+                token1Pool: tokenPools.tokens[0].reserves,
+                token2: tokenPools.tokens[1].token,
+                token2Pool: tokenPools.tokens[1].reserves,
                 totalSupply: totalSupply,
                 tezPool: tezPool,
               },
@@ -487,13 +496,18 @@ export default {
                 isPlentyLp: false,
                 isSpicyLp: false,
                 decimals: 6,
-                name: tokenPools[0].token.name + "/" + tokenPools[1].token.name,
+                name:
+                  tokenPools.tokens[0].token.name +
+                  "/" +
+                  tokenPools.tokens[1].token.name,
                 symbol:
-                  tokenPools[0].token.symbol + "/" + tokenPools[1].token.symbol,
-                token1: tokenPools[0].token,
-                token1Pool: tokenPools[0].reserves,
-                token2: tokenPools[1].token,
-                token2Pool: tokenPools[1].reserves,
+                  tokenPools.tokens[0].token.symbol +
+                  "/" +
+                  tokenPools.tokens[1].token.symbol,
+                token1: tokenPools.tokens[0].token,
+                token1Pool: tokenPools.tokens[0].reserves,
+                token2: tokenPools.tokens[1].token,
+                token2Pool: tokenPools.tokens[1].reserves,
                 totalSupply: totalSupply,
                 // totalSupply: pairs.data[0].total_supply,
               },
@@ -532,13 +546,18 @@ export default {
                 isPlentyLp: false,
                 isSpicyLp: false,
                 decimals: 6,
-                name: tokenPools[0].token.name + "/" + tokenPools[1].token.name,
+                name:
+                  tokenPools.tokens[0].token.name +
+                  "/" +
+                  tokenPools.tokens[1].token.name,
                 symbol:
-                  tokenPools[0].token.symbol + "/" + tokenPools[1].token.symbol,
-                token1: tokenPools[0].token,
-                token1Pool: tokenPools[0].reserves,
-                token2: tokenPools[1].token,
-                token2Pool: tokenPools[1].reserves,
+                  tokenPools.tokens[0].token.symbol +
+                  "/" +
+                  tokenPools.tokens[1].token.symbol,
+                token1: tokenPools.tokens[0].token,
+                token1Pool: tokenPools.tokens[0].reserves,
+                token2: tokenPools.tokens[1].token,
+                token2Pool: tokenPools.tokens[1].reserves,
                 totalSupply: totalSupply,
                 // totalSupply: pairs.data[0].total_supply,
               },
@@ -577,13 +596,18 @@ export default {
                 isPlentyLp: false,
                 isSpicyLp: false,
                 decimals: 6,
-                name: tokenPools[0].token.name + "/" + tokenPools[1].token.name,
+                name:
+                  tokenPools.tokens[0].token.name +
+                  "/" +
+                  tokenPools.tokens[1].token.name,
                 symbol:
-                  tokenPools[0].token.symbol + "/" + tokenPools[1].token.symbol,
-                token1: tokenPools[0].token,
-                token1Pool: tokenPools[0].reserves,
-                token2: tokenPools[1].token,
-                token2Pool: tokenPools[1].reserves,
+                  tokenPools.tokens[0].token.symbol +
+                  "/" +
+                  tokenPools.tokens[1].token.symbol,
+                token1: tokenPools.tokens[0].token,
+                token1Pool: tokenPools.tokens[0].reserves,
+                token2: tokenPools.tokens[1].token,
+                token2Pool: tokenPools.tokens[1].reserves,
                 totalSupply: totalSupply,
                 // totalSupply: pairs.data[0].total_supply,
               },
@@ -619,13 +643,18 @@ export default {
                 isPlentyLp: false,
                 isSpicyLp: isSpicyLp,
                 decimals: 18,
-                name: tokenPools[0].token.name + "/" + tokenPools[1].token.name,
+                name:
+                  tokenPools.tokens[0].token.name +
+                  "/" +
+                  tokenPools.tokens[1].token.name,
                 symbol:
-                  tokenPools[0].token.symbol + "/" + tokenPools[1].token.symbol,
-                token1: tokenPools[0].token,
-                token1Pool: tokenPools[0].reserves,
-                token2: tokenPools[1].token,
-                token2Pool: tokenPools[1].reserves,
+                  tokenPools.tokens[0].token.symbol +
+                  "/" +
+                  tokenPools.tokens[1].token.symbol,
+                token1: tokenPools.tokens[0].token,
+                token1Pool: tokenPools.tokens[0].reserves,
+                token2: tokenPools.tokens[1].token,
+                token2Pool: tokenPools.tokens[1].reserves,
                 totalSupply: totalSupply,
                 // totalSupply: pairs.data[0],
               },
@@ -657,13 +686,18 @@ export default {
                 isPlentyLp: isPlentyLp,
                 isSpicyLp: false,
                 decimals: 18,
-                name: tokenPools[0].token.name + "/" + tokenPools[1].token.name,
+                name:
+                  tokenPools.tokens[0].token.name +
+                  "/" +
+                  tokenPools.tokens[1].token.name,
                 symbol:
-                  tokenPools[0].token.symbol + "/" + tokenPools[1].token.symbol,
-                token1: tokenPools[0].token,
-                token1Pool: tokenPools[0].reserves,
-                token2: tokenPools[1].token,
-                token2Pool: tokenPools[1].reserves,
+                  tokenPools.tokens[0].token.symbol +
+                  "/" +
+                  tokenPools.tokens[1].token.symbol,
+                token1: tokenPools.tokens[0].token,
+                token1Pool: tokenPools.tokens[0].reserves,
+                token2: tokenPools.tokens[1].token,
+                token2Pool: tokenPools.tokens[1].reserves,
                 totalSupply: totalSupply,
                 // totalSupply: storage.totalSupply,
               },
@@ -695,13 +729,18 @@ export default {
                 isPlentyLp: isPlentyLp,
                 isSpicyLp: false,
                 decimals: 18,
-                name: tokenPools[0].token.name + "/" + tokenPools[1].token.name,
+                name:
+                  tokenPools.tokens[0].token.name +
+                  "/" +
+                  tokenPools.tokens[1].token.name,
                 symbol:
-                  tokenPools[0].token.symbol + "/" + tokenPools[1].token.symbol,
-                token1: tokenPools[0].token,
-                token1Pool: tokenPools[0].reserves,
-                token2: tokenPools[1].token,
-                token2Pool: tokenPools[1].reserves,
+                  tokenPools.tokens[0].token.symbol +
+                  "/" +
+                  tokenPools.tokens[1].token.symbol,
+                token1: tokenPools.tokens[0].token,
+                token1Pool: tokenPools.tokens[0].reserves,
+                token2: tokenPools.tokens[1].token,
+                token2Pool: tokenPools.tokens[1].reserves,
                 totalSupply: totalSupply,
                 // totalSupply: storage.totalSupply,
               },
@@ -733,13 +772,18 @@ export default {
                 isPlentyLp: isPlentyLp,
                 isSpicyLp: false,
                 decimals: 6,
-                name: tokenPools[0].token.name + "/" + tokenPools[1].token.name,
+                name:
+                  tokenPools.tokens[0].token.name +
+                  "/" +
+                  tokenPools.tokens[1].token.name,
                 symbol:
-                  tokenPools[0].token.symbol + "/" + tokenPools[1].token.symbol,
-                token1: tokenPools[0].token,
-                token1Pool: tokenPools[0].reserves,
-                token2: tokenPools[1].token,
-                token2Pool: tokenPools[1].reserves,
+                  tokenPools.tokens[0].token.symbol +
+                  "/" +
+                  tokenPools.tokens[1].token.symbol,
+                token1: tokenPools.tokens[0].token,
+                token1Pool: tokenPools.tokens[0].reserves,
+                token2: tokenPools.tokens[1].token,
+                token2Pool: tokenPools.tokens[1].reserves,
                 totalSupply: totalSupply,
                 // totalSupply: storage.lqtTotal,
               },
@@ -771,13 +815,18 @@ export default {
                 isPlentyLp: isPlentyLp,
                 isSpicyLp: false,
                 decimals: 18,
-                name: tokenPools[0].token.name + "/" + tokenPools[1].token.name,
+                name:
+                  tokenPools.tokens[0].token.name +
+                  "/" +
+                  tokenPools.tokens[1].token.name,
                 symbol:
-                  tokenPools[0].token.symbol + "/" + tokenPools[1].token.symbol,
-                token1: tokenPools[0].token,
-                token1Pool: tokenPools[0].reserves,
-                token2: tokenPools[1].token,
-                token2Pool: tokenPools[1].reserves,
+                  tokenPools.tokens[0].token.symbol +
+                  "/" +
+                  tokenPools.tokens[1].token.symbol,
+                token1: tokenPools.tokens[0].token,
+                token1Pool: tokenPools.tokens[0].reserves,
+                token2: tokenPools.tokens[1].token,
+                token2Pool: tokenPools.tokens[1].reserves,
                 totalSupply: totalSupply,
                 // totalSupply: storage.lqtTotal,
               },
@@ -945,7 +994,7 @@ export default {
                   farm.rewardToken.address,
                   farm.rewardToken.tokenId
                 ),
-                tzkt.getContractStorage(farm.poolToken.address)
+                tzkt.getContractStorage(farm.poolToken.address),
               ]).then((values) => {
                 commit(
                   "updateFarm",
@@ -970,9 +1019,9 @@ export default {
                       tezPool: BigNumber(values[2].data.storage.tez_pool).div(
                         BigNumber(10).pow(6)
                       ),
-                      totalSupply: BigNumber(values[2].data.storage.total_supply).div(
-                        BigNumber(10).pow(6)
-                      ),
+                      totalSupply: BigNumber(
+                        values[2].data.storage.total_supply
+                      ).div(BigNumber(10).pow(6)),
                     },
                     rewardToken: values[1],
                     rewardSupply: BigNumber(farm.rewardSupply)
@@ -1355,19 +1404,19 @@ export default {
           await dispatch("loadWtzData");
         }
 
-        if(rootState.wtz.swapRatio.toFixed() !== "1") {
+        if (rootState.wtz.swapRatio.toFixed() !== "1") {
           const xtzPerLp = BigNumber(farm.poolToken.token1Pool)
-          .div(BigNumber(10).pow(farm.poolToken.token1.decimals))
-          .times(rootState.wtz.swapRatioPrecision)
-          .div(rootState.wtz.swapRatio)
-          .times(1 - 0.001)
-          .div(farm.poolToken.totalSupply)
-          .toNumber();
+            .div(BigNumber(10).pow(farm.poolToken.token1.decimals))
+            .times(rootState.wtz.swapRatioPrecision)
+            .div(rootState.wtz.swapRatio)
+            .times(1 - 0.001)
+            .div(farm.poolToken.totalSupply)
+            .toNumber();
 
-        tvlTez = BigNumber(farmStorage.poolBalance)
-          .times(xtzPerLp)
-          .times(2)
-          .toNumber();
+          tvlTez = BigNumber(farmStorage.poolBalance)
+            .times(xtzPerLp)
+            .times(2)
+            .toNumber();
         }
       } else {
         if (
@@ -1568,19 +1617,19 @@ export default {
         if (!rootState.wtz.totalTvlTez) {
           await dispatch("loadWtzData");
         }
-        if(rootState.wtz.swapRatio.toFixed() !== "1") {
+        if (rootState.wtz.swapRatio.toFixed() !== "1") {
           const xtzPerLp = BigNumber(farm.poolToken.token1Pool)
-          .div(BigNumber(10).pow(farm.poolToken.token1.decimals))
-          .times(rootState.wtz.swapRatioPrecision)
-          .div(rootState.wtz.swapRatio)
-          .times(1 - 0.001)
-          .div(farm.poolToken.totalSupply)
-          .toNumber();
+            .div(BigNumber(10).pow(farm.poolToken.token1.decimals))
+            .times(rootState.wtz.swapRatioPrecision)
+            .div(rootState.wtz.swapRatio)
+            .times(1 - 0.001)
+            .div(farm.poolToken.totalSupply)
+            .toNumber();
 
-        tvlTez = BigNumber(farmStorage.poolBalance)
-          .times(xtzPerLp)
-          .times(2)
-          .toNumber();
+          tvlTez = BigNumber(farmStorage.poolBalance)
+            .times(xtzPerLp)
+            .times(2)
+            .toNumber();
         }
       } else {
         if (

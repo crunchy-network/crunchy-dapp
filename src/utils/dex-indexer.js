@@ -19,7 +19,7 @@ export default {
   },
   async getLPTokens() {
     try {
-      const response = await axios.get(`${BASE_URL}/pools`);
+      const response = await axios.get(`${BASE_URL}/lp_tokens`);
 
       if (response.data) {
         return response.data;
@@ -191,9 +191,9 @@ export default {
     } else {
       return feed.find((el) => {
         return (
-          (el.tokenAddress === token.address &&
-            el.tokenId === parseInt(token.tokenId)) ||
-          el.address === token.address
+          (el?.tokenAddress === token.address &&
+            el?.tokenId === parseInt(token.tokenId)) ||
+          el?.address === token.address
         );
       });
     }
