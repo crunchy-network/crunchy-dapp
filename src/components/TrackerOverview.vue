@@ -22,15 +22,20 @@
             All
           </button>
           <button
-            v-if="
-              legendTab === 'price' ||
-              (legendTab === 'volume' && tokenTracked.symbol !== 'PLY')
-            "
+            v-if="legendTab !== 'price'"
             class="tab-text"
             :style="isActiveTab('1h', duration)"
             @click="setDurationTab('1h')"
           >
             1h
+          </button>
+          <button
+            v-if="legendTab === 'price'"
+            class="tab-text"
+            :style="isActiveTab('4h', duration)"
+            @click="setDurationTab('4h')"
+          >
+            4h
           </button>
           <button
             class="tab-text"
@@ -40,7 +45,6 @@
             1d
           </button>
           <button
-            v-if="legendTab !== 'price'"
             class="tab-text"
             :style="isActiveTab('7d', duration)"
             @click="setDurationTab('7d')"
@@ -130,16 +134,28 @@ export default {
     "$router.query.legend": function (val) {
       this.legendTab = val;
       if (val === "price") {
-        if (this.$route.query.duration !== "1d") {
+        if (this.$route.query.duration === "1h") {
           this.setDurationTab("1h");
+        } else if (this.$route.query.duration === "4h") {
+          this.setDurationTab("4h");
+        } else if (this.$route.query.duration === "1d") {
+          this.setDurationTab("1d");
+        } else {
+          this.setDurationTab("7d");
         }
       }
     },
 
     legendTab(val) {
       if (val === "price") {
-        if (this.$route.query.duration !== "1d") {
+        if (this.$route.query.duration === "1h") {
           this.setDurationTab("1h");
+        } else if (this.$route.query.duration === "4h") {
+          this.setDurationTab("4h");
+        } else if (this.$route.query.duration === "1d") {
+          this.setDurationTab("1d");
+        } else {
+          this.setDurationTab("7d");
         }
       }
     },
@@ -158,8 +174,14 @@ export default {
     }
 
     if (this.legendTab === "price") {
-      if (this.$route.query.duration !== "1d") {
+      if (this.$route.query.duration === "1h") {
         this.setDurationTab("1h");
+      } else if (this.$route.query.duration === "4h") {
+        this.setDurationTab("4h");
+      } else if (this.$route.query.duration === "1d") {
+        this.setDurationTab("1d");
+      } else {
+        this.setDurationTab("7d");
       }
     }
   },

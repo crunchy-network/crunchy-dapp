@@ -13,6 +13,7 @@ export default {
     tokenOverview: {
       chartData: {
         volumeAndPrice1Hour: [],
+        volumeAndPrice4Hour: [],
         volumeAndPrice1Day: [],
         volumeAndPrice7Day: [],
         volumeAndPrice30Day: [],

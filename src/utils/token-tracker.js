@@ -63,6 +63,14 @@ function modifyQuotes(quotes, allTokenSpot, type) {
         (bucket) => new Date(bucket.bucket) > new Date(oneMonthAgo)
       );
     }
+
+    // Only get element from one month for 4h chart
+    if (type === "4h") {
+      quote.buckets = quote.buckets.filter(
+        (bucket) => new Date(bucket.bucket) > new Date(oneMonthAgo)
+      );
+    }
+
     // Only get element from two months for 1d chart
     if (type === "1d") {
       quote.buckets = quote.buckets.filter(
@@ -481,24 +489,27 @@ function getPlentyTokenChartData(indexes, kind, timeInterval, xtzUsdHistory) {
 
 export default {
   async getPriceAndVolumeQuotes(tokenAddress, tokenId) {
-    let [quotes1h, quotes1d, quotes1w, quotes1mo, allTokenSpot] =
+    let [quotes1h, quotes4h, quotes1d, quotes1w, quotes1mo, allTokenSpot] =
       await Promise.all([
         dexIndexer.getQuotes1H(tokenAddress, tokenId),
+        dexIndexer.getQuotes4H(tokenAddress, tokenId),
         dexIndexer.getQuotes1D(tokenAddress, tokenId),
         dexIndexer.getQuotes1W(tokenAddress, tokenId),
         dexIndexer.getQuotes1MO(tokenAddress, tokenId),
         dexIndexer.getAllTokenSpot(),
       ]);
 
-    [quotes1h, quotes1d, quotes1w, quotes1mo] = [
+    [quotes1h, quotes4h, quotes1d, quotes1w, quotes1mo] = [
       modifyQuotes(quotes1h[0].quotes, allTokenSpot, "1h"),
+      modifyQuotes(quotes4h[0].quotes, allTokenSpot, "4h"),
       modifyQuotes(quotes1d[0].quotes, allTokenSpot, "1d"),
       modifyQuotes(quotes1w[0].quotes, allTokenSpot),
       modifyQuotes(quotes1mo[0].quotes, allTokenSpot),
     ];
 
-    [quotes1h, quotes1d, quotes1w, quotes1mo] = [
+    [quotes1h, quotes4h, quotes1d, quotes1w, quotes1mo] = [
       aggregateQuotes(quotes1h),
+      aggregateQuotes(quotes4h),
       aggregateQuotes(quotes1d),
       aggregateQuotes(quotes1w),
       aggregateQuotes(quotes1mo),
@@ -507,12 +518,14 @@ export default {
     // const aggregatedQuotes1h = getAggregatedPriceAndVolume(quotes1h);
 
     const aggregatedQuotes1h = getAggregatedPriceAndVolume(quotes1h);
+    const aggregatedQuotes4h = getAggregatedPriceAndVolume(quotes4h);
     const aggregatedQuotes1d = getAggregatedPriceAndVolume(quotes1d);
     const aggregatedQuotes1w = getAggregatedPriceAndVolume(quotes1w);
     const aggregatedQuotes1mo = getAggregatedPriceAndVolume(quotes1mo);
 
     return {
       quotes1h: aggregatedQuotes1h,
+      quotes4h: aggregatedQuotes4h,
       quotes1d: aggregatedQuotes1d,
       quotes1w: aggregatedQuotes1w,
       quotes1mo: aggregatedQuotes1mo,

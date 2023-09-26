@@ -34,6 +34,7 @@ export default {
       updatedChartData: {
         price: {
           hours1: [],
+          hours4: [],
           days1: [],
           days7: [],
           days30: [],
@@ -254,6 +255,59 @@ export default {
           };
         });
 
+      this.updatedChartData.price.hours4 =
+        this.getChartData.volumeAndPrice4Hour.map((element) => {
+          const timeUsdValue = tokenTracker.binarySearch(
+            this.getXtzUsdHistory,
+            new Date(element.bucket).getTime() + 1000 * 60 * 60 * 24
+          );
+          return {
+            time: new Date(element.bucket).getTime() / 1000,
+            close: Number(element.aggregatedClose) * timeUsdValue,
+            open: Number(element.aggregatedOpen) * timeUsdValue,
+            high: Number(element.aggregatedHigh) * timeUsdValue,
+            low: Number(element.aggregatedLow) * timeUsdValue,
+          };
+      });
+
+      this.updatedChartData.priceXtz.hours4 =
+        this.getChartData.volumeAndPrice4Hour.map((element) => {
+          return {
+            time: new Date(element.bucket).getTime() / 1000,
+            close: Number(element.aggregatedClose),
+            open: Number(element.aggregatedOpen),
+            high: Number(element.aggregatedHigh),
+            low: Number(element.aggregatedLow),
+          };
+        });
+
+
+      this.updatedChartData.price.days7 =
+        this.getChartData.volumeAndPrice7Day.map((element) => {
+          const timeUsdValue = tokenTracker.binarySearch(
+            this.getXtzUsdHistory,
+            new Date(element.bucket).getTime() + 1000 * 60 * 60 * 24
+          );
+          return {
+            time: new Date(element.bucket).getTime() / 1000,
+            close: Number(element.aggregatedClose) * timeUsdValue,
+            open: Number(element.aggregatedOpen) * timeUsdValue,
+            high: Number(element.aggregatedHigh) * timeUsdValue,
+            low: Number(element.aggregatedLow) * timeUsdValue,
+          };
+      });
+
+      this.updatedChartData.priceXtz.days7 =
+        this.getChartData.volumeAndPrice7Day.map((element) => {
+          return {
+            time: new Date(element.bucket).getTime() / 1000,
+            close: Number(element.aggregatedClose),
+            open: Number(element.aggregatedOpen),
+            high: Number(element.aggregatedHigh),
+            low: Number(element.aggregatedLow),
+          };
+        });
+
       this.updatedChartData.volume.hours1 =
         this.getChartData.volumeAndPrice1Hour.map((element) => {
           const timeUsdValue = tokenTracker.binarySearch(
@@ -383,12 +437,19 @@ export default {
               ? !this.getShowUsd
                 ? this.updatedChartData.priceXtz.hours1
                 : this.updatedChartData.price.hours1
+              : this.duration === "4h"
+              ? !this.getShowUsd
+                ? this.updatedChartData.priceXtz.hours4
+                : this.updatedChartData.price.hours4
               : this.duration === "1d"
               ? !this.getShowUsd
                 ? this.updatedChartData.priceXtz.days1
                 : this.updatedChartData.price.days1
-              : // : this.duration === "7d"
-                // ? this.updatedChartData.price.days7
+              : this.duration === "7d"
+                ? !this.getShowUsd
+                ? this.updatedChartData.priceXtz.days7
+                : this.updatedChartData.price.days7 
+              :
                 // : this.duration === "30d"
                 // ? this.updatedChartData.price.days30
                 // : this.duration === "all"
