@@ -8,7 +8,7 @@
         type="flex"
         style="margin-bottom: 30px; flex-wrap: wrap; row-gap: 10px"
       >
-        <el-col :md="19">
+        <el-col :md="24">
           <el-row
             type="flex"
             justify="space-between"
@@ -37,6 +37,15 @@
                 ecosystem</span
               >
             </el-col>
+            <el-col class="hide-md" :span="5" style="text-align: right">
+              <div style="margin-top: 14px">
+                <img
+                  style="width: 80%"
+                  src="../assets/token-tracker-vector.svg"
+                  alt=""
+                />
+              </div>
+            </el-col>
           </el-row>
 
           <el-row
@@ -44,7 +53,7 @@
             :gutter="20"
             style="margin-top: 24px; flex-wrap: wrap; row-gap: 20px"
           >
-            <el-col :sm="12" :md="6">
+            <el-col :sm="12" :md="10">
               <div class="grid-content" style="height: 100%">
                 <el-card class="box-card" shadow="always" style="height: 100%">
                   <h2
@@ -74,7 +83,7 @@
                 </el-card>
               </div>
             </el-col>
-            <el-col :sm="12" :md="6">
+            <el-col :sm="12" :md="10">
               <div class="grid-content" style="height: 100%">
                 <el-card class="box-card" shadow="always" style="height: 100%">
                   <h2
@@ -104,60 +113,6 @@
                 </el-card>
               </div>
             </el-col>
-            <el-col :sm="12" :md="6">
-              <div class="grid-content" style="height: 100%">
-                <el-card class="box-card" shadow="always" style="height: 100%">
-                  <h2
-                    style="
-                      color: var(--color-subheading-text);
-
-                      font-size: 14px;
-                      margin: 0;
-                    "
-                  >
-                    Tokens Tracked
-                  </h2>
-                  <p
-                    style="
-                      font-weight: 700;
-                      font-size: 24px;
-                      margin-top: 14px;
-                      margin-bottom: 5px;
-                      margin-top: 4px;
-                    "
-                  >
-                    {{ getTrackerData.tokensTracked }}
-                  </p>
-                </el-card>
-              </div>
-            </el-col>
-            <el-col :sm="12" :md="6">
-              <div class="grid-content" style="height: 100%">
-                <el-card class="box-card" shadow="always" style="height: 100%">
-                  <h2
-                    style="
-                      color: var(--color-subheading-text);
-
-                      font-size: 14px;
-                      margin: 0;
-                    "
-                  >
-                    DEX’s Tracked
-                  </h2>
-                  <p
-                    style="
-                      font-weight: 700;
-                      font-size: 24px;
-                      margin-top: 14px;
-                      margin-bottom: 5px;
-                      margin-top: 4px;
-                    "
-                  >
-                    {{ getTrackerData.dexCovered }}
-                  </p>
-                </el-card>
-              </div>
-            </el-col>
           </el-row>
 
           <el-row
@@ -184,15 +139,6 @@
                 </el-input></div
             ></el-col>
           </el-row>
-        </el-col>
-        <el-col class="hide-md" :span="5" style="text-align: right">
-          <div style="margin-top: 14px">
-            <img
-              style="width: 80%"
-              src="../assets/token-tracker-vector.svg"
-              alt=""
-            />
-          </div>
         </el-col>
       </el-row>
       <div>
@@ -379,7 +325,7 @@ import numberFormat from "../utils/number-format";
 import PriceFormat from "./PriceFormat.vue";
 import _ from "lodash";
 import SortArrowIndicator from "./SortArrowIndicator.vue";
-import TablePagination from './TablePagination.vue';
+import TablePagination from "./TablePagination.vue";
 
 export default {
   name: "TokenTracker",
