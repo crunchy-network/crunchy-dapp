@@ -6,17 +6,6 @@ import { getContract, getWalletContract, getBatch } from "./../../utils/tezos";
 import merge from "deepmerge";
 import { BigNumber } from "bignumber.js";
 
-const DEX_TYPES = [
-  "spicy",
-  "quipuswap",
-  "quipuswap_v2",
-  "quipuswap_token2token",
-  "quipuswap_stable",
-  "plenty",
-  "plenty_ctez",
-  "plenty_stable",
-];
-
 export default {
   async updateLpXtzUsdVwap({ commit }) {
     return tzkt.getXtzUsdPrice().then((price) => {
