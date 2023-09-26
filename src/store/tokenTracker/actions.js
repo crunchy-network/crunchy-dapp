@@ -1,5 +1,5 @@
 import tokenTracker from "../../utils/token-tracker";
-import tokensToTrack from "../../tokensTracked.json";
+import tokensBlocked from "../../tokensBlocked.json";
 import _ from "lodash";
 import tzkt from "../../utils/tzkt";
 
@@ -19,35 +19,30 @@ export default {
   async _setTokenTracked({ commit, state, dispatch }, payload) {
     !payload?.softLoad && commit("updateLoading", true);
     try {
-      const xtzUsd = await tzkt.getXtzUsdPrice();
-      const xtzUsdHistory = await tzkt.getXtzUsdHistory();
+      const [
+        xtzUsd,
+        xtzUsdHistory,
+        tokenFeed
+      ] = await Promise.all([
+        tzkt.getXtzUsdPrice(),
+        tzkt.getXtzUsdHistory(),
+        tokenTracker.getTokenFeed()
+      ]);
 
       commit("updateXtzUsdPrice", xtzUsd);
       commit("updateXtzUsdHistory", xtzUsdHistory);
 
-      let tokenFeed = {};
-
-      await tokenTracker.getTokenFeed().then((feed) => {
-        tokenFeed = feed;
-      });
-
       const tokens = [];
-      for (let i = 0; i < tokensToTrack.length; i++) {
-        const value = tokensToTrack[i];
-        value.id = `${value.tokenAddress}_${value.tokenId || 0}`;
-        const tokenData = value;
-
-        const element = tokenFeed[tokenData.id];
-
+      for (const [k, element] of Object.entries(tokenFeed)) {
         const token = await tokenTracker.calculateTokenData(
           element,
-          tokenData,
           tokenFeed,
           xtzUsd
-          // tokenVolumesYesterday
         );
 
-        // console.log("tokenFeed", element);
+        if (tokensBlocked.includes(k)) {
+          continue;
+        }
 
         if (token) {
           tokens.push({
@@ -68,7 +63,10 @@ export default {
   },
 
   async sortTokensTracked({ commit, state }, tokens) {
-    const orderedTokens = _.orderBy(tokens, ["mktCap"], ["desc"]);
+    for (const [i, token] of Object.entries(tokens)) {
+      tokens[i].isRanked = token.tokenTvl >= 5000 ? 1 : 0;
+    }
+    const orderedTokens = _.orderBy(tokens, ["isRanked", "mktCap"], ["desc", "desc"]);
     const tokenList = [];
     const lsData = JSON.parse(localStorage.getItem(state.LS_FAVORITES_KEY));
     for (let index = 0; index < orderedTokens.length; index++) {
