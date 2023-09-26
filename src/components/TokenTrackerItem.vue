@@ -165,7 +165,7 @@ export default {
   },
   data() {
     return {
-      duration: "all",
+      duration: "1d",
       banner: {
         PLENTY: {
           symbol: "PLENTY",

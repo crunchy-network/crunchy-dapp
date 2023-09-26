@@ -104,7 +104,7 @@ export default {
   props: {
     duration: {
       type: String,
-      default: "all",
+      default: "1d",
     },
     setDurationTab: {
       type: Function,
