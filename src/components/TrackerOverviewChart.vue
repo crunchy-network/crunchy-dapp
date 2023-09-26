@@ -571,6 +571,9 @@ export default {
             toolTip.style.top = top + "px";
           }
         });
+
+        // auto expand to fill the chart
+        chart.timeScale().fitContent();
       } catch (error) {
         console.log("ERROR", error);
       }
