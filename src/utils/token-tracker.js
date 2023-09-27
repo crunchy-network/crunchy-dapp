@@ -87,54 +87,53 @@ function modifyQuotes(quotes, allTokenSpot, type) {
 }
 
 function getAggregatedOpen(quotes, allTokenSpot) {
-  let totalVolume = 0;
-  let aggregatedOpen = 0;
-
   if (!quotes) {
     return 0;
   }
 
+  // Helper function to get the token price for a specific token address
+  function getTokenPrice(tokenAddress) {
+    return quotes.find((el) => el.token.tokenAddress === tokenAddress)?.quote;
+  }
+
+  // Define the order of token addresses to check
+  const tokenAddressesToCheck = [
+    "tez",
+    "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn",
+    "KT1UpeXdK6AJbX58GJ92pLZVCucn2DR8Nu4b",
+  ];
+
+  // Iterate through the token addresses and return the first available price
+  for (const tokenAddress of tokenAddressesToCheck) {
+    const quotePrice = getTokenPrice(tokenAddress);
+    if (quotePrice) {
+      return parseFloat(quotePrice);
+    }
+  }
+
+  // If none of the token prices are available, calculate the spot price from other token
   for (const quote of quotes) {
-    let volume = 0;
-    let spot = 0;
-    let quoteToken;
-    let quoteTokenPriceInTez;
-    let quoteTokenPriceInWTZ;
-    if (quote.token.tokenAddress === "tez") {
-      spot = quote.quote;
-      volume = parseFloat(quote.quoteVolume);
-      quote.spot_xtz = spot;
-      quote.volume_xtz = volume;
-      // Token has quote paired with wtz
-    } else {
-      quoteToken = allTokenSpot.find(
-        (el) =>
-          quote.token.tokenAddress === el.tokenAddress &&
-          quote.token.tokenId === el.tokenId
+    const quoteToken = allTokenSpot.find(
+      (el) =>
+        quote.token.tokenAddress === el.tokenAddress &&
+        quote.token.tokenId === el.tokenId
+    );
+    if (quoteToken) {
+      const quoteTokenPriceInTez = getTokenPrice("tez");
+      const quoteTokenPriceInWTZ = getTokenPrice(
+        "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn"
       );
-      quoteTokenPriceInTez = quoteToken?.quotes.find(
-        (el) => el.token.tokenAddress === "tez"
-      )?.quote;
-      quoteTokenPriceInWTZ = quoteToken?.quotes.find(
-        (el) => el.token.tokenAddress === "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn"
-      )?.quote;
-      spot = isNaN(quoteTokenPriceInTez)
+
+      const spot = isNaN(quoteTokenPriceInTez)
         ? quote.quote * quoteTokenPriceInWTZ
         : quote.quote * quoteTokenPriceInTez;
-      volume = isNaN(quoteTokenPriceInTez)
-        ? parseFloat(quote.quoteVolume) * quoteTokenPriceInWTZ
-        : parseFloat(quote.quoteVolume) * quoteTokenPriceInTez;
-      quote.spot_xtz = spot;
-      quote.volume_xtz = volume;
-    }
-    if (isNaN(spot) || isNaN(volume)) {
-      continue;
-    }
 
-    totalVolume += volume;
-    aggregatedOpen += volume * spot;
+      return spot;
+    }
   }
-  return totalVolume > 0 ? aggregatedOpen / totalVolume : 0;
+
+  // If no prices are available, return 0
+  return 0;
 }
 
 function sameDay(d1, d2) {
@@ -721,10 +720,10 @@ export default {
         element.dayClose = getAggregatedOpen(tokenSpot1D, allTokenSpot);
         element.weekClose = getAggregatedOpen(tokenSpot1W, allTokenSpot);
         element.monthClose = getAggregatedOpen(tokenSpot1Mo, allTokenSpot);
-        
-        if(element.tokenAddress === "KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn") {
+
+        if (element.tokenAddress === "KT1MZg99PxMDEENwB4Fi64xkqAVh5d1rv8Z9") {
           console.log(tokenSpot1D);
-          console.log(element.dayClose)
+          console.log(element.dayClose);
         }
 
         const timeUsdValueDay1 = binarySearch(xtzUsdHistory, day1);
