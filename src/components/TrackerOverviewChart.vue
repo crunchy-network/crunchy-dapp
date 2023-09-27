@@ -599,14 +599,20 @@ export default {
       let precision = 5;
       let minMove = 0.00001;
 
-      if (value < 0.0000000001 && value > 0) {
+      if (value >= 1) {
+        precision = 2;
+        minMove = 0.01;
+      } else if (value >= 0.01) {
+        precision = 4;
+        minMove = 0.0001;
+      } else if (value < 0.0000000001 && value > 0) {
         precision = 12;
         minMove = 0.00000000001;
       } else if (value < 0.00000001 && value > 0) {
         precision = 10;
         minMove = 0.000000001;
       } else if (value < 0.000001 && value > 0) {
-        precision = 8;
+        precision = 9;
         minMove = 0.00000001;
       } else if (value < 0.0001 && value > 0) {
         precision = 6;
