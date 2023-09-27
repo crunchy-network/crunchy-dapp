@@ -152,7 +152,6 @@ export default {
       // Continue loading the other data in the background
       const [
         {
-          quotes1h: volumeAndPrice1Hour,
           quotes4h: volumeAndPrice4Hour,
           quotes1w: volumeAndPrice7Day,
           quotes1mo: volumeAndPrice30Day,
@@ -170,7 +169,6 @@ export default {
       ]);
 
       // Assign the other data to chartData
-      chartData.volumeAndPrice1Hour = volumeAndPrice1Hour;
       chartData.volumeAndPrice4Hour = volumeAndPrice4Hour;
       chartData.volumeAndPrice7Day = volumeAndPrice7Day;
       chartData.volumeAndPrice30Day = volumeAndPrice30Day;

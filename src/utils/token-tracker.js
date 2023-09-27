@@ -503,24 +503,21 @@ function getPlentyTokenChartData(indexes, kind, timeInterval, xtzUsdHistory) {
 
 export default {
   async getPriceAndVolumeQuotes(tokenAddress, tokenId) {
-    let [quotes1h, quotes4h, quotes1w, quotes1mo, allTokenSpot] =
+    let [quotes4h, quotes1w, quotes1mo, allTokenSpot] =
       await Promise.all([
-        dexIndexer.getQuotes1H(tokenAddress, tokenId),
         dexIndexer.getQuotes4H(tokenAddress, tokenId),
         dexIndexer.getQuotes1W(tokenAddress, tokenId),
         dexIndexer.getQuotes1MO(tokenAddress, tokenId),
         dexIndexer.getAllTokenSpot(),
       ]);
 
-    [quotes1h, quotes4h, quotes1w, quotes1mo] = [
-      modifyQuotes(quotes1h[0].quotes, allTokenSpot, "1h"),
+    [quotes4h, quotes1w, quotes1mo] = [
       modifyQuotes(quotes4h[0].quotes, allTokenSpot, "4h"),
       modifyQuotes(quotes1w[0].quotes, allTokenSpot),
       modifyQuotes(quotes1mo[0].quotes, allTokenSpot),
     ];
 
-    [quotes1h, quotes4h, quotes1w, quotes1mo] = [
-      aggregateQuotes(quotes1h),
+    [quotes4h, quotes1w, quotes1mo] = [
       aggregateQuotes(quotes4h),
       aggregateQuotes(quotes1w),
       aggregateQuotes(quotes1mo),
@@ -528,13 +525,11 @@ export default {
 
     // const aggregatedQuotes1h = getAggregatedPriceAndVolume(quotes1h);
 
-    const aggregatedQuotes1h = getAggregatedPriceAndVolume(quotes1h);
     const aggregatedQuotes4h = getAggregatedPriceAndVolume(quotes4h);
     const aggregatedQuotes1w = getAggregatedPriceAndVolume(quotes1w);
     const aggregatedQuotes1mo = getAggregatedPriceAndVolume(quotes1mo);
 
     return {
-      quotes1h: aggregatedQuotes1h,
       quotes4h: aggregatedQuotes4h,
       quotes1w: aggregatedQuotes1w,
       quotes1mo: aggregatedQuotes1mo,
