@@ -6,6 +6,7 @@ export default {
     loading: false,
     contract: process.env.VUE_APP_CONTRACTS_LP_LOCKER_ROOM,
     crnchyAddress: process.env.VUE_APP_CONTRACTS_CRNCHY,
+    lpTokens: [],
     priceFeed: [],
     tokenPools: [],
     currentPrices: {},

@@ -27,4 +27,8 @@ export default {
   updateLpLocksTotalTvlTez(state, total) {
     state.totalTvlTez = total;
   },
+
+  updateLpTokens(state, lpTokens) {
+    state.lpTokens = lpTokens;
+  },
 };

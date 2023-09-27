@@ -810,7 +810,6 @@ export default {
     },
 
     queryPoolTokens(keywords, cb) {
-      console.log(this.farms.lpTokens)
       const matches = [];
       for (let t of this.farms.priceFeed) {
         if (
