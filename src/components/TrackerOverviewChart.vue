@@ -308,8 +308,8 @@ export default {
           };
         });
 
-      this.updatedChartData.volume.hours1 =
-        this.getChartData?.volumeAndPrice1Hour?.map((element) => {
+      this.updatedChartData.volume.hours4 =
+        this.getChartData?.volumeAndPrice4Hour?.map((element) => {
           const timeUsdValue = tokenTracker.binarySearch(
             this.getXtzUsdHistory,
             new Date(element.bucket).getTime()
@@ -332,8 +332,8 @@ export default {
           };
         });
 
-      this.updatedChartData.volumeXtz.hours1 =
-        this.getChartData?.volumeAndPrice1Hour?.map((element) => {
+      this.updatedChartData.volumeXtz.hours4 =
+        this.getChartData?.volumeAndPrice4Hour?.map((element) => {
           return {
             time: new Date(element.bucket).getTime() / 1000,
             value: Number(element.aggregatedXtzVolume),
@@ -385,26 +385,6 @@ export default {
             value: Number(element.aggregatedXtzVolume),
           };
         });
-
-      this.updatedChartData.volumeXtz.all =
-        this.getChartData?.allVolumeAndPrice?.map((element) => {
-          return {
-            time: new Date(element.bucket).getTime() / 1000,
-            value: Number(element.aggregatedXtzVolume),
-          };
-        });
-
-      this.updatedChartData.volume.all =
-        this.getChartData?.allVolumeAndPrice?.map((element) => {
-          const timeUsdValue = tokenTracker.binarySearch(
-            this.getXtzUsdHistory,
-            new Date(element.bucket).getTime()
-          );
-          return {
-            time: new Date(element.bucket).getTime() / 1000,
-            value: Number(element.aggregatedXtzVolume) * timeUsdValue,
-          };
-        });
     },
 
     async getPrices() {
@@ -433,11 +413,7 @@ export default {
 
         if (this.legendTab === "price") {
           this.tokenData =
-            this.duration === "1h"
-              ? !this.getShowUsd
-                ? this.updatedChartData.priceXtz.hours1
-                : this.updatedChartData.price.hours1
-              : this.duration === "4h"
+            this.duration === "4h"
               ? !this.getShowUsd
                 ? this.updatedChartData.priceXtz.hours4
                 : this.updatedChartData.price.hours4
@@ -459,10 +435,10 @@ export default {
 
         if (this.legendTab === "volume") {
           this.tokenData =
-            this.duration === "1h"
+            this.duration === "4h"
               ? !this.getShowUsd
-                ? this.updatedChartData.volumeXtz.hours1
-                : this.updatedChartData.volume.hours1
+                ? this.updatedChartData.volumeXtz.hours4
+                : this.updatedChartData.volume.hours4
               : this.duration === "1d"
               ? !this.getShowUsd
                 ? this.updatedChartData.volumeXtz.days1
@@ -475,10 +451,6 @@ export default {
               ? !this.getShowUsd
                 ? this.updatedChartData.volumeXtz.days30
                 : this.updatedChartData.volume.days30
-              : this.duration === "all"
-              ? !this.getShowUsd
-                ? this.updatedChartData.volumeXtz.all
-                : this.updatedChartData.volume.all
               : null;
         }
 

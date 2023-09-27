@@ -14,23 +14,6 @@
       >
         <div class="tab-wrapper tab-custom-element">
           <button
-            v-if="legendTab !== 'price'"
-            class="tab-text"
-            :style="isActiveTab('all', duration)"
-            @click="setDurationTab('all')"
-          >
-            All
-          </button>
-          <button
-            v-if="legendTab !== 'price'"
-            class="tab-text"
-            :style="isActiveTab('1h', duration)"
-            @click="setDurationTab('1h')"
-          >
-            1h
-          </button>
-          <button
-            v-if="legendTab === 'price'"
             class="tab-text"
             :style="isActiveTab('4h', duration)"
             @click="setDurationTab('4h')"
@@ -134,9 +117,7 @@ export default {
     "$router.query.legend": function (val) {
       this.legendTab = val;
       if (val === "price") {
-        if (this.$route.query.duration === "1h") {
-          this.setDurationTab("1h");
-        } else if (this.$route.query.duration === "4h") {
+        if (this.$route.query.duration === "4h") {
           this.setDurationTab("4h");
         } else if (this.$route.query.duration === "1d") {
           this.setDurationTab("1d");
@@ -148,9 +129,7 @@ export default {
 
     legendTab(val) {
       if (val === "price") {
-        if (this.$route.query.duration === "1h") {
-          this.setDurationTab("1h");
-        } else if (this.$route.query.duration === "4h") {
+        if (this.$route.query.duration === "4h") {
           this.setDurationTab("4h");
         } else if (this.$route.query.duration === "1d") {
           this.setDurationTab("1d");
@@ -174,9 +153,7 @@ export default {
     }
 
     if (this.legendTab === "price") {
-      if (this.$route.query.duration === "1h") {
-        this.setDurationTab("1h");
-      } else if (this.$route.query.duration === "4h") {
+      if (this.$route.query.duration === "4h") {
         this.setDurationTab("4h");
       } else if (this.$route.query.duration === "1d") {
         this.setDurationTab("1d");
