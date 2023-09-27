@@ -89,6 +89,11 @@ function modifyQuotes(quotes, allTokenSpot, type) {
 function getAggregatedOpen(quotes, allTokenSpot) {
   let totalVolume = 0;
   let aggregatedOpen = 0;
+
+  if (!quotes) {
+    return 0;
+  }
+
   for (const quote of quotes) {
     let volume = 0;
     let spot = 0;
@@ -599,13 +604,15 @@ export default {
         allTokenMetadata,
         allTokenSpot,
         allTokenPool,
+        allQuotes1D,
         allSpot1D,
         allSpot1W,
-        allSpot1Mo
+        allSpot1Mo,
       ] = await Promise.all([
         dexIndexer.getAllTokens(),
         dexIndexer.getAllTokenSpot(),
         dexIndexer.getAllTokenPools(),
+        dexIndexer.getAllQuotes1D(),
         dexIndexer.getSpot1D(),
         dexIndexer.getSpot1W(),
         dexIndexer.getSpot1MO(),
@@ -689,44 +696,36 @@ export default {
 
         element.aggregatedPrice = aggregatedClose / totalReserves;
 
-        const tokenQuote1D = allSpot1D.find(
-          (ele) =>
-            ele.tokenAddress === element.tokenAddress &&
-            ele.tokenId === element.tokenId
-        ).quotes;
-        const tokenQuote1W = allSpot1W.find(
-          (ele) =>
-            ele.tokenAddress === element.tokenAddress &&
-            ele.tokenId === element.tokenId
-        ).quotes;
-        const tokenQuote1MO = allSpot1Mo.find(
+        const tokenQuote1D = allQuotes1D.find(
           (ele) =>
             ele.tokenAddress === element.tokenAddress &&
             ele.tokenId === element.tokenId
         ).quotes;
 
-        // const filteredTokenQuote1D = tokenQuote1D.filter(
-        //   (quote) => new Date(quote.buckets[0].bucket) >= new Date(oneDayAgo)
-        // );
-        // const filteredTokenQuote1W = tokenQuote1W.filter(
-        //   (quote) => new Date(quote.buckets[0].bucket) >= new Date(oneWeekAgo)
-        // );
-        // const filteredTokenQuote1MO = tokenQuote1MO.filter(
-        //   (quote) => new Date(quote.buckets[0].bucket) >= new Date(oneMonthAgo)
-        // );
+        const tokenSpot1D = allSpot1D.find(
+          (ele) =>
+            ele.tokenAddress === element.tokenAddress &&
+            ele.tokenId === element.tokenId
+        )?.quotes;
+        const tokenSpot1W = allSpot1W.find(
+          (ele) =>
+            ele.tokenAddress === element.tokenAddress &&
+            ele.tokenId === element.tokenId
+        )?.quotes;
+        const tokenSpot1Mo = allSpot1Mo.find(
+          (ele) =>
+            ele.tokenAddress === element.tokenAddress &&
+            ele.tokenId === element.tokenId
+        )?.quotes;
 
-        element.dayClose = getAggregatedOpen(
-          tokenQuote1D,
-          allTokenSpot
-        );
-        element.weekClose = getAggregatedOpen(
-          tokenQuote1W,
-          allTokenSpot
-        );
-        element.monthClose = getAggregatedOpen(
-          tokenQuote1MO,
-          allTokenSpot
-        );
+        element.dayClose = getAggregatedOpen(tokenSpot1D, allTokenSpot);
+        element.weekClose = getAggregatedOpen(tokenSpot1W, allTokenSpot);
+        element.monthClose = getAggregatedOpen(tokenSpot1Mo, allTokenSpot);
+        
+        if(element.tokenAddress === "KT1PWx2mnDueood7fEmfbBDKx1D9BAnnXitn") {
+          console.log(tokenSpot1D);
+          console.log(element.dayClose)
+        }
 
         const timeUsdValueDay1 = binarySearch(xtzUsdHistory, day1);
         const timeUsdValueDay7 = binarySearch(xtzUsdHistory, day7);

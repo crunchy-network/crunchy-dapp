@@ -170,7 +170,9 @@ export default {
   },
   async getSpot1D() {
     try {
-      const response = await axios.get(`${BASE_URL}/tokens/quotes/spot/1d`);
+      const response = await axios.get(
+        `${BASE_URL}/tokens/quotes/aggregated/spot/1d`
+      );
 
       if (response.data) {
         return response.data;
@@ -184,7 +186,9 @@ export default {
   },
   async getSpot1W() {
     try {
-      const response = await axios.get(`${BASE_URL}/tokens/quotes/spot/1w`);
+      const response = await axios.get(
+        `${BASE_URL}/tokens/quotes/aggregated/spot/1w`
+      );
 
       if (response.data) {
         return response.data;
@@ -198,7 +202,9 @@ export default {
   },
   async getSpot1MO() {
     try {
-      const response = await axios.get(`${BASE_URL}/tokens/quotes/spot/30d`);
+      const response = await axios.get(
+        `${BASE_URL}/tokens/quotes/aggregated/spot/30d`
+      );
 
       if (response.data) {
         return response.data;
