@@ -609,10 +609,10 @@ export default {
         precision = 12;
         minMove = 0.00000000001;
       } else if (value < 0.00000001 && value > 0) {
-        precision = 10;
+        precision = 11;
         minMove = 0.000000001;
       } else if (value < 0.000001 && value > 0) {
-        precision = 9;
+        precision = 10;
         minMove = 0.00000001;
       } else if (value < 0.0001 && value > 0) {
         precision = 6;
