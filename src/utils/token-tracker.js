@@ -20,6 +20,11 @@ const oneWeekAgo = new Date(Date.now() - oneWeekInMiliSecond).toISOString();
 const oneMonthAgo = new Date(Date.now() - oneMonthInMiliSecond).toISOString();
 const twoMonthAgo = new Date(Date.now() - twoMonthInMiliSecond);
 const PLY_TOKEN_ID = "KT1JVjgXPMMSaa6FkzeJcgb8q9cUaLmwaJUX_0";
+const TEZ_AND_WRAPPED_TEZ_ADDRESSES = [
+  "tez",
+  "KT1UpeXdK6AJbX58GJ92pLZVCucn2DR8Nu4b",
+  "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn",
+];
 
 async function getPlentyTokenDailyMetrics(symbol = "") {
   const uri = `https://api.analytics.plenty.network/analytics/tokens/${symbol}?priceHistory=day`;
@@ -53,10 +58,8 @@ function modifyQuotes(quotes, allTokenSpot, type) {
         quote.token.tokenAddress === el.tokenAddress &&
         quote.token.tokenId === el.tokenId
     );
-    quoteTokenPriceInTez = quoteToken?.quotes.find(
-      (el) =>
-        el.token.tokenAddress === "tez" ||
-        el.token.tokenAddress === "KT1UpeXdK6AJbX58GJ92pLZVCucn2DR8Nu4b"
+    quoteTokenPriceInTez = quoteToken?.quotes.find((el) =>
+      TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
     )?.quote;
 
     // Only get element from one month for 1h chart
@@ -83,30 +86,31 @@ function modifyQuotes(quotes, allTokenSpot, type) {
       bucket.dex_type = quote.pool.dex.type;
       bucket.quote_token_address = quote.token.tokenAddress;
       bucket.quote_token_id = quote.token.tokenId;
-      bucket.close_xtz =
-        quote.token.tokenAddress === "tez" ||
-        quote.token.tokenAddress === "KT1UpeXdK6AJbX58GJ92pLZVCucn2DR8Nu4b"
-          ? Number(bucket.close)
-          : Number(bucket.close) * Number(quoteTokenPriceInTez);
-      bucket.open_xtz =
-        quote.token.tokenAddress === "tez" ||
-        quote.token.tokenAddress === "KT1UpeXdK6AJbX58GJ92pLZVCucn2DR8Nu4b"
-          ? Number(bucket.open)
-          : Number(bucket.open) * Number(quoteTokenPriceInTez);
-      bucket.high_xtz =
-        quote.token.tokenAddress === "tez" ||
-        quote.token.tokenAddress === "KT1UpeXdK6AJbX58GJ92pLZVCucn2DR8Nu4b"
-          ? Number(bucket.high)
-          : Number(bucket.high) * Number(quoteTokenPriceInTez);
-      bucket.low_xtz =
-        quote.token.tokenAddress === "tez" ||
-        quote.token.tokenAddress === "KT1UpeXdK6AJbX58GJ92pLZVCucn2DR8Nu4b"
-          ? Number(bucket.low)
-          : Number(bucket.low) * Number(quoteTokenPriceInTez);
-      bucket.volume_quote_xtz =
-        quote.token.tokenAddress === "tez" || quote.token.tokenAddress === "tez"
-          ? Number(bucket.quoteVolume)
-          : Number(bucket.quoteVolume) * Number(quoteTokenPriceInTez);
+      bucket.close_xtz = TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(
+        quote.token.tokenAddress
+      )
+        ? Number(bucket.close)
+        : Number(bucket.close) * Number(quoteTokenPriceInTez);
+      bucket.open_xtz = TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(
+        quote.token.tokenAddress
+      )
+        ? Number(bucket.open)
+        : Number(bucket.open) * Number(quoteTokenPriceInTez);
+      bucket.high_xtz = TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(
+        quote.token.tokenAddress
+      )
+        ? Number(bucket.high)
+        : Number(bucket.high) * Number(quoteTokenPriceInTez);
+      bucket.low_xtz = TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(
+        quote.token.tokenAddress
+      )
+        ? Number(bucket.low)
+        : Number(bucket.low) * Number(quoteTokenPriceInTez);
+      bucket.volume_quote_xtz = TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(
+        quote.token.tokenAddress
+      )
+        ? Number(bucket.quoteVolume)
+        : Number(bucket.quoteVolume) * Number(quoteTokenPriceInTez);
     });
   });
   return quotes;
@@ -120,11 +124,8 @@ function getAggregatedOpen(quotes, allTokenSpot) {
     let open = 0;
     let quoteToken;
     let quoteTokenPriceInTez;
-    let quoteTokenPriceInWTZ;
-    if (
-      quote.token.tokenAddress === "tez" ||
-      quote.token.tokenAddress === "KT1UpeXdK6AJbX58GJ92pLZVCucn2DR8Nu4b"
-    ) {
+
+    if (TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(quote.token.tokenAddress)) {
       open = quote.buckets[0].open;
       volume = parseFloat(quote.buckets[0].quoteVolume);
       quote.open_xtz = open;
@@ -136,20 +137,12 @@ function getAggregatedOpen(quotes, allTokenSpot) {
           quote.token.tokenAddress === el.tokenAddress &&
           quote.token.tokenId === el.tokenId
       );
-      quoteTokenPriceInTez = quoteToken?.quotes.find(
-        (el) =>
-          el.token.tokenAddress === "tez" ||
-          el.token.tokenAddress === "KT1UpeXdK6AJbX58GJ92pLZVCucn2DR8Nu4b"
+      quoteTokenPriceInTez = quoteToken?.quotes.find((el) =>
+        TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
       )?.quote;
-      quoteTokenPriceInWTZ = quoteToken?.quotes.find(
-        (el) => el.token.tokenAddress === "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn"
-      )?.quote;
-      open = isNaN(quoteTokenPriceInTez)
-        ? quote.buckets[0].open * quoteTokenPriceInWTZ
-        : quote.buckets[0].open * quoteTokenPriceInTez;
-      volume = isNaN(quoteTokenPriceInTez)
-        ? parseFloat(quote.buckets[0].quoteVolume) * quoteTokenPriceInWTZ
-        : parseFloat(quote.buckets[0].quoteVolume) * quoteTokenPriceInTez;
+
+      open = quote.buckets[0].open * quoteTokenPriceInTez;
+      volume = parseFloat(quote.buckets[0].quoteVolume) * quoteTokenPriceInTez;
       quote.open_xtz = open;
       quote.volume_xtz = volume;
     }
@@ -740,12 +733,9 @@ export default {
 
           let quoteToken;
           let quoteTokenPriceInTez;
-          let quoteTokenPriceInWTZ;
           // Token has quote paired with xtz
           if (
-            quoteData.token.tokenAddress === "tez" ||
-            quoteData.token.tokenAddress ===
-              "KT1UpeXdK6AJbX58GJ92pLZVCucn2DR8Nu4b"
+            TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(quoteData.token.tokenAddress)
           ) {
             close = quoteData.quote;
           }
@@ -757,15 +747,11 @@ export default {
                 quoteData.token.tokenId === el.tokenId
             );
             quoteTokenPriceInTez = quoteToken?.quotes.find(
-              (el) => el.token.tokenAddress === "tez" || el.token.tokenAddress === "KT1UpeXdK6AJbX58GJ92pLZVCucn2DR8Nu4b"
-            )?.quote;
-            quoteTokenPriceInWTZ = quoteToken?.quotes.find(
               (el) =>
-                el.token.tokenAddress === "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn"
+              TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
             )?.quote;
-            close = isNaN(quoteTokenPriceInTez)
-              ? quoteData.quote * quoteTokenPriceInWTZ
-              : quoteData.quote * quoteTokenPriceInTez;
+
+            close = quoteData.quote * quoteTokenPriceInTez;
           }
 
           // NaN and Alien dex type error
@@ -861,7 +847,7 @@ export default {
           let midPrice;
           let quoteToken;
           let quoteTokenPriceInTez;
-          let quoteTokenPriceInWTZ;
+
           if (pool1D) {
             quoteToken = allTokenSpot.find(
               (el) =>
@@ -869,27 +855,17 @@ export default {
                 pool1D.token.tokenId === el.tokenId
             );
             quoteTokenPriceInTez = quoteToken?.quotes.find(
-              (el) => el.token.tokenAddress === "tez" || el.token.tokenAddress === "KT1UpeXdK6AJbX58GJ92pLZVCucn2DR8Nu4b"
-            )?.quote;
-            quoteTokenPriceInWTZ = quoteToken?.quotes.find(
               (el) =>
-                el.token.tokenAddress === "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn"
+              TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
             )?.quote;
+
             volume =
-              pool1D.token.tokenAddress === "tez" ||
-              pool1D.token.tokenAddress ===
-                "KT1UpeXdK6AJbX58GJ92pLZVCucn2DR8Nu4b"
+              TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(pool1D.token.tokenAddress)
                 ? pool1D.buckets[0].quoteVolume
-                : isNaN(quoteTokenPriceInTez)
-                ? pool1D.buckets[0].quoteVolume * quoteTokenPriceInWTZ
                 : pool1D.buckets[0].quoteVolume * quoteTokenPriceInTez;
             midPrice =
-              pool1D.token.tokenAddress === "tez" ||
-              pool1D.token.tokenAddress ===
-                "KT1UpeXdK6AJbX58GJ92pLZVCucn2DR8Nu4b"
+              TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(pool1D.token.tokenAddress)
                 ? pool1D.buckets[0].close
-                : isNaN(quoteTokenPriceInTez)
-                ? pool1D.buckets[0].close * quoteTokenPriceInWTZ
                 : pool1D.buckets[0].close * quoteTokenPriceInTez;
           }
 
