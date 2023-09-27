@@ -828,7 +828,7 @@ export default {
           }
           t.thumbnailUri = ipfs.transformUri(t.thumbnailUri);
           matches.push({
-            value: t.name || t.symbol,
+            value: t.symbol || t.name ,
             type: t.tokenType,
             address: t.tokenAddress,
             tokenId: t.tokenId || 0,
@@ -856,7 +856,7 @@ export default {
           const tokenPools = this.farms.tokenPools.filter((el) => el.lpToken?.tokenAddress === t.tokenAddress && el.lpToken?.tokenId === t.tokenId)
           const thumbnailUris = tokenPools[0]?.tokens.map((el) => el?.token?.thumbnailUri !== null ? ipfs.transformUri(el.token.thumbnailUri) : el.token.thumbnailUri);
           matches.push({
-            value: t.name || t.symbol,
+            value: t.symbol || t.name ,
             type: t.tokenType,
             address: t.tokenAddress,
             tokenId: t.tokenId || 0,
@@ -912,7 +912,7 @@ export default {
           }
           t.thumbnailUri = ipfs.transformUri(t.thumbnailUri);
           matches.push({
-            value: t.name || t.symbol,
+            value: t.symbol || t.name ,
             type: t.tokenType,
             address: t.tokenAddress,
             tokenId: t.tokenId || 0,

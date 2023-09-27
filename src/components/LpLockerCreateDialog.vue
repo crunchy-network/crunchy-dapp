@@ -567,7 +567,7 @@ export default {
           const dexType = tokenPools[0]?.dex?.type;
 
           matches.push({
-            value: t.name || t.symbol,
+            value: t.symbol || t.name ,
             type: t.tokenType,
             address: t.tokenAddress,
             tokenId: t.tokenId || 0,
