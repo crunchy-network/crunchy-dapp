@@ -7,7 +7,7 @@
 <script lang="js">
 import { createChart } from "lightweight-charts";
 import { mapGetters } from "vuex";
-import numberFormat from "../utils/number-format";
+// import numberFormat from "../utils/number-format";
 import tokenTracker from "../utils/token-tracker";
 
 export default {
@@ -680,14 +680,20 @@ export default {
       let precision = 5;
       let minMove = 0.00001;
 
-      if (value < 0.0000000001 && value > 0) {
+      if (value >= 1) {
+        precision = 2;
+        minMove = 0.01;
+      } else if (value >= 0.01) {
+        precision = 4;
+        minMove = 0.0001;
+      } else if (value < 0.0000000001 && value > 0) {
         precision = 12;
         minMove = 0.00000000001;
       } else if (value < 0.00000001 && value > 0) {
-        precision = 10;
+        precision = 11;
         minMove = 0.000000001;
       } else if (value < 0.000001 && value > 0) {
-        precision = 8;
+        precision = 10;
         minMove = 0.00000001;
       } else if (value < 0.0001 && value > 0) {
         precision = 6;
@@ -704,7 +710,29 @@ export default {
     },
 
     formatNumShorthand(value, precision) {
-       return numberFormat.shorthand(value, precision);
+      const number = precision
+        ? parseFloat(value).toFixed(precision)
+        : Number(value);
+      if (isNaN(number)) return { value: 0, suffix: "" };
+      if (number < 1000) {
+        return { value: number, suffix: "" };
+      } else if (number < 1000000) {
+        const value = number / 1000;
+        const precisedValue = parseFloat(value).toFixed(precision)
+        return { value: precisedValue, suffix: "K" };
+      } else if (number < 1000000000) {
+        const value = number / 1000000;
+        const precisedValue = parseFloat(value).toFixed(precision)
+        return { value: precisedValue, suffix: "M" };
+      } else if (number < 1000000000000) {
+        const value = number / 1000000000;
+        const precisedValue = parseFloat(value).toFixed(precision)
+        return { value: precisedValue, suffix: "B" };
+      } else {
+        const value = number / 1000000000000;
+        const precisedValue = parseFloat(value).toFixed(precision)
+        return { value: precisedValue, suffix: "T" };
+      }
     },
   },
 };

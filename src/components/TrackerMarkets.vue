@@ -123,7 +123,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["getTokenOverview"]),
+    ...mapGetters(["getTokenOverview", "getTheme"]),
     sortedExchanges() {
       return (
         _.orderBy(this.getTokenOverview.exchanges, "tokenTvl", "desc") || []
@@ -148,31 +148,37 @@ export default {
         case "plenty":
         case "plenty_tez":
         case "plenty_ctez":
-          return "https://res.cloudinary.com/melvin-manni/image/upload/v1677417526/nstgjnest4jrhcsgwymf.png";
+          return require("../assets/dex-icons/Plenty.png");
 
         case "quipuswap":
         case "quipuswap_v2":
         case "quipuswap_v3":
         case "quipuswap_stable":
         case "quipuswap_token2token":
-          return "https://res.cloudinary.com/melvin-manni/image/upload/v1645292809/c1rutxlzllilmtuibcdo.png";
+          return require("../assets/dex-icons/QuipuswapUpdate.png");
 
         case "youves":
-          return "https://pbs.twimg.com/profile_images/1397080302196039680/teEliSzA_400x400.png";
+          return this.getTheme === "light"
+            ? require("../assets/dex-icons/YouvesLight.svg")
+            : require("../assets/dex-icons/YouvesDark.svg");
 
         case "vortex":
-          return "https://www.gitbook.com/cdn-cgi/image/width=40,height=40,fit=contain,dpr=1,format=auto/https%3A%2F%2F3533877337-files.gitbook.io%2F~%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FyX7WTYr0YMeQcemP26Of%252Ficon%252F76rbNGaJiDxSJwFIjsLQ%252FGroup%25201494.png%3Falt%3Dmedia%26token%3D829a380f-2d70-4ceb-ac23-8c2aaddf8fe5";
+          return require("../assets/dex-icons/Vortex.svg");
 
         case "spicyswap":
         case "spicy":
-          return "https://docs.spicyswap.xyz/img/spicy.png";
+          return require("../assets/dex-icons/Spicy.png");
         case "lb":
         case "sirius":
-          return "https://res.cloudinary.com/melvin-manni/image/upload/v1663433569/lcmsyxatxezrrcovuklr.png";
+          return require("../assets/dex-icons/Sirius.svg");
         case "alien":
-          return "https://lh3.googleusercontent.com/drive-viewer/AITFw-wJLI6KDrTfx-KKskNIiVXnO7o48eoIUCgO1Vxu2e6_eNz8MRexBTCkB2rPZ5qzqiQ7NktcUipFDkcjy8gmcIDca1f8Ig=s2560";
+          return require("../assets/dex-icons/Alien.png");
         case "flame":
-          return "https://lh3.googleusercontent.com/drive-viewer/AITFw-zV_wN-tJD5iFfUCG2srWTvrh0rW-nQ8Tq_htOyqWfm5lGtEBJsPyBCoI6aVjMcC-JNWnxFY0m6vkxaV8LwfQolgU63AA=s2560";
+          return require("../assets/dex-icons/Flame.png");
+        case "wtz":
+          return require("../assets/dex-icons/WtzUpdate.png");
+        case "ctez":
+          return require("../assets/dex-icons/Ctez.png");
         default:
           return "";
       }

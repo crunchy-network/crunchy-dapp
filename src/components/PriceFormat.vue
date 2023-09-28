@@ -110,9 +110,9 @@ export default {
         if (this.value < 0.0000000001 && this.value > 0) {
           precision = 12;
         } else if (this.value < 0.00000001 && this.value > 0) {
-          precision = 10;
+          precision = 11;
         } else if (this.value < 0.000001 && this.value > 0) {
-          precision = 8;
+          precision = 10;
         } else if (this.value < 0.0001 && this.value > 0) {
           precision = 6;
         } else if (this.value < 0.001 && this.value > 0) {
@@ -130,9 +130,9 @@ export default {
         if (this.usdValue < 0.0000000001 && this.usdValue > 0) {
           precision = 12;
         } else if (this.usdValue < 0.00000001 && this.usdValue > 0) {
-          precision = 10;
+          precision = 11;
         } else if (this.usdValue < 0.000001 && this.usdValue > 0) {
-          precision = 8;
+          precision = 10;
         } else if (this.usdValue < 0.0001 && this.usdValue > 0) {
           precision = 6;
         } else if (this.usdValue < 0.001 && this.usdValue > 0) {
