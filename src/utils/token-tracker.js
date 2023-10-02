@@ -861,7 +861,6 @@ export default {
 
           let quoteToken;
           let quoteTokenPriceInTez;
-          let quoteTokenPriceInWTZ;
           // Token has quote paired with xtz
           if (quoteData.token.tokenAddress === "tez") {
             close = quoteData.quote;
@@ -873,16 +872,15 @@ export default {
                 quoteData.token.tokenAddress === el.tokenAddress &&
                 quoteData.token.tokenId === el.tokenId
             );
-            quoteTokenPriceInTez = quoteToken?.quotes.find(
-              (el) => el.token.tokenAddress === "tez"
+            quoteTokenPriceInTez = quoteToken?.quotes.find((el) =>
+              TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
             )?.quote;
-            quoteTokenPriceInWTZ = quoteToken?.quotes.find(
-              (el) =>
-                el.token.tokenAddress === "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn"
-            )?.quote;
-            close = isNaN(quoteTokenPriceInTez)
-              ? quoteData.quote * quoteTokenPriceInWTZ
-              : quoteData.quote * quoteTokenPriceInTez;
+
+            close = TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(
+              quoteData.token.tokenAddress
+            )
+              ? Number(quoteData.quote)
+              : Number(quoteData.quote) * Number(quoteTokenPriceInTez);
           }
 
           // NaN and Alien dex type error
@@ -913,13 +911,13 @@ export default {
         ).quotes;
 
         const filteredTokenQuote1D = tokenQuote1D.filter(
-          (quote) => new Date(quote.buckets[0].bucket) >= new Date(oneDayAgo)
+          (quote) => sameDay(new Date(quote.buckets[0].bucket),new Date(oneDayAgo))
         );
         const filteredTokenQuote1W = tokenQuote1W.filter(
-          (quote) => new Date(quote.buckets[0].bucket) >= new Date(oneWeekAgo)
+          (quote) => sameDay(new Date(quote.buckets[0].bucket), new Date(oneWeekAgo))
         );
         const filteredTokenQuote1MO = tokenQuote1MO.filter(
-          (quote) => new Date(quote.buckets[0].bucket) >= new Date(oneMonthAgo)
+          (quote) => sameDay(new Date(quote.buckets[0].bucket), new Date(oneMonthAgo))
         );
 
         element.dayClose = getAggregatedOpen(
