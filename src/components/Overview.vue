@@ -13,76 +13,61 @@
         justify="space-between"
       >
         <div class="tab-wrapper tab-custom-element">
-          <button
-            v-if="legendTab !== 'price'"
-            class="tab-text"
-            :style="isActiveTab('all', duration)"
-            @click="setDurationTab('all')"
-          >
-            All
-          </button>
-          <button
-            v-if="
-              legendTab === 'price' ||
-              (legendTab === 'volume' && tokenTracked.symbol !== 'PLY')
-            "
-            class="tab-text"
-            :style="isActiveTab('1h', duration)"
-            @click="setDurationTab('1h')"
-          >
-            1h
-          </button>
-          <button
-            class="tab-text"
-            :style="isActiveTab('1d', duration)"
-            @click="setDurationTab('1d')"
-          >
-            1d
-          </button>
-          <button
-            v-if="legendTab !== 'price'"
-            class="tab-text"
-            :style="isActiveTab('7d', duration)"
-            @click="setDurationTab('7d')"
-          >
-            7d
-          </button>
-          <button
-            v-if="legendTab !== 'price'"
-            class="tab-text"
-            :style="isActiveTab('30d', duration)"
-            @click="setDurationTab('30d')"
-          >
-            30d
-          </button>
+          <el-row>
+            <h2
+              style="
+                color: var(--color-subheading-text);
+
+                font-size: 14px;
+                margin: 0;
+              "
+            >
+              {{ chartType === "mktCap" ? "Total Mkt Cap" : "24h Total Vol" }}
+            </h2>
+            <div style="margin-top: 14px; margin-bottom: 5px; margin-top: 4px">
+              <price-format
+                :font-weight="700"
+                :font-size="24"
+                :value="
+                  chartType === 'mktCap'
+                    ? getTrackerData.estimatedMktCap
+                    : getTrackerData.total24hVolume
+                "
+                :usd-value="
+                  chartType === 'mktCap'
+                    ? getTrackerData.estimatedMktCapUsd
+                    : getTrackerData.total24hVolumeUsd
+                "
+              />
+            </div>
+          </el-row>
         </div>
         <div class="tab-wrapper tab-custom-element">
           <button
             class="tab-text"
-            :style="isActiveTab('price', legendTab)"
-            @click="setLegendTab('price')"
+            :style="isActiveTab('D', legendTab)"
+            @click="setLegendTab('D', chartType)"
           >
-            Price
+            D
           </button>
           <button
             class="tab-text"
-            :style="isActiveTab('volume', legendTab)"
-            @click="setLegendTab('volume')"
+            :style="isActiveTab('W', legendTab)"
+            @click="setLegendTab('W', chartType)"
           >
-            Volume
+            W
           </button>
-          <!-- <button
+          <button
             class="tab-text"
-            :style="isActiveTab('tvl', legendTab)"
-            @click="setLegendTab('tvl')"
+            :style="isActiveTab('M', legendTab)"
+            @click="setLegendTab('M', chartType)"
           >
-            TVL
-          </button> -->
+            M
+          </button>
         </div>
       </el-row>
-      <TrackerOverviewChart
-        :token-tracked="tokenTracked"
-        :duration="duration"
+      <OverviewChart
+        :chart-type="chartType"
         :legend-tab="legendTab"
         :set-loading="setChartLoading"
       />
@@ -92,23 +77,16 @@
 
 <script>
 import numberFormat from "../utils/number-format";
-import TrackerOverviewChart from "./TrackerOverviewChart.vue";
+import OverviewChart from "./OverviewChart.vue";
+import PriceFormat from "./PriceFormat.vue";
 import { mapGetters } from "vuex";
 export default {
-  components: { TrackerOverviewChart },
+  components: { OverviewChart, PriceFormat },
 
   props: {
-    duration: {
+    chartType: {
       type: String,
-      default: "all",
-    },
-    setDurationTab: {
-      type: Function,
-      default: () => {},
-    },
-    tokenTracked: {
-      type: Object,
-      default: () => {},
+      default: "",
     },
     loading: {
       type: Boolean,
@@ -118,51 +96,39 @@ export default {
 
   data() {
     return {
-      legendTab: "price",
+      legendTab: "D",
       chartLoading: false,
     };
   },
 
   computed: {
-    ...mapGetters(["getLoadingChart", "getXtzUsdPrice"]),
+    ...mapGetters(["getLoadingChart", "getTrackerData"]),
   },
   watch: {
-    "$router.query.legend": function (val) {
-      this.legendTab = val;
-      if (val === "price") {
-        if (this.$route.query.duration !== "1d") {
-          this.setDurationTab("1h");
-        }
-      }
-    },
-
-    legendTab(val) {
-      if (val === "price") {
-        if (this.$route.query.duration !== "1d") {
-          this.setDurationTab("1h");
-        }
-      }
-    },
+    // "$route.query.legend": function (val) {
+    //   // Ensure that this watch only applies to the specific instance of the component
+    //   if (this.chartType === this.$route.query.chartType) {
+    //     this.legendTab = val;
+    //   }
+    // },
   },
 
-  created() {
-    if (this.$route.query.legend) {
-      this.legendTab = this.$route.query.legend;
-    } else {
-      this.$router.replace({
-        query: {
-          ...this.$route.query,
-          legend: this.legendTab,
-        },
-      });
-    }
-
-    if (this.legendTab === "price") {
-      if (this.$route.query.duration !== "1d") {
-        this.setDurationTab("1h");
-      }
-    }
-  },
+  // created() {
+  //   if (
+  //     this.$route.query.legend &&
+  //     this.chartType === this.$route.query.chartType
+  //   ) {
+  //     this.legendTab = this.$route.query.legend;
+  //   } else {
+  //     this.$router.replace({
+  //       query: {
+  //         ...this.$route.query,
+  //         chartType: this.chartType,
+  //         legend: this.legendTab,
+  //       },
+  //     });
+  //   }
+  // },
 
   methods: {
     setChartLoading(val) {
@@ -176,15 +142,16 @@ export default {
     },
 
     setLegendTab(tab = "") {
-      if (["volume", "tvl", "price"].includes(tab)) {
+      if (["D", "W", "M"].includes(tab)) {
         this.legendTab = tab;
       }
-      this.$router.replace({
-        query: {
-          ...this.$route.query,
-          legend: tab,
-        },
-      });
+      // this.$router.replace({
+      //   query: {
+      //     ...this.$route.query,s
+      //     chartType: this.chartType,
+      //     legend: tab,
+      //   },
+      // });
     },
 
     formatNumShorthand(val) {

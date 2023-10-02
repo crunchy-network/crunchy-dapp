@@ -40,7 +40,7 @@
             <el-col class="hide-md" :span="5" style="text-align: right">
               <div style="margin-top: 14px">
                 <img
-                  style="width: 80%"
+                  style="width: 50%"
                   src="../assets/token-tracker-vector.svg"
                   alt=""
                 />
@@ -53,64 +53,32 @@
             :gutter="20"
             style="margin-top: 24px; flex-wrap: wrap; row-gap: 20px"
           >
-            <el-col :sm="12" :md="10">
+            <el-col :sm="12" :md="12">
               <div class="grid-content" style="height: 100%">
-                <el-card class="box-card" shadow="always" style="height: 100%">
-                  <h2
-                    style="
-                      color: var(--color-subheading-text);
-
-                      font-size: 14px;
-                      margin: 0;
-                    "
-                  >
-                    EST Total Mkt Cap
-                  </h2>
-                  <div
-                    style="
-                      margin-top: 14px;
-                      margin-bottom: 5px;
-                      margin-top: 4px;
-                    "
-                  >
-                    <price-format
-                      :font-weight="700"
-                      :font-size="24"
-                      :value="getTrackerData.estimatedMktCap"
-                      :usd-value="getTrackerData.estimatedMktCapUsd"
-                    />
-                  </div>
-                </el-card>
+                <!-- <el-card class="box-card" shadow="always" style="height: 100%"> -->
+                <el-col>
+                  <Overview
+                    id="mktCap-chart"
+                    :key="'mktCap'"
+                    :loading="getLoading"
+                    :chart-type="'mktCap'"
+                  />
+                </el-col>
+                <!-- </el-card> -->
               </div>
             </el-col>
-            <el-col :sm="12" :md="10">
+            <el-col :sm="12" :md="12">
               <div class="grid-content" style="height: 100%">
-                <el-card class="box-card" shadow="always" style="height: 100%">
-                  <h2
-                    style="
-                      color: var(--color-subheading-text);
-
-                      font-size: 14px;
-                      margin: 0;
-                    "
-                  >
-                    24h Total Vol
-                  </h2>
-                  <div
-                    style="
-                      margin-top: 14px;
-                      margin-bottom: 5px;
-                      margin-top: 4px;
-                    "
-                  >
-                    <price-format
-                      :font-weight="700"
-                      :font-size="24"
-                      :value="getTrackerData.total24hVolume"
-                      :usd-value="getTrackerData.total24hVolumeUsd"
-                    />
-                  </div>
-                </el-card>
+                <!-- <el-card class="box-card" shadow="always" style="height: 100%"> -->
+                <el-col>
+                  <Overview
+                    id="vol-chart"
+                    :key="'volume'"
+                    :loading="getLoading"
+                    :chart-type="'volume'"
+                  />
+                </el-col>
+                <!-- </el-card> -->
               </div>
             </el-col>
           </el-row>
@@ -322,19 +290,19 @@ import TokenTrakerRow from "./TokenTrakerRow.vue";
 import NavMenu from "./NavMenu.vue";
 import { mapActions, mapGetters, mapState } from "vuex";
 import numberFormat from "../utils/number-format";
-import PriceFormat from "./PriceFormat.vue";
 import _ from "lodash";
 import SortArrowIndicator from "./SortArrowIndicator.vue";
 import TablePagination from "./TablePagination.vue";
+import Overview from "./Overview.vue";
 
 export default {
   name: "TokenTracker",
   components: {
     TokenTrakerRow,
     NavMenu,
-    PriceFormat,
     SortArrowIndicator,
     TablePagination,
+    Overview,
   },
   data() {
     return {
@@ -365,6 +333,9 @@ export default {
           ["desc", this.sort.rule]
         ) || []
       );
+    },
+    getLoading() {
+      return this.tokenTracker.loading;
     },
   },
 

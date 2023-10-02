@@ -10,6 +10,11 @@ export default {
     tokenList: [],
     tokensTracked: {},
     LS_FAVORITES_KEY: "FAVORITES_LIST",
+    overViewChart: {
+      mktCapAndVol1D: [],
+      mktCapAndVol1W: [],
+      mktCapAndVol1Mo: [],
+    },
     tokenOverview: {
       chartData: {
         volumeAndPrice1Hour: [],
@@ -77,6 +82,10 @@ export default {
       return state.tokenOverview.chartData;
     },
 
+    getOverviewChart(state) {
+      return state.overViewChart;
+    },
+    
     getXtzUsdPrice(state) {
       return state.xtzUsd;
     },

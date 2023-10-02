@@ -5,6 +5,7 @@ import dexIndexer from "./dex-indexer";
 import ipfs from "./ipfs";
 import tzkt from "./tzkt";
 import _ from "lodash";
+import tokensBlocked from "../tokensBlocked.json";
 
 const ALIEN_FEE_DENOMINATOR = new BigNumber(1000000000000000000n);
 const day1 = new Date(new Date().setDate(new Date().getDate() - 1)).getTime();
@@ -14,12 +15,25 @@ const oneHourInMiliSecond = 60 * 60 * 1000;
 const oneDayInMiliSecond = oneHourInMiliSecond * 24;
 const oneWeekInMiliSecond = oneDayInMiliSecond * 7;
 const oneMonthInMiliSecond = oneDayInMiliSecond * 30;
+const oneMonthAndOneDayInMiliSecond = oneDayInMiliSecond * 31;
 const twoMonthInMiliSecond = oneDayInMiliSecond * 60;
+const sixMonthInMiliSecond = oneDayInMiliSecond * 180;
+const oneYearInMiliSecond = oneDayInMiliSecond * 360;
 const oneDayAgo = new Date(Date.now() - oneDayInMiliSecond).toISOString();
 const oneWeekAgo = new Date(Date.now() - oneWeekInMiliSecond).toISOString();
 const oneMonthAgo = new Date(Date.now() - oneMonthInMiliSecond).toISOString();
-const twoMonthAgo = new Date(Date.now() - twoMonthInMiliSecond);
+const oneMonthAndOneDayAgo = new Date(
+  Date.now() - oneMonthAndOneDayInMiliSecond
+).toISOString();
+const twoMonthAgo = new Date(Date.now() - twoMonthInMiliSecond).toISOString();
+const sixMonthAgo = new Date(Date.now() - sixMonthInMiliSecond).toISOString();
+const oneYearAgo = new Date(Date.now() - oneYearInMiliSecond).toISOString();
 const PLY_TOKEN_ID = "KT1JVjgXPMMSaa6FkzeJcgb8q9cUaLmwaJUX_0";
+const TEZ_AND_WRAPPED_TEZ_ADDRESSES = [
+  "tez",
+  "KT1UpeXdK6AJbX58GJ92pLZVCucn2DR8Nu4b",
+  "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn",
+];
 
 async function getPlentyTokenDailyMetrics(symbol = "") {
   const uri = `https://api.analytics.plenty.network/analytics/tokens/${symbol}?priceHistory=day`;
@@ -33,6 +47,81 @@ async function getSpicyTokenDailyMetrics(tag = "") {
   const res = await (await axios.get(uri)).data;
 
   return res;
+}
+
+function getMktCapAndVolume(allTokenPriceAndVol, type) {
+  const currentDate = new Date();
+  let currentDateIterator;
+  const result = [];
+
+  if (type === "1d") {
+    currentDateIterator = new Date(oneMonthAgo);
+  } else if (type === "1w") {
+    currentDateIterator = new Date(sixMonthAgo);
+  } else {
+    currentDateIterator = new Date(oneYearAgo);
+  }
+
+  // Set the time components to zero
+  currentDateIterator.setUTCHours(0);
+  currentDateIterator.setUTCMinutes(0);
+  currentDateIterator.setUTCSeconds(0);
+  currentDateIterator.setUTCMilliseconds(0);
+  
+  // eslint-disable-next-line no-unmodified-loop-condition
+  while (currentDateIterator <= currentDate) {
+    let mktCap = 0;
+    let totalVol = 0;
+    allTokenPriceAndVol.forEach((token) => {
+      if (
+        tokensBlocked.includes(token) ||
+        tokensBlocked.includes("KT19DUSZw7mfeEATrbWVPHRrWNVbNnmfFAE6")
+      ) {
+        return;
+      }
+
+      const tokenQuoteAtDate = findElementWithSameDate(
+        token.quotes,
+        currentDateIterator
+      );
+
+      let tokenQuoteClosestToDate;
+      if (!tokenQuoteAtDate) {
+        tokenQuoteClosestToDate = findClosestElementToDate(
+          token.quotes,
+          currentDateIterator
+        );
+        return;
+      }
+
+      const tokenCalcSupply = new BigNumber(token.totalSupply)
+        .div(new BigNumber(10).pow(token.decimals))
+        .toNumber();
+
+      const tokenMktCap = tokenQuoteAtDate
+        ? new BigNumber(tokenCalcSupply)
+            .times(tokenQuoteAtDate.close_xtz)
+            .toNumber()
+        : new BigNumber(tokenCalcSupply)
+            .times(tokenQuoteClosestToDate.close_xtz)
+            .toNumber();
+
+      const tokenVol = tokenQuoteAtDate?.aggregatedXtzVolume;
+      mktCap += tokenMktCap;
+      totalVol += tokenVol;
+    });
+
+    result.push({
+      bucket: currentDateIterator.toISOString(),
+      mktCap,
+      totalVol,
+    });
+
+    // Increment the iterator by one day
+    currentDateIterator.setDate(currentDateIterator.getDate() + 1);
+  }
+
+  return result;
 }
 
 function aggregateQuotes(quotes) {
@@ -53,8 +142,8 @@ function modifyQuotes(quotes, allTokenSpot, type) {
         quote.token.tokenAddress === el.tokenAddress &&
         quote.token.tokenId === el.tokenId
     );
-    quoteTokenPriceInTez = quoteToken?.quotes.find(
-      (el) => el.token.tokenAddress === "tez"
+    quoteTokenPriceInTez = quoteToken?.quotes.find((el) =>
+      TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
     )?.quote;
 
     // Only get element from one month for 1h chart
@@ -66,21 +155,23 @@ function modifyQuotes(quotes, allTokenSpot, type) {
     // Only get element from two months for 1d chart
     if (type === "1d") {
       quote.buckets = quote.buckets.filter(
-        (bucket) => new Date(bucket.bucket) > twoMonthAgo
+        (bucket) => new Date(bucket.bucket) > new Date(twoMonthAgo)
       );
     }
     quote.buckets.map((bucket) => {
-      bucket.dex_type = quote.pool.dex.type;
+      bucket.dex_type = quote?.pool?.dex.type;
       bucket.quote_token_address = quote.token.tokenAddress;
       bucket.quote_token_id = quote.token.tokenId;
-      bucket.close_xtz =
-        quote.token.tokenAddress === "tez"
-          ? Number(bucket.close)
-          : Number(bucket.close) * Number(quoteTokenPriceInTez);
-      bucket.volume_quote_xtz =
-        quote.token.tokenAddress === "tez"
-          ? Number(bucket.quoteVolume)
-          : Number(bucket.quoteVolume) * Number(quoteTokenPriceInTez);
+      bucket.close_xtz = TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(
+        quote.token.tokenAddress
+      )
+        ? Number(bucket.close)
+        : Number(bucket.close) * Number(quoteTokenPriceInTez);
+      bucket.volume_quote_xtz = TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(
+        quote.token.tokenAddress
+      )
+        ? Number(bucket.quoteVolume)
+        : Number(bucket.quoteVolume) * Number(quoteTokenPriceInTez);
     });
   });
   return quotes;
@@ -150,10 +241,38 @@ function sameHour(d1, d2) {
 }
 
 function findElementWithSameDate(array, targetDate) {
+  if (!Array.isArray(array) || array.length === 0) {
+    return null; // Return null for an empty or non-array input
+  }
+
   return array.find((element) => {
     const date = element.bucket;
     return sameDay(new Date(date), new Date(targetDate));
   });
+}
+
+function findClosestElementToDate(array, targetDate) {
+  if (!Array.isArray(array) || array.length === 0) {
+    return null; // Return null for an empty or non-array input
+  }
+
+  // Calculate the initial minimum time difference and initialize the closest element
+  let minTimeDifference = Math.abs(targetDate - new Date(array[0].bucket));
+  let closestElement = array[0];
+
+  // Iterate through the array to find the closest element
+  array.forEach((element) => {
+    const elementDate = new Date(element.bucket);
+    const timeDifference = Math.abs(targetDate - elementDate);
+
+    if (timeDifference < minTimeDifference) {
+      // Update the closest element if a closer one is found
+      minTimeDifference = timeDifference;
+      closestElement = element;
+    }
+  });
+
+  return closestElement;
 }
 
 function findElementsWithSameHour(array, targetDate) {
@@ -457,6 +576,49 @@ export default {
       quotes1d: aggregatedQuotes1d,
       quotes1w: aggregatedQuotes1w,
       quotes1mo: aggregatedQuotes1mo,
+    };
+  },
+
+  async getOverviewChartData(tokenFeed) {
+    let [
+      allPriceAndVol1D,
+      // allPriceAndVol1W,
+      // allPriceAndVol1Mo,
+      allTokenSpot,
+    ] = await Promise.all([
+      dexIndexer.getAggregatedPriceAndVolume1D(oneMonthAndOneDayAgo),
+      // dexIndexer.getAggregatedPriceAndVolume1W(),
+      // dexIndexer.getAggregatedPriceAndVolume1MO(),
+      dexIndexer.getAllTokenSpot(),
+    ]);
+
+    // Only get ranked token
+    allPriceAndVol1D = allPriceAndVol1D.filter((token) => {
+      const tokenFound = tokenFeed.find((el) =>
+        el.tokenAddress === token.tokenAddress && el.tokenId === token.tokenId)
+      return !!tokenFound && tokenFound.tokenTvl >= 5000;
+    })
+
+    allPriceAndVol1D.forEach((token) => {
+      token.quotes = modifyQuotes(token.quotes, allTokenSpot, "1d");
+    });
+
+    allPriceAndVol1D.forEach((token) => {
+      token.quotes = aggregateQuotes(token.quotes);
+    });
+
+    allPriceAndVol1D.forEach((token) => {
+      token.quotes = getAggregatedPriceAndVolume(token.quotes);
+    });
+    
+    const mktCapAndVol1D = getMktCapAndVolume(allPriceAndVol1D, "1d");
+    const mktCapAndVol1W = [];
+    const mktCapAndVol1Mo = [];
+
+    return {
+      mktCapAndVol1D,
+      mktCapAndVol1W,
+      mktCapAndVol1Mo,
     };
   },
 
