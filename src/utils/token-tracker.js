@@ -52,14 +52,18 @@ async function getSpicyTokenDailyMetrics(tag = "") {
 function getMktCapAndVolume(allTokenPriceAndVol, type) {
   const currentDate = new Date();
   let currentDateIterator;
+  let offsetIterator;
   const result = [];
 
   if (type === "1d") {
     currentDateIterator = new Date(oneMonthAgo);
+    offsetIterator = 1;
   } else if (type === "1w") {
-    currentDateIterator = new Date(sixMonthAgo);
+    currentDateIterator = new Date(allTokenPriceAndVol[0]?.quotes[0]?.bucket);
+    offsetIterator = 7;
   } else {
-    currentDateIterator = new Date(oneYearAgo);
+    currentDateIterator = new Date(allTokenPriceAndVol[0]?.quotes[0]?.bucket);
+    offsetIterator = 30;
   }
 
   // Set the time components to zero
@@ -118,7 +122,7 @@ function getMktCapAndVolume(allTokenPriceAndVol, type) {
     });
 
     // Increment the iterator by one day
-    currentDateIterator.setDate(currentDateIterator.getDate() + 1);
+    currentDateIterator.setDate(currentDateIterator.getDate() + offsetIterator);
   }
 
   return result;
@@ -582,13 +586,13 @@ export default {
   async getOverviewChartData(tokenFeed) {
     let [
       allPriceAndVol1D,
-      // allPriceAndVol1W,
-      // allPriceAndVol1Mo,
+      allPriceAndVol1W,
+      allPriceAndVol1Mo,
       allTokenSpot,
     ] = await Promise.all([
       dexIndexer.getAggregatedPriceAndVolume1D(oneMonthAndOneDayAgo),
-      // dexIndexer.getAggregatedPriceAndVolume1W(),
-      // dexIndexer.getAggregatedPriceAndVolume1MO(),
+      dexIndexer.getAggregatedPriceAndVolume1W(sixMonthAgo),
+      dexIndexer.getAggregatedPriceAndVolume1MO(oneYearAgo),
       dexIndexer.getAllTokenSpot(),
     ]);
 
@@ -599,22 +603,63 @@ export default {
       return !!tokenFound && tokenFound.tokenTvl >= 5000;
     })
 
+    allPriceAndVol1W = allPriceAndVol1W.filter((token) => {
+      const tokenFound = tokenFeed.find((el) =>
+        el.tokenAddress === token.tokenAddress && el.tokenId === token.tokenId)
+      return !!tokenFound && tokenFound.tokenTvl >= 5000;
+    })
+
+    allPriceAndVol1Mo = allPriceAndVol1Mo.filter((token) => {
+      const tokenFound = tokenFeed.find((el) =>
+        el.tokenAddress === token.tokenAddress && el.tokenId === token.tokenId)
+      return !!tokenFound && tokenFound.tokenTvl >= 5000;
+    })
+
+    // Modify price and volume quotes
     allPriceAndVol1D.forEach((token) => {
       token.quotes = modifyQuotes(token.quotes, allTokenSpot, "1d");
     });
 
+    allPriceAndVol1W.forEach((token) => {
+      token.quotes = modifyQuotes(token.quotes, allTokenSpot);
+    });
+
+    allPriceAndVol1Mo.forEach((token) => {
+      token.quotes = modifyQuotes(token.quotes, allTokenSpot);
+    });
+
+
+    // Aggregate price and volume quotes
     allPriceAndVol1D.forEach((token) => {
       token.quotes = aggregateQuotes(token.quotes);
     });
 
+    allPriceAndVol1W.forEach((token) => {
+      token.quotes = aggregateQuotes(token.quotes);
+    });
+
+    allPriceAndVol1Mo.forEach((token) => {
+      token.quotes = aggregateQuotes(token.quotes);
+    });
+
+    // Get aggregated price and volume
     allPriceAndVol1D.forEach((token) => {
       token.quotes = getAggregatedPriceAndVolume(token.quotes);
     });
     
-    const mktCapAndVol1D = getMktCapAndVolume(allPriceAndVol1D, "1d");
-    const mktCapAndVol1W = [];
-    const mktCapAndVol1Mo = [];
+    allPriceAndVol1W.forEach((token) => {
+      token.quotes = getAggregatedPriceAndVolume(token.quotes);
+    });
 
+    allPriceAndVol1Mo.forEach((token) => {
+      token.quotes = getAggregatedPriceAndVolume(token.quotes);
+    });
+    // Get market cap and total volume
+    const mktCapAndVol1D = getMktCapAndVolume(allPriceAndVol1D, "1d");
+    const mktCapAndVol1W = getMktCapAndVolume(allPriceAndVol1W, "1w");
+    const mktCapAndVol1Mo = getMktCapAndVolume(allPriceAndVol1Mo, "1m");
+
+    console.log(allPriceAndVol1W, mktCapAndVol1W)
     return {
       mktCapAndVol1D,
       mktCapAndVol1W,

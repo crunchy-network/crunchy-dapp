@@ -111,6 +111,46 @@ export default {
           };
         });
 
+      this.updatedChartData.mktCap.days7 =
+        this.getOverviewChart.mktCapAndVol1W.map((element) => {
+          const timeUsdValue = tokenTracker.binarySearch(
+            this.getXtzUsdHistory,
+            new Date(element.bucket).getTime() + 1000 * 60 * 60 * 24
+          );
+          return {
+            time: new Date(element.bucket).getTime() / 1000,
+            value: Number(element.mktCap) * timeUsdValue,
+          };
+        });
+
+      this.updatedChartData.mktCapXtz.days7 =
+        this.getOverviewChart.mktCapAndVol1W.map((element) => {
+          return {
+            time: new Date(element.bucket).getTime() / 1000,
+            value: Number(element.mktCap),
+          };
+        });
+      
+      this.updatedChartData.mktCap.days30 =
+        this.getOverviewChart.mktCapAndVol1Mo.map((element) => {
+          const timeUsdValue = tokenTracker.binarySearch(
+            this.getXtzUsdHistory,
+            new Date(element.bucket).getTime() + 1000 * 60 * 60 * 24
+          );
+          return {
+            time: new Date(element.bucket).getTime() / 1000,
+            value: Number(element.mktCap) * timeUsdValue,
+          };
+        });
+
+      this.updatedChartData.mktCapXtz.days30 =
+        this.getOverviewChart.mktCapAndVol1Mo.map((element) => {
+          return {
+            time: new Date(element.bucket).getTime() / 1000,
+            value: Number(element.mktCap),
+          };
+        });
+
 
       this.updatedChartData.volume.days1 =
         this.getOverviewChart.mktCapAndVol1D.map((element) => {
@@ -131,46 +171,47 @@ export default {
             value: Number(element.totalVol),
           };
         });
+      
+      this.updatedChartData.volume.days7 =
+        this.getOverviewChart.mktCapAndVol1W.map((element) => {
+          const timeUsdValue = tokenTracker.binarySearch(
+            this.getXtzUsdHistory,
+            new Date(element.bucket).getTime()
+          );
+          return {
+            time: new Date(element.bucket).getTime() / 1000,
+            value: Number(element.totalVol) * timeUsdValue,
+          };
+        });
 
+      this.updatedChartData.volumeXtz.days7 =
+        this.getOverviewChart.mktCapAndVol1W.map((element) => {
+          return {
+            time: new Date(element.bucket).getTime() / 1000,
+            value: Number(element.totalVol),
+          };
+        });
+      
+      this.updatedChartData.volume.days30 =
+        this.getOverviewChart.mktCapAndVol1Mo.map((element) => {
+          const timeUsdValue = tokenTracker.binarySearch(
+            this.getXtzUsdHistory,
+            new Date(element.bucket).getTime()
+          );
+          return {
+            time: new Date(element.bucket).getTime() / 1000,
+            value: Number(element.totalVol) * timeUsdValue,
+          };
+        });
 
-    //   this.updatedChartData.volume.days7 =
-    //     this.getOverviewChart.volumeAndPrice7Day.map((element) => {
-    //       const timeUsdValue = tokenTracker.binarySearch(
-    //         this.getXtzUsdHistory,
-    //         new Date(element.bucket).getTime()
-    //       );
-    //       return {
-    //         time: new Date(element.bucket).getTime() / 1000,
-    //         value: Number(element.aggregatedXtzVolume) * timeUsdValue,
-    //       };
-    //     });
-    //   this.updatedChartData.volumeXtz.days7 =
-    //     this.getOverviewChart.volumeAndPrice7Day.map((element) => {
-    //       return {
-    //         time: new Date(element.bucket).getTime() / 1000,
-    //         value: Number(element.aggregatedXtzVolume),
-    //       };
-    //     });
+      this.updatedChartData.volumeXtz.days30 =
+        this.getOverviewChart.mktCapAndVol1Mo.map((element) => {
+          return {
+            time: new Date(element.bucket).getTime() / 1000,
+            value: Number(element.totalVol),
+          };
+        });
 
-
-    //   this.updatedChartData.volume.days30 =
-    //     this.getOverviewChart.volumeAndPrice30Day.map((element) => {
-    //       const timeUsdValue = tokenTracker.binarySearch(
-    //         this.getXtzUsdHistory,
-    //         new Date(element.bucket).getTime()
-    //       );
-    //       return {
-    //         time: new Date(element.bucket).getTime() / 1000,
-    //         value: Number(element.aggregatedXtzVolume) * timeUsdValue,
-    //       };
-    //     });
-    //   this.updatedChartData.volumeXtz.days30 =
-    //     this.getOverviewChart.volumeAndPrice30Day.map((element) => {
-    //       return {
-    //         time: new Date(element.bucket).getTime() / 1000,
-    //         value: Number(element.aggregatedXtzVolume),
-    //       };
-    //     });
 
     },
 
