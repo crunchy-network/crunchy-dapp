@@ -309,9 +309,6 @@
           >
             <NavUtils />
             <nav-wallet />
-            <div style="margin-left: 16px">
-              <toggle-theme />
-            </div>
             <slot />
           </div>
         </div>
@@ -331,9 +328,6 @@
           </div>
           <slot />
           <nav-wallet />
-          <div style="margin-left: 16px">
-            <toggle-theme />
-          </div>
         </div>
       </el-row>
     </el-header>
@@ -345,10 +339,9 @@ import Logo from "./Logo.vue";
 import NavUtils from "./NavUtils.vue";
 import NavWallet from "./NavWallet.vue";
 import Notice from "./Notice.vue";
-import ToggleTheme from "./ToggleTheme.vue";
 export default {
   name: "NavMenu",
-  components: { NavWallet, NavUtils, Notice, ToggleTheme, Logo },
+  components: { NavWallet, NavUtils, Notice, Logo },
   data() {
     return {
       showNotice: false,
