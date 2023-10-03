@@ -320,7 +320,6 @@ export default {
               textColor: this.getTheme === "dark" ? "#fff" : "#191B1F",
             },
             rightPriceScale: {
-              minVisiblePrice: 0,
               visible: true,
               scaleMargins: {
                 top: 0.2,
@@ -556,6 +555,17 @@ export default {
   justify-content: flex-start;
 }
 
+.overview-chart #volume
+    > div.tv-lightweight-charts
+    > table
+    > tr:nth-child(1)
+    > td:nth-child(2)
+    > div {
+  width: 548px !important;
+}
+.overview-chart #volume > div.tv-lightweight-charts > table > tr:nth-child(1) > td:nth-child(2) > div > canvas:nth-child(1){
+  width: 548px !important;
+}
 .overview-chart #token-chart-tooltip {
   min-width: 130px;
   max-width: max-content;
@@ -575,5 +585,18 @@ export default {
   font-family: "Poppins", Roboto, Ubuntu, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+@media (max-width: 576px) {
+  .overview-chart #volume
+    > div.tv-lightweight-charts
+    > table
+    > tr:nth-child(1)
+    > td:nth-child(2)
+    > div {
+    width: 200px !important;
+  }
+  .overview-chart #volume > div.tv-lightweight-charts > table > tr:nth-child(1) > td:nth-child(2) > div > canvas:nth-child(1){
+    width: 200px !important;
+  }
 }
 </style>
