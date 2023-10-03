@@ -34,33 +34,17 @@ export default {
   actions,
   getters: {
     getTrackerData(state) {
+      const mktCapAndVolToday =
+        state.overViewChart.mktCapAndVol1D[
+          state.overViewChart.mktCapAndVol1D.length - 1
+        ];
       return {
         tokensTracked: state.tokenList.length,
-        dexCovered: 4,
-        total24hVolume: state.tokenList.reduce((prev, current) => {
-          if (current.tokenTvl >= 5000) {
-            return prev + parseFloat(current.volume24);
-          }
-          return prev;
-        }, 0),
-        total24hVolumeUsd: state.tokenList.reduce((prev, current) => {
-          if (current.tokenTvl >= 5000) {
-            return prev + parseFloat(current.volume24Usd);
-          }
-          return prev;
-        }, 0),
-        estimatedMktCap: state.tokenList.reduce((prev, current) => {
-          if (current.tokenTvl >= 5000) {
-            return prev + parseFloat(current.mktCap);
-          }
-          return prev;
-        }, 0),
-        estimatedMktCapUsd: state.tokenList.reduce((prev, current) => {
-          if (current.tokenTvl >= 5000) {
-            return prev + parseFloat(current.mktCapUsd);
-          }
-          return prev;
-        }, 0),
+        dexCovered: 16,
+        total24hVolume: mktCapAndVolToday?.totalVol,
+        total24hVolumeUsd: mktCapAndVolToday?.totalVol * state.xtzUsd,
+        estimatedMktCap: mktCapAndVolToday?.mktCap,
+        estimatedMktCapUsd: mktCapAndVolToday?.mktCap * state.xtzUsd,
       };
     },
 

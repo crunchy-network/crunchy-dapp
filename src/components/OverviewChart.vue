@@ -448,7 +448,6 @@ export default {
             if (top > container.clientHeight - toolTipHeight) {
               top = y + tokenMetricsMargin.offsetHeight - toolTipHeight - toolTipMargin;
             }
-            console.log(left, top)
             toolTip.style.left = left + "px";
             toolTip.style.top = top + "px";
           }
@@ -541,17 +540,17 @@ export default {
 <style>
 .overview-chart {
   min-height: 100%;
-  min-height: 370px;
+  min-height: 300px;
 }
 .overview-chart #mktCap {
   width: 100%;
-  height: 370px;
+  height: 300px;
   display: flex;
   justify-content: flex-start;
 }
 .overview-chart #volume {
   width: 100%;
-  height: 370px;
+  height: 300px;
   display: flex;
   justify-content: flex-start;
 }

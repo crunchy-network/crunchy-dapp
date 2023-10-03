@@ -56,13 +56,10 @@ function getMktCapAndVolume(allTokenPriceAndVol, type) {
 
   if (type === "1d") {
     currentDateIterator = new Date(oneMonthAgo);
-    offsetIterator = 1;
   } else if (type === "1w") {
     currentDateIterator = new Date(allTokenPriceAndVol[0]?.quotes[0]?.bucket);
-    offsetIterator = 7;
   } else {
     currentDateIterator = new Date(allTokenPriceAndVol[0]?.quotes[0]?.bucket);
-    offsetIterator = 30;
   }
 
   // Set the time components to zero
@@ -116,7 +113,22 @@ function getMktCapAndVolume(allTokenPriceAndVol, type) {
     });
 
     // Increment the iterator by one day
-    currentDateIterator.setDate(currentDateIterator.getDate() + offsetIterator);
+    if (type === "1d") {
+      offsetIterator = 1;
+      currentDateIterator.setDate(
+        currentDateIterator.getDate() + offsetIterator
+      );
+    } else if (type === "1w") {
+      offsetIterator = 7;
+      currentDateIterator.setDate(
+        currentDateIterator.getDate() + offsetIterator
+      );
+    } else {
+      offsetIterator = 1;
+      currentDateIterator.setUTCMonth(
+        currentDateIterator.getUTCMonth() + offsetIterator
+      );
+    }
   }
 
   return result;
@@ -919,11 +931,6 @@ export default {
         element.dayClose = getAggregatedOpen(tokenSpot1D, allTokenSpot);
         element.weekClose = getAggregatedOpen(tokenSpot1W, allTokenSpot);
         element.monthClose = getAggregatedOpen(tokenSpot1Mo, allTokenSpot);
-
-        if (element.tokenAddress === "KT1MZg99PxMDEENwB4Fi64xkqAVh5d1rv8Z9") {
-          console.log(tokenSpot1D);
-          console.log(element.dayClose);
-        }
 
         const timeUsdValueDay1 = binarySearch(xtzUsdHistory, day1);
         const timeUsdValueDay7 = binarySearch(xtzUsdHistory, day7);
