@@ -371,7 +371,6 @@ export default {
   },
 
   mounted() {
-    document.documentElement.setAttribute("data-theme", this.getTheme);
     setInterval(() => {
       this.softLoadTokensTracked();
     }, 1000 * 60 * 3);
