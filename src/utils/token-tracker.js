@@ -18,8 +18,8 @@ const oneMonthAndOneDayInMiliSecond = oneDayInMiliSecond * 31;
 const twoMonthInMiliSecond = oneDayInMiliSecond * 60;
 const sixMonthInMiliSecond = oneDayInMiliSecond * 180;
 const oneYearInMiliSecond = oneDayInMiliSecond * 360;
-const oneDayAgo = new Date(Date.now() - oneDayInMiliSecond).toISOString();
-const oneWeekAgo = new Date(Date.now() - oneWeekInMiliSecond).toISOString();
+// const oneDayAgo = new Date(Date.now() - oneDayInMiliSecond).toISOString();
+// const oneWeekAgo = new Date(Date.now() - oneWeekInMiliSecond).toISOString();
 const oneMonthAgo = new Date(Date.now() - oneMonthInMiliSecond).toISOString();
 const oneMonthAndOneDayAgo = new Date(
   Date.now() - oneMonthAndOneDayInMiliSecond
