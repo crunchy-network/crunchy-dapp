@@ -5,7 +5,6 @@ import dexIndexer from "./dex-indexer";
 import ipfs from "./ipfs";
 import tzkt from "./tzkt";
 import _ from "lodash";
-import tokensBlocked from "../tokensBlocked.json";
 
 const ALIEN_FEE_DENOMINATOR = new BigNumber(1000000000000000000n);
 const day1 = new Date(new Date().setDate(new Date().getDate() - 1)).getTime();
@@ -71,19 +70,13 @@ function getMktCapAndVolume(allTokenPriceAndVol, type) {
   currentDateIterator.setUTCMinutes(0);
   currentDateIterator.setUTCSeconds(0);
   currentDateIterator.setUTCMilliseconds(0);
-  
+
   // eslint-disable-next-line no-unmodified-loop-condition
   while (currentDateIterator <= currentDate) {
     let mktCap = 0;
     let totalVol = 0;
-    allTokenPriceAndVol.forEach((token) => {
-      if (
-        tokensBlocked.includes(token) ||
-        tokensBlocked.includes("KT19DUSZw7mfeEATrbWVPHRrWNVbNnmfFAE6")
-      ) {
-        return;
-      }
 
+    allTokenPriceAndVol.forEach((token) => {
       const tokenQuoteAtDate = findElementWithSameDate(
         token.quotes,
         currentDateIterator
@@ -95,7 +88,6 @@ function getMktCapAndVolume(allTokenPriceAndVol, type) {
           token.quotes,
           currentDateIterator
         );
-        return;
       }
 
       const tokenCalcSupply = new BigNumber(token.totalSupply)
@@ -109,8 +101,10 @@ function getMktCapAndVolume(allTokenPriceAndVol, type) {
         : new BigNumber(tokenCalcSupply)
             .times(tokenQuoteClosestToDate.close_xtz)
             .toNumber();
+      const tokenVol = tokenQuoteAtDate
+        ? tokenQuoteAtDate.aggregatedXtzVolume
+        : 0;
 
-      const tokenVol = tokenQuoteAtDate?.aggregatedXtzVolume;
       mktCap += tokenMktCap;
       totalVol += tokenVol;
     });
@@ -584,36 +578,38 @@ export default {
   },
 
   async getOverviewChartData(tokenFeed) {
-    let [
-      allPriceAndVol1D,
-      allPriceAndVol1W,
-      allPriceAndVol1Mo,
-      allTokenSpot,
-    ] = await Promise.all([
-      dexIndexer.getAggregatedPriceAndVolume1D(oneMonthAndOneDayAgo),
-      dexIndexer.getAggregatedPriceAndVolume1W(sixMonthAgo),
-      dexIndexer.getAggregatedPriceAndVolume1MO(oneYearAgo),
-      dexIndexer.getAllTokenSpot(),
-    ]);
+    let [allPriceAndVol1D, allPriceAndVol1W, allPriceAndVol1Mo, allTokenSpot] =
+      await Promise.all([
+        dexIndexer.getAggregatedPriceAndVolume1D(oneMonthAndOneDayAgo),
+        dexIndexer.getAggregatedPriceAndVolume1W(sixMonthAgo),
+        dexIndexer.getAggregatedPriceAndVolume1MO(oneYearAgo),
+        dexIndexer.getAllTokenSpot(),
+      ]);
 
     // Only get ranked token
     allPriceAndVol1D = allPriceAndVol1D.filter((token) => {
-      const tokenFound = tokenFeed.find((el) =>
-        el.tokenAddress === token.tokenAddress && el.tokenId === token.tokenId)
+      const tokenFound = tokenFeed.find(
+        (el) =>
+          el.tokenAddress === token.tokenAddress && el.tokenId === token.tokenId
+      );
       return !!tokenFound && tokenFound.tokenTvl >= 5000;
-    })
+    });
 
     allPriceAndVol1W = allPriceAndVol1W.filter((token) => {
-      const tokenFound = tokenFeed.find((el) =>
-        el.tokenAddress === token.tokenAddress && el.tokenId === token.tokenId)
+      const tokenFound = tokenFeed.find(
+        (el) =>
+          el.tokenAddress === token.tokenAddress && el.tokenId === token.tokenId
+      );
       return !!tokenFound && tokenFound.tokenTvl >= 5000;
-    })
+    });
 
     allPriceAndVol1Mo = allPriceAndVol1Mo.filter((token) => {
-      const tokenFound = tokenFeed.find((el) =>
-        el.tokenAddress === token.tokenAddress && el.tokenId === token.tokenId)
+      const tokenFound = tokenFeed.find(
+        (el) =>
+          el.tokenAddress === token.tokenAddress && el.tokenId === token.tokenId
+      );
       return !!tokenFound && tokenFound.tokenTvl >= 5000;
-    })
+    });
 
     // Modify price and volume quotes
     allPriceAndVol1D.forEach((token) => {
@@ -627,7 +623,6 @@ export default {
     allPriceAndVol1Mo.forEach((token) => {
       token.quotes = modifyQuotes(token.quotes, allTokenSpot);
     });
-
 
     // Aggregate price and volume quotes
     allPriceAndVol1D.forEach((token) => {
@@ -646,7 +641,7 @@ export default {
     allPriceAndVol1D.forEach((token) => {
       token.quotes = getAggregatedPriceAndVolume(token.quotes);
     });
-    
+
     allPriceAndVol1W.forEach((token) => {
       token.quotes = getAggregatedPriceAndVolume(token.quotes);
     });
@@ -659,7 +654,6 @@ export default {
     const mktCapAndVol1W = getMktCapAndVolume(allPriceAndVol1W, "1w");
     const mktCapAndVol1Mo = getMktCapAndVolume(allPriceAndVol1Mo, "1m");
 
-    console.log(allPriceAndVol1W, mktCapAndVol1W)
     return {
       mktCapAndVol1D,
       mktCapAndVol1W,
@@ -910,14 +904,14 @@ export default {
             ele.tokenId === element.tokenId
         ).quotes;
 
-        const filteredTokenQuote1D = tokenQuote1D.filter(
-          (quote) => sameDay(new Date(quote.buckets[0].bucket),new Date(oneDayAgo))
+        const filteredTokenQuote1D = tokenQuote1D.filter((quote) =>
+          sameDay(new Date(quote.buckets[0].bucket), new Date(oneDayAgo))
         );
-        const filteredTokenQuote1W = tokenQuote1W.filter(
-          (quote) => sameDay(new Date(quote.buckets[0].bucket), new Date(oneWeekAgo))
+        const filteredTokenQuote1W = tokenQuote1W.filter((quote) =>
+          sameDay(new Date(quote.buckets[0].bucket), new Date(oneWeekAgo))
         );
-        const filteredTokenQuote1MO = tokenQuote1MO.filter(
-          (quote) => sameDay(new Date(quote.buckets[0].bucket), new Date(oneMonthAgo))
+        const filteredTokenQuote1MO = tokenQuote1MO.filter((quote) =>
+          sameDay(new Date(quote.buckets[0].bucket), new Date(oneMonthAgo))
         );
 
         element.dayClose = getAggregatedOpen(

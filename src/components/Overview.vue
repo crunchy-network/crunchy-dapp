@@ -17,7 +17,6 @@
             <h2
               style="
                 color: var(--color-subheading-text);
-
                 font-size: 14px;
                 margin: 0;
               "
@@ -195,6 +194,7 @@ export default {
     flex-direction: column;
   }
   .tab-custom-element {
+    display: flex !important;
     margin-bottom: 0px;
   }
 }

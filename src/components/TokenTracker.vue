@@ -40,7 +40,7 @@
             <el-col class="hide-md" :span="5" style="text-align: right">
               <div style="margin-top: 14px">
                 <img
-                  style="width: 45%"
+                  style="width: 25%"
                   src="../assets/token-tracker-vector.svg"
                   alt=""
                 />
@@ -53,7 +53,7 @@
             :gutter="20"
             style="margin-top: 24px; flex-wrap: wrap; row-gap: 20px"
           >
-            <el-col :sm="12" :md="12">
+            <el-col :sm="12" :md="12" style="padding-left: 0">
               <div class="grid-content" style="height: 100%">
                 <!-- <el-card class="box-card" shadow="always" style="height: 100%"> -->
                 <el-col>
@@ -67,8 +67,8 @@
                 <!-- </el-card> -->
               </div>
             </el-col>
-            <el-col :sm="12" :md="12">
-              <div class="grid-content" style="height: 100%">
+            <el-col :sm="12" :md="12" >
+              <div class="grid-content" style="height: 100%" >
                 <!-- <el-card class="box-card" shadow="always" style="height: 100%"> -->
                 <el-col>
                   <Overview
@@ -324,7 +324,7 @@ export default {
 
   computed: {
     ...mapState(["tokenTracker"]),
-    ...mapGetters(["getTrackerData", "getTokens", "getShowUsd"]),
+    ...mapGetters(["getTrackerData", "getTokens", "getShowUsd", "getTheme"]),
     sortedTokensTracked() {
       return (
         _.orderBy(
@@ -380,6 +380,7 @@ export default {
   },
 
   mounted() {
+    document.documentElement.setAttribute("data-theme", this.getTheme);
     setInterval(() => {
       this.softLoadTokensTracked();
     }, 1000 * 60 * 3);

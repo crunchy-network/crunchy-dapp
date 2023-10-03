@@ -38,16 +38,28 @@ export default {
         tokensTracked: state.tokenList.length,
         dexCovered: 4,
         total24hVolume: state.tokenList.reduce((prev, current) => {
-          return prev + current.volume24;
+          if (current.tokenTvl >= 5000) {
+            return prev + parseFloat(current.volume24);
+          }
+          return prev;
         }, 0),
         total24hVolumeUsd: state.tokenList.reduce((prev, current) => {
-          return prev + current.volume24Usd;
+          if (current.tokenTvl >= 5000) {
+            return prev + parseFloat(current.volume24Usd);
+          }
+          return prev;
         }, 0),
         estimatedMktCap: state.tokenList.reduce((prev, current) => {
-          return prev + current.mktCap;
+          if (current.tokenTvl >= 5000) {
+            return prev + parseFloat(current.mktCap);
+          }
+          return prev;
         }, 0),
         estimatedMktCapUsd: state.tokenList.reduce((prev, current) => {
-          return prev + current.mktCapUsd;
+          if (current.tokenTvl >= 5000) {
+            return prev + parseFloat(current.mktCapUsd);
+          }
+          return prev;
         }, 0),
       };
     },
@@ -85,7 +97,7 @@ export default {
     getOverviewChart(state) {
       return state.overViewChart;
     },
-    
+
     getXtzUsdPrice(state) {
       return state.xtzUsd;
     },

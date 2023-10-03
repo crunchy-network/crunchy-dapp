@@ -309,14 +309,6 @@ export default {
             lineColor: "rgba(85,92,255,1)",
             lineWidth: 2,
           });
-          areaSeries.applyOptions({
-            priceFormat: {
-              type: "price",
-              precision: this.handlePrecision(this.getTrackerData.estimatedMktCap)
-                .precision,
-              minMove: this.handlePrecision(this.getTrackerData.estimatedMktCap).minMove,
-            },
-          });
         } else {
           document.getElementById("volume").innerHTML = "";
           chart = createChart(document.getElementById("volume"), {
@@ -328,10 +320,11 @@ export default {
               textColor: this.getTheme === "dark" ? "#fff" : "#191B1F",
             },
             rightPriceScale: {
+              minVisiblePrice: 0,
               visible: true,
               scaleMargins: {
                 top: 0.2,
-                bottom: 0.2,
+                bottom: 0.05,
               },
               borderVisible: false,
             },
@@ -367,6 +360,16 @@ export default {
           });
         }
 
+        areaSeries.applyOptions({
+            priceFormat: {
+              type: "custom",
+              formatter: (price) => {
+                const precision = this.handlePrecision(price).precision
+                const formattedPrice = this.formatNumShorthand(price, precision);
+                return formattedPrice.value + formattedPrice.suffix;
+              },
+            },
+          });
         areaSeries.setData(areaSeriesData);
 
         const toolTipWidth = 80;
@@ -519,9 +522,8 @@ export default {
         const precisedValue = parseFloat(value).toFixed(precision)
         return { value: precisedValue, suffix: "K" };
       } else if (number < 1000000000) {
-        const value = number / 1000000;
-        const precisedValue = parseFloat(value).toFixed(precision)
-        return { value: precisedValue, suffix: "M" };
+        const value = (number / 1000000).toFixed(precision);
+        return { value, suffix: "M" };
       } else if (number < 1000000000000) {
         const value = number / 1000000000;
         const precisedValue = parseFloat(value).toFixed(precision)

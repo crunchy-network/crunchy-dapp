@@ -8,8 +8,6 @@ export default {
   },
 
   loadLSTheme({ state, commit }) {
-    if (localStorage.getItem(state.ls_key)) {
-      commit("updateTheme", localStorage.getItem(state.ls_key));
-    }
+    commit("updateTheme", "dark");
   },
 };
