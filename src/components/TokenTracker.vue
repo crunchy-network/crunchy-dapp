@@ -37,15 +37,6 @@
                 ecosystem</span
               >
             </el-col>
-            <el-col class="hide-md" :span="5" style="text-align: right">
-              <div style="margin-top: 14px">
-                <img
-                  style="width: 25%"
-                  src="../assets/token-tracker-vector.svg"
-                  alt=""
-                />
-              </div>
-            </el-col>
           </el-row>
 
           <el-row

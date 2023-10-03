@@ -429,15 +429,15 @@ export default {
             </div><div style="color: ${"black"}">
             ${dateStr}
             </div>`;
-                const tokenMetrics = document.getElementById("mktCap-chart");
-            if(window.innerWidth <= mediaMaxWidth) {
-              tokenMetricsMargin.offsetHeight = tokenMetrics.offsetHeight;
-              tokenMetricsMargin.offsetWidth = 0;
-            } else {
-              tokenMetricsMargin.offsetWidth = tokenMetrics.offsetWidth;
-              tokenMetricsMargin.offsetHeight = 0;
+              const tokenMetrics = document.getElementById("mktCap-chart");
+              if(window.innerWidth <= mediaMaxWidth) {
+                tokenMetricsMargin.offsetHeight = tokenMetrics.offsetHeight;
+                tokenMetricsMargin.offsetWidth = 0;
+              } else {
+                tokenMetricsMargin.offsetWidth = tokenMetrics.offsetWidth;
+                tokenMetricsMargin.offsetHeight = 0;
+                }
               }
-            }
 
             const y = param.point.y;
             let left = param.point.x + toolTipMargin + tokenMetricsMargin.offsetWidth;
@@ -448,6 +448,7 @@ export default {
             if (top > container.clientHeight - toolTipHeight) {
               top = y + tokenMetricsMargin.offsetHeight - toolTipHeight - toolTipMargin;
             }
+            console.log(left, top)
             toolTip.style.left = left + "px";
             toolTip.style.top = top + "px";
           }
@@ -555,17 +556,6 @@ export default {
   justify-content: flex-start;
 }
 
-.overview-chart #volume
-    > div.tv-lightweight-charts
-    > table
-    > tr:nth-child(1)
-    > td:nth-child(2)
-    > div {
-  width: 548px !important;
-}
-.overview-chart #volume > div.tv-lightweight-charts > table > tr:nth-child(1) > td:nth-child(2) > div > canvas:nth-child(1){
-  width: 548px !important;
-}
 .overview-chart #token-chart-tooltip {
   min-width: 130px;
   max-width: max-content;
@@ -598,5 +588,8 @@ export default {
   .overview-chart #volume > div.tv-lightweight-charts > table > tr:nth-child(1) > td:nth-child(2) > div > canvas:nth-child(1){
     width: 200px !important;
   }
+  .overview-chart #volume > div.tv-lightweight-charts > table > tr:nth-child(1) > td:nth-child(2) > div > canvas:nth-child(2) {
+    width: 200px !important;
+  } 
 }
 </style>
