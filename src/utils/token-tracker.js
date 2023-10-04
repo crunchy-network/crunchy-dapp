@@ -18,7 +18,7 @@ const oneMonthAndOneDayInMiliSecond = oneDayInMiliSecond * 31;
 const twoMonthInMiliSecond = oneDayInMiliSecond * 60;
 const sixMonthInMiliSecond = oneDayInMiliSecond * 180;
 const oneYearInMiliSecond = oneDayInMiliSecond * 360;
-// const oneDayAgo = new Date(Date.now() - oneDayInMiliSecond).toISOString();
+const oneDayAgo = new Date(Date.now() - oneDayInMiliSecond).toISOString();
 // const oneWeekAgo = new Date(Date.now() - oneWeekInMiliSecond).toISOString();
 const oneMonthAgo = new Date(Date.now() - oneMonthInMiliSecond).toISOString();
 const oneMonthAndOneDayAgo = new Date(
@@ -187,54 +187,29 @@ function modifyQuotes(quotes, allTokenSpot, type) {
   return quotes;
 }
 
-function getAggregatedOpen(quotes, allTokenSpot) {
+function getAggregatedOpen(quotes, allTokenSpot, highestTvlPairedToken) {
   if (!quotes) {
     return 0;
   }
 
-  // Helper function to get the token price for a specific token address
-  function getTokenPrice(tokenAddress) {
-    return quotes.find((el) => el.token.tokenAddress === tokenAddress)?.quote;
-  }
+  const token = quotes.find(
+    (quote) =>
+      quote.token.tokenAddress === highestTvlPairedToken.token.tokenAddress &&
+      quote.token.tokenId === highestTvlPairedToken.token.tokenId
+  );
 
-  // Define the order of token addresses to check
-  const tokenAddressesToCheck = [
-    "tez",
-    "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn",
-    "KT1UpeXdK6AJbX58GJ92pLZVCucn2DR8Nu4b",
-  ];
+  const quoteToken = allTokenSpot.find(
+    (el) =>
+      token?.token.tokenAddress === el.tokenAddress &&
+      token?.token.tokenId === el.tokenId
+  );
+  const quoteTokenPriceInTez = quoteToken?.quotes.find((el) =>
+    TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
+  )?.quote;
 
-  // Iterate through the token addresses and return the first available price
-  for (const tokenAddress of tokenAddressesToCheck) {
-    const quotePrice = getTokenPrice(tokenAddress);
-    if (quotePrice) {
-      return parseFloat(quotePrice);
-    }
-  }
-
-  // If none of the token prices are available, calculate the spot price from other token
-  for (const quote of quotes) {
-    const quoteToken = allTokenSpot.find(
-      (el) =>
-        quote.token.tokenAddress === el.tokenAddress &&
-        quote.token.tokenId === el.tokenId
-    );
-    if (quoteToken) {
-      const quoteTokenPriceInTez = getTokenPrice("tez");
-      const quoteTokenPriceInWTZ = getTokenPrice(
-        "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn"
-      );
-
-      const spot = isNaN(quoteTokenPriceInTez)
-        ? quote.quote * quoteTokenPriceInWTZ
-        : quote.quote * quoteTokenPriceInTez;
-
-      return spot;
-    }
-  }
-
-  // If no prices are available, return 0
-  return 0;
+  return TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(token?.token.tokenAddress)
+    ? Number(token?.quote)
+    : Number(token?.quote) * Number(quoteTokenPriceInTez);
 }
 
 function sameDay(d1, d2) {
@@ -912,34 +887,6 @@ export default {
             ele.tokenId === element.tokenId
         ).quotes;
 
-        const tokenSpot1D = allSpot1D.find(
-          (ele) =>
-            ele.tokenAddress === element.tokenAddress &&
-            ele.tokenId === element.tokenId
-        )?.quotes;
-        const tokenSpot1W = allSpot1W.find(
-          (ele) =>
-            ele.tokenAddress === element.tokenAddress &&
-            ele.tokenId === element.tokenId
-        )?.quotes;
-        const tokenSpot1Mo = allSpot1Mo.find(
-          (ele) =>
-            ele.tokenAddress === element.tokenAddress &&
-            ele.tokenId === element.tokenId
-        )?.quotes;
-
-        element.dayClose = getAggregatedOpen(tokenSpot1D, allTokenSpot);
-        element.weekClose = getAggregatedOpen(tokenSpot1W, allTokenSpot);
-        element.monthClose = getAggregatedOpen(tokenSpot1Mo, allTokenSpot);
-
-        const timeUsdValueDay1 = binarySearch(xtzUsdHistory, day1);
-        const timeUsdValueDay7 = binarySearch(xtzUsdHistory, day7);
-        const timeUsdValueDay30 = binarySearch(xtzUsdHistory, day30);
-
-        element.dayCloseUsd = element.dayClose * timeUsdValueDay1;
-        element.weekCloseUsd = element.weekClose * timeUsdValueDay7;
-        element.monthCloseUsd = element.monthClose * timeUsdValueDay30;
-
         let volume24Xtz = 0;
         let tokenTvl = 0;
         let tokenTvlUsd = 0;
@@ -975,32 +922,29 @@ export default {
           let midPrice;
           let quoteToken;
           let quoteTokenPriceInTez;
-          let quoteTokenPriceInWTZ;
+
           if (pool1D) {
-            quoteToken = allTokenSpot.find(
-              (el) =>
-                pool1D.token.tokenAddress === el.tokenAddress &&
-                pool1D.token.tokenId === el.tokenId
-            );
-            quoteTokenPriceInTez = quoteToken?.quotes.find(
-              (el) => el.token.tokenAddress === "tez"
-            )?.quote;
-            quoteTokenPriceInWTZ = quoteToken?.quotes.find(
-              (el) =>
-                el.token.tokenAddress === "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn"
-            )?.quote;
-            volume =
-              pool1D.token.tokenAddress === "tez"
+            if (new Date(pool1D.buckets[0].bucket) >= new Date(oneDayAgo)) {
+              quoteToken = allTokenSpot.find(
+                (el) =>
+                  pool1D.token.tokenAddress === el.tokenAddress &&
+                  pool1D.token.tokenId === el.tokenId
+              );
+              quoteTokenPriceInTez = quoteToken?.quotes.find((el) =>
+                TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
+              )?.quote;
+
+              volume = TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(
+                pool1D.token.tokenAddress
+              )
                 ? pool1D.buckets[0].quoteVolume
-                : isNaN(quoteTokenPriceInTez)
-                ? pool1D.buckets[0].quoteVolume * quoteTokenPriceInWTZ
                 : pool1D.buckets[0].quoteVolume * quoteTokenPriceInTez;
-            midPrice =
-              pool1D.token.tokenAddress === "tez"
+              midPrice = TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(
+                pool1D.token.tokenAddress
+              )
                 ? pool1D.buckets[0].close
-                : isNaN(quoteTokenPriceInTez)
-                ? pool1D.buckets[0].close * quoteTokenPriceInWTZ
                 : pool1D.buckets[0].close * quoteTokenPriceInTez;
+            }
           }
 
           // Assign name and 24h volume for each exchange
@@ -1046,9 +990,67 @@ export default {
             .plus(e.tokenTvl * xtzUSD)
             .toNumber();
         });
+
         /**
          *Calculate price changes
          */
+        let highestTvlExchange;
+        let highestTvl = 0;
+        // Iterate through the elements in the exchanges
+        for (const exchange of element.exchanges) {
+          const tvl = parseFloat(exchange.tokenTvl);
+          // Check if this element has a higher TVL than the current highest
+          if (tvl >= highestTvl) {
+            highestTvl = tvl;
+            highestTvlExchange = exchange;
+          }
+        }
+
+        const highestTvlPairedToken = highestTvlExchange.tokens.find(
+          (element) =>
+            element.token.tokenAddress !== element.tokenAddress &&
+            element.token.tokenId !== element.tokenId
+        );
+
+        const tokenSpot1D = allSpot1D.find(
+          (ele) =>
+            ele.tokenAddress === element.tokenAddress &&
+            ele.tokenId === element.tokenId
+        )?.quotes;
+        const tokenSpot1W = allSpot1W.find(
+          (ele) =>
+            ele.tokenAddress === element.tokenAddress &&
+            ele.tokenId === element.tokenId
+        )?.quotes;
+        const tokenSpot1Mo = allSpot1Mo.find(
+          (ele) =>
+            ele.tokenAddress === element.tokenAddress &&
+            ele.tokenId === element.tokenId
+        )?.quotes;
+
+        element.dayClose = getAggregatedOpen(
+          tokenSpot1D,
+          allTokenSpot,
+          highestTvlPairedToken
+        );
+        element.weekClose = getAggregatedOpen(
+          tokenSpot1W,
+          allTokenSpot,
+          highestTvlPairedToken
+        );
+        element.monthClose = getAggregatedOpen(
+          tokenSpot1Mo,
+          allTokenSpot,
+          highestTvlPairedToken
+        );
+
+        const timeUsdValueDay1 = binarySearch(xtzUsdHistory, day1);
+        const timeUsdValueDay7 = binarySearch(xtzUsdHistory, day7);
+        const timeUsdValueDay30 = binarySearch(xtzUsdHistory, day30);
+
+        element.dayCloseUsd = element.dayClose * timeUsdValueDay1;
+        element.weekCloseUsd = element.weekClose * timeUsdValueDay7;
+        element.monthCloseUsd = element.monthClose * timeUsdValueDay30;
 
         tokenObjkt[element.id] = {
           ...element,
