@@ -387,11 +387,14 @@ export default {
     const isFactoryDex = ["quipuswap_v2", "quipuswap_token2token"].includes(
       dexType
     );
-    const key = isFactoryDex
-      ? { address: rootState.wallet.pkh }
-      : rootState.wallet.pkh;
+    const isSpicyDex = ["spicy"].includes(dexType);
+    console.log(dexType, isSpicyDex);
+    const key =
+      isFactoryDex || isSpicyDex
+        ? { address: rootState.wallet.pkh }
+        : rootState.wallet.pkh;
 
-    return tzkt
+    return await tzkt
       .getContractBigMapKeys(
         tokenAddress,
         farmUtils.getTokenLedgerKey(tokenAddress),
@@ -408,6 +411,8 @@ export default {
           }
           if (tokenAddress === "KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo") {
             tokenBal = tokenBal.idiv(1);
+          } else if (isSpicyDex) {
+            tokenBal = tokenBal.div(BigNumber(10).pow(18));
           } else {
             tokenBal = tokenBal.div(BigNumber(10).pow(6));
           }

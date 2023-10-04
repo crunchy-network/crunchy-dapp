@@ -51,6 +51,10 @@ export default {
     state.tokenOverview.chartData = payload;
   },
 
+  updateOverviewChart(state, payload) {
+    state.overViewChart = payload;
+  },
+
   updateChartDataLoading(state, payload) {
     state.loadingChart = payload;
   },

@@ -16,17 +16,31 @@ export default {
     }
   },
 
+  async _setOverviewChartData({ commit, dispatch, state }, payload) {
+    !payload?.softLoad && commit("updateLoading", true);
+    const overviewChart = {};
+    try {
+      const { mktCapAndVol1D, mktCapAndVol1W, mktCapAndVol1Mo } =
+        await tokenTracker.getOverviewChartData(payload.tokens);
+
+      overviewChart.mktCapAndVol1D = mktCapAndVol1D;
+      overviewChart.mktCapAndVol1W = mktCapAndVol1W;
+      overviewChart.mktCapAndVol1Mo = mktCapAndVol1Mo;
+      commit("updateOverviewChart", overviewChart);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      commit("updateLoading", false);
+    }
+  },
+
   async _setTokenTracked({ commit, state, dispatch }, payload) {
     !payload?.softLoad && commit("updateLoading", true);
     try {
-      const [
-        xtzUsd,
-        xtzUsdHistory,
-        tokenFeed
-      ] = await Promise.all([
+      const [xtzUsd, xtzUsdHistory, tokenFeed] = await Promise.all([
         tzkt.getXtzUsdPrice(),
         tzkt.getXtzUsdHistory(),
-        tokenTracker.getTokenFeed()
+        tokenTracker.getTokenFeed(),
       ]);
 
       commit("updateXtzUsdPrice", xtzUsd);
@@ -51,6 +65,7 @@ export default {
         }
       }
       await dispatch("sortTokensTracked", tokens);
+      await dispatch("_setOverviewChartData", { softLoad: true, tokens });
     } catch (error) {
       console.log(error);
     } finally {
@@ -66,7 +81,11 @@ export default {
     for (const [i, token] of Object.entries(tokens)) {
       tokens[i].isRanked = token.tokenTvl >= 5000 ? 1 : 0;
     }
-    const orderedTokens = _.orderBy(tokens, ["isRanked", "mktCap"], ["desc", "desc"]);
+    const orderedTokens = _.orderBy(
+      tokens,
+      ["isRanked", "mktCap"],
+      ["desc", "desc"]
+    );
     const tokenList = [];
     const lsData = JSON.parse(localStorage.getItem(state.LS_FAVORITES_KEY));
     for (let index = 0; index < orderedTokens.length; index++) {
@@ -155,7 +174,7 @@ export default {
         //   xtzUsdHistory
         // ),
       ]);
-      
+
       chartData.allVolumeAndPrice = allVolumeAndPrice;
       chartData.volumeAndPrice1Hour = volumeAndPrice1Hour;
       chartData.volumeAndPrice1Day = volumeAndPrice1Day;
