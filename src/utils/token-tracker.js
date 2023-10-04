@@ -203,6 +203,7 @@ function getAggregatedOpen(quotes, allTokenSpot, highestTvlPairedToken) {
       token?.token.tokenAddress === el.tokenAddress &&
       token?.token.tokenId === el.tokenId
   );
+
   const quoteTokenPriceInTez = quoteToken?.quotes.find((el) =>
     TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
   )?.quote;
@@ -1007,9 +1008,9 @@ export default {
         }
 
         const highestTvlPairedToken = highestTvlExchange.tokens.find(
-          (element) =>
-            element.token.tokenAddress !== element.tokenAddress &&
-            element.token.tokenId !== element.tokenId
+          token => 
+            token.token.tokenAddress !== element.tokenAddress ||
+            token.token.tokenId !== element.tokenId
         );
 
         const tokenSpot1D = allSpot1D.find(
