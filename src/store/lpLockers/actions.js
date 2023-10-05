@@ -388,7 +388,10 @@ export default {
       dexType
     );
     const isSpicyDex = ["spicy"].includes(dexType);
-    console.log(dexType, isSpicyDex);
+    const isPlentyLP = [
+      "plenty",
+    ].includes(dexType);
+    const isPlentyStableLP = ["plenty_stable"].includes(dexType)
     const key =
       isFactoryDex || isSpicyDex
         ? { address: rootState.wallet.pkh }
@@ -397,7 +400,7 @@ export default {
     return await tzkt
       .getContractBigMapKeys(
         tokenAddress,
-        farmUtils.getTokenLedgerKey(tokenAddress),
+        farmUtils.getTokenLedgerKey(tokenAddress, dexType),
         { key: key, active: "true" }
       )
       .then((tokenLedger) => {
@@ -411,8 +414,10 @@ export default {
           }
           if (tokenAddress === "KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo") {
             tokenBal = tokenBal.idiv(1);
-          } else if (isSpicyDex) {
+          } else if (isSpicyDex || isPlentyLP) {
             tokenBal = tokenBal.div(BigNumber(10).pow(18));
+          } else if (isPlentyStableLP) {
+            tokenBal = tokenBal.div(BigNumber(10).pow(12));
           } else {
             tokenBal = tokenBal.div(BigNumber(10).pow(6));
           }

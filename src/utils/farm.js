@@ -16,7 +16,7 @@ export default {
     );
   },
 
-  getTokenLedgerKey(address) {
+  getTokenLedgerKey(address, dexType) {
     // HEH
     if (address === "KT1G1cCRNBgQ48mVDjopHjEmTN5Sbtar8nn9") {
       return "balances";
@@ -37,6 +37,16 @@ export default {
       return "tokens";
     }
 
+    const isPlentyLP = [
+      "plenty",
+      "plenty_ctez",
+      "plenty_tez",
+      "plenty_stable",
+    ].includes(dexType);
+
+    if (isPlentyLP) {
+      return "balances";
+    }
     return "ledger";
   },
 
