@@ -464,7 +464,7 @@ function getAggregatedPriceAndVolume(quotes, type) {
       hasValidVolumeQuote
     );
   });
-  console.log(filteredQuotes)
+
   while (filteredQuotes.length > 0) {
     // Get first element of quotes, remove the quote
     // and find all quote with same time
@@ -629,26 +629,28 @@ export default {
       modifyQuotes(quotes1mo[0].quotes, allTokenSpot),
     ];
 
-    [quotes4h, quotes1w, quotes1mo] = [
-      aggregateQuotes(quotes4h),
-      aggregateQuotes(quotes1w),
-      aggregateQuotes(quotes1mo),
-    ];
+    // [quotes4h, quotes1w, quotes1mo] = [
+    //   aggregateQuotes(quotes4h),
+    //   aggregateQuotes(quotes1w),
+    //   aggregateQuotes(quotes1mo),
+    // ];
 
-    // const aggregatedQuotes1h = getAggregatedPriceAndVolume(quotes1h);
-
-    const aggregatedQuotes4h = getAggregatedPriceAndVolume(quotes4h);
-    const aggregatedQuotes1w = getAggregatedPriceAndVolume(quotes1w);
-    const aggregatedQuotes1mo = getAggregatedPriceAndVolume(quotes1mo);
-    if(tokenAddress === "KT1VaEsVNiBoA56eToEK6n6BcPgh1tdx9eXi") {
-      console.log(quotes4h)
-      console.log(aggregatedQuotes4h)
-    }
+    // const aggregatedQuotes4h = getAggregatedPriceAndVolume(quotes4h);
+    // const aggregatedQuotes1w = getAggregatedPriceAndVolume(quotes1w);
+    // const aggregatedQuotes1mo = getAggregatedPriceAndVolume(quotes1mo);
+    // if(tokenAddress === "KT1VaEsVNiBoA56eToEK6n6BcPgh1tdx9eXi") {
+    //   console.log(quotes4h)
+    // }
     return {
-      quotes4h: aggregatedQuotes4h,
-      quotes1w: aggregatedQuotes1w,
-      quotes1mo: aggregatedQuotes1mo,
+      quotes4h: quotes4h,
+      quotes1w: quotes1w,
+      quotes1mo: quotes1mo,
     };
+    // return {
+    //   quotes4h: aggregatedQuotes4h,
+    //   quotes1w: aggregatedQuotes1w,
+    //   quotes1mo: aggregatedQuotes1mo,
+    // };
   },
 
   async getOverviewChartData(tokenFeed) {

@@ -28,6 +28,10 @@ export default {
       type: Function,
       default: () => {},
     },
+    quoteIndex: {
+      type: Object,
+      default: () => {},
+    }
   },
   data() {
     return {
@@ -117,109 +121,10 @@ export default {
 
   },
   methods: {
-    async sortTokenData() {
-      // this.updatedChartData.tvl.days1 = this.getChartData.tvl1Day.map(
-      //   (element) => {
-      //     const timeUsdValue = tokenTracker.binarySearch(
-      //       this.getXtzUsdHistory,
-      //       new Date(element.bucket).getTime() + 1000 * 60 * 60 * 24
-      //     );
-      //     return {
-      //       time: new Date(element.bucket).getTime() / 1000,
-      //       value: Number(element.aggregatedTvl) * timeUsdValue,
-      //     };
-      //   }
-      // );
-      // this.updatedChartData.tvlXtz.days1 = this.getChartData.tvl1Day.map(
-      //   (element) => {
-      //     return {
-      //       time: new Date(element.bucket).getTime() / 1000,
-      //       value: Number(element.aggregatedTvl),
-      //     };
-      //   }
-      // );
-
-      // this.updatedChartData.tvl.days7 = this.getChartData.tvl7Day.map(
-      //   (element) => {
-      //     const timeUsdValue = tokenTracker.binarySearch(
-      //       this.getXtzUsdHistory,
-      //       new Date(element.bucket).getTime() + 1000 * 60 * 60 * 24
-      //     );
-      //     return {
-      //       time: new Date(element.bucket).getTime() / 1000,
-      //       value: Number(element.aggregatedTvl) * timeUsdValue,
-      //     };
-      //   }
-      // );
-
-      // this.updatedChartData.tvlXtz.days7 = this.getChartData.tvl7Day.map(
-      //   (element) => {
-      //     return {
-      //       time: new Date(element.bucket).getTime() / 1000,
-      //       value: Number(element.aggregatedTvl),
-      //     };
-      //   }
-      // );
-
-      // this.updatedChartData.tvl.days30 = this.getChartData.tvl30Day.map(
-      //   (element) => {
-      //     const timeUsdValue = tokenTracker.binarySearch(
-      //       this.getXtzUsdHistory,
-      //       new Date(element.bucket).getTime() + 1000 * 60 * 60 * 24
-      //     );
-      //     return {
-      //       time: new Date(element.bucket).getTime() / 1000,
-      //       value: Number(element.aggregatedTvl) * timeUsdValue,
-      //     };
-      //   }
-      // );
-      // this.updatedChartData.tvlXtz.days30 = this.getChartData.tvl30Day.map(
-      //   (element) => {
-      //     return {
-      //       time: new Date(element.bucket).getTime() / 1000,
-      //       value: Number(element.aggregatedTvl),
-      //     };
-      //   }
-      // );
-
-      // this.updatedChartData.tvl.all = this.getChartData.tvlAll.map(
-      //   (element) => {
-      //     const timeUsdValue = tokenTracker.binarySearch(
-      //       this.getXtzUsdHistory,
-      //       new Date(element.bucket).getTime() + 1000 * 60 * 60 * 24
-      //     );
-      //     return {
-      //       time: new Date(element.bucket).getTime() / 1000,
-      //       value: Number(element.aggregatedTvl) * timeUsdValue,
-      //     };
-      //   }
-      // );
-      // this.updatedChartData.tvlXtz.all = this.getChartData.tvlAll.map(
-      //   (element) => {
-      //     return {
-      //       time: new Date(element.bucket).getTime() / 1000,
-      //       value: Number(element.aggregatedTvl),
-      //     };
-      //   }
-      // );
-
-      // this.updatedChartData.price.hours1 =
-      //   this.getChartData?.volumeAndPrice1Hour?.map((element) => {
-      //     const timeUsdValue = tokenTracker.binarySearch(
-      //       this.getXtzUsdHistory,
-      //       new Date(element.bucket).getTime() + 1000 * 60 * 60 * 24
-      //     );
-      //     return {
-      //       time: new Date(element.bucket).getTime() / 1000,
-      //       close: Number(element.aggregatedClose) * timeUsdValue,
-      //       open: Number(element.aggregatedOpen) * timeUsdValue,
-      //       high: Number(element.aggregatedHigh) * timeUsdValue,
-      //       low: Number(element.aggregatedLow) * timeUsdValue,
-      //     };
-      //   });
-
+    async sortTokenData(quoteIndex) {
+      console.log(quoteIndex)
       this.updatedChartData.price.days1 =
-        this.getChartData?.volumeAndPrice1Day?.map((element) => {
+        this.getChartData?.volumeAndPrice1Day[quoteIndex.quoteIndex4h]?.buckets.map((element) => {
           const timeUsdValue = tokenTracker.binarySearch(
             this.getXtzUsdHistory,
             new Date(element.bucket).getTime() + 1000 * 60 * 60 * 24
@@ -232,17 +137,6 @@ export default {
             low: Number(element.aggregatedLow) * timeUsdValue,
           };
         });
-
-      // this.updatedChartData.priceXtz.hours1 =
-      //   this.getChartData?.volumeAndPrice1Hour?.map((element) => {
-      //     return {
-      //       time: new Date(element.bucket).getTime() / 1000,
-      //       close: Number(element.aggregatedClose),
-      //       open: Number(element.aggregatedOpen),
-      //       high: Number(element.aggregatedHigh),
-      //       low: Number(element.aggregatedLow),
-      //     };
-      //   });
 
       this.updatedChartData.priceXtz.days1 =
         this.getChartData?.volumeAndPrice1Day?.map((element) => {
@@ -390,26 +284,20 @@ export default {
     async getPrices() {
       this.setLoading(true);
       try {
-        await this.sortTokenData();
-
-        if (this.legendTab === "tvl") {
-          this.tokenData =
-            this.duration === "1d"
-              ? !this.getShowUsd
-                ? this.updatedChartData.tvlXtz.days1
-                : this.updatedChartData.tvl.days1
-              : this.duration === "7d"
-              ? !this.getShowUsd
-                ? this.updatedChartData.tvlXtz.days7
-                : this.updatedChartData.tvl.days7
-              : this.duration === "30d"
-              ? !this.getShowUsd
-                ? this.updatedChartData.tvlXtz.days30
-                : this.updatedChartData.tvl.days30
-              : this.duration === "all"
-              ? this.updatedChartData.tvl.all
-              : null;
+        console.log(this.quoteIndex);
+        if(this.legendTab === "price") {
+          if (this.quoteIndex.quoteIndex4h > this.getChartData.volumeAndPrice4Hour?.length) {
+          this.quoteIndex.quoteIndex4h = 0;
+          } 
+          if (this.quoteIndex.quoteIndex1d > this.getChartData.volumeAndPrice1Day?.length) {
+          this.quoteIndex.quoteIndex1d = 0;
+          } 
+          if (this.quoteIndex.quoteIndex1Mo > this.getChartData.volumeAndPrice30Day?.length) {
+          this.quoteIndex.quoteIndex1Mo = 0;
+          }
         }
+        
+        await this.sortTokenData(this.quoteIndex);
 
         if (this.legendTab === "price") {
           this.tokenData =

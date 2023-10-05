@@ -44,6 +44,18 @@
           </button>
         </div>
         <div class="tab-wrapper tab-custom-element">
+        <button
+            class="tab-text"
+            @click="nextQuoteIndex()"
+          >
+            Next
+          </button>
+          <button
+            class="tab-text"
+            @click="prevQuoteIndex()"
+          >
+            Prev
+          </button>
           <button
             class="tab-text"
             :style="isActiveTab('price', legendTab)"
@@ -72,6 +84,7 @@
         :duration="duration"
         :legend-tab="legendTab"
         :set-loading="setChartLoading"
+        :quote-index="quoteIndex"
       />
     </el-card>
   </div>
@@ -107,6 +120,11 @@ export default {
     return {
       legendTab: "price",
       chartLoading: false,
+      quoteIndex:  {
+        quoteIndex4h: 0,
+        quoteIndex1d: 0,
+        quoteIndex1Mo: 0,
+      },
     };
   },
 
@@ -185,7 +203,24 @@ export default {
         },
       });
     },
-
+    nextQuoteIndex() {
+      if(this.duration === "4h") {
+        this.quoteIndex.quoteIndex4h += 1;
+      } else if(this.duration === "1d") {
+        this.quoteIndex.quoteIndex1d += 1;
+      } else {
+        this.quoteIndex.quoteIndex1Mo += 1;
+      }
+    },
+    prevQuoteIndex() {
+      if(this.duration === "4h") {
+        this.quoteIndex.quoteIndex4h -= 1;
+      } else if(this.duration === "1d") {
+        this.quoteIndex.quoteIndex1d -= 1;
+      } else {
+        this.quoteIndex.quoteIndex1Mo -= 1;
+      }
+    },
     formatNumShorthand(val) {
       return numberFormat.shorthand(val);
     },
