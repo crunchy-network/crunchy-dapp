@@ -887,7 +887,7 @@ export default {
           (ele) =>
             ele.tokenAddress === element.tokenAddress &&
             ele.tokenId === element.tokenId
-        ).quotes;
+        )?.quotes;
 
         let volume24Xtz = 0;
         let tokenTvl = 0;
@@ -914,7 +914,7 @@ export default {
 
         element.exchanges.forEach((e, index) => {
           // Calculate exchanges infor
-          const pool1D = tokenQuote1D.find(
+          const pool1D = tokenQuote1D?.find(
             (ele) =>
               ele.pool.poolId === e.poolId &&
               ele.pool.dex.address === e.dex.address &&
