@@ -658,8 +658,7 @@ export default {
       this.form.lpTokenAddress = i.address;
       this.form.lpTokenId = i.type === "fa2" ? i.tokenId : "";
       this.form.lpTokenThumbnailUri = i.thumbnailUri;
-      this.form.lpDexType = i.dexType;
-      console.log(this.form);
+      this.form.lpDexType = i.dexType;;
       this.loading = true;
       this.getLpBalance({
         tokenAddress: i.address,
@@ -669,7 +668,6 @@ export default {
         this.form.lpBalance = bal;
         this.loading = false;
       });
-      console.log(this.form)
     },
 
     async createLock() {

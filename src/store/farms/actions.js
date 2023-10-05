@@ -171,7 +171,7 @@ export default {
     let total = 0;
     for (const farmId in state.data) {
       const farmTvl = Number(state.data[farmId].tvlTez);
-      if (!Number.isNaN(farmTvl)) {
+      if (!isNaN(farmTvl) && isFinite(farmTvl)) {
         total += Number(farmTvl);
       }
     }
