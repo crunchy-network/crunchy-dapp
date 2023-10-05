@@ -16,6 +16,24 @@ export default {
     }
   },
 
+  async _setOverviewChartData({ commit, dispatch, state }, payload) {
+    !payload?.softLoad && commit("updateLoading", true);
+    const overviewChart = {};
+    try {
+      const { mktCapAndVol1D, mktCapAndVol1W, mktCapAndVol1Mo } =
+        await tokenTracker.getOverviewChartData(payload.tokens);
+
+      overviewChart.mktCapAndVol1D = mktCapAndVol1D;
+      overviewChart.mktCapAndVol1W = mktCapAndVol1W;
+      overviewChart.mktCapAndVol1Mo = mktCapAndVol1Mo;
+      commit("updateOverviewChart", overviewChart);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      commit("updateLoading", false);
+    }
+  },
+
   async _setTokenTracked({ commit, state, dispatch }, payload) {
     !payload?.softLoad && commit("updateLoading", true);
     try {
@@ -47,6 +65,7 @@ export default {
         }
       }
       await dispatch("sortTokensTracked", tokens);
+      await dispatch("_setOverviewChartData", { softLoad: true, tokens });
     } catch (error) {
       console.log(error);
     } finally {

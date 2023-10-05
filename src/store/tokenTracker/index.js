@@ -10,6 +10,11 @@ export default {
     tokenList: [],
     tokensTracked: {},
     LS_FAVORITES_KEY: "FAVORITES_LIST",
+    overViewChart: {
+      mktCapAndVol1D: [],
+      mktCapAndVol1W: [],
+      mktCapAndVol1Mo: [],
+    },
     tokenOverview: {
       chartData: {
         volumeAndPrice1Hour: [],
@@ -30,21 +35,17 @@ export default {
   actions,
   getters: {
     getTrackerData(state) {
+      const mktCapAndVolToday =
+        state.overViewChart.mktCapAndVol1D[
+          state.overViewChart.mktCapAndVol1D.length - 1
+        ];
       return {
         tokensTracked: state.tokenList.length,
-        dexCovered: 4,
-        total24hVolume: state.tokenList.reduce((prev, current) => {
-          return prev + current.volume24;
-        }, 0),
-        total24hVolumeUsd: state.tokenList.reduce((prev, current) => {
-          return prev + current.volume24Usd;
-        }, 0),
-        estimatedMktCap: state.tokenList.reduce((prev, current) => {
-          return prev + current.mktCap;
-        }, 0),
-        estimatedMktCapUsd: state.tokenList.reduce((prev, current) => {
-          return prev + current.mktCapUsd;
-        }, 0),
+        dexCovered: 16,
+        total24hVolume: mktCapAndVolToday?.totalVol,
+        total24hVolumeUsd: mktCapAndVolToday?.totalVol * state.xtzUsd,
+        estimatedMktCap: mktCapAndVolToday?.mktCap,
+        estimatedMktCapUsd: mktCapAndVolToday?.mktCap * state.xtzUsd,
       };
     },
 
@@ -76,6 +77,10 @@ export default {
 
     getChartData(state) {
       return state.tokenOverview.chartData;
+    },
+
+    getOverviewChart(state) {
+      return state.overViewChart;
     },
 
     getXtzUsdPrice(state) {
