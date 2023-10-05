@@ -669,6 +669,7 @@ export default {
         this.form.lpBalance = bal;
         this.loading = false;
       });
+      console.log(this.form)
     },
 
     async createLock() {

@@ -431,7 +431,7 @@ export default {
     const locker = await getContract(state.contract);
     const crnchy = await getContract(state.crnchyAddress);
     const lpToken = await getContract(params.lpToken.address);
-
+    console.log(params)
     let amount = BigNumber(params.amount)
       .times(BigNumber(10).pow(6))
       .idiv(1)
@@ -452,61 +452,61 @@ export default {
           },
         ])
       )
-      .withContractCall(
-        params.lpToken.tokenType === "fa2"
-          ? lpToken.methods.update_operators([
-              {
-                add_operator: {
-                  owner: rootState.wallet.pkh,
-                  operator: state.contract,
-                  tokenId: params.lpToken.tokenId,
-                },
-              },
-            ])
-          : lpToken.methods.approve(state.contract, amount)
-      )
-      .withContractCall(
-        locker.methods.lock(
-          // tokenAddress, tokenId, (fa1 | fa2), unit
-          params.lpToken.address,
-          params.lpToken.tokenId,
-          params.lpToken.tokenType,
-          "unit",
+      // .withContractCall(
+      //   params.lpToken.tokenType === "fa2"
+      //     ? lpToken.methods.update_operators([
+      //         {
+      //           add_operator: {
+      //             owner: rootState.wallet.pkh,
+      //             operator: state.contract,
+      //             tokenId: params.lpToken.tokenId,
+      //           },
+      //         },
+      //       ])
+      //     : lpToken.methods.approve(state.contract, amount)
+      // )
+      // .withContractCall(
+      //   locker.methods.lock(
+      //     // tokenAddress, tokenId, (fa1 | fa2), unit
+      //     params.lpToken.address,
+      //     params.lpToken.tokenId,
+      //     params.lpToken.tokenType,
+      //     "unit",
 
-          // amount to lock
-          amount,
+      //     // amount to lock
+      //     amount,
 
-          // lockEndTime
-          params.lockEndTime,
+      //     // lockEndTime
+      //     params.lockEndTime,
 
-          // serviceFeeId
-          params.serviceFeeId
-        )
-      )
-      .withContractCall(
-        params.lpToken.tokenType === "fa2"
-          ? lpToken.methods.update_operators([
-              {
-                remove_operator: {
-                  owner: rootState.wallet.pkh,
-                  operator: state.contract,
-                  tokenId: params.lpToken.tokenId,
-                },
-              },
-            ])
-          : lpToken.methods.approve(state.contract, 0)
-      )
-      .withContractCall(
-        crnchy.methods.update_operators([
-          {
-            remove_operator: {
-              owner: rootState.wallet.pkh,
-              operator: state.contract,
-              tokenId: 0,
-            },
-          },
-        ])
-      );
+      //     // serviceFeeId
+      //     params.serviceFeeId
+      //   )
+      // )
+      // .withContractCall(
+      //   params.lpToken.tokenType === "fa2"
+      //     ? lpToken.methods.update_operators([
+      //         {
+      //           remove_operator: {
+      //             owner: rootState.wallet.pkh,
+      //             operator: state.contract,
+      //             tokenId: params.lpToken.tokenId,
+      //           },
+      //         },
+      //       ])
+      //     : lpToken.methods.approve(state.contract, 0)
+      // )
+      // .withContractCall(
+      //   crnchy.methods.update_operators([
+      //     {
+      //       remove_operator: {
+      //         owner: rootState.wallet.pkh,
+      //         operator: state.contract,
+      //         tokenId: 0,
+      //       },
+      //     },
+      //   ])
+      // );
 
     const tx = await batch.send();
     return tx.confirmation();
