@@ -32,6 +32,7 @@ const TEZ_AND_WRAPPED_TEZ_ADDRESSES = [
   "tez",
   "KT1UpeXdK6AJbX58GJ92pLZVCucn2DR8Nu4b",
   "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn",
+  "KT1SjXiUX63QvdNMcM2m492f7kuf8JxXRLp4",
 ];
 
 async function getPlentyTokenDailyMetrics(symbol = "") {
