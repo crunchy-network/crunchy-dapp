@@ -16,10 +16,6 @@ export default {
     state.crnchyTez = prices[`${state.crnchyAddress}_0`];
   },
 
-  updatePriceFeed(state, feed) {
-    state.priceFeed = feed;
-  },
-
   updateTokenPools(state, tokenPools) {
     state.tokenPools = tokenPools;
   },

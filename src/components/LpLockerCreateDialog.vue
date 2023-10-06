@@ -684,6 +684,7 @@ export default {
               address: vm.form.lpTokenAddress,
               tokenId: vm.form.lpTokenId || 0,
             },
+            dexType: vm.form.lpDexType,
           }).then(() => {
             vm.visible = false;
             vm.loading = false;

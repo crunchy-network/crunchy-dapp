@@ -51,7 +51,14 @@
           </el-col>
 
           <el-col :sm="2" :lg="5">
-            <template v-if="locker.token.isQuipuLp">
+            <template
+              v-if="
+                locker.token.isQuipuLp ||
+                locker.token.isQuipuStableLp ||
+                locker.token.isQuipuV2Lp ||
+                locker.token.isQuipuToken2TokenLp
+              "
+            >
               <el-avatar
                 :src="logos.quipuswap"
                 fit="cover"
@@ -105,7 +112,7 @@
                   margin-right: 14px;
                 "
               ></el-avatar>
-              Plenty 
+              Plenty
             </template>
           </el-col>
 

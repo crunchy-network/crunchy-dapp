@@ -2,9 +2,12 @@ import tzkt from "./../../utils/tzkt";
 import dexIndexer from "./../../utils/dex-indexer";
 import ipfs from "./../../utils/ipfs";
 import farmUtils from "./../../utils/farm";
+import tokenTracker from "../../utils/token-tracker";
 import { getContract, getWalletContract, getBatch } from "./../../utils/tezos";
 import merge from "deepmerge";
 import { BigNumber } from "bignumber.js";
+
+const TEZ_AND_WRAPPED_TEZ_ADDRESSES = ["tez"];
 
 export default {
   async updateLpXtzUsdVwap({ commit }) {
@@ -14,15 +17,12 @@ export default {
   },
 
   async updateLpCurrentPrices({ commit }) {
-    return dexIndexer.getLPTokens().then(async (feed) => {
+    return await tokenTracker.getTokenFeed().then((feed) => {
       const currentPrices = {};
-      for (const token of feed) {
-        const tokenId =
-          token.tokenType === "fa1.2" ? "0" : token.tokenId.toString();
-        currentPrices[`${token.tokenAddress}_${tokenId}`] = token.currentPrice;
+      for (const token of Object.values(feed)) {
+        currentPrices[token.id] = token.currentPrice;
       }
-
-      commit("updatePriceFeed", feed);
+      currentPrices.tez_0 = 1;
       commit("updateCurrentPrices", currentPrices);
     });
   },
@@ -105,15 +105,19 @@ export default {
           }
         );
 
-        const allTokens = state.priceFeed.concat(state.lpTokens);
-        let tokenMeta = dexIndexer.findTokenInPriceFeed(l.token, allTokens);
+        let tokenMeta = dexIndexer.findTokenInPriceFeed(
+          l.token,
+          state.lpTokens
+        );
+        let dexType;
+        let decimals;
         if (tokenMeta) {
           const tokenPools = state.tokenPools.filter(
             (el) =>
               el?.lpToken?.tokenAddress === tokenMeta.tokenAddress &&
               el?.lpToken?.tokenId === tokenMeta.tokenId
           )[0];
-          const dexType = tokenPools?.dex?.type;
+          dexType = tokenPools?.dex?.type;
 
           let isQuipuLp = false;
           let isQuipuV2Lp = false;
@@ -128,30 +132,38 @@ export default {
           switch (dexType) {
             case "quipuswap":
               isQuipuLp = true;
+              decimals = 6;
               break;
             case "quipuswap_v2":
               isQuipuV2Lp = true;
+              decimals = 6;
               break;
             case "quipuswap_token2token":
               isQuipuToken2TokenLp = true;
+              decimals = 6;
               break;
             case "quipuswap_stable":
               isQuipuStableLp = true;
+              decimals = 18;
               break;
             case "spicy":
               isSpicyLp = true;
+              decimals = 18;
               break;
             case "plenty":
               isPlentyLp = true;
+              decimals = 18;
               break;
             case "plenty_ctez":
               isPlentyCtezLp = true;
+              decimals = 6;
               break;
             case "plenty_tez":
               isPlentyTezLp = true;
               break;
             case "plenty_stable":
               isPlentyStableLp = true;
+              decimals = 12;
               break;
             default:
               // Handle other cases here if needed
@@ -193,7 +205,6 @@ export default {
             isLbLp: false,
             isPlentyLp: false,
             isSpicyLp: false,
-            decimals: 6,
             name:
               tokenPools.tokens[0].token.name +
               "/" +
@@ -210,14 +221,20 @@ export default {
 
           let token;
           let tezPool = 0;
-          const totalSupply = tokenMeta.totalSupply;
+
+          const totalSupply = BigNumber(Number(tokenMeta.totalSupply))
+            .div(BigNumber(10).pow(decimals))
+            .toNumber();
+          // const totalSupply = tokenMeta.totalSupply;
 
           switch (true) {
             case isQuipuLp:
-              token = tokenPools.tokens.find(
-                (el) => el.token.tokenAddress === "tez"
+              token = tokenPools.tokens.find((el) =>
+                TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
               );
-              tezPool = token.reserves;
+              tezPool = BigNumber(token.reserves)
+                .div(BigNumber(10).pow(6))
+                .toNumber();
               tokenMeta = {
                 ...tokenProperties,
                 ...tokenMeta,
@@ -229,10 +246,23 @@ export default {
               };
               break;
             case isQuipuV2Lp:
-              token = tokenPools.tokens.find(
-                (el) => el.token.tokenAddress === "tez"
+              token = tokenPools.tokens.find((el) =>
+                TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
               );
-              tezPool = token.reserves;
+              if (token) {
+                tezPool = BigNumber(token.reserves)
+                  .div(BigNumber(10).pow(6))
+                  .toNumber();
+              } else {
+                token = tokenPools.tokens[0];
+                const id = token.token.tokenAddress + "_" + token.token.tokenId;
+                const tokenPrice = state.currentPrices[id];
+                tezPool = BigNumber(token.reserves)
+                  .times(tokenPrice)
+                  .div(BigNumber(10).pow(token.token.decimals))
+                  .toNumber();
+              }
+
               tokenMeta = {
                 ...tokenProperties,
                 ...tokenMeta,
@@ -242,12 +272,23 @@ export default {
               };
               break;
             case isQuipuToken2TokenLp:
-              token = tokenPools.tokens.find(
-                (el) => el.token.tokenAddress === "tez"
+              token = tokenPools.tokens.find((el) =>
+                TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
               );
-              tezPool = BigNumber(token.reserves).div(
-                BigNumber(10).pow(token.token.decimals).toNumber()
-              );
+              if (token) {
+                tezPool = BigNumber(token.reserves)
+                  .div(BigNumber(10).pow(6))
+                  .toNumber();
+              } else {
+                token = tokenPools.tokens[0];
+                const id = token.token.tokenAddress + "_" + token.token.tokenId;
+                const tokenPrice = state.currentPrices[id];
+                tezPool = BigNumber(token.reserves)
+                  .times(tokenPrice)
+                  .div(BigNumber(10).pow(token.token.decimals))
+                  .toNumber();
+              }
+
               tokenMeta = {
                 ...tokenProperties,
                 ...tokenMeta,
@@ -257,55 +298,157 @@ export default {
               };
               break;
             case isQuipuStableLp:
+              token = tokenPools.tokens.find((el) =>
+                TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
+              );
+              if (token) {
+                tezPool = BigNumber(token.reserves)
+                  .div(BigNumber(10).pow(6))
+                  .toNumber();
+              } else {
+                token = tokenPools.tokens[0];
+                const id = token.token.tokenAddress + "_" + token.token.tokenId;
+                const tokenPrice = state.currentPrices[id];
+                tezPool = BigNumber(token.reserves)
+                  .times(tokenPrice)
+                  .div(BigNumber(10).pow(token.token.decimals))
+                  .toNumber();
+              }
               tokenMeta = {
                 ...tokenProperties,
                 ...tokenMeta,
                 isQuipuStableLp: true,
+                tezPool: tezPool,
                 qptTokenSupply: totalSupply,
               };
               break;
             case isSpicyLp:
+              token = tokenPools.tokens.find((el) =>
+                TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
+              );
+              if (token) {
+                tezPool = BigNumber(token.reserves)
+                  .div(BigNumber(10).pow(6))
+                  .toNumber();
+              } else {
+                token = tokenPools.tokens[0];
+                const id = token.token.tokenAddress + "_" + token.token.tokenId;
+                const tokenPrice = state.currentPrices[id];
+                tezPool = BigNumber(token.reserves)
+                  .times(tokenPrice)
+                  .div(BigNumber(10).pow(token.token.decimals))
+                  .toNumber();
+              }
               tokenMeta = {
                 ...tokenProperties,
                 ...tokenMeta,
                 decimals: 18,
                 isSpicyLp: true,
+                tezPool: tezPool,
                 qptTokenSupply: totalSupply,
               };
               break;
             case isPlentyLp:
+              token = tokenPools.tokens.find((el) =>
+                TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
+              );
+              if (token) {
+                tezPool = BigNumber(token.reserves)
+                  .div(BigNumber(10).pow(6))
+                  .toNumber();
+              } else {
+                token = tokenPools.tokens[0];
+                const id = token.token.tokenAddress + "_" + token.token.tokenId;
+                const tokenPrice = state.currentPrices[id];
+                tezPool = BigNumber(token.reserves)
+                  .times(tokenPrice)
+                  .div(BigNumber(10).pow(token.token.decimals))
+                  .toNumber();
+              }
               tokenMeta = {
                 ...tokenProperties,
                 ...tokenMeta,
                 decimals: 18,
                 isPlentyLp: true,
+                tezPool: tezPool,
                 qptTokenSupply: totalSupply,
               };
               break;
             case isPlentyCtezLp:
+              token = tokenPools.tokens.find((el) =>
+                TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
+              );
+              if (token) {
+                tezPool = BigNumber(token.reserves)
+                  .div(BigNumber(10).pow(6))
+                  .toNumber();
+              } else {
+                token = tokenPools.tokens[0];
+                const id = token.token.tokenAddress + "_" + token.token.tokenId;
+                const tokenPrice = state.currentPrices[id];
+                tezPool = BigNumber(token.reserves)
+                  .times(tokenPrice)
+                  .div(BigNumber(10).pow(token.token.decimals))
+                  .toNumber();
+              }
               tokenMeta = {
                 ...tokenProperties,
                 ...tokenMeta,
                 decimals: 6,
                 isPlentyCtezLp: true,
+                tezPool: tezPool,
                 qptTokenSupply: totalSupply,
               };
               break;
             case isPlentyTezLp:
+              token = tokenPools.tokens.find((el) =>
+                TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
+              );
+              if (token) {
+                tezPool = BigNumber(token.reserves)
+                  .div(BigNumber(10).pow(6))
+                  .toNumber();
+              } else {
+                token = tokenPools.tokens[0];
+                const id = token.token.tokenAddress + "_" + token.token.tokenId;
+                const tokenPrice = state.currentPrices[id];
+                tezPool = BigNumber(token.reserves)
+                  .times(tokenPrice)
+                  .div(BigNumber(10).pow(6))
+                  .toNumber();
+              }
               tokenMeta = {
                 ...tokenProperties,
                 ...tokenMeta,
                 decimals: 18,
                 isPlentyTezLp: true,
+                tezPool: tezPool,
                 qptTokenSupply: totalSupply,
               };
               break;
             case isPlentyStableLp:
+              token = tokenPools.tokens.find((el) =>
+                TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
+              );
+              if (token) {
+                tezPool = BigNumber(token.reserves)
+                  .div(BigNumber(10).pow(6))
+                  .toNumber();
+              } else {
+                token = tokenPools.tokens[0];
+                const id = token.tokenAddress + "_" + token.tokenId;
+                const tokenPrice = state.currentPrices[id];
+                tezPool = BigNumber(token.reserves)
+                  .times(tokenPrice)
+                  .div(BigNumber(10).pow(token.token.decimals))
+                  .toNumber();
+              }
               tokenMeta = {
                 ...tokenProperties,
                 ...tokenMeta,
                 decimals: 12,
                 isPlentyStableLp: true,
+                tezPool: tezPool,
                 qptTokenSupply: totalSupply,
               };
               break;
@@ -333,19 +476,16 @@ export default {
         }
 
         tvlTez = BigNumber(l.amountLocked)
-          .div(BigNumber(10).pow(6))
+          .div(BigNumber(10).pow(decimals))
           .times(tokenMeta.tezPool)
           .div(tokenMeta.qptTokenSupply)
           .times(2)
           .toNumber();
 
-        totalLiquidityTez = BigNumber(tokenMeta.tezPool)
-          .div(BigNumber(10).pow(6))
-          .times(2)
-          .toNumber();
+        totalLiquidityTez = BigNumber(tokenMeta.tezPool).times(2).toNumber();
 
         const amountLocked = BigNumber(l.amountLocked)
-          .div(BigNumber(10).pow(6))
+          .div(BigNumber(10).pow(decimals))
           .toNumber();
 
         const percentLocked = BigNumber(tvlTez)
@@ -358,8 +498,7 @@ export default {
         l = merge(l, {
           token: {
             ...tokenMeta,
-            isQuipuLp: true,
-            decimals: 6,
+            decimals: decimals,
             tokenId: l.token.tokenId,
             realTokenAddress: tokenMeta.tokenAddress,
             realTokenId: tokenMeta.tokenId,
@@ -388,10 +527,9 @@ export default {
       dexType
     );
     const isSpicyDex = ["spicy"].includes(dexType);
-    const isPlentyLP = [
-      "plenty",
-    ].includes(dexType);
-    const isPlentyStableLP = ["plenty_stable"].includes(dexType)
+    const isPlentyLP = ["plenty"].includes(dexType);
+    const isPlentyStableLP = ["plenty_stable"].includes(dexType);
+    const isQuipuSwapStableLp = ["quipuswap_stable"].includes(dexType);
     const key =
       isFactoryDex || isSpicyDex
         ? { address: rootState.wallet.pkh }
@@ -414,7 +552,7 @@ export default {
           }
           if (tokenAddress === "KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo") {
             tokenBal = tokenBal.idiv(1);
-          } else if (isSpicyDex || isPlentyLP) {
+          } else if (isSpicyDex || isPlentyLP || isQuipuSwapStableLp) {
             tokenBal = tokenBal.div(BigNumber(10).pow(18));
           } else if (isPlentyStableLP) {
             tokenBal = tokenBal.div(BigNumber(10).pow(12));
@@ -432,10 +570,38 @@ export default {
     const crnchy = await getContract(state.crnchyAddress);
     const lpToken = await getContract(params.lpToken.address);
 
-    let amount = BigNumber(params.amount)
-      .times(BigNumber(10).pow(6))
-      .idiv(1)
-      .toNumber();
+    let amount;
+    switch (params.dexType) {
+      case "quipuswap":
+      case "quipuswap_v2":
+      case "quipuswap_token2token":
+        amount = BigNumber(params.amount)
+          .times(BigNumber(10).pow(6))
+          .idiv(1)
+          .toNumber();
+        break;
+      case "plenty_stable":
+        amount = BigNumber(params.amount)
+          .times(BigNumber(10).pow(12))
+          .idiv(1)
+          .toNumber();
+        break;
+      case "spicy":
+      case "plenty":
+      case "quipuswap_stable":
+        amount = BigNumber(params.amount)
+          .times(BigNumber(10).pow(18))
+          .idiv(1)
+          .toNumber();
+        break;
+      default:
+        amount = BigNumber(params.amount)
+          .times(BigNumber(10).pow(6))
+          .idiv(1)
+          .toNumber();
+        break;
+    }
+
     if (params.lpToken.address === "KT1AafHA1C1vk959wvHWBispY9Y2f3fxBUUo") {
       amount = BigNumber(params.amount).idiv(1).toNumber();
     }
@@ -511,7 +677,6 @@ export default {
     const tx = await batch.send();
     return tx.confirmation();
   },
-
 
   async withdrawLp({ state }, params) {
     const locker = await getWalletContract(state.contract);
