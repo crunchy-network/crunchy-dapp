@@ -139,8 +139,6 @@ export default {
           this.setDurationTab("4h");
         } else if (this.$route.query.duration === "1d") {
           this.setDurationTab("1d");
-        } else {
-          this.setDurationTab("7d");
         }
       }
     },
@@ -151,9 +149,7 @@ export default {
           this.setDurationTab("4h");
         } else if (this.$route.query.duration === "1d") {
           this.setDurationTab("1d");
-        } else {
-          this.setDurationTab("7d");
-        }
+        } 
       }
     },
   },
@@ -208,6 +204,8 @@ export default {
         this.quoteIndex.quoteIndex4h += 1;
       } else if(this.duration === "1d") {
         this.quoteIndex.quoteIndex1d += 1;
+      } else if(this.duration === "1w") {
+        this.quoteIndex.quoteIndex7d += 1;
       } else {
         this.quoteIndex.quoteIndex1Mo += 1;
       }
@@ -217,6 +215,8 @@ export default {
         this.quoteIndex.quoteIndex4h -= 1;
       } else if(this.duration === "1d") {
         this.quoteIndex.quoteIndex1d -= 1;
+      } else if(this.duration === "1w") {
+        this.quoteIndex.quoteIndex7d += 1;
       } else {
         this.quoteIndex.quoteIndex1Mo -= 1;
       }
