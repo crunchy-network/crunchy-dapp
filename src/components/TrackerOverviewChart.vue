@@ -96,6 +96,9 @@ export default {
     legendTab() {
       this.getPrices();
     },
+    'quoteIndex.quoteIndex4h': 'handleQuoteIndexChange',
+    'quoteIndex.quoteIndex1d': 'handleQuoteIndexChange',
+    'quoteIndex.quoteIndex1Mo': 'handleQuoteIndexChange',
     duration() {
       this.getPrices();
     },
@@ -121,162 +124,199 @@ export default {
 
   },
   methods: {
+     handleQuoteIndexChange() {
+      this.getPrices();
+    },
     async sortTokenData(quoteIndex) {
-      console.log(quoteIndex)
+      // this.updatedChartData.price.days1 =
+      //   this.getChartData?.volumeAndPrice1Day.map((element) => {
+      //     const timeUsdValue = tokenTracker.binarySearch(
+      //       this.getXtzUsdHistory,
+      //       new Date(element.bucket).getTime() + 1000 * 60 * 60 * 24
+      //     );
+      //     return {
+      //       time: new Date(element.bucket).getTime() / 1000,
+      //       close: Number(element.aggregatedClose) * timeUsdValue,
+      //       open: Number(element.aggregatedOpen) * timeUsdValue,
+      //       high: Number(element.aggregatedHigh) * timeUsdValue,
+      //       low: Number(element.aggregatedLow) * timeUsdValue,
+      //     };
+      //   });
+
+      // this.updatedChartData.priceXtz.days1 =
+      //   this.getChartData?.volumeAndPrice1Day?.map((element) => {
+      //     return {
+      //       time: new Date(element.bucket).getTime() / 1000,
+      //       close: Number(element.aggregatedClose),
+      //       open: Number(element.aggregatedOpen),
+      //       high: Number(element.aggregatedHigh),
+      //       low: Number(element.aggregatedLow),
+      //     };
+      //   });
+
+      // this.updatedChartData.price.hours4 =
+      //   this.getChartData?.volumeAndPrice4Hour?.map((element) => {
+      //     const timeUsdValue = tokenTracker.binarySearch(
+      //       this.getXtzUsdHistory,
+      //       new Date(element.bucket).getTime() + 1000 * 60 * 60 * 24
+      //     );
+      //     return {
+      //       time: new Date(element.bucket).getTime() / 1000,
+      //       close: Number(element.aggregatedClose) * timeUsdValue,
+      //       open: Number(element.aggregatedOpen) * timeUsdValue,
+      //       high: Number(element.aggregatedHigh) * timeUsdValue,
+      //       low: Number(element.aggregatedLow) * timeUsdValue,
+      //     };
+      // });
+
+      // this.updatedChartData.priceXtz.hours4 =
+      //   this.getChartData?.volumeAndPrice4Hour?.map((element) => {
+      //     return {
+      //       time: new Date(element.bucket).getTime() / 1000,
+      //       close: Number(element.aggregatedClose),
+      //       open: Number(element.aggregatedOpen),
+      //       high: Number(element.aggregatedHigh),
+      //       low: Number(element.aggregatedLow),
+      //     };
+      //   });
+
+
+      // this.updatedChartData.price.days7 =
+      //   this.getChartData?.volumeAndPrice7Day?.map((element) => {
+      //     const timeUsdValue = tokenTracker.binarySearch(
+      //       this.getXtzUsdHistory,
+      //       new Date(element.bucket).getTime() + 1000 * 60 * 60 * 24
+      //     );
+      //     return {
+      //       time: new Date(element.bucket).getTime() / 1000,
+      //       close: Number(element.aggregatedClose) * timeUsdValue,
+      //       open: Number(element.aggregatedOpen) * timeUsdValue,
+      //       high: Number(element.aggregatedHigh) * timeUsdValue,
+      //       low: Number(element.aggregatedLow) * timeUsdValue,
+      //     };
+      // });
+
+      // this.updatedChartData.priceXtz.days7 =
+      //   this.getChartData?.volumeAndPrice7Day?.map((element) => {
+      //     return {
+      //       time: new Date(element.bucket).getTime() / 1000,
+      //       close: Number(element.aggregatedClose),
+      //       open: Number(element.aggregatedOpen),
+      //       high: Number(element.aggregatedHigh),
+      //       low: Number(element.aggregatedLow),
+      //     };
+      //   });
+
+      // this.updatedChartData.volume.hours4 =
+      //   this.getChartData?.volumeAndPrice4Hour?.map((element) => {
+      //     const timeUsdValue = tokenTracker.binarySearch(
+      //       this.getXtzUsdHistory,
+      //       new Date(element.bucket).getTime()
+      //     );
+      //     return {
+      //       time: new Date(element.bucket).getTime() / 1000,
+      //       value: Number(element.aggregatedXtzVolume) * timeUsdValue,
+      //     };
+      //   });
+
+      // this.updatedChartData.volume.days1 =
+      //   this.getChartData?.volumeAndPrice1Day?.map((element) => {
+      //     const timeUsdValue = tokenTracker.binarySearch(
+      //       this.getXtzUsdHistory,
+      //       new Date(element.bucket).getTime()
+      //     );
+      //     return {
+      //       time: new Date(element.bucket).getTime() / 1000,
+      //       value: Number(element.aggregatedXtzVolume) * timeUsdValue,
+      //     };
+      //   });
+
+      // this.updatedChartData.volumeXtz.hours4 =
+      //   this.getChartData?.volumeAndPrice4Hour?.map((element) => {
+      //     return {
+      //       time: new Date(element.bucket).getTime() / 1000,
+      //       value: Number(element.aggregatedXtzVolume),
+      //     };
+      //   });
+
+      // this.updatedChartData.volumeXtz.days1 =
+      //   this.getChartData?.volumeAndPrice1Day?.map((element) => {
+      //     return {
+      //       time: new Date(element.bucket).getTime() / 1000,
+      //       value: Number(element.aggregatedXtzVolume),
+      //     };
+      //   });
+
+      // this.updatedChartData.volume.days7 =
+      //   this.getChartData?.volumeAndPrice7Day?.map((element) => {
+      //     const timeUsdValue = tokenTracker.binarySearch(
+      //       this.getXtzUsdHistory,
+      //       new Date(element.bucket).getTime()
+      //     );
+      //     return {
+      //       time: new Date(element.bucket).getTime() / 1000,
+      //       value: Number(element.aggregatedXtzVolume) * timeUsdValue,
+      //     };
+      //   });
+      // this.updatedChartData.volumeXtz.days7 =
+      //   this.getChartData?.volumeAndPrice7Day?.map((element) => {
+      //     return {
+      //       time: new Date(element.bucket).getTime() / 1000,
+      //       value: Number(element.aggregatedXtzVolume),
+      //     };
+      //   });
+
+      // this.updatedChartData.volume.days30 =
+      //   this.getChartData?.volumeAndPrice30Day?.map((element) => {
+      //     const timeUsdValue = tokenTracker.binarySearch(
+      //       this.getXtzUsdHistory,
+      //       new Date(element.bucket).getTime()
+      //     );
+      //     return {
+      //       time: new Date(element.bucket).getTime() / 1000,
+      //       value: Number(element.aggregatedXtzVolume) * timeUsdValue,
+      //     };
+      //   });
+      // this.updatedChartData.volumeXtz.days30 =
+      //   this.getChartData?.volumeAndPrice30Day?.map((element) => {
+      //     return {
+      //       time: new Date(element.bucket).getTime() / 1000,
+      //       value: Number(element.aggregatedXtzVolume),
+      //     };
+      //   });
+
+      const chartData = this.getChartData?.volumeAndPrice1Day[quoteIndex?.quoteIndex1d];
+      const dexAddress = chartData?.pool?.dex.address;
+      const dexType = chartData?.pool?.dex.type;
+
+      console.log("%c DEX ADDRESS:", "color: blue; font-weight: bold", dexAddress);
+      console.log("%c DEX TYPE:", "color: green; font-weight: bold", dexType);
+      console.log("%c BUCKET DATA:", "color: orange; font-weight: bold", chartData);
+
+      console.log("------------------------------------------------------------");
       this.updatedChartData.price.days1 =
-        this.getChartData?.volumeAndPrice1Day[quoteIndex.quoteIndex4h]?.buckets.map((element) => {
+        this.getChartData?.volumeAndPrice1Day[quoteIndex?.quoteIndex1d].buckets.map((element) => {
           const timeUsdValue = tokenTracker.binarySearch(
             this.getXtzUsdHistory,
             new Date(element.bucket).getTime() + 1000 * 60 * 60 * 24
           );
           return {
             time: new Date(element.bucket).getTime() / 1000,
-            close: Number(element.aggregatedClose) * timeUsdValue,
-            open: Number(element.aggregatedOpen) * timeUsdValue,
-            high: Number(element.aggregatedHigh) * timeUsdValue,
-            low: Number(element.aggregatedLow) * timeUsdValue,
+            close: Number(element.close_xtz) * timeUsdValue,
+            open: Number(element.open_xtz) * timeUsdValue,
+            high: Number(element.high_xtz) * timeUsdValue,
+            low: Number(element.low_xtz) * timeUsdValue,
           };
         });
 
       this.updatedChartData.priceXtz.days1 =
-        this.getChartData?.volumeAndPrice1Day?.map((element) => {
+        this.getChartData?.volumeAndPrice1Day[quoteIndex?.quoteIndex1d].buckets.map((element) => {
           return {
             time: new Date(element.bucket).getTime() / 1000,
-            close: Number(element.aggregatedClose),
-            open: Number(element.aggregatedOpen),
-            high: Number(element.aggregatedHigh),
-            low: Number(element.aggregatedLow),
-          };
-        });
-
-      this.updatedChartData.price.hours4 =
-        this.getChartData?.volumeAndPrice4Hour?.map((element) => {
-          const timeUsdValue = tokenTracker.binarySearch(
-            this.getXtzUsdHistory,
-            new Date(element.bucket).getTime() + 1000 * 60 * 60 * 24
-          );
-          return {
-            time: new Date(element.bucket).getTime() / 1000,
-            close: Number(element.aggregatedClose) * timeUsdValue,
-            open: Number(element.aggregatedOpen) * timeUsdValue,
-            high: Number(element.aggregatedHigh) * timeUsdValue,
-            low: Number(element.aggregatedLow) * timeUsdValue,
-          };
-      });
-
-      this.updatedChartData.priceXtz.hours4 =
-        this.getChartData?.volumeAndPrice4Hour?.map((element) => {
-          return {
-            time: new Date(element.bucket).getTime() / 1000,
-            close: Number(element.aggregatedClose),
-            open: Number(element.aggregatedOpen),
-            high: Number(element.aggregatedHigh),
-            low: Number(element.aggregatedLow),
-          };
-        });
-
-
-      this.updatedChartData.price.days7 =
-        this.getChartData?.volumeAndPrice7Day?.map((element) => {
-          const timeUsdValue = tokenTracker.binarySearch(
-            this.getXtzUsdHistory,
-            new Date(element.bucket).getTime() + 1000 * 60 * 60 * 24
-          );
-          return {
-            time: new Date(element.bucket).getTime() / 1000,
-            close: Number(element.aggregatedClose) * timeUsdValue,
-            open: Number(element.aggregatedOpen) * timeUsdValue,
-            high: Number(element.aggregatedHigh) * timeUsdValue,
-            low: Number(element.aggregatedLow) * timeUsdValue,
-          };
-      });
-
-      this.updatedChartData.priceXtz.days7 =
-        this.getChartData?.volumeAndPrice7Day?.map((element) => {
-          return {
-            time: new Date(element.bucket).getTime() / 1000,
-            close: Number(element.aggregatedClose),
-            open: Number(element.aggregatedOpen),
-            high: Number(element.aggregatedHigh),
-            low: Number(element.aggregatedLow),
-          };
-        });
-
-      this.updatedChartData.volume.hours4 =
-        this.getChartData?.volumeAndPrice4Hour?.map((element) => {
-          const timeUsdValue = tokenTracker.binarySearch(
-            this.getXtzUsdHistory,
-            new Date(element.bucket).getTime()
-          );
-          return {
-            time: new Date(element.bucket).getTime() / 1000,
-            value: Number(element.aggregatedXtzVolume) * timeUsdValue,
-          };
-        });
-
-      this.updatedChartData.volume.days1 =
-        this.getChartData?.volumeAndPrice1Day?.map((element) => {
-          const timeUsdValue = tokenTracker.binarySearch(
-            this.getXtzUsdHistory,
-            new Date(element.bucket).getTime()
-          );
-          return {
-            time: new Date(element.bucket).getTime() / 1000,
-            value: Number(element.aggregatedXtzVolume) * timeUsdValue,
-          };
-        });
-
-      this.updatedChartData.volumeXtz.hours4 =
-        this.getChartData?.volumeAndPrice4Hour?.map((element) => {
-          return {
-            time: new Date(element.bucket).getTime() / 1000,
-            value: Number(element.aggregatedXtzVolume),
-          };
-        });
-
-      this.updatedChartData.volumeXtz.days1 =
-        this.getChartData?.volumeAndPrice1Day?.map((element) => {
-          return {
-            time: new Date(element.bucket).getTime() / 1000,
-            value: Number(element.aggregatedXtzVolume),
-          };
-        });
-
-      this.updatedChartData.volume.days7 =
-        this.getChartData?.volumeAndPrice7Day?.map((element) => {
-          const timeUsdValue = tokenTracker.binarySearch(
-            this.getXtzUsdHistory,
-            new Date(element.bucket).getTime()
-          );
-          return {
-            time: new Date(element.bucket).getTime() / 1000,
-            value: Number(element.aggregatedXtzVolume) * timeUsdValue,
-          };
-        });
-      this.updatedChartData.volumeXtz.days7 =
-        this.getChartData?.volumeAndPrice7Day?.map((element) => {
-          return {
-            time: new Date(element.bucket).getTime() / 1000,
-            value: Number(element.aggregatedXtzVolume),
-          };
-        });
-
-      this.updatedChartData.volume.days30 =
-        this.getChartData?.volumeAndPrice30Day?.map((element) => {
-          const timeUsdValue = tokenTracker.binarySearch(
-            this.getXtzUsdHistory,
-            new Date(element.bucket).getTime()
-          );
-          return {
-            time: new Date(element.bucket).getTime() / 1000,
-            value: Number(element.aggregatedXtzVolume) * timeUsdValue,
-          };
-        });
-      this.updatedChartData.volumeXtz.days30 =
-        this.getChartData?.volumeAndPrice30Day?.map((element) => {
-          return {
-            time: new Date(element.bucket).getTime() / 1000,
-            value: Number(element.aggregatedXtzVolume),
+            close: Number(element.close_xtz),
+            open: Number(element.open_xtz),
+            high: Number(element.high_xtz),
+            low: Number(element.low_xtz),
           };
         });
     },
@@ -284,7 +324,6 @@ export default {
     async getPrices() {
       this.setLoading(true);
       try {
-        console.log(this.quoteIndex);
         if(this.legendTab === "price") {
           if (this.quoteIndex.quoteIndex4h > this.getChartData.volumeAndPrice4Hour?.length) {
           this.quoteIndex.quoteIndex4h = 0;

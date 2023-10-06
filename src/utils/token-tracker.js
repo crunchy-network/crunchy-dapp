@@ -744,10 +744,11 @@ export default {
     ]);
 
     quotes1d = modifyQuotes(quotes1d[0].quotes, allTokenSpot, "1d");
-    quotes1d = aggregateQuotes(quotes1d);
+    // quotes1d = aggregateQuotes(quotes1d);
 
-    const aggregatedQuotes1d = getAggregatedPriceAndVolume(quotes1d);
-    return aggregatedQuotes1d;
+    // const aggregatedQuotes1d = getAggregatedPriceAndVolume(quotes1d);
+    // return aggregatedQuotes1d;
+    return quotes1d;
   },
 
   async getChartTvl(spicyId, tokenId, exchangeId, symbol, xtzUsdHistory) {

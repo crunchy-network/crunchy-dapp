@@ -46,15 +46,15 @@
         <div class="tab-wrapper tab-custom-element">
         <button
             class="tab-text"
-            @click="nextQuoteIndex()"
-          >
-            Next
-          </button>
-          <button
-            class="tab-text"
             @click="prevQuoteIndex()"
           >
             Prev
+          </button>
+          <button
+            class="tab-text"
+            @click="nextQuoteIndex()"
+          >
+            Next
           </button>
           <button
             class="tab-text"
