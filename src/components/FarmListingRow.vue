@@ -195,7 +195,13 @@
           </el-col>
 
           <el-col
-            v-else-if="farm.poolToken.isPlentyLp || farm.poolToken.isSpicyLp"
+            v-else-if="
+              farm.poolToken.isPlentyLp ||
+              farm.poolToken.isPlentyCtezLp ||
+              farm.poolToken.isPlentyTezLp ||
+              farm.poolToken.isPlentyStableLp ||
+              farm.poolToken.isSpicyLp
+            "
             :span="4"
             style="font-weight: bold"
           >
