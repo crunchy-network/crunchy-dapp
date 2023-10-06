@@ -4,7 +4,7 @@ import utils from ".";
 import dexIndexer from "./dex-indexer";
 import ipfs from "./ipfs";
 import tzkt from "./tzkt";
-import _, { filter } from "lodash";
+import _ from "lodash";
 
 const ALIEN_FEE_DENOMINATOR = new BigNumber(1000000000000000000n);
 const day1 = new Date(new Date().setDate(new Date().getDate() - 1)).getTime();
