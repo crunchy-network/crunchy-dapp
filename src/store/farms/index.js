@@ -9,7 +9,9 @@ export default {
     crnchyAddress: process.env.VUE_APP_CONTRACTS_CRNCHY,
     lbDexAddress: process.env.VUE_APP_CONTRACTS_LB_DEX,
     lbLpAddress: process.env.VUE_APP_CONTRACTS_LB_LPTOKEN,
+    lpTokens: [],
     priceFeed: [],
+    tokenPools: [],
     currentPrices: {},
     storage: {
       farms: [],

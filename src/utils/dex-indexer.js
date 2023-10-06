@@ -1,4 +1,5 @@
 import axios from "axios";
+import farmUtils from "./farm";
 
 const BASE_URL = "https://api.crunchy.network/v1";
 
@@ -16,7 +17,20 @@ export default {
       return [];
     }
   },
+  async getLPTokens() {
+    try {
+      const response = await axios.get(`${BASE_URL}/lp_tokens`);
 
+      if (response.data) {
+        return response.data;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.error("Error fetching all token spot:", error);
+      return [];
+    }
+  },
   async getAllTokenSpot() {
     try {
       const response = await axios.get(`${BASE_URL}/tokens/quotes/spot`);
@@ -31,7 +45,6 @@ export default {
       return [];
     }
   },
-
   async getAllTokenPools() {
     try {
       const response = await axios.get(`${BASE_URL}/pools`);
@@ -182,6 +195,23 @@ export default {
     } catch (error) {
       console.error("Error fetching a token:", error);
       return [];
+    }
+  },
+  findTokenInPriceFeed(token, feed) {
+    if (farmUtils.isFa1(token)) {
+      return feed.find((el) => {
+        return (
+          el.tokenAddress === token.address || el.address === token.address
+        );
+      });
+    } else {
+      return feed.find((el) => {
+        return (
+          (el?.tokenAddress === token.address &&
+            el?.tokenId === parseInt(token.tokenId)) ||
+          el?.address === token.address
+        );
+      });
     }
   },
   async getAggregatedPriceAndVolume1D(bucketStart) {
