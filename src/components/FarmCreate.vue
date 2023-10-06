@@ -703,12 +703,13 @@ export default {
   watch: {
     form: {
       async handler(val) {
+        console.log(val)
         if (
           !val.rewardTokenThumbnailUri
           || !val.rewardTokenDecimals && (
           val.rewardTokenType &&
           val.rewardTokenAddress &&
-          (val.rewardTokenType === "fa1" || val.rewardTokenId)
+          (val.rewardTokenType === "fa1" || Number.isInteger(val.rewardTokenId))
           )
         ) {
           const validation = validateContractAddress(val.rewardTokenAddress);
