@@ -826,6 +826,7 @@ export default {
           (Object.prototype.hasOwnProperty.call(t, "tokenAddress") &&
             t.tokenAddress.toLowerCase().includes(keywords.toLowerCase()))
         ) {
+                    
           t = farmUtils.overrideMetadata(t);
           if (!Object.prototype.hasOwnProperty.call(t, "thumbnailUri") || t.thumbnailUri === null || !t.thumbnailUri) {
             t.thumbnailUri =
@@ -909,6 +910,7 @@ export default {
           (Object.prototype.hasOwnProperty.call(t, "tokenAddress") &&
             t.tokenAddress.toLowerCase().includes(keywords.toLowerCase()))
         ) {
+                    
           t = farmUtils.overrideMetadata(t);
           if (
             !Object.prototype.hasOwnProperty.call(t, "thumbnailUri") ||
