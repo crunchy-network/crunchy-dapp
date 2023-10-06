@@ -68,7 +68,6 @@
                 shape="circle"
                 :size="40"
                 style="
-                  background: #fff;
                   position: relative;
                   border: 4px solid #fff;
                   vertical-align: middle;
@@ -99,7 +98,6 @@
                 shape="circle"
                 :size="40"
                 style="
-                  background: #fff;
                   position: relative;
                   border: 4px solid #fff;
                   vertical-align: middle;
@@ -115,7 +113,6 @@
                 shape="circle"
                 :size="40"
                 style="
-                  background: #fff;
                   position: relative;
                   border: 4px solid #fff;
                   vertical-align: middle;
@@ -267,7 +264,7 @@ export default {
         .split(" ")[2],
       logos: {
         quipuswap: require("./../assets/logos/quipuswap.png"),
-        plenty: require("./../assets/dex-icons/PlentyNetwork.svg"),
+        plenty: require("./../assets/dex-icons/Plenty.png"),
         spicy: require("./../assets/logos/spicy.png"),
       },
     };
