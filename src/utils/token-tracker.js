@@ -32,7 +32,6 @@ const TEZ_AND_WRAPPED_TEZ_ADDRESSES = [
   "tez",
   "KT1UpeXdK6AJbX58GJ92pLZVCucn2DR8Nu4b",
   "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn",
-  "KT1SjXiUX63QvdNMcM2m492f7kuf8JxXRLp4",
 ];
 
 async function getPlentyTokenDailyMetrics(symbol = "") {
@@ -865,6 +864,14 @@ export default {
               TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
             )?.quote;
 
+            // Find price of quote token in tez
+            for (const address of TEZ_AND_WRAPPED_TEZ_ADDRESSES) {
+              const quote = quoteToken?.quotes.find((el) => el.token.tokenAddress === address);
+              if(quote) {
+                quoteTokenPriceInTez = quote.quote;
+                break;
+              } 
+            }
             close = TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(
               quoteData.token.tokenAddress
             )
@@ -926,26 +933,30 @@ export default {
           let quoteTokenPriceInTez;
 
           if (pool1D) {
+            quoteToken = allTokenSpot.find(
+              (el) =>
+                pool1D.token.tokenAddress === el.tokenAddress &&
+                pool1D.token.tokenId === el.tokenId
+            );
+            for (const address of TEZ_AND_WRAPPED_TEZ_ADDRESSES) {
+              const quote = quoteToken?.quotes.find((el) => el.token.tokenAddress === address);
+              if(quote) {
+                quoteTokenPriceInTez = quote.quote;
+                break;
+              } 
+            }
+            // Get the price for quote 
+            midPrice = TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(
+              pool1D.token.tokenAddress
+            )
+              ? pool1D.buckets[0].close
+              : pool1D.buckets[0].close * quoteTokenPriceInTez;
             if (new Date(pool1D.buckets[0].bucket) >= new Date(oneDayAgo)) {
-              quoteToken = allTokenSpot.find(
-                (el) =>
-                  pool1D.token.tokenAddress === el.tokenAddress &&
-                  pool1D.token.tokenId === el.tokenId
-              );
-              quoteTokenPriceInTez = quoteToken?.quotes.find((el) =>
-                TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
-              )?.quote;
-
               volume = TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(
                 pool1D.token.tokenAddress
               )
                 ? pool1D.buckets[0].quoteVolume
                 : pool1D.buckets[0].quoteVolume * quoteTokenPriceInTez;
-              midPrice = TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(
-                pool1D.token.tokenAddress
-              )
-                ? pool1D.buckets[0].close
-                : pool1D.buckets[0].close * quoteTokenPriceInTez;
             }
           }
 
