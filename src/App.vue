@@ -522,6 +522,7 @@ header .grid-content button.el-button {
 .lock-dialog .el-alert {
   border-radius: 12px;
   font-size: 12px;
+  background-color: #303135 !important;
 }
 .lock-dialog .el-alert__title {
   font-size: 12px !important;

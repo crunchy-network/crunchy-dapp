@@ -149,7 +149,7 @@ export default {
       }
       this.form.loading = true;
       this.form.visible = true;
-      await this.initFarm(farmId);
+      await this.initFarm({ farmId });
       await this.softUpdateFarm(farmId);
       this.form.farm = this.farms.data[farmId];
       this.form.loading = false;
