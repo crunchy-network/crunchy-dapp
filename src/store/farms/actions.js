@@ -634,8 +634,8 @@ export default {
               poolToken: {
                 isQuipuLp: false,
                 isQuipuV2Lp: false,
-                isQuipuStableLp: false,
-                isQuipuToken2TokenLp: isQuipuToken2TokenLp,
+                isQuipuStableLp: isQuipuStableLp,
+                isQuipuToken2TokenLp: false,
                 isLbLp: false,
                 isPlentyLp: false,
                 isSpicyLp: false,
@@ -811,7 +811,8 @@ export default {
                 isQuipuStableLp: false,
                 isQuipuToken2TokenLp: false,
                 isLbLp: false,
-                isPlentyLp: isPlentyLp,
+                isPlentyLp: false,
+                isPlentyTezLp: isPlentyTezLp,
                 isSpicyLp: false,
                 decimals: 18,
                 name:
@@ -869,7 +870,8 @@ export default {
                 isQuipuStableLp: false,
                 isQuipuToken2TokenLp: false,
                 isLbLp: false,
-                isPlentyLp: isPlentyLp,
+                isPlentyLp: false,
+                isPlentyCtezLp: isPlentyCtezLp,
                 isSpicyLp: false,
                 decimals: 6,
                 name:
@@ -927,7 +929,8 @@ export default {
                 isQuipuStableLp: false,
                 isQuipuToken2TokenLp: false,
                 isLbLp: false,
-                isPlentyLp: isPlentyLp,
+                isPlentyLp: false,
+                isPlentyStableLp: isPlentyStableLp,
                 isSpicyLp: false,
                 decimals: 18,
                 name:
