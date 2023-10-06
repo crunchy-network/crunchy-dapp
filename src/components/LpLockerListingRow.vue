@@ -98,9 +98,16 @@
               ></el-avatar>
               Spicyswap
             </template>
-            <template v-else-if="locker.token.isPlentyLp">
+            <template
+              v-else-if="
+                locker.token.isPlentyLp ||
+                locker.token.isPlentyCtezLp ||
+                locker.token.isPlentyTezLp ||
+                locker.token.isPlentyStableLp
+              "
+            >
               <el-avatar
-                :src="logos.spicy"
+                :src="logos.plenty"
                 fit="cover"
                 shape="circle"
                 :size="40"
@@ -222,7 +229,7 @@ export default {
       logos: {
         quipuswap: require("./../assets/logos/quipuswap.png"),
         spicy: require("./../assets/logos/spicy.png"),
-        plenty: require("./../assets/logos/quipuswap.png"),
+        plenty: require("./../assets/dex-icons/PlentyNetwork.svg"),
       },
     };
   },

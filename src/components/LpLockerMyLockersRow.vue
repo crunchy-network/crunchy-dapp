@@ -54,7 +54,14 @@
           </el-col>
 
           <el-col :sm="2" :lg="5">
-            <template v-if="locker.token.isQuipuLp">
+            <template
+              v-if="
+                locker.token.isQuipuLp ||
+                locker.token.isQuipuV2Lp ||
+                locker.token.isQuipuToken2TokenLp ||
+                locker.token.isQuipuStableLp
+              "
+            >
               <el-avatar
                 :src="logos.quipuswap"
                 fit="cover"
@@ -75,12 +82,47 @@
                   ? "QuipuswapV2"
                   : locker.token.isQuipuStableLp
                   ? "QuipuswapStable"
-                  : locker.token.isSpicyLp 
-                  ? "Spicyswap"
-                  : locker.token.isPlentyLp
-                  ? "Plenty Network"
                   : "Quipuswap"
               }}
+            </template>
+            <template
+              v-if="
+                locker.token.isPlentyLp ||
+                locker.token.isPlentyCtezLp ||
+                locker.token.isPlentyTezLp ||
+                locker.token.isPlentyStableLp
+              "
+            >
+              <el-avatar
+                :src="logos.plenty"
+                fit="cover"
+                shape="circle"
+                :size="40"
+                style="
+                  background: #fff;
+                  position: relative;
+                  border: 4px solid #fff;
+                  vertical-align: middle;
+                  margin-right: 14px;
+                "
+              ></el-avatar>
+              Plenty
+            </template>
+            <template v-if="locker.token.isSpicyLp">
+              <el-avatar
+                :src="logos.spicy"
+                fit="cover"
+                shape="circle"
+                :size="40"
+                style="
+                  background: #fff;
+                  position: relative;
+                  border: 4px solid #fff;
+                  vertical-align: middle;
+                  margin-right: 14px;
+                "
+              ></el-avatar>
+              Spicy
             </template>
           </el-col>
 
@@ -225,6 +267,8 @@ export default {
         .split(" ")[2],
       logos: {
         quipuswap: require("./../assets/logos/quipuswap.png"),
+        plenty: require("./../assets/dex-icons/PlentyNetwork.svg"),
+        spicy: require("./../assets/logos/spicy.png"),
       },
     };
   },

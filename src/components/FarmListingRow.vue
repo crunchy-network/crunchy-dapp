@@ -200,7 +200,12 @@
             style="font-weight: bold"
           >
             <el-tooltip
-              v-if="farm.poolToken.isPlentyLp"
+              v-if="
+                farm.poolToken.isPlentyLp ||
+                farm.poolToken.isPlentyCtezLp ||
+                farm.poolToken.isPlentyTezLp ||
+                farm.poolToken.isPlentyStableLp
+              "
               content="Plenty"
               placement="top"
               effect="light"
@@ -977,8 +982,10 @@
                     <i class="far fa-external-link fa-icon-right"></i
                   ></el-link>
                   <el-link
-                    v-else-if=" 
-                      farm.poolToken.isQuipuV2Lp  && isFa2(farm.poolToken.token1) && isFa2(farm.poolToken.token2)
+                    v-else-if="
+                      farm.poolToken.isQuipuV2Lp &&
+                      isFa2(farm.poolToken.token1) &&
+                      isFa2(farm.poolToken.token2)
                     "
                     style="color: #555cff; font-weight: 600"
                     :href="`https://quipuswap.com/liquidity/cpmm/add/${farm.poolToken.token1.tokenAddress}_${farm.poolToken.token1.tokenId}-${farm.poolToken.token2.tokenAddress}_${farm.poolToken.token2.tokenId}`"
@@ -988,7 +995,9 @@
                   ></el-link>
                   <el-link
                     v-else-if="
-                      farm.poolToken.isQuipuV2Lp  && !isFa2(farm.poolToken.token1) && isFa2(farm.poolToken.token2)
+                      farm.poolToken.isQuipuV2Lp &&
+                      !isFa2(farm.poolToken.token1) &&
+                      isFa2(farm.poolToken.token2)
                     "
                     style="color: #555cff; font-weight: 600"
                     :href="`https://quipuswap.com/liquidity/cpmm/add/${farm.poolToken.token1.tokenAddress}-${farm.poolToken.token2.tokenAddress}_${farm.poolToken.token2.tokenId}`"
@@ -998,7 +1007,9 @@
                   ></el-link>
                   <el-link
                     v-else-if="
-                      farm.poolToken.isQuipuV2Lp  && isFa2(farm.poolToken.token1) && !isFa2(farm.poolToken.token2)
+                      farm.poolToken.isQuipuV2Lp &&
+                      isFa2(farm.poolToken.token1) &&
+                      !isFa2(farm.poolToken.token2)
                     "
                     style="color: #555cff; font-weight: 600"
                     :href="`https://quipuswap.com/liquidity/cpmm/add/${farm.poolToken.token1.tokenAddress}_${farm.poolToken.token1.tokenId}-${farm.poolToken.token2.tokenAddress}`"
@@ -1008,7 +1019,9 @@
                   ></el-link>
                   <el-link
                     v-else-if="
-                      farm.poolToken.isQuipuV2Lp  && !isFa2(farm.poolToken.token1) && !isFa2(farm.poolToken.token2)
+                      farm.poolToken.isQuipuV2Lp &&
+                      !isFa2(farm.poolToken.token1) &&
+                      !isFa2(farm.poolToken.token2)
                     "
                     style="color: #555cff; font-weight: 600"
                     :href="`https://quipuswap.com/liquidity/cpmm/add/${farm.poolToken.token1.tokenAddress}-${farm.poolToken.token2.tokenAddress}`"
@@ -1018,7 +1031,9 @@
                   ></el-link>
                   <el-link
                     v-else-if="
-                       farm.poolToken.isQuipuToken2TokenLp && isFa2(farm.poolToken.token1) && isFa2(farm.poolToken.token2)
+                      farm.poolToken.isQuipuToken2TokenLp &&
+                      isFa2(farm.poolToken.token1) &&
+                      isFa2(farm.poolToken.token2)
                     "
                     style="color: #555cff; font-weight: 600"
                     :href="`https://quipuswap.com/liquidity/add/${farm.poolToken.token1.tokenAddress}_${farm.poolToken.token1.tokenId}-${farm.poolToken.token2.tokenAddress}_${farm.poolToken.token2.tokenId}`"
@@ -1028,7 +1043,9 @@
                   ></el-link>
                   <el-link
                     v-else-if="
-                       farm.poolToken.isQuipuToken2TokenLp && !isFa2(farm.poolToken.token1) && isFa2(farm.poolToken.token2)
+                      farm.poolToken.isQuipuToken2TokenLp &&
+                      !isFa2(farm.poolToken.token1) &&
+                      isFa2(farm.poolToken.token2)
                     "
                     style="color: #555cff; font-weight: 600"
                     :href="`https://quipuswap.com/liquidity/add/${farm.poolToken.token1.tokenAddress}-${farm.poolToken.token2.tokenAddress}_${farm.poolToken.token2.tokenId}`"
@@ -1038,7 +1055,9 @@
                   ></el-link>
                   <el-link
                     v-else-if="
-                       farm.poolToken.isQuipuToken2TokenLp && isFa2(farm.poolToken.token1) && !isFa2(farm.poolToken.token2)
+                      farm.poolToken.isQuipuToken2TokenLp &&
+                      isFa2(farm.poolToken.token1) &&
+                      !isFa2(farm.poolToken.token2)
                     "
                     style="color: #555cff; font-weight: 600"
                     :href="`https://quipuswap.com/liquidity/add/${farm.poolToken.token1.tokenAddress}_${farm.poolToken.token1.tokenId}-${farm.poolToken.token2.tokenAddress}`"
@@ -1048,7 +1067,9 @@
                   ></el-link>
                   <el-link
                     v-else-if="
-                       farm.poolToken.isQuipuToken2TokenLp && !isFa2(farm.poolToken.token1) && !isFa2(farm.poolToken.token2)
+                      farm.poolToken.isQuipuToken2TokenLp &&
+                      !isFa2(farm.poolToken.token1) &&
+                      !isFa2(farm.poolToken.token2)
                     "
                     style="color: #555cff; font-weight: 600"
                     :href="`https://quipuswap.com/liquidity/add/${farm.poolToken.token1.tokenAddress}-${farm.poolToken.token2.tokenAddress}`"
@@ -1057,9 +1078,7 @@
                     <i class="far fa-external-link fa-icon-right"></i
                   ></el-link>
                   <el-link
-                    v-else-if="
-                      farm.poolToken.isQuipuStableLp
-                    "
+                    v-else-if="farm.poolToken.isQuipuStableLp"
                     style="color: #555cff; font-weight: 600"
                     :href="`https://quipuswap.com/liquidity/cpmm/add/${farm.poolToken.token1.tokenAddress}_${farm.poolToken.token1.tokenId}-${farm.poolToken.token2.tokenAddress}_${farm.poolToken.token2.tokenId}`"
                     target="_blank"
