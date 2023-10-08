@@ -153,17 +153,9 @@ function modifyQuotes(quotes, allTokenSpot, type) {
         quote.token.tokenAddress === el.tokenAddress &&
         quote.token.tokenId === el.tokenId
     );
-    // Find price of quote token in tez
-    for (const address of TEZ_AND_WRAPPED_TEZ_ADDRESSES) {
-      const quote = quoteToken?.quotes.find(
-        (el) => el.token.tokenAddress === address
-      );
-      if (quote) {
-        quoteTokenPriceInTez = quote.quote;
-        break;
-      }
-    }
-
+    quoteTokenPriceInTez = quoteToken?.quotes.find((el) =>
+      TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
+    )?.quote;
     // Only get element from one month for 1h chart
     if (type === "1h") {
       quote.buckets = quote.buckets.filter(
@@ -971,6 +963,7 @@ export default {
             )
               ? pool1D.buckets[0].close
               : pool1D.buckets[0].close * quoteTokenPriceInTez;
+
             if (new Date(pool1D.buckets[0].bucket) >= new Date(oneDayAgo)) {
               volume = TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(
                 pool1D.token.tokenAddress
