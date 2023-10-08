@@ -19,7 +19,7 @@ const twoMonthInMiliSecond = oneDayInMiliSecond * 60;
 const sixMonthInMiliSecond = oneDayInMiliSecond * 180;
 const oneYearInMiliSecond = oneDayInMiliSecond * 360;
 const oneDayAgo = new Date(Date.now() - oneDayInMiliSecond).toISOString();
-// const oneWeekAgo = new Date(Date.now() - oneWeekInMiliSecond).toISOString();
+const oneWeekAgo = new Date(Date.now() - oneWeekInMiliSecond).toISOString();
 const oneMonthAgo = new Date(Date.now() - oneMonthInMiliSecond).toISOString();
 const oneMonthAndOneDayAgo = new Date(
   Date.now() - oneMonthAndOneDayInMiliSecond
@@ -187,11 +187,19 @@ function modifyQuotes(quotes, allTokenSpot, type) {
   return quotes;
 }
 
-function getAggregatedOpen(quotes, allTokenSpot, highestTvlPairedToken) {
+function getAggregatedOpen(quotes, allTokenSpot, highestTvlPairedToken, type) {
   if (!quotes) {
     return 0;
   }
 
+  let currentDateIterator;
+  if (type === "1d") {
+    currentDateIterator = new Date(oneDayAgo);
+  } else if (type === "1w") {
+    currentDateIterator = new Date(oneWeekAgo);
+  } else {
+    currentDateIterator = new Date(oneMonthAgo);
+  }
   const token = quotes.find(
     (quote) =>
       quote.token.tokenAddress === highestTvlPairedToken.token.tokenAddress &&
@@ -204,9 +212,11 @@ function getAggregatedOpen(quotes, allTokenSpot, highestTvlPairedToken) {
       token?.token.tokenId === el.tokenId
   );
 
-  const quoteTokenPriceInTez = quoteToken?.quotes.find((el) =>
-    TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
-  )?.quote;
+  const quoteTokenPriceInTez = quoteToken?.quotes.find(
+    (el) =>
+      TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress) &&
+      new Date(el.buckets[0].bucket) >= currentDateIterator
+  )?.buckets[0].open;
 
   return TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(token?.token.tokenAddress)
     ? Number(token?.quote)
@@ -801,6 +811,8 @@ export default {
         allTokenSpot,
         allTokenPool,
         allQuotes1D,
+        allQuotes1W,
+        allQuotes1Mo,
         allSpot1D,
         allSpot1W,
         allSpot1Mo,
@@ -809,6 +821,8 @@ export default {
         dexIndexer.getAllTokenSpot(),
         dexIndexer.getAllTokenPools(),
         dexIndexer.getAllQuotes1D(),
+        dexIndexer.getAllQuotes1W(),
+        dexIndexer.getAllQuotes1MO(),
         dexIndexer.getSpot1D(),
         dexIndexer.getSpot1W(),
         dexIndexer.getSpot1MO(),
@@ -1056,19 +1070,23 @@ export default {
 
         element.dayClose = getAggregatedOpen(
           tokenSpot1D,
-          allTokenSpot,
-          highestTvlPairedToken
+          allQuotes1D,
+          highestTvlPairedToken,
+          "1d"
         );
         element.weekClose = getAggregatedOpen(
           tokenSpot1W,
-          allTokenSpot,
-          highestTvlPairedToken
+          allQuotes1W,
+          highestTvlPairedToken,
+          "1w"
         );
         element.monthClose = getAggregatedOpen(
           tokenSpot1Mo,
-          allTokenSpot,
-          highestTvlPairedToken
+          allQuotes1Mo,
+          highestTvlPairedToken,
+          "1m"
         );
+        
 
         const timeUsdValueDay1 = binarySearch(xtzUsdHistory, day1);
         const timeUsdValueDay7 = binarySearch(xtzUsdHistory, day7);
