@@ -977,8 +977,14 @@ export default {
             )
               ? pool1D.buckets[0].close
               : pool1D.buckets[0].close * quoteTokenPriceInTez;
-
-            if (new Date(pool1D.buckets[0].bucket) >= new Date(oneDayAgo)) {
+            
+            const dateChecker = new Date(oneDayAgo);
+              // Set the time components to zero
+            dateChecker.setUTCHours(0);
+            dateChecker.setUTCMinutes(0);
+            dateChecker.setUTCSeconds(0);
+            dateChecker.setUTCMilliseconds(0);
+            if (new Date(pool1D.buckets[0].bucket) >= dateChecker) {
               volume = TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(
                 pool1D.token.tokenAddress
               )

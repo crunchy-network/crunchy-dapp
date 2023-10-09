@@ -41,8 +41,12 @@ export default {
       return {
         tokensTracked: state.tokenList.length,
         dexCovered: 16,
-        total24hVolume: mktCapAndVolToday?.totalVol,
-        total24hVolumeUsd: mktCapAndVolToday?.totalVol * state.xtzUsd,
+        total24hVolume: state.tokenList.reduce((prev, current) => {
+          return prev + current.volume24;
+        }, 0),
+        total24hVolumeUsd: state.tokenList.reduce((prev, current) => {
+          return prev + current.volume24Usd;
+        }, 0),
         estimatedMktCap: mktCapAndVolToday?.mktCap,
         estimatedMktCapUsd: mktCapAndVolToday?.mktCap * state.xtzUsd,
       };
