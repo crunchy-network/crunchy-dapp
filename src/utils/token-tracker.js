@@ -187,7 +187,12 @@ function modifyQuotes(quotes, allTokenQuotes, type) {
   return quotes;
 }
 
-function getAggregatedOpen(quotes, allTokenQuotes, highestTvlPairedToken, type) {
+function getAggregatedOpen(
+  quotes,
+  allTokenQuotes,
+  highestTvlPairedToken,
+  type
+) {
   if (!quotes) {
     return 0;
   }
@@ -443,6 +448,7 @@ function getAggregatedPriceAndVolume(quotes, type) {
       filteredQuotes,
       quote?.bucket
     );
+
     // Get aggregated close and volume
     if (matchingElements.length > 0) {
       const quoteVolume = parseFloat(quote.volume_quote_xtz);
@@ -484,7 +490,9 @@ function getAggregatedPriceAndVolume(quotes, type) {
           quote.close_xtz * quote.volume_quote_xtz + prevAggCloseSum;
         const aggregatedXtzVolume = quote.volume_quote_xtz + prevAggVol;
 
-        quote.aggregatedClose = weightedCloseSum / aggregatedXtzVolume;
+        quote.aggregatedClose = aggregatedXtzVolume
+          ? weightedCloseSum / aggregatedXtzVolume
+          : quote.close_xtz;
         quote.aggregatedXtzVolume = quote.volume_quote_xtz;
         aggregatedQuotes.push(quote);
       }
@@ -542,16 +550,23 @@ function getPlentyTokenChartData(indexes, kind, timeInterval, xtzUsdHistory) {
 
 export default {
   async getPriceAndVolumeQuotes(tokenAddress, tokenId) {
-    let [quotes1h, quotes1d, quotes1w, quotes1mo, allQuotes1D, allQuotes1W, allQuotes1Mo] =
-      await Promise.all([
-        dexIndexer.getQuotes1H(tokenAddress, tokenId),
-        dexIndexer.getQuotes1D(tokenAddress, tokenId),
-        dexIndexer.getQuotes1W(tokenAddress, tokenId),
-        dexIndexer.getQuotes1MO(tokenAddress, tokenId),
-        dexIndexer.getAllQuotes1D(),
-        dexIndexer.getAllQuotes1W(),
-        dexIndexer.getAllQuotes1MO(),
-      ]);
+    let [
+      quotes1h,
+      quotes1d,
+      quotes1w,
+      quotes1mo,
+      allQuotes1D,
+      allQuotes1W,
+      allQuotes1Mo,
+    ] = await Promise.all([
+      dexIndexer.getQuotes1H(tokenAddress, tokenId),
+      dexIndexer.getQuotes1D(tokenAddress, tokenId),
+      dexIndexer.getQuotes1W(tokenAddress, tokenId),
+      dexIndexer.getQuotes1MO(tokenAddress, tokenId),
+      dexIndexer.getAllQuotes1D(),
+      dexIndexer.getAllQuotes1W(),
+      dexIndexer.getAllQuotes1MO(),
+    ]);
 
     [quotes1h, quotes1d, quotes1w, quotes1mo] = [
       modifyQuotes(quotes1h[0].quotes, allQuotes1D, "1h"),
@@ -566,9 +581,7 @@ export default {
       aggregateQuotes(quotes1w),
       aggregateQuotes(quotes1mo),
     ];
-    if(tokenAddress === "KT1UMx7aZQWNKY9nC4LRYNsueEiGMfpcQhhD") {
-      console.log(quotes1h)
-    }
+
     // const aggregatedQuotes1h = getAggregatedPriceAndVolume(quotes1h);
     const aggregatedQuotes1h = getAggregatedPriceAndVolume(quotes1h);
     const aggregatedQuotes1d = getAggregatedPriceAndVolume(quotes1d);
@@ -981,9 +994,9 @@ export default {
             )
               ? pool1D.buckets[0].close
               : pool1D.buckets[0].close * quoteTokenPriceInTez;
-            
+
             const dateChecker = new Date(oneDayAgo);
-              // Set the time components to zero
+            // Set the time components to zero
             dateChecker.setUTCHours(0);
             dateChecker.setUTCMinutes(0);
             dateChecker.setUTCSeconds(0);
@@ -1096,7 +1109,6 @@ export default {
           highestTvlPairedToken,
           "1m"
         );
-        
 
         const timeUsdValueDay1 = binarySearch(xtzUsdHistory, day1);
         const timeUsdValueDay7 = binarySearch(xtzUsdHistory, day7);
