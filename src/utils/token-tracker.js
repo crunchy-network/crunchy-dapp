@@ -542,20 +542,22 @@ function getPlentyTokenChartData(indexes, kind, timeInterval, xtzUsdHistory) {
 
 export default {
   async getPriceAndVolumeQuotes(tokenAddress, tokenId) {
-    let [quotes1h, quotes1d, quotes1w, quotes1mo, allTokenSpot] =
+    let [quotes1h, quotes1d, quotes1w, quotes1mo, allQuotes1D, allQuotes1W, allQuotes1Mo] =
       await Promise.all([
         dexIndexer.getQuotes1H(tokenAddress, tokenId),
         dexIndexer.getQuotes1D(tokenAddress, tokenId),
         dexIndexer.getQuotes1W(tokenAddress, tokenId),
         dexIndexer.getQuotes1MO(tokenAddress, tokenId),
-        dexIndexer.getAllTokenSpot(),
+        dexIndexer.getAllQuotes1D(),
+        dexIndexer.getAllQuotes1W(),
+        dexIndexer.getAllQuotes1MO(),
       ]);
 
     [quotes1h, quotes1d, quotes1w, quotes1mo] = [
-      modifyQuotes(quotes1h[0].quotes, allTokenSpot, "1h"),
-      modifyQuotes(quotes1d[0].quotes, allTokenSpot, "1d"),
-      modifyQuotes(quotes1w[0].quotes, allTokenSpot),
-      modifyQuotes(quotes1mo[0].quotes, allTokenSpot),
+      modifyQuotes(quotes1h[0].quotes, allQuotes1D, "1h"),
+      modifyQuotes(quotes1d[0].quotes, allQuotes1D, "1d"),
+      modifyQuotes(quotes1w[0].quotes, allQuotes1W),
+      modifyQuotes(quotes1mo[0].quotes, allQuotes1Mo),
     ];
 
     [quotes1h, quotes1d, quotes1w, quotes1mo] = [
