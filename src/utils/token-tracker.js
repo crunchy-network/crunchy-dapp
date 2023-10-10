@@ -217,11 +217,18 @@ function getAggregatedOpen(
       token?.token.tokenId === el.tokenId
   );
 
-  const quoteTokenPriceInTez = quoteToken?.quotes.find(
-    (el) =>
-      TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress) &&
-      new Date(el.buckets[0].bucket) >= currentDateIterator
-  )?.buckets[0].open;
+  let quoteTokenPriceInTez;
+  for (const address of TEZ_AND_WRAPPED_TEZ_ADDRESSES) {
+    const quote = quoteToken?.quotes.find(
+      (el) =>
+        el.token.tokenAddress === address &&
+        new Date(el.buckets[0].bucket) >= currentDateIterator
+    );
+    if (quote) {
+      quoteTokenPriceInTez = quote?.buckets[0].open;
+      break;
+    }
+  }
 
   return TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(token?.token.tokenAddress)
     ? Number(token?.quote)
