@@ -49,6 +49,10 @@ const getDexName = (dexType) => {
     return "QuipuswapV3";
   }
 
+  if (dexType === "dexter" || dexType === "dexter_v2") {
+    return "Dexter";
+  }
+
   return pascalCase(dexType);
 };
 
@@ -492,6 +496,8 @@ const buildSwapPairs = async (dexes) => {
       case "vortex":
       case "sirius":
       case "plenty":
+      case "dexter":
+      case "dexter_v2":
         pairs.push(buildSimplePair(dex, "tez"));
         pairs.push(buildSimplePair(dex, "tez", true));
         break;
