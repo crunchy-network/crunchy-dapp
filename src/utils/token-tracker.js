@@ -144,18 +144,18 @@ function aggregateQuotes(quotes) {
   return modifiedQuotes;
 }
 
-function modifyQuotes(quotes, allTokenSpot, type) {
+function modifyQuotes(quotes, allTokenQuotes, type) {
   let quoteToken;
   let quoteTokenPriceInTez;
   quotes.forEach((quote, index) => {
-    quoteToken = allTokenSpot.find(
+    quoteToken = allTokenQuotes.find(
       (el) =>
         quote.token.tokenAddress === el.tokenAddress &&
         quote.token.tokenId === el.tokenId
     );
     quoteTokenPriceInTez = quoteToken?.quotes.find((el) =>
       TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
-    )?.quote;
+    )?.buckets[0].close;
     // Only get element from one month for 1h chart
     if (type === "1h") {
       quote.buckets = quote.buckets.filter(
@@ -187,7 +187,7 @@ function modifyQuotes(quotes, allTokenSpot, type) {
   return quotes;
 }
 
-function getAggregatedOpen(quotes, allTokenSpot, highestTvlPairedToken, type) {
+function getAggregatedOpen(quotes, allTokenQuotes, highestTvlPairedToken, type) {
   if (!quotes) {
     return 0;
   }
@@ -206,7 +206,7 @@ function getAggregatedOpen(quotes, allTokenSpot, highestTvlPairedToken, type) {
       quote.token.tokenId === highestTvlPairedToken.token.tokenId
   );
 
-  const quoteToken = allTokenSpot.find(
+  const quoteToken = allTokenQuotes.find(
     (el) =>
       token?.token.tokenAddress === el.tokenAddress &&
       token?.token.tokenId === el.tokenId
@@ -566,7 +566,9 @@ export default {
       aggregateQuotes(quotes1w),
       aggregateQuotes(quotes1mo),
     ];
-
+    if(tokenAddress === "KT1UMx7aZQWNKY9nC4LRYNsueEiGMfpcQhhD") {
+      console.log(quotes1h)
+    }
     // const aggregatedQuotes1h = getAggregatedPriceAndVolume(quotes1h);
     const aggregatedQuotes1h = getAggregatedPriceAndVolume(quotes1h);
     const aggregatedQuotes1d = getAggregatedPriceAndVolume(quotes1d);
@@ -674,12 +676,12 @@ export default {
   },
 
   async getAllQuotes1d(tokenAddress, tokenId) {
-    let [quotes1d, allTokenSpot] = await Promise.all([
+    let [quotes1d, allQuotes1D] = await Promise.all([
       dexIndexer.getQuotes1D(tokenAddress, tokenId),
-      dexIndexer.getAllTokenSpot(),
+      dexIndexer.getAllQuotes1D(),
     ]);
 
-    quotes1d = modifyQuotes(quotes1d[0].quotes, allTokenSpot, "1d");
+    quotes1d = modifyQuotes(quotes1d[0].quotes, allQuotes1D, "1d");
     quotes1d = aggregateQuotes(quotes1d);
 
     const aggregatedQuotes1d = getAggregatedPriceAndVolume(quotes1d);
