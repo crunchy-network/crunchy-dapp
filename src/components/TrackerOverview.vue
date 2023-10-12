@@ -44,7 +44,7 @@
           </button>
         </div>
         <div class="tab-wrapper tab-custom-element">
-        <button
+          <button
             class="tab-text"
             :style="isActiveTab('price', legendTab)"
             @click="setLegendTab('price')"
@@ -67,11 +67,37 @@
           </button> -->
         </div>
       </el-row>
+      <el-row
+        v-if="legendTab === 'price'"
+        class="tab-flex"
+        :gutter="10"
+        type="flex"
+        align="start"
+        justify="space-between"
+      >
+        <div class="tab-wrapper tab-custom-element">
+          <button
+            class="tab-text"
+            :style="isActiveTab('candles', priceChartType)"
+            @click="setPriceChartType('candles')"
+          >
+            Candles
+          </button>
+          <button
+            class="tab-text"
+            :style="isActiveTab('lines', priceChartType)"
+            @click="setPriceChartType('lines')"
+          >
+            Lines
+          </button>
+        </div>
+      </el-row>
       <TrackerOverviewChart
         :token-tracked="tokenTracked"
         :duration="duration"
         :legend-tab="legendTab"
         :set-loading="setChartLoading"
+        :price-chart-type="priceChartType"
       />
     </el-card>
   </div>
@@ -106,6 +132,7 @@ export default {
   data() {
     return {
       legendTab: "price",
+      priceChartType: "candles",
       chartLoading: false,
     };
   },
@@ -172,6 +199,12 @@ export default {
       return (
         tabValue === tab && "color: var(--color-menu-active); font-weight: 700"
       );
+    },
+    
+    setPriceChartType(tab = "") {
+      if (["candles", "lines"].includes(tab)) {
+        this.priceChartType = tab;
+      }
     },
 
     setLegendTab(tab = "") {
