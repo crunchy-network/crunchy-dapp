@@ -629,28 +629,21 @@ export default {
       modifyQuotes(quotes1mo[0].quotes, allTokenSpot),
     ];
 
-    // [quotes4h, quotes1w, quotes1mo] = [
-    //   aggregateQuotes(quotes4h),
-    //   aggregateQuotes(quotes1w),
-    //   aggregateQuotes(quotes1mo),
-    // ];
+    [quotes4h, quotes1w, quotes1mo] = [
+      aggregateQuotes(quotes4h),
+      aggregateQuotes(quotes1w),
+      aggregateQuotes(quotes1mo),
+    ];
 
-    // const aggregatedQuotes4h = getAggregatedPriceAndVolume(quotes4h);
-    // const aggregatedQuotes1w = getAggregatedPriceAndVolume(quotes1w);
-    // const aggregatedQuotes1mo = getAggregatedPriceAndVolume(quotes1mo);
-    // if(tokenAddress === "KT1VaEsVNiBoA56eToEK6n6BcPgh1tdx9eXi") {
-    //   console.log(quotes4h)
-    // }
+    const aggregatedQuotes4h = getAggregatedPriceAndVolume(quotes4h);
+    const aggregatedQuotes1w = getAggregatedPriceAndVolume(quotes1w);
+    const aggregatedQuotes1mo = getAggregatedPriceAndVolume(quotes1mo);
+
     return {
-      quotes4h: quotes4h,
-      quotes1w: quotes1w,
-      quotes1mo: quotes1mo,
+      quotes4h: aggregatedQuotes4h,
+      quotes1w: aggregatedQuotes1w,
+      quotes1mo: aggregatedQuotes1mo,
     };
-    // return {
-    //   quotes4h: aggregatedQuotes4h,
-    //   quotes1w: aggregatedQuotes1w,
-    //   quotes1mo: aggregatedQuotes1mo,
-    // };
   },
 
   async getOverviewChartData(tokenFeed) {
@@ -744,11 +737,10 @@ export default {
     ]);
 
     quotes1d = modifyQuotes(quotes1d[0].quotes, allTokenSpot, "1d");
-    // quotes1d = aggregateQuotes(quotes1d);
+    quotes1d = aggregateQuotes(quotes1d);
 
-    // const aggregatedQuotes1d = getAggregatedPriceAndVolume(quotes1d);
-    // return aggregatedQuotes1d;
-    return quotes1d;
+    const aggregatedQuotes1d = getAggregatedPriceAndVolume(quotes1d);
+    return aggregatedQuotes1d;
   },
 
   async getChartTvl(spicyId, tokenId, exchangeId, symbol, xtzUsdHistory) {
@@ -935,9 +927,7 @@ export default {
           let quoteToken;
           let quoteTokenPriceInTez;
           // Token has quote paired with xtz
-          if (
-            TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(quoteData.token.tokenAddress)
-          ) {
+          if (quoteData.token.tokenAddress === "tez") {
             close = quoteData.quote;
           }
           // Token has quote paired with other tokens
