@@ -18,6 +18,7 @@ let updateCurrentPricesPromise;
 let updateFarmStoragePromise;
 
 const tokenMetadataCache = {};
+const TEZ_AND_WRAPPED_TEZ_ADDRESSES = ["tez"];
 const getFarmTokenMetadata = async (address, tokenId) => {
   const cacheKey = `${address}:${tokenId}`;
   if (!Object.prototype.hasOwnProperty.call(tokenMetadataCache, cacheKey)) {
@@ -306,7 +307,7 @@ export default {
         farm.poolToken,
         allTokens
       );
-
+      let decimals;
       if (poolTokenMeta) {
         const tokenPools = state.tokenPools.filter(
           (el) =>
@@ -329,30 +330,38 @@ export default {
         switch (dexType) {
           case "quipuswap":
             isQuipuLp = true;
+            decimals = 6;
             break;
           case "quipuswap_v2":
             isQuipuV2Lp = true;
+            decimals = 6;
             break;
           case "quipuswap_token2token":
             isQuipuToken2TokenLp = true;
+            decimals = 6;
             break;
           case "quipuswap_stable":
             isQuipuStableLp = true;
+            decimals = 18;
             break;
           case "spicy":
             isSpicyLp = true;
+            decimals = 18;
             break;
           case "plenty":
             isPlentyLp = true;
+            decimals = 18;
             break;
           case "plenty_ctez":
             isPlentyCtezLp = true;
+            decimals = 6;
             break;
           case "plenty_tez":
             isPlentyTezLp = true;
             break;
           case "plenty_stable":
             isPlentyStableLp = true;
+            decimals = 12;
             break;
           default:
             // Handle other cases here if needed
@@ -422,13 +431,24 @@ export default {
             el.tokenAddress === poolTokenMeta.tokenAddress &&
             el.tokenId === poolTokenMeta.tokenId
         );
-        const totalSupply = lpToken.length ? lpToken[0].totalSupply : 0;
+
+        let token;
+        let tezPool = 0;
+        const totalSupply = lpToken.length
+          ? BigNumber(lpToken[0].totalSupply)
+              .div(BigNumber(10).pow(decimals))
+              .toNumber()
+          : 0;
 
         if (isQuipuLp) {
-          const tezPool =
+          tezPool =
             tokenPools.tokens[0].token.tokenAddress === "tez"
-              ? tokenPools.tokens[0].reserves
-              : tokenPools.tokens[1].reserves;
+              ? BigNumber(tokenPools.tokens[0].reserves)
+                  .div(BigNumber(10).pow(6))
+                  .toNumber()
+              : BigNumber(tokenPools.tokens[1].reserves)
+                  .div(BigNumber(10).pow(6))
+                  .toNumber();
           commit(
             "updateFarm",
             merge(farm, {
@@ -476,14 +496,22 @@ export default {
             commit("updateFarmLoading", { farmId, loading: false });
           });
         } else if (isQuipuV2Lp) {
-          // const pairs = await tzkt.getContractBigMapKeys(
-          //   farm.poolToken.address,
-          //   "pairs",
-          //   {
-          //     key: farm.poolToken.tokenId,
-          //     select: "value",
-          //   }
-          // );
+          token = tokenPools.tokens.find((el) =>
+            TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
+          );
+          if (token) {
+            tezPool = BigNumber(token.reserves)
+              .div(BigNumber(10).pow(6))
+              .toNumber();
+          } else {
+            token = tokenPools.tokens[0];
+            const id = token.token.tokenAddress + "_" + token.token.tokenId;
+            const tokenPrice = state.currentPrices[id];
+            tezPool = BigNumber(token.reserves)
+              .times(tokenPrice)
+              .div(BigNumber(10).pow(token.token.decimals))
+              .toNumber();
+          }
           commit(
             "updateFarm",
             merge(farm, {
@@ -509,7 +537,7 @@ export default {
                 token2: tokenPools.tokens[1].token,
                 token2Pool: tokenPools.tokens[1].reserves,
                 totalSupply: totalSupply,
-                // totalSupply: pairs.data[0].total_supply,
+                tezPool: tezPool,
               },
               rewardToken: {
                 ...rewardTokenMeta,
@@ -526,14 +554,22 @@ export default {
             commit("updateFarmLoading", { farmId, loading: false });
           });
         } else if (isQuipuToken2TokenLp) {
-          // const pairs = await tzkt.getContractBigMapKeys(
-          //   farm.poolToken.address,
-          //   "pairs",
-          //   {
-          //     key: farm.poolToken.tokenId,
-          //     select: "value",
-          //   }
-          // );
+          token = tokenPools.tokens.find((el) =>
+            TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
+          );
+          if (token) {
+            tezPool = BigNumber(token.reserves)
+              .div(BigNumber(10).pow(6))
+              .toNumber();
+          } else {
+            token = tokenPools.tokens[0];
+            const id = token.token.tokenAddress + "_" + token.token.tokenId;
+            const tokenPrice = state.currentPrices[id];
+            tezPool = BigNumber(token.reserves)
+              .times(tokenPrice)
+              .div(BigNumber(10).pow(token.token.decimals))
+              .toNumber();
+          }
           commit(
             "updateFarm",
             merge(farm, {
@@ -559,7 +595,7 @@ export default {
                 token2: tokenPools.tokens[1].token,
                 token2Pool: tokenPools.tokens[1].reserves,
                 totalSupply: totalSupply,
-                // totalSupply: pairs.data[0].total_supply,
+                tezPool: tezPool,
               },
               rewardToken: {
                 ...rewardTokenMeta,
@@ -576,22 +612,30 @@ export default {
             commit("updateFarmLoading", { farmId, loading: false });
           });
         } else if (isQuipuStableLp) {
-          // const pairs = await tzkt.getContractBigMapKeys(
-          //   farm.poolToken.address,
-          //   "pools",
-          //   {
-          //     key: 0,
-          //     select: "value",
-          //   }
-          // );
+          token = tokenPools.tokens.find((el) =>
+            TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
+          );
+          if (token) {
+            tezPool = BigNumber(token.reserves)
+              .div(BigNumber(10).pow(6))
+              .toNumber();
+          } else {
+            token = tokenPools.tokens[0];
+            const id = token.token.tokenAddress + "_" + token.token.tokenId;
+            const tokenPrice = state.currentPrices[id];
+            tezPool = BigNumber(token.reserves)
+              .times(tokenPrice)
+              .div(BigNumber(10).pow(token.token.decimals))
+              .toNumber();
+          }
           commit(
             "updateFarm",
             merge(farm, {
               poolToken: {
                 isQuipuLp: false,
                 isQuipuV2Lp: false,
-                isQuipuStableLp: false,
-                isQuipuToken2TokenLp: isQuipuToken2TokenLp,
+                isQuipuStableLp: isQuipuStableLp,
+                isQuipuToken2TokenLp: false,
                 isLbLp: false,
                 isPlentyLp: false,
                 isSpicyLp: false,
@@ -609,7 +653,7 @@ export default {
                 token2: tokenPools.tokens[1].token,
                 token2Pool: tokenPools.tokens[1].reserves,
                 totalSupply: totalSupply,
-                // totalSupply: pairs.data[0].total_supply,
+                tezPool: tezPool,
               },
               rewardToken: {
                 ...rewardTokenMeta,
@@ -626,11 +670,22 @@ export default {
             commit("updateFarmLoading", { farmId, loading: false });
           });
         } else if (isSpicyLp) {
-          // const pairs = await tzkt.getContractBigMapKeys(
-          //   farm.poolToken.address,
-          //   "token_total_supply",
-          //   { key: 0, select: "value" }
-          // );
+          token = tokenPools.tokens.find((el) =>
+            TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
+          );
+          if (token) {
+            tezPool = BigNumber(token.reserves)
+              .div(BigNumber(10).pow(6))
+              .toNumber();
+          } else {
+            token = tokenPools.tokens[0];
+            const id = token.token.tokenAddress + "_" + token.token.tokenId;
+            const tokenPrice = state.currentPrices[id];
+            tezPool = BigNumber(token.reserves)
+              .times(tokenPrice)
+              .div(BigNumber(10).pow(token.token.decimals))
+              .toNumber();
+          }
           commit(
             "updateFarm",
             merge(farm, {
@@ -656,7 +711,7 @@ export default {
                 token2: tokenPools.tokens[1].token,
                 token2Pool: tokenPools.tokens[1].reserves,
                 totalSupply: totalSupply,
-                // totalSupply: pairs.data[0],
+                tezPool: tezPool,
               },
               rewardToken: {
                 ...rewardTokenMeta,
@@ -673,7 +728,22 @@ export default {
             commit("updateFarmLoading", { farmId, loading: false });
           });
         } else if (isPlentyLp) {
-          // const storage = await tzkt.getContractStorage(farm.poolToken.address);
+          token = tokenPools.tokens.find((el) =>
+            TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
+          );
+          if (token) {
+            tezPool = BigNumber(token.reserves)
+              .div(BigNumber(10).pow(6))
+              .toNumber();
+          } else {
+            token = tokenPools.tokens[0];
+            const id = token.token.tokenAddress + "_" + token.token.tokenId;
+            const tokenPrice = state.currentPrices[id];
+            tezPool = BigNumber(token.reserves)
+              .times(tokenPrice)
+              .div(BigNumber(10).pow(token.token.decimals))
+              .toNumber();
+          }
           commit(
             "updateFarm",
             merge(farm, {
@@ -699,7 +769,7 @@ export default {
                 token2: tokenPools.tokens[1].token,
                 token2Pool: tokenPools.tokens[1].reserves,
                 totalSupply: totalSupply,
-                // totalSupply: storage.totalSupply,
+                tezPool: tezPool,
               },
               rewardToken: {
                 ...rewardTokenMeta,
@@ -716,7 +786,22 @@ export default {
             commit("updateFarmLoading", { farmId, loading: false });
           });
         } else if (isPlentyTezLp) {
-          // const storage = await tzkt.getContractStorage(farm.poolToken.address);
+          token = tokenPools.tokens.find((el) =>
+            TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
+          );
+          if (token) {
+            tezPool = BigNumber(token.reserves)
+              .div(BigNumber(10).pow(6))
+              .toNumber();
+          } else {
+            token = tokenPools.tokens[0];
+            const id = token.token.tokenAddress + "_" + token.token.tokenId;
+            const tokenPrice = state.currentPrices[id];
+            tezPool = BigNumber(token.reserves)
+              .times(tokenPrice)
+              .div(BigNumber(10).pow(token.token.decimals))
+              .toNumber();
+          }
           commit(
             "updateFarm",
             merge(farm, {
@@ -726,7 +811,8 @@ export default {
                 isQuipuStableLp: false,
                 isQuipuToken2TokenLp: false,
                 isLbLp: false,
-                isPlentyLp: isPlentyLp,
+                isPlentyLp: false,
+                isPlentyTezLp: isPlentyTezLp,
                 isSpicyLp: false,
                 decimals: 18,
                 name:
@@ -742,7 +828,7 @@ export default {
                 token2: tokenPools.tokens[1].token,
                 token2Pool: tokenPools.tokens[1].reserves,
                 totalSupply: totalSupply,
-                // totalSupply: storage.totalSupply,
+                tezPool: tezPool,
               },
               rewardToken: {
                 ...rewardTokenMeta,
@@ -759,7 +845,22 @@ export default {
             commit("updateFarmLoading", { farmId, loading: false });
           });
         } else if (isPlentyCtezLp) {
-          // const storage = await tzkt.getContractStorage(farm.poolToken.address);
+          token = tokenPools.tokens.find((el) =>
+            TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
+          );
+          if (token) {
+            tezPool = BigNumber(token.reserves)
+              .div(BigNumber(10).pow(6))
+              .toNumber();
+          } else {
+            token = tokenPools.tokens[0];
+            const id = token.token.tokenAddress + "_" + token.token.tokenId;
+            const tokenPrice = state.currentPrices[id];
+            tezPool = BigNumber(token.reserves)
+              .times(tokenPrice)
+              .div(BigNumber(10).pow(token.token.decimals))
+              .toNumber();
+          }
           commit(
             "updateFarm",
             merge(farm, {
@@ -769,7 +870,8 @@ export default {
                 isQuipuStableLp: false,
                 isQuipuToken2TokenLp: false,
                 isLbLp: false,
-                isPlentyLp: isPlentyLp,
+                isPlentyLp: false,
+                isPlentyCtezLp: isPlentyCtezLp,
                 isSpicyLp: false,
                 decimals: 6,
                 name:
@@ -785,7 +887,7 @@ export default {
                 token2: tokenPools.tokens[1].token,
                 token2Pool: tokenPools.tokens[1].reserves,
                 totalSupply: totalSupply,
-                // totalSupply: storage.lqtTotal,
+                tezPool: tezPool,
               },
               rewardToken: {
                 ...rewardTokenMeta,
@@ -802,7 +904,22 @@ export default {
             commit("updateFarmLoading", { farmId, loading: false });
           });
         } else if (isPlentyStableLp) {
-          // const storage = await tzkt.getContractStorage(farm.poolToken.address);
+          token = tokenPools.tokens.find((el) =>
+            TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
+          );
+          if (token) {
+            tezPool = BigNumber(token.reserves)
+              .div(BigNumber(10).pow(6))
+              .toNumber();
+          } else {
+            token = tokenPools.tokens[0];
+            const id = token.token.tokenAddress + "_" + token.token.tokenId;
+            const tokenPrice = state.currentPrices[id];
+            tezPool = BigNumber(token.reserves)
+              .times(tokenPrice)
+              .div(BigNumber(10).pow(token.token.decimals))
+              .toNumber();
+          }
           commit(
             "updateFarm",
             merge(farm, {
@@ -812,7 +929,8 @@ export default {
                 isQuipuStableLp: false,
                 isQuipuToken2TokenLp: false,
                 isLbLp: false,
-                isPlentyLp: isPlentyLp,
+                isPlentyLp: false,
+                isPlentyStableLp: isPlentyStableLp,
                 isSpicyLp: false,
                 decimals: 18,
                 name:
@@ -828,7 +946,7 @@ export default {
                 token2: tokenPools.tokens[1].token,
                 token2Pool: tokenPools.tokens[1].reserves,
                 totalSupply: totalSupply,
-                // totalSupply: storage.lqtTotal,
+                tezPool: tezPool,
               },
               rewardToken: {
                 ...rewardTokenMeta,
@@ -1301,123 +1419,54 @@ export default {
           .times(2)
           .toNumber();
       } else if (farm.poolToken.isQuipuV2Lp) {
-        if (
-          Object.prototype.hasOwnProperty.call(
-            state.currentPrices,
-            `${farm.poolToken.token1.tokenAddress}_${farm.poolToken.token1.tokenId}`
-          ) &&
-          Object.prototype.hasOwnProperty.call(
-            state.currentPrices,
-            `${farm.poolToken.token2.tokenAddress}_${farm.poolToken.token2.tokenId}`
-          )
-        ) {
-          const token1Price =
-            state.currentPrices[
-              `${farm.poolToken.token1.tokenAddress}_${farm.poolToken.token1.tokenId}`
-            ];
-          const token2Price =
-            state.currentPrices[
-              `${farm.poolToken.token2.tokenAddress}_${farm.poolToken.token2.tokenId}`
-            ];
-
-          const token1TotalXtz = BigNumber(farm.poolToken.token1Pool)
-            .div(BigNumber(10).pow(farm.poolToken.token1.decimals))
-            .times(token1Price);
-          const token2TotalXtz = BigNumber(farm.poolToken.token2Pool)
-            .div(BigNumber(10).pow(farm.poolToken.token2.decimals))
-            .times(token2Price);
-          const xtzPerLp = token1TotalXtz
-            .plus(token2TotalXtz)
-            .div(farm.poolToken.totalSupply);
-          tvlTez = BigNumber(farmStorage.poolBalance)
-            .times(xtzPerLp)
-            .toNumber();
-        }
+        tvlTez = BigNumber(farmStorage.poolBalance)
+        .div(BigNumber(10).pow(6))
+        .times(farm.poolToken.tezPool)
+        .div(farm.poolToken.totalSupply)
+        .times(2)
+        .toNumber();
+      } else if (farm.poolToken.isQuipuStableLp) {
+        tvlTez = BigNumber(farmStorage.poolBalance)
+        .div(BigNumber(10).pow(18))
+        .times(farm.poolToken.tezPool)
+        .div(farm.poolToken.totalSupply)
+        .times(2)
+        .toNumber();
       } else if (farm.poolToken.isQuipuToken2TokenLp) {
-        if (
-          Object.prototype.hasOwnProperty.call(
-            state.currentPrices,
-            `${farm.poolToken.token1.tokenAddress}_${farm.poolToken.token1.tokenId}`
-          ) &&
-          Object.prototype.hasOwnProperty.call(
-            state.currentPrices,
-            `${farm.poolToken.token2.tokenAddress}_${farm.poolToken.token2.tokenId}`
-          )
-        ) {
-          const token1Price =
-            state.currentPrices[
-              `${farm.poolToken.token1.tokenAddress}_${farm.poolToken.token1.tokenId}`
-            ];
-          const token2Price =
-            state.currentPrices[
-              `${farm.poolToken.token2.tokenAddress}_${farm.poolToken.token2.tokenId}`
-            ];
-
-          const token1TotalXtz = BigNumber(farm.poolToken.token1Pool)
-            .div(BigNumber(10).pow(farm.poolToken.token1.decimals))
-            .times(token1Price);
-          const token2TotalXtz = BigNumber(farm.poolToken.token2Pool)
-            .div(BigNumber(10).pow(farm.poolToken.token2.decimals))
-            .times(token2Price);
-          const xtzPerLp = token1TotalXtz
-            .plus(token2TotalXtz)
-            .div(farm.poolToken.totalSupply);
-          tvlTez = BigNumber(farmStorage.poolBalance)
-            .times(xtzPerLp)
-            .toNumber();
-        }
+        tvlTez = BigNumber(farmStorage.poolBalance)
+        .div(BigNumber(10).pow(6))
+        .times(farm.poolToken.tezPool)
+        .div(farm.poolToken.totalSupply)
+        .times(2)
+        .toNumber();
       } else if (farm.poolToken.isPlentyLp) {
-        if (
-          Object.prototype.hasOwnProperty.call(
-            state.currentPrices,
-            `${farm.poolToken.token1.tokenAddress}_${farm.poolToken.token1.tokenId}`
-          ) &&
-          Object.prototype.hasOwnProperty.call(
-            state.currentPrices,
-            `${farm.poolToken.token2.tokenAddress}_${farm.poolToken.token2.tokenId}`
-          )
-        ) {
-          const token1Price =
-            state.currentPrices[
-              `${farm.poolToken.token1.tokenAddress}_${farm.poolToken.token1.tokenId}`
-            ];
-          const token2Price =
-            state.currentPrices[
-              `${farm.poolToken.token2.tokenAddress}_${farm.poolToken.token2.tokenId}`
-            ];
-
-          const token1TotalXtz = BigNumber(farm.poolToken.token1Pool)
-            .div(BigNumber(10).pow(farm.poolToken.token1.decimals))
-            .times(token1Price);
-          const token2TotalXtz = BigNumber(farm.poolToken.token2Pool)
-            .div(BigNumber(10).pow(farm.poolToken.token2.decimals))
-            .times(token2Price);
-          const xtzPerLp = token1TotalXtz
-            .plus(token2TotalXtz)
-            .div(farm.poolToken.totalSupply);
-          tvlTez = BigNumber(farmStorage.poolBalance)
-            .times(xtzPerLp)
-            .toNumber();
-        }
+        tvlTez = BigNumber(farmStorage.poolBalance)
+        .div(BigNumber(10).pow(18))
+        .times(farm.poolToken.tezPool)
+        .div(farm.poolToken.totalSupply)
+        .times(2)
+        .toNumber();
+      } else if (farm.poolToken.isPlentyCtezLp) {
+        tvlTez = BigNumber(farmStorage.poolBalance)
+        .div(BigNumber(10).pow(6))
+        .times(farm.poolToken.tezPool)
+        .div(farm.poolToken.totalSupply)
+        .times(2)
+        .toNumber();
+      } else if (farm.poolToken.isPlentyStableLp) {
+        tvlTez = BigNumber(farmStorage.poolBalance)
+        .div(BigNumber(10).pow(12))
+        .times(farm.poolToken.tezPool)
+        .div(farm.poolToken.totalSupply)
+        .times(2)
+        .toNumber();
       } else if (farm.poolToken.isSpicyLp) {
-        if (!rootState.wtz.totalTvlTez) {
-          await dispatch("loadWtzData");
-        }
-
-        if (rootState.wtz.swapRatio.toFixed() !== "1") {
-          const xtzPerLp = BigNumber(farm.poolToken.token1Pool)
-            .div(BigNumber(10).pow(farm.poolToken.token1.decimals))
-            .times(rootState.wtz.swapRatioPrecision)
-            .div(rootState.wtz.swapRatio)
-            .times(1 - 0.001)
-            .div(farm.poolToken.totalSupply)
-            .toNumber();
-
-          tvlTez = BigNumber(farmStorage.poolBalance)
-            .times(xtzPerLp)
-            .times(2)
-            .toNumber();
-        }
+        tvlTez = BigNumber(farmStorage.poolBalance)
+          .div(BigNumber(10).pow(18))
+          .times(farm.poolToken.tezPool)
+          .div(farm.poolToken.totalSupply)
+          .times(2)
+          .toNumber();
       } else {
         if (
           Object.prototype.hasOwnProperty.call(
@@ -1515,122 +1564,54 @@ export default {
           .times(2)
           .toNumber();
       } else if (farm.poolToken.isQuipuV2Lp) {
-        if (
-          Object.prototype.hasOwnProperty.call(
-            state.currentPrices,
-            `${farm.poolToken.token1.tokenAddress}_${farm.poolToken.token1.tokenId}`
-          ) &&
-          Object.prototype.hasOwnProperty.call(
-            state.currentPrices,
-            `${farm.poolToken.token2.tokenAddress}_${farm.poolToken.token2.tokenId}`
-          )
-        ) {
-          const token1Price =
-            state.currentPrices[
-              `${farm.poolToken.token1.tokenAddress}_${farm.poolToken.token1.tokenId}`
-            ];
-          const token2Price =
-            state.currentPrices[
-              `${farm.poolToken.token2.tokenAddress}_${farm.poolToken.token2.tokenId}`
-            ];
-
-          const token1TotalXtz = BigNumber(farm.poolToken.token1Pool)
-            .div(BigNumber(10).pow(farm.poolToken.token1.decimals))
-            .times(token1Price);
-          const token2TotalXtz = BigNumber(farm.poolToken.token2Pool)
-            .div(BigNumber(10).pow(farm.poolToken.token2.decimals))
-            .times(token2Price);
-          const xtzPerLp = token1TotalXtz
-            .plus(token2TotalXtz)
-            .div(farm.poolToken.totalSupply);
-          tvlTez = BigNumber(farmStorage.poolBalance)
-            .times(xtzPerLp)
-            .toNumber();
-        }
+        tvlTez = BigNumber(farmStorage.poolBalance)
+        .div(BigNumber(10).pow(6))
+        .times(farm.poolToken.tezPool)
+        .div(farm.poolToken.totalSupply)
+        .times(2)
+        .toNumber();
+      } else if (farm.poolToken.isQuipuStableLp) {
+        tvlTez = BigNumber(farmStorage.poolBalance)
+        .div(BigNumber(10).pow(18))
+        .times(farm.poolToken.tezPool)
+        .div(farm.poolToken.totalSupply)
+        .times(2)
+        .toNumber();
       } else if (farm.poolToken.isQuipuToken2TokenLp) {
-        if (
-          Object.prototype.hasOwnProperty.call(
-            state.currentPrices,
-            `${farm.poolToken.token1.tokenAddress}_${farm.poolToken.token1.tokenId}`
-          ) &&
-          Object.prototype.hasOwnProperty.call(
-            state.currentPrices,
-            `${farm.poolToken.token2.tokenAddress}_${farm.poolToken.token2.tokenId}`
-          )
-        ) {
-          const token1Price =
-            state.currentPrices[
-              `${farm.poolToken.token1.tokenAddress}_${farm.poolToken.token1.tokenId}`
-            ];
-          const token2Price =
-            state.currentPrices[
-              `${farm.poolToken.token2.tokenAddress}_${farm.poolToken.token2.tokenId}`
-            ];
-
-          const token1TotalXtz = BigNumber(farm.poolToken.token1Pool)
-            .div(BigNumber(10).pow(farm.poolToken.token1.decimals))
-            .times(token1Price);
-          const token2TotalXtz = BigNumber(farm.poolToken.token2Pool)
-            .div(BigNumber(10).pow(farm.poolToken.token2.decimals))
-            .times(token2Price);
-          const xtzPerLp = token1TotalXtz
-            .plus(token2TotalXtz)
-            .div(farm.poolToken.totalSupply);
-          tvlTez = BigNumber(farmStorage.poolBalance)
-            .times(xtzPerLp)
-            .toNumber();
-        }
+        tvlTez = BigNumber(farmStorage.poolBalance)
+        .div(BigNumber(10).pow(6))
+        .times(farm.poolToken.tezPool)
+        .div(farm.poolToken.totalSupply)
+        .times(2)
+        .toNumber();
       } else if (farm.poolToken.isPlentyLp) {
-        if (
-          Object.prototype.hasOwnProperty.call(
-            state.currentPrices,
-            `${farm.poolToken.token1.tokenAddress}_${farm.poolToken.token1.tokenId}`
-          ) &&
-          Object.prototype.hasOwnProperty.call(
-            state.currentPrices,
-            `${farm.poolToken.token2.tokenAddress}_${farm.poolToken.token2.tokenId}`
-          )
-        ) {
-          const token1Price =
-            state.currentPrices[
-              `${farm.poolToken.token1.tokenAddress}_${farm.poolToken.token1.tokenId}`
-            ];
-          const token2Price =
-            state.currentPrices[
-              `${farm.poolToken.token2.tokenAddress}_${farm.poolToken.token2.tokenId}`
-            ];
-
-          const token1TotalXtz = BigNumber(farm.poolToken.token1Pool)
-            .div(BigNumber(10).pow(farm.poolToken.token1.decimals))
-            .times(token1Price);
-          const token2TotalXtz = BigNumber(farm.poolToken.token2Pool)
-            .div(BigNumber(10).pow(farm.poolToken.token2.decimals))
-            .times(token2Price);
-          const xtzPerLp = token1TotalXtz
-            .plus(token2TotalXtz)
-            .div(farm.poolToken.totalSupply);
-          tvlTez = BigNumber(farmStorage.poolBalance)
-            .times(xtzPerLp)
-            .toNumber();
-        }
+        tvlTez = BigNumber(farmStorage.poolBalance)
+        .div(BigNumber(10).pow(18))
+        .times(farm.poolToken.tezPool)
+        .div(farm.poolToken.totalSupply)
+        .times(2)
+        .toNumber();
+      } else if (farm.poolToken.isPlentyCtezLp) {
+        tvlTez = BigNumber(farmStorage.poolBalance)
+        .div(BigNumber(10).pow(6))
+        .times(farm.poolToken.tezPool)
+        .div(farm.poolToken.totalSupply)
+        .times(2)
+        .toNumber();
+      } else if (farm.poolToken.isPlentyStableLp) {
+        tvlTez = BigNumber(farmStorage.poolBalance)
+        .div(BigNumber(10).pow(12))
+        .times(farm.poolToken.tezPool)
+        .div(farm.poolToken.totalSupply)
+        .times(2)
+        .toNumber();
       } else if (farm.poolToken.isSpicyLp) {
-        if (!rootState.wtz.totalTvlTez) {
-          await dispatch("loadWtzData");
-        }
-        if (rootState.wtz.swapRatio.toFixed() !== "1") {
-          const xtzPerLp = BigNumber(farm.poolToken.token1Pool)
-            .div(BigNumber(10).pow(farm.poolToken.token1.decimals))
-            .times(rootState.wtz.swapRatioPrecision)
-            .div(rootState.wtz.swapRatio)
-            .times(1 - 0.001)
-            .div(farm.poolToken.totalSupply)
-            .toNumber();
-
-          tvlTez = BigNumber(farmStorage.poolBalance)
-            .times(xtzPerLp)
-            .times(2)
-            .toNumber();
-        }
+        tvlTez = BigNumber(farmStorage.poolBalance)
+          .div(BigNumber(10).pow(18))
+          .times(farm.poolToken.tezPool)
+          .div(farm.poolToken.totalSupply)
+          .times(2)
+          .toNumber();
       } else {
         if (
           Object.prototype.hasOwnProperty.call(
