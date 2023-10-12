@@ -9,12 +9,10 @@ const {
 } = require("../utils.js");
 const { getAmmSwapOutput } = require("../SwapRates/amm");
 const { addTokenApprovalOperators } = require("../TokenTypes");
-const DEX_FEE = 0.1;
-const BURN_FEE = 0.1;
+const DEX_FEE = 0.3;
 
 const getSwapOutput = (input, pair) => {
-  const inputAfterBurn = input * percentToDecimal(BURN_FEE);
-  const inputAfterFee = inputAfterBurn * percentToDecimal(DEX_FEE);
+  const inputAfterFee = input * percentToDecimal(DEX_FEE);
   const feeAmount = input - inputAfterFee;
   if (!isValidDexFee(feeAmount, pair)) {
     return 0;
