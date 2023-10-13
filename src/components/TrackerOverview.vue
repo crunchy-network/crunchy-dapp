@@ -9,87 +9,61 @@
         class="tab-flex"
         :gutter="10"
         type="flex"
-        align="start"
-        justify="space-between"
+        align="end"
+        justify="end"
       >
         <div class="tab-wrapper tab-custom-element">
-          <button
-            class="tab-text"
-            :style="isActiveTab('4h', duration)"
-            @click="setDurationTab('4h')"
+          <el-select
+            v-if="legendTab === 'price'"
+            v-model="duration"
+            class="tab-select"
+            placeholder="Select"
           >
-            4h
-          </button>
-          <button
-            class="tab-text"
-            :style="isActiveTab('1d', duration)"
-            @click="setDurationTab('1d')"
-          >
-            1d
-          </button>
-          <button
-            class="tab-text"
-            :style="isActiveTab('7d', duration)"
-            @click="setDurationTab('7d')"
-          >
-            7d
-          </button>
-          <button
+            <el-option
+              v-for="item in durationPriceOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+          <el-select
             v-if="legendTab !== 'price'"
-            class="tab-text"
-            :style="isActiveTab('30d', duration)"
-            @click="setDurationTab('30d')"
+            v-model="duration"
+            class="tab-select"
+            placeholder="Select"
           >
-            30d
-          </button>
-        </div>
-        <div class="tab-wrapper tab-custom-element">
-          <button
-            class="tab-text"
-            :style="isActiveTab('price', legendTab)"
-            @click="setLegendTab('price')"
+            <el-option
+              v-for="item in durationVolumeOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+          <el-select
+            v-model="legendTab"
+            class="tab-select"
+            placeholder="Select"
           >
-            Price
-          </button>
-          <button
-            class="tab-text"
-            :style="isActiveTab('volume', legendTab)"
-            @click="setLegendTab('volume')"
+            <el-option
+              v-for="item in legendOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+          <el-select
+            v-if="legendTab === 'price'"
+            v-model="priceChartType"
+            class="tab-select"
+            placeholder="Select"
           >
-            Volume
-          </button>
-          <!-- <button
-            class="tab-text"
-            :style="isActiveTab('tvl', legendTab)"
-            @click="setLegendTab('tvl')"
-          >
-            TVL
-          </button> -->
-        </div>
-      </el-row>
-      <el-row
-        v-if="legendTab === 'price'"
-        class="tab-flex"
-        :gutter="10"
-        type="flex"
-        align="start"
-        justify="space-between"
-      >
-        <div class="tab-wrapper tab-custom-element">
-          <button
-            class="tab-text"
-            :style="isActiveTab('candles', priceChartType)"
-            @click="setPriceChartType('candles')"
-          >
-            Candles
-          </button>
-          <button
-            class="tab-text"
-            :style="isActiveTab('lines', priceChartType)"
-            @click="setPriceChartType('lines')"
-          >
-            Lines
-          </button>
+            <el-option
+              v-for="item in priceChartOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
         </div>
       </el-row>
       <TrackerOverviewChart
@@ -134,6 +108,58 @@ export default {
       legendTab: "price",
       priceChartType: "candles",
       chartLoading: false,
+      durationPriceOptions: [
+        {
+          value: "4h",
+          label: "4h",
+        },
+        {
+          value: "1d",
+          label: "1d",
+        },
+        {
+          value: "7d",
+          label: "7d",
+        },
+      ],
+      durationVolumeOptions: [
+        {
+          value: "4h",
+          label: "4h",
+        },
+        {
+          value: "1d",
+          label: "1d",
+        },
+        {
+          value: "7d",
+          label: "7d",
+        },
+        {
+          value: "30d",
+          label: "30d",
+        },
+      ],
+      legendOptions: [
+        {
+          value: "price",
+          label: "Price",
+        },
+        {
+          value: "volume",
+          label: "Volume",
+        },
+      ],
+      priceChartOptions: [
+        {
+          value: "candles",
+          label: "Candles",
+        },
+        {
+          value: "lines",
+          label: "Lines",
+        },
+      ],
     };
   },
 
@@ -200,7 +226,7 @@ export default {
         tabValue === tab && "color: var(--color-menu-active); font-weight: 700"
       );
     },
-    
+
     setPriceChartType(tab = "") {
       if (["candles", "lines"].includes(tab)) {
         this.priceChartType = tab;
@@ -255,6 +281,9 @@ export default {
   }
 }
 
+.tab-select {
+  width: 110px;
+}
 @media (max-width: 576px) {
   .tab-flex {
     flex-direction: column;

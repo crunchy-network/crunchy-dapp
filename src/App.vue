@@ -223,10 +223,20 @@ i.fa-icon-right {
   background: transparent;
   border: var(--line-border);
 }
-.el-header .el-input input:focus {
+.tab-flex .el-header .el-input input:focus {
   border-color: #555cff !important;
 }
-
+.el-input--suffix .el-input__inner {
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+  border: none !important;
+  width: 70px !important;
+  text-align: right;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 19px;
+  letter-spacing: 0.02em;
+}
 .el-menu > .el-submenu .el-submenu__title {
   color: var(--nav-item) !important;
   font-weight: 500;
