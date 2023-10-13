@@ -472,11 +472,11 @@ export default {
           },
         });
 
-        var areaSeries = chart.addCandlestickSeries({
-          topColor: "rgba(85,92,255,.5)",
-          bottomColor: "rgba(85,92,255,.04)",
-          lineColor: "rgba(85,92,255,1)",
-          lineWidth: 2,
+        var areaSeries = chart.addAreaSeries({
+            topColor: "rgba(85,92,255,.5)",
+            bottomColor: "rgba(85,92,255,.04)",
+            lineColor: "rgba(85,92,255,1)",
+            lineWidth: 2,
         });
 
         var candlestickSeries = chart.addCandlestickSeries({
@@ -488,55 +488,29 @@ export default {
         }); 
 
         if (this.legendTab === "price" && this.priceChartType === "candles") {
-        // Create and set data for the candlestick series
-        candlestickSeries = chart.addCandlestickSeries({
-          upColor: '#26a69a',
-          downColor: '#ef5350',
-          borderVisible: false,
-          wickUpColor: '#26a69a',
-          wickDownColor: '#ef5350',
-        });
+          candlestickSeries.setData(this.tokenData);
 
-        candlestickSeries.setData(this.tokenData);
+          candlestickSeries.applyOptions({
+            priceFormat: {
+              type: "price",
+              precision: this.handlePrecision(this.tokenTracked.usdValue).precision,
+              minMove: this.handlePrecision(this.tokenTracked.usdValue).minMove,
+            },
+          });
+        } else if(this.legendTab === "price" && this.priceChartType === "lines") {
+          areaSeries.setData(this.tokenData);
 
-        // Apply price formatting options if needed
-        candlestickSeries.applyOptions({
-          priceFormat: {
-            type: "price",
-            precision: this.handlePrecision(this.tokenTracked.usdValue).precision,
-            minMove: this.handlePrecision(this.tokenTracked.usdValue).minMove,
-          },
-        });
-      } else if(this.legendTab === "price" && this.priceChartType === "lines") {
-        // Create and set data for the area series
-        areaSeries = chart.addAreaSeries({
-          topColor: "rgba(85,92,255,.5)",
-          bottomColor: "rgba(85,92,255,.04)",
-          lineColor: "rgba(85,92,255,1)",
-          lineWidth: 2,
-        });
-
-        areaSeries.setData(this.tokenData);
-
-        // Apply price formatting options if needed
-        areaSeries.applyOptions({
-          priceFormat: {
-            type: "price",
-            precision: this.handlePrecision(this.tokenTracked.usdValue).precision,
-            minMove: this.handlePrecision(this.tokenTracked.usdValue).minMove,
-          },
-        });
+          areaSeries.applyOptions({
+            priceFormat: {
+              type: "price",
+              precision: this.handlePrecision(this.tokenTracked.usdValue).precision,
+              minMove: this.handlePrecision(this.tokenTracked.usdValue).minMove,
+            },
+          });
       } else if (this.legendTab === "volume") {
-        // Create and set data for the area series
-        areaSeries = chart.addAreaSeries({
-          topColor: "rgba(85,92,255,.5)",
-          bottomColor: "rgba(85,92,255,.04)",
-          lineColor: "rgba(85,92,255,1)",
-          lineWidth: 2,
-        });
-
         areaSeries.setData(this.tokenData);
       }
+      
         const container = document.getElementById("chart");
         const toolTipWidth = 80;
         const toolTipMargin = 15;
@@ -571,7 +545,7 @@ export default {
               this.tokenTracked.symbol || this.tokenTracked.name
             }.</div><div style="font-size: 24px; margin: 0px 0px; color: ${"black"}">`;
 
-            if (this.legendTab === "price") {
+            if (this.legendTab === "price" && this.priceChartType === "candles") {
               // Set tooltip height
               toolTip.style.height = "140px";
               // Calculate price and precision for the "price" legend tab

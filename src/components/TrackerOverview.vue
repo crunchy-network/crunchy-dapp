@@ -24,6 +24,7 @@
               :key="item.value"
               :label="item.label"
               :value="item.value"
+              :change="setDurationTab(duration)"
             />
           </el-select>
           <el-select
@@ -37,18 +38,7 @@
               :key="item.value"
               :label="item.label"
               :value="item.value"
-            />
-          </el-select>
-          <el-select
-            v-model="legendTab"
-            class="tab-select"
-            placeholder="Select"
-          >
-            <el-option
-              v-for="item in legendOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              :change="setDurationTab(duration)"
             />
           </el-select>
           <el-select
@@ -62,6 +52,20 @@
               :key="item.value"
               :label="item.label"
               :value="item.value"
+              :change="setPriceChartType(priceChartType)"
+            />
+          </el-select>
+          <el-select
+            v-model="legendTab"
+            class="tab-select"
+            placeholder="Select"
+          >
+            <el-option
+              v-for="item in legendOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+              :change="setLegendTab(legendTab)"
             />
           </el-select>
         </div>
@@ -201,6 +205,7 @@ export default {
         query: {
           ...this.$route.query,
           legend: this.legendTab,
+          priceChartType: this.priceChartType,
         },
       });
     }
@@ -231,6 +236,13 @@ export default {
       if (["candles", "lines"].includes(tab)) {
         this.priceChartType = tab;
       }
+
+      this.$router.replace({
+        query: {
+          ...this.$route.query,
+          priceChartType: this.priceChartType,
+        },
+      });
     },
 
     setLegendTab(tab = "") {
