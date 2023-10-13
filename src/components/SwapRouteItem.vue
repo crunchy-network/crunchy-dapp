@@ -43,6 +43,7 @@ import wtz from "../assets/dex-icons/Wtz.png";
 import youves from "../assets/dex-icons/Youves.svg";
 import alien from "../assets/dex-icons/Alien.png";
 import flame from "../assets/dex-icons/Flame.png";
+import dexter from "../assets/dex-icons/Dexter.png";
 
 export default {
   props: {
@@ -66,6 +67,7 @@ export default {
         Vortex: vortex,
         Alien: alien,
         Flame: flame,
+        Dexter: dexter,
         Spicy: spicy,
         WTZ: wtz,
         Youves: youves,
@@ -84,6 +86,7 @@ export default {
         Vortex: "Vortex",
         Alien: "Alien",
         Flame: "Flame",
+        Dexter: "Dexter",
         Spicy: "Spicy",
         WTZ: "WTZ",
         Youves: "Youves",
