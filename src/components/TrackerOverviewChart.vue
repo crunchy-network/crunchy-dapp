@@ -484,12 +484,9 @@ export default {
           console.log(this.handlePrecision(this.tokenTracked.usdValue))
           candlestickSeries.applyOptions({
             priceFormat: {
-              type: "custom",
-              formatter: (price) => {
-                const precision = this.handlePrecision(price).precision
-                const formattedPrice = this.formatNumShorthand(price, precision);
-                return formattedPrice.value + formattedPrice.suffix;
-              },
+              type: "price",
+              precision: this.handlePrecision(this.tokenTracked.usdValue).precision,
+              minMove: this.handlePrecision(this.tokenTracked.usdValue).minMove,
             },
           });
         } else if(this.legendTab === "price" && this.priceChartType === "lines") {
@@ -504,16 +501,13 @@ export default {
 
           areaSeries.applyOptions({
             priceFormat: {
-              type: "custom",
-              formatter: (price) => {
-                const precision = this.handlePrecision(price).precision
-                const formattedPrice = this.formatNumShorthand(price, precision);
-                return formattedPrice.value + formattedPrice.suffix;
-              },
+              type: "price",
+              precision: this.handlePrecision(this.tokenTracked.usdValue).precision,
+              minMove: this.handlePrecision(this.tokenTracked.usdValue).minMove,
             },
           });
       } else if (this.legendTab === "volume") {
-          areaSeries = chart.addAreaSeries({
+         areaSeries = chart.addAreaSeries({
             topColor: "rgba(85,92,255,.5)",
             bottomColor: "rgba(85,92,255,.04)",
             lineColor: "rgba(85,92,255,1)",
