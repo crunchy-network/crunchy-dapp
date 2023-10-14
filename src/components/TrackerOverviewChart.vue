@@ -472,42 +472,63 @@ export default {
           },
         });
 
-        var areaSeries = chart.addAreaSeries({
-            topColor: "rgba(85,92,255,.5)",
-            bottomColor: "rgba(85,92,255,.04)",
-            lineColor: "rgba(85,92,255,1)",
-            lineWidth: 2,
-        });
-
-        var candlestickSeries = chart.addCandlestickSeries({
+        if (this.legendTab === "price" && this.priceChartType === "candles") {
+          var candlestickSeries = chart.addCandlestickSeries({
           upColor: '#26a69a',
           downColor: '#ef5350',
           borderVisible: false,
           wickUpColor: '#26a69a',
           wickDownColor: '#ef5350',
         }); 
-
-        if (this.legendTab === "price" && this.priceChartType === "candles") {
           candlestickSeries.setData(this.tokenData);
-
+          console.log(this.handlePrecision(this.tokenTracked.usdValue))
           candlestickSeries.applyOptions({
             priceFormat: {
-              type: "price",
-              precision: this.handlePrecision(this.tokenTracked.usdValue).precision,
-              minMove: this.handlePrecision(this.tokenTracked.usdValue).minMove,
+              type: "custom",
+              formatter: (price) => {
+                const precision = this.handlePrecision(price).precision
+                const formattedPrice = this.formatNumShorthand(price, precision);
+                return formattedPrice.value + formattedPrice.suffix;
+              },
             },
           });
         } else if(this.legendTab === "price" && this.priceChartType === "lines") {
+          var areaSeries = chart.addAreaSeries({
+            topColor: "rgba(85,92,255,.5)",
+            bottomColor: "rgba(85,92,255,.04)",
+            lineColor: "rgba(85,92,255,1)",
+            lineWidth: 2,
+        });
+
           areaSeries.setData(this.tokenData);
 
           areaSeries.applyOptions({
             priceFormat: {
-              type: "price",
-              precision: this.handlePrecision(this.tokenTracked.usdValue).precision,
-              minMove: this.handlePrecision(this.tokenTracked.usdValue).minMove,
+              type: "custom",
+              formatter: (price) => {
+                const precision = this.handlePrecision(price).precision
+                const formattedPrice = this.formatNumShorthand(price, precision);
+                return formattedPrice.value + formattedPrice.suffix;
+              },
             },
           });
       } else if (this.legendTab === "volume") {
+          areaSeries = chart.addAreaSeries({
+            topColor: "rgba(85,92,255,.5)",
+            bottomColor: "rgba(85,92,255,.04)",
+            lineColor: "rgba(85,92,255,1)",
+            lineWidth: 2,
+        });
+        areaSeries.applyOptions({
+            priceFormat: {
+              type: "custom",
+              formatter: (price) => {
+                const precision = this.handlePrecision(price).precision
+                const formattedPrice = this.formatNumShorthand(price, precision);
+                return formattedPrice.value + formattedPrice.suffix;
+              },
+            },
+          });
         areaSeries.setData(this.tokenData);
       }
       
