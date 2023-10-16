@@ -33,7 +33,7 @@ const TEZ_AND_WRAPPED_TEZ_ADDRESSES = [
   "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn",
 ];
 
-
+const TOO_FEW_TVL_POOL_ADDRESSES = ["KT1FDyQgVeU7pwJ3wKcEQbxp6PzQZgcumZxz"];
 function getMktCapAndVolume(allTokenPriceAndVol, type) {
   const currentDate = new Date();
   let currentDateIterator;
@@ -139,8 +139,10 @@ function modifyQuotes(quotes, allTokenQuotes, type) {
         quote.token.tokenAddress === el.tokenAddress &&
         quote.token.tokenId === el.tokenId
     );
-    quoteTokenPriceInTez = quoteToken?.quotes.find((el) =>
-      TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
+    quoteTokenPriceInTez = quoteToken?.quotes.find(
+      (el) =>
+        TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress) &&
+        !TOO_FEW_TVL_POOL_ADDRESSES.includes(el.pool.dex.address)
     )?.buckets[0].close;
     // Only get element from one month for 1h chart
     if (type === "1h") {
@@ -208,7 +210,8 @@ function getAggregatedOpen(
     const quote = quoteToken?.quotes.find(
       (el) =>
         el.token.tokenAddress === address &&
-        new Date(el.buckets[0].bucket) >= currentDateIterator
+        new Date(el.buckets[0].bucket) >= currentDateIterator &&
+        !TOO_FEW_TVL_POOL_ADDRESSES.includes(el.pool.dex.address)
     );
     if (quote) {
       quoteTokenPriceInTez = quote?.buckets[0].open;
@@ -309,7 +312,6 @@ function binarySearch(arr, target) {
   }
 }
 
-
 function getAggregatedPriceAndVolume(quotes, type) {
   const aggregatedQuotes = [];
   let prevAggCloseSum = 0;
@@ -379,7 +381,6 @@ function getAggregatedPriceAndVolume(quotes, type) {
   }
   return aggregatedQuotes;
 }
-
 
 export default {
   async getPriceAndVolumeQuotes(tokenAddress, tokenId) {
@@ -601,39 +602,33 @@ export default {
           );
           const reserves = parseFloat(foundToken.reserves);
 
-          let quoteToken;
           let quoteTokenPriceInTez;
-          // Token has quote paired with xtz
-          if (quoteData.token.tokenAddress === "tez") {
-            close = quoteData.quote;
-          }
-          // Token has quote paired with other tokens
-          else {
-            quoteToken = allTokenSpot.find(
-              (el) =>
-                quoteData.token.tokenAddress === el.tokenAddress &&
-                quoteData.token.tokenId === el.tokenId
-            );
-            quoteTokenPriceInTez = quoteToken?.quotes.find((el) =>
-              TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress)
-            )?.quote;
 
-            // Find price of quote token in tez
-            for (const address of TEZ_AND_WRAPPED_TEZ_ADDRESSES) {
-              const quote = quoteToken?.quotes.find(
-                (el) => el.token.tokenAddress === address
+          const quoteToken = allTokenSpot.find(
+            (el) =>
+              quoteData.token.tokenAddress === el.tokenAddress &&
+              quoteData.token.tokenId === el.tokenId
+          );
+
+          // Find price of quote token in tez
+          for (const address of TEZ_AND_WRAPPED_TEZ_ADDRESSES) {
+            const quote = quoteToken?.quotes.find((el) => {
+              return (
+                el.token.tokenAddress === address &&
+                !TOO_FEW_TVL_POOL_ADDRESSES.includes(el.pool.dex.address)
               );
-              if (quote) {
-                quoteTokenPriceInTez = quote.quote;
-                break;
-              }
+            });
+
+            if (quote) {
+              quoteTokenPriceInTez = quote.quote;
+              break;
             }
-            close = TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(
-              quoteData.token.tokenAddress
-            )
-              ? Number(quoteData.quote)
-              : Number(quoteData.quote) * Number(quoteTokenPriceInTez);
           }
+          close = TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(
+            quoteData.token.tokenAddress
+          )
+            ? Number(quoteData.quote)
+            : Number(quoteData.quote) * Number(quoteTokenPriceInTez);
 
           // NaN and Alien dex type error
           if (isNaN(close) || quoteData.pool.dex.type === "alien") {
@@ -696,13 +691,16 @@ export default {
             );
             for (const address of TEZ_AND_WRAPPED_TEZ_ADDRESSES) {
               const quote = quoteToken?.quotes.find(
-                (el) => el.token.tokenAddress === address
+                (el) =>
+                  el.token.tokenAddress === address &&
+                  !TOO_FEW_TVL_POOL_ADDRESSES.includes(el.pool.dex.address)
               );
               if (quote) {
                 quoteTokenPriceInTez = quote.quote;
                 break;
               }
             }
+            
             // Get the price for quote
             midPrice = TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(
               pool1D.token.tokenAddress
@@ -758,6 +756,12 @@ export default {
             new BigNumber(
               tokenReserves * element.aggregatedPrice * xtzUSD
             ).toNumber() || 0;
+          // Push the exchange with too few tvl to the list
+          if (element.exchanges[index].tokenTvl < 5) {
+            TOO_FEW_TVL_POOL_ADDRESSES.push(
+              element.exchanges[index].dex.address
+            );
+          }
         });
         /**
          *Calculate total tvl and volume for each token
