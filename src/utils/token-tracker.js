@@ -34,6 +34,51 @@ const TEZ_AND_WRAPPED_TEZ_ADDRESSES = [
 ];
 
 const TOO_FEW_TVL_POOL_ADDRESSES = ["KT1FDyQgVeU7pwJ3wKcEQbxp6PzQZgcumZxz"];
+function findPoolPairedWithTez(quotes) {
+  let poolPriceInTez = 0;
+  if (!quotes) {
+    return 0;
+  }
+  for (const address of TEZ_AND_WRAPPED_TEZ_ADDRESSES) {
+    const quote = quotes.find(
+      (el) =>
+        el.token.tokenAddress === address &&
+        !TOO_FEW_TVL_POOL_ADDRESSES.includes(el.pool.dex.address)
+    );
+    if (quote) {
+      poolPriceInTez = quote.quote;
+      break;
+    }
+  }
+  return poolPriceInTez;
+}
+function getQuoteTokenPriceInTez(allTokenQuotes, allTokenSpot, pool) {
+  let quoteTokenPriceInTez = 0;
+  const quoteToken = allTokenQuotes.find(
+    (el) =>
+      pool.token.tokenAddress === el.tokenAddress &&
+      pool.token.tokenId === el.tokenId
+  );
+  quoteTokenPriceInTez = findPoolPairedWithTez(quoteToken?.quotes);
+
+  // Quote token does not pair with tez
+  if (quoteToken && !quoteTokenPriceInTez) {
+    for (const pool of quoteToken?.quotes) {
+      const token = allTokenSpot.find(
+        (el) =>
+          pool.token.tokenAddress === el.tokenAddress &&
+          pool.token.tokenId === el.tokenId
+      );
+      const tokenQuote = pool?.quote;
+      const tokenQuoteInTez = findPoolPairedWithTez(token?.quotes);
+      if (tokenQuoteInTez) {
+        quoteTokenPriceInTez = tokenQuote * tokenQuoteInTez;
+        break;
+      }
+    }
+  }
+  return quoteTokenPriceInTez;
+}
 function getMktCapAndVolume(allTokenPriceAndVol, type) {
   const currentDate = new Date();
   let currentDateIterator;
@@ -602,28 +647,7 @@ export default {
           );
           const reserves = parseFloat(foundToken.reserves);
 
-          let quoteTokenPriceInTez;
-
-          const quoteToken = allTokenSpot.find(
-            (el) =>
-              quoteData.token.tokenAddress === el.tokenAddress &&
-              quoteData.token.tokenId === el.tokenId
-          );
-
-          // Find price of quote token in tez
-          for (const address of TEZ_AND_WRAPPED_TEZ_ADDRESSES) {
-            const quote = quoteToken?.quotes.find((el) => {
-              return (
-                el.token.tokenAddress === address &&
-                !TOO_FEW_TVL_POOL_ADDRESSES.includes(el.pool.dex.address)
-              );
-            });
-
-            if (quote) {
-              quoteTokenPriceInTez = quote.quote;
-              break;
-            }
-          }
+          const quoteTokenPriceInTez = getQuoteTokenPriceInTez(allTokenSpot, allTokenSpot, quoteData);
           close = TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(
             quoteData.token.tokenAddress
           )
@@ -680,27 +704,11 @@ export default {
           );
           let volume;
           let midPrice;
-          let quoteToken;
           let quoteTokenPriceInTez;
 
           if (pool1D) {
-            quoteToken = allTokenSpot.find(
-              (el) =>
-                pool1D.token.tokenAddress === el.tokenAddress &&
-                pool1D.token.tokenId === el.tokenId
-            );
-            for (const address of TEZ_AND_WRAPPED_TEZ_ADDRESSES) {
-              const quote = quoteToken?.quotes.find(
-                (el) =>
-                  el.token.tokenAddress === address &&
-                  !TOO_FEW_TVL_POOL_ADDRESSES.includes(el.pool.dex.address)
-              );
-              if (quote) {
-                quoteTokenPriceInTez = quote.quote;
-                break;
-              }
-            }
-            
+            quoteTokenPriceInTez = getQuoteTokenPriceInTez(allTokenSpot, allTokenSpot, pool1D);
+
             // Get the price for quote
             midPrice = TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(
               pool1D.token.tokenAddress
