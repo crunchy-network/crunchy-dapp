@@ -117,6 +117,22 @@ export default {
       return [];
     }
   },
+  async getQuotes4H(tokenAddress, tokenId) {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/tokens/${tokenAddress}/${tokenId}/quotes/4h`
+      );
+
+      if (response.data) {
+        return response.data;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.error("Error fetching all quotes 1h:", error);
+      return [];
+    }
+  },
   async getQuotes1D(tokenAddress, tokenId) {
     try {
       const response = await axios.get(

@@ -163,6 +163,14 @@ function modifyQuotes(quotes, allTokenSpot, type) {
         (bucket) => new Date(bucket.bucket) > new Date(oneMonthAgo)
       );
     }
+
+    // Only get element from one month for 4h chart
+    if (type === "4h") {
+      quote.buckets = quote.buckets.filter(
+        (bucket) => new Date(bucket.bucket) > new Date(oneMonthAgo)
+      );
+    }
+
     // Only get element from two months for 1d chart
     if (type === "1d") {
       quote.buckets = quote.buckets.filter(
@@ -178,6 +186,21 @@ function modifyQuotes(quotes, allTokenSpot, type) {
       )
         ? Number(bucket.close)
         : Number(bucket.close) * Number(quoteTokenPriceInTez);
+      bucket.open_xtz = TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(
+        quote.token.tokenAddress
+      )
+        ? Number(bucket.open)
+        : Number(bucket.open) * Number(quoteTokenPriceInTez);
+      bucket.high_xtz = TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(
+        quote.token.tokenAddress
+      )
+        ? Number(bucket.high)
+        : Number(bucket.high) * Number(quoteTokenPriceInTez);
+      bucket.low_xtz = TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(
+        quote.token.tokenAddress
+      )
+        ? Number(bucket.low)
+        : Number(bucket.low) * Number(quoteTokenPriceInTez);
       bucket.volume_quote_xtz = TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(
         quote.token.tokenAddress
       )
@@ -420,11 +443,28 @@ function modifyPlentyMetrics(plentyMetrics, xtzUsdHistory) {
 function getAggregatedPriceAndVolume(quotes, type) {
   const aggregatedQuotes = [];
   let prevAggCloseSum = 0;
+  let prevAggOpenSum = 0;
+  let prevAggHighSum = 0;
+  let prevAggLowSum = 0;
   let prevAggVol = 0;
-  // Exclude elment having no close price in xtz and volume quote is NaN
-  let filteredQuotes = quotes.filter(
-    (item) => !isNaN(item.close_xtz) && !isNaN(item.volume_quote_xtz)
-  );
+
+  // Exclude elment having invalid close, open, high, low price in xtz and volume quote
+  let filteredQuotes = quotes.filter((quote) => {
+    const hasValidClosePrice = !isNaN(quote.close_xtz);
+    const hasValidOpenPrice = !isNaN(quote.open_xtz);
+    const hasValidHighPrice = !isNaN(quote.high_xtz);
+    const hasValidLowPrice = !isNaN(quote.low_xtz);
+    const hasValidVolumeQuote = !isNaN(quote.volume_quote_xtz);
+
+    return (
+      hasValidClosePrice &&
+      hasValidOpenPrice &&
+      hasValidHighPrice &&
+      hasValidLowPrice &&
+      hasValidVolumeQuote
+    );
+  });
+
   while (filteredQuotes.length > 0) {
     // Get first element of quotes, remove the quote
     // and find all quote with same time
@@ -439,6 +479,12 @@ function getAggregatedPriceAndVolume(quotes, type) {
       const quoteVolume = parseFloat(quote.volume_quote_xtz);
       const quoteWeightedClose =
         parseFloat(quote.close_xtz) * parseFloat(quote.volume_quote_xtz);
+      const quoteWeightedOpen =
+        parseFloat(quote.open_xtz) * parseFloat(quote.volume_quote_xtz);
+      const quoteWeightedHigh =
+        parseFloat(quote.high_xtz) * parseFloat(quote.volume_quote_xtz);
+      const quoteWeightedLow =
+        parseFloat(quote.low_xtz) * parseFloat(quote.volume_quote_xtz);
       // Get total volume in xtz
       const totalVolume = matchingElements.reduce((sum, element) => {
         return sum + parseFloat(element.volume_quote_xtz);
@@ -451,16 +497,44 @@ function getAggregatedPriceAndVolume(quotes, type) {
           parseFloat(element.close_xtz) * parseFloat(element.volume_quote_xtz)
         );
       }, quoteWeightedClose);
+      const weightedOpenSum = matchingElements.reduce((sum, element) => {
+        return (
+          sum +
+          parseFloat(element.open_xtz) * parseFloat(element.volume_quote_xtz)
+        );
+      }, quoteWeightedOpen);
+      const weightedHighSum = matchingElements.reduce((sum, element) => {
+        return (
+          sum +
+          parseFloat(element.high_xtz) * parseFloat(element.volume_quote_xtz)
+        );
+      }, quoteWeightedHigh);
+      const weightedLowSum = matchingElements.reduce((sum, element) => {
+        return (
+          sum +
+          parseFloat(element.low_xtz) * parseFloat(element.volume_quote_xtz)
+        );
+      }, quoteWeightedLow);
 
       const aggregatedClose = weightedCloseSum / totalVolume;
+      const aggregatedOpen = weightedOpenSum / totalVolume;
+      const aggregatedHigh = weightedHighSum / totalVolume;
+      const aggregatedLow = weightedLowSum / totalVolume;
+
       const aggregatedXtzVolume = totalVolume;
       prevAggCloseSum = weightedCloseSum;
+      prevAggOpenSum = weightedOpenSum;
+      prevAggHighSum = weightedHighSum;
+      prevAggLowSum = weightedLowSum;
       prevAggVol = aggregatedXtzVolume;
 
       if (!isNaN(aggregatedClose)) {
         aggregatedQuotes.push({
           ...quote,
           aggregatedClose,
+          aggregatedOpen,
+          aggregatedHigh,
+          aggregatedLow,
           aggregatedXtzVolume,
         });
       }
@@ -473,9 +547,18 @@ function getAggregatedPriceAndVolume(quotes, type) {
       if (quote) {
         const weightedCloseSum =
           quote.close_xtz * quote.volume_quote_xtz + prevAggCloseSum;
+        const weightedOpenSum =
+          quote.open_xtz * quote.volume_quote_xtz + prevAggOpenSum;
+        const weightedHighSum =
+          quote.high_xtz * quote.volume_quote_xtz + prevAggHighSum;
+        const weightedLowSum =
+          quote.low_xtz * quote.volume_quote_xtz + prevAggLowSum;
         const aggregatedXtzVolume = quote.volume_quote_xtz + prevAggVol;
 
         quote.aggregatedClose = weightedCloseSum / aggregatedXtzVolume;
+        quote.aggregatedOpen = weightedOpenSum / aggregatedXtzVolume;
+        quote.aggregatedHigh = weightedHighSum / aggregatedXtzVolume;
+        quote.aggregatedLow = weightedLowSum / aggregatedXtzVolume;
         quote.aggregatedXtzVolume = quote.volume_quote_xtz;
         aggregatedQuotes.push(quote);
       }
@@ -533,38 +616,31 @@ function getPlentyTokenChartData(indexes, kind, timeInterval, xtzUsdHistory) {
 
 export default {
   async getPriceAndVolumeQuotes(tokenAddress, tokenId) {
-    let [quotes1h, quotes1d, quotes1w, quotes1mo, allTokenSpot] =
-      await Promise.all([
-        dexIndexer.getQuotes1H(tokenAddress, tokenId),
-        dexIndexer.getQuotes1D(tokenAddress, tokenId),
-        dexIndexer.getQuotes1W(tokenAddress, tokenId),
-        dexIndexer.getQuotes1MO(tokenAddress, tokenId),
-        dexIndexer.getAllTokenSpot(),
-      ]);
+    let [quotes4h, quotes1w, quotes1mo, allTokenSpot] = await Promise.all([
+      dexIndexer.getQuotes4H(tokenAddress, tokenId),
+      dexIndexer.getQuotes1W(tokenAddress, tokenId),
+      dexIndexer.getQuotes1MO(tokenAddress, tokenId),
+      dexIndexer.getAllTokenSpot(),
+    ]);
 
-    [quotes1h, quotes1d, quotes1w, quotes1mo] = [
-      modifyQuotes(quotes1h[0].quotes, allTokenSpot, "1h"),
-      modifyQuotes(quotes1d[0].quotes, allTokenSpot, "1d"),
+    [quotes4h, quotes1w, quotes1mo] = [
+      modifyQuotes(quotes4h[0].quotes, allTokenSpot, "4h"),
       modifyQuotes(quotes1w[0].quotes, allTokenSpot),
       modifyQuotes(quotes1mo[0].quotes, allTokenSpot),
     ];
 
-    [quotes1h, quotes1d, quotes1w, quotes1mo] = [
-      aggregateQuotes(quotes1h),
-      aggregateQuotes(quotes1d),
+    [quotes4h, quotes1w, quotes1mo] = [
+      aggregateQuotes(quotes4h),
       aggregateQuotes(quotes1w),
       aggregateQuotes(quotes1mo),
     ];
 
-    // const aggregatedQuotes1h = getAggregatedPriceAndVolume(quotes1h);
-    const aggregatedQuotes1h = getAggregatedPriceAndVolume(quotes1h);
-    const aggregatedQuotes1d = getAggregatedPriceAndVolume(quotes1d);
+    const aggregatedQuotes4h = getAggregatedPriceAndVolume(quotes4h);
     const aggregatedQuotes1w = getAggregatedPriceAndVolume(quotes1w);
     const aggregatedQuotes1mo = getAggregatedPriceAndVolume(quotes1mo);
 
     return {
-      quotes1h: aggregatedQuotes1h,
-      quotes1d: aggregatedQuotes1d,
+      quotes4h: aggregatedQuotes4h,
       quotes1w: aggregatedQuotes1w,
       quotes1mo: aggregatedQuotes1mo,
     };

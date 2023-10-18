@@ -9,75 +9,65 @@
         class="tab-flex"
         :gutter="10"
         type="flex"
-        align="start"
-        justify="space-between"
+        align="end"
+        justify="end"
       >
         <div class="tab-wrapper tab-custom-element">
-          <button
+          <el-select
+            v-if="legendTab === 'price'"
+            v-model="duration"
+            class="tab-select"
+            placeholder="Select"
+          >
+            <el-option
+              v-for="item in durationPriceOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+              :change="setDurationTab(duration)"
+            />
+          </el-select>
+          <el-select
             v-if="legendTab !== 'price'"
-            class="tab-text"
-            :style="isActiveTab('all', duration)"
-            @click="setDurationTab('all')"
+            v-model="duration"
+            class="tab-select"
+            placeholder="Select"
           >
-            All
-          </button>
-          <button
-            v-if="
-              legendTab === 'price' ||
-              (legendTab === 'volume' && tokenTracked.symbol !== 'PLY')
-            "
-            class="tab-text"
-            :style="isActiveTab('1h', duration)"
-            @click="setDurationTab('1h')"
+            <el-option
+              v-for="item in durationVolumeOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+              :change="setDurationTab(duration)"
+            />
+          </el-select>
+          <el-select
+            v-if="legendTab === 'price'"
+            v-model="priceChartType"
+            class="tab-select"
+            placeholder="Select"
           >
-            1h
-          </button>
-          <button
-            class="tab-text"
-            :style="isActiveTab('1d', duration)"
-            @click="setDurationTab('1d')"
+            <el-option
+              v-for="item in priceChartOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+              :change="setPriceChartType(priceChartType)"
+            />
+          </el-select>
+          <el-select
+            v-model="legendTab"
+            class="tab-select"
+            placeholder="Select"
           >
-            1d
-          </button>
-          <button
-            v-if="legendTab !== 'price'"
-            class="tab-text"
-            :style="isActiveTab('7d', duration)"
-            @click="setDurationTab('7d')"
-          >
-            7d
-          </button>
-          <button
-            v-if="legendTab !== 'price'"
-            class="tab-text"
-            :style="isActiveTab('30d', duration)"
-            @click="setDurationTab('30d')"
-          >
-            30d
-          </button>
-        </div>
-        <div class="tab-wrapper tab-custom-element">
-          <button
-            class="tab-text"
-            :style="isActiveTab('price', legendTab)"
-            @click="setLegendTab('price')"
-          >
-            Price
-          </button>
-          <button
-            class="tab-text"
-            :style="isActiveTab('volume', legendTab)"
-            @click="setLegendTab('volume')"
-          >
-            Volume
-          </button>
-          <!-- <button
-            class="tab-text"
-            :style="isActiveTab('tvl', legendTab)"
-            @click="setLegendTab('tvl')"
-          >
-            TVL
-          </button> -->
+            <el-option
+              v-for="item in legendOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+              :change="setLegendTab(legendTab)"
+            />
+          </el-select>
         </div>
       </el-row>
       <TrackerOverviewChart
@@ -85,6 +75,7 @@
         :duration="duration"
         :legend-tab="legendTab"
         :set-loading="setChartLoading"
+        :price-chart-type="priceChartType"
       />
     </el-card>
   </div>
@@ -100,7 +91,7 @@ export default {
   props: {
     duration: {
       type: String,
-      default: "all",
+      default: "1d",
     },
     setDurationTab: {
       type: Function,
@@ -119,7 +110,60 @@ export default {
   data() {
     return {
       legendTab: "price",
+      priceChartType: "candles",
       chartLoading: false,
+      durationPriceOptions: [
+        {
+          value: "4h",
+          label: "4h",
+        },
+        {
+          value: "1d",
+          label: "1d",
+        },
+        {
+          value: "7d",
+          label: "7d",
+        },
+      ],
+      durationVolumeOptions: [
+        {
+          value: "4h",
+          label: "4h",
+        },
+        {
+          value: "1d",
+          label: "1d",
+        },
+        {
+          value: "7d",
+          label: "7d",
+        },
+        {
+          value: "30d",
+          label: "30d",
+        },
+      ],
+      legendOptions: [
+        {
+          value: "price",
+          label: "Price",
+        },
+        {
+          value: "volume",
+          label: "Volume",
+        },
+      ],
+      priceChartOptions: [
+        {
+          value: "candles",
+          label: "Candles",
+        },
+        {
+          value: "lines",
+          label: "Lines",
+        },
+      ],
     };
   },
 
@@ -130,16 +174,24 @@ export default {
     "$router.query.legend": function (val) {
       this.legendTab = val;
       if (val === "price") {
-        if (this.$route.query.duration !== "1d") {
-          this.setDurationTab("1h");
+        if (this.$route.query.duration === "4h") {
+          this.setDurationTab("4h");
+        } else if (this.$route.query.duration === "1d") {
+          this.setDurationTab("1d");
+        } else {
+          this.setDurationTab("7d");
         }
       }
     },
 
     legendTab(val) {
       if (val === "price") {
-        if (this.$route.query.duration !== "1d") {
-          this.setDurationTab("1h");
+        if (this.$route.query.duration === "4h") {
+          this.setDurationTab("4h");
+        } else if (this.$route.query.duration === "1d") {
+          this.setDurationTab("1d");
+        } else {
+          this.setDurationTab("7d");
         }
       }
     },
@@ -153,13 +205,18 @@ export default {
         query: {
           ...this.$route.query,
           legend: this.legendTab,
+          priceChartType: this.priceChartType,
         },
       });
     }
 
     if (this.legendTab === "price") {
-      if (this.$route.query.duration !== "1d") {
-        this.setDurationTab("1h");
+      if (this.$route.query.duration === "4h") {
+        this.setDurationTab("4h");
+      } else if (this.$route.query.duration === "1d") {
+        this.setDurationTab("1d");
+      } else {
+        this.setDurationTab("7d");
       }
     }
   },
@@ -173,6 +230,19 @@ export default {
       return (
         tabValue === tab && "color: var(--color-menu-active); font-weight: 700"
       );
+    },
+
+    setPriceChartType(tab = "") {
+      if (["candles", "lines"].includes(tab)) {
+        this.priceChartType = tab;
+      }
+
+      this.$router.replace({
+        query: {
+          ...this.$route.query,
+          priceChartType: this.priceChartType,
+        },
+      });
     },
 
     setLegendTab(tab = "") {
@@ -223,6 +293,9 @@ export default {
   }
 }
 
+.tab-select {
+  width: 110px;
+}
 @media (max-width: 576px) {
   .tab-flex {
     flex-direction: column;
