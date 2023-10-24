@@ -179,6 +179,9 @@ export default {
           return require("../assets/dex-icons/WtzUpdate.png");
         case "ctez":
           return require("../assets/dex-icons/Ctez.png");
+        case "dexter":
+        case "dexter_v2":
+          return require("../assets/dex-icons/Dexter.png");
         default:
           return "";
       }
@@ -209,6 +212,11 @@ export default {
           return "Plenty Tez";
         case "spicy":
           return "Spicyswap";
+        case "dexter":
+          return "Dexter";
+        case "dexter_v2":
+          return "Dexter V2"
+        
         default:
           return str.replace(/\b[a-z]/gi, function (char) {
             return char.toUpperCase();
