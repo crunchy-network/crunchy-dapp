@@ -125,7 +125,7 @@
               <number-format
                 :precision="4"
                 :font-size="20"
-                :value="getTokenOverview.calcSupply"
+                :value="adjustedCalcSupply"
                 custom-setting
             /></el-col>
             <el-col><el-divider direction="horizontal"></el-divider></el-col>
@@ -152,10 +152,23 @@ import PriceFormat from "./PriceFormat.vue";
 export default {
   name: "TokenMetrics",
   components: { PriceFormat, NumberFormat },
-
+  data() {
+    return {
+      POLE: {
+        tokenAddress: "KT1UQVEDf4twF2eMbrCKQAxN7YYunTAiCTTm",
+        calcSupply: 4020000000,
+        // Add other properties as needed
+      },
+    };
+  },
   computed: {
     ...mapGetters(["getTokenOverview"]),
     ...mapState(["tokenTracker"]),
+    adjustedCalcSupply() {
+      return this.getTokenOverview.tokenAddress === this.POLE.tokenAddress
+        ? this.POLE.calcSupply
+        : this.getTokenOverview.calcSupply;
+    },
     loading() {
       return this.tokenTracker.loading;
     },
