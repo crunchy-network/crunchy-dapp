@@ -34,6 +34,8 @@ const TEZ_AND_WRAPPED_TEZ_ADDRESSES = [
 ];
 
 const TOO_FEW_TVL_POOL_ADDRESSES = ["KT1FDyQgVeU7pwJ3wKcEQbxp6PzQZgcumZxz"];
+const VOLATILE_PRICE_POOL = ["KT1VSK3ZFRKfzPhqE5yPszsdfkMwp2Z95SXb"];
+
 function findPoolPairedWithTez(quotes) {
   let poolPriceInTez = 0;
   if (!quotes) {
@@ -634,6 +636,11 @@ export default {
         let close = 0;
 
         for (const quoteData of element.quotes) {
+          // Exclude aggregated price calculation from volatile pool
+          if(VOLATILE_PRICE_POOL.includes(quoteData.pool.dex.address)) {
+            continue;
+          }
+
           const foundPool = allTokenPool.find(
             (el) =>
               quoteData.pool.poolId === el.poolId &&
@@ -647,7 +654,11 @@ export default {
           );
           const reserves = parseFloat(foundToken.reserves);
 
-          const quoteTokenPriceInTez = getQuoteTokenPriceInTez(allTokenSpot, allTokenSpot, quoteData);
+          const quoteTokenPriceInTez = getQuoteTokenPriceInTez(
+            allTokenSpot,
+            allTokenSpot,
+            quoteData
+          );
           close = TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(
             quoteData.token.tokenAddress
           )
@@ -707,7 +718,11 @@ export default {
           let quoteTokenPriceInTez;
 
           if (pool1D) {
-            quoteTokenPriceInTez = getQuoteTokenPriceInTez(allTokenSpot, allTokenSpot, pool1D);
+            quoteTokenPriceInTez = getQuoteTokenPriceInTez(
+              allTokenSpot,
+              allTokenSpot,
+              pool1D
+            );
 
             // Get the price for quote
             midPrice = TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(
