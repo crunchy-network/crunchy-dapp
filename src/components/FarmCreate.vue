@@ -713,10 +713,19 @@ export default {
         ) {
           const validation = validateContractAddress(val.rewardTokenAddress);
           if (validation === ValidationResult.VALID) {
-            let rewardTokenMeta = await getTokenMetadata(
-              val.rewardTokenAddress,
-              val.rewardTokenId || 0
-            );
+            let rewardTokenMeta;
+            try {
+              rewardTokenMeta = await getTokenMetadata(
+                val.rewardTokenAddress,
+                val.rewardTokenId || 0
+              );
+            } catch (e) {
+              rewardTokenMeta = {
+                tokenAddress: val.rewardTokenAddress,
+                tokenId: val.rewardTokenId || 0,
+              };
+            }
+            rewardTokenMeta.tokenAddress = val.rewardTokenAddress;
             rewardTokenMeta = farmUtils.overrideMetadata(rewardTokenMeta);
             this.form.rewardTokenName =
               rewardTokenMeta.symbol || rewardTokenMeta.name;
