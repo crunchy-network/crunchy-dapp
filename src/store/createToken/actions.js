@@ -51,6 +51,7 @@ export default {
       name: char2Bytes(String(tokenName)),
       decimals: char2Bytes(String(decimals)),
       thumbnailUri: char2Bytes(String(tokenIcon)),
+      description: char2Bytes(String(tokenDesc)),
     });
 
     const tokenMetadataBigMap = MichelsonMap.fromLiteral({
