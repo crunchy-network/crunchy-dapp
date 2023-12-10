@@ -10,7 +10,7 @@ export default {
   mutations,
   getters: {
     getTheme(state) {
-      return state.currentTheme;
+      return "dark";
     },
     isDarkTheme(state) {
       return state.currentTheme === "dark";

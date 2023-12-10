@@ -461,6 +461,7 @@ export default {
     orderedFarms: function () {
       const farms =
         this.activeTab === "myFarms" ? this.farms.userData : this.farms.data;
+
       return _.orderBy(
         farms,
         ["ended", "badges.core", "tvlTez"],

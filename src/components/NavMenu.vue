@@ -184,6 +184,19 @@
                 <router-link
                   tag="li"
                   class="el-menu-item submenu-item"
+                  :to="{ name: 'create-token' }"
+                  active-class="is-active"
+                >
+                  <img
+                    src="./../assets/svg-icons/coin.svg"
+                    class="coin-icon"
+                    style="margin-right: 14px"
+                  />
+                  <span>Create Token</span>
+                </router-link>
+                <router-link
+                  tag="li"
+                  class="el-menu-item submenu-item"
                   :to="{ name: 'farm-listing' }"
                   active-class="is-active"
                 >
@@ -296,9 +309,6 @@
           >
             <NavUtils />
             <nav-wallet />
-            <div style="margin-left: 16px">
-              <toggle-theme />
-            </div>
             <slot />
           </div>
         </div>
@@ -318,9 +328,6 @@
           </div>
           <slot />
           <nav-wallet />
-          <div style="margin-left: 16px">
-            <toggle-theme />
-          </div>
         </div>
       </el-row>
     </el-header>
@@ -332,10 +339,9 @@ import Logo from "./Logo.vue";
 import NavUtils from "./NavUtils.vue";
 import NavWallet from "./NavWallet.vue";
 import Notice from "./Notice.vue";
-import ToggleTheme from "./ToggleTheme.vue";
 export default {
   name: "NavMenu",
-  components: { NavWallet, NavUtils, Notice, ToggleTheme, Logo },
+  components: { NavWallet, NavUtils, Notice, Logo },
   data() {
     return {
       showNotice: false,
@@ -355,6 +361,7 @@ export default {
     "$route.name": function (val) {
       if (
         [
+          "create-token",
           "wtz",
           "deep-freezer-listing",
           "deep-freezer-item",
@@ -383,6 +390,7 @@ export default {
     console.log(
       "--------",
       [
+        "create-token",
         "wtz",
         "deep-freezer-listing",
         "deep-freezer-item",
@@ -415,6 +423,7 @@ export default {
     },
     handleDefiActive() {
       this.defiActive = [
+        "create-token",
         "wtz",
         "deep-freezer-listing",
         "deep-freezer-item",
@@ -487,6 +496,9 @@ export default {
       color: var(--color-menu-active) !important;
       i {
         color: var(--color-menu-active) !important;
+      }
+      img {
+        filter: invert(38%) sepia(87%) saturate(2093%) hue-rotate(333deg) brightness(103%) contrast(100%) !important;
       }
     }
   }

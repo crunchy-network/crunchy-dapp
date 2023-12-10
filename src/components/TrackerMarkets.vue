@@ -53,11 +53,12 @@
                             position: relative;
                             margin-right: 10px;
                             width: 30px;
+                            height: 29px;
                           "
                         />
 
                         <a
-                          :href="`https://tzkt.io/${item.address}`"
+                          :href="`https://tzkt.io/${item.dex.address}`"
                           target="_blank"
                           style="
                             font-weight: 600;
@@ -122,7 +123,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["getTokenOverview"]),
+    ...mapGetters(["getTokenOverview", "getTheme"]),
     sortedExchanges() {
       return (
         _.orderBy(this.getTokenOverview.exchanges, "tokenTvl", "desc") || []
@@ -143,34 +144,84 @@ export default {
     handleDexUri(dex = "") {
       switch (dex?.toLowerCase()) {
         case "plenty network":
-          return "https://res.cloudinary.com/melvin-manni/image/upload/v1677417526/nstgjnest4jrhcsgwymf.png";
+        case "plenty_stable":
+        case "plenty":
+        case "plenty_tez":
+        case "plenty_ctez":
+          return require("../assets/dex-icons/Plenty.png");
 
         case "quipuswap":
-          return "https://res.cloudinary.com/melvin-manni/image/upload/v1645292809/c1rutxlzllilmtuibcdo.png";
+        case "quipuswap_v2":
+        case "quipuswap_v3":
+        case "quipuswap_stable":
+        case "quipuswap_token2token":
+          return require("../assets/dex-icons/QuipuswapUpdate.png");
 
         case "youves":
-          return "https://pbs.twimg.com/profile_images/1397080302196039680/teEliSzA_400x400.png";
+          return this.getTheme === "light"
+            ? require("../assets/dex-icons/YouvesLight.svg")
+            : require("../assets/dex-icons/YouvesDark.svg");
 
         case "vortex":
-          return "https://www.gitbook.com/cdn-cgi/image/width=40,height=40,fit=contain,dpr=1,format=auto/https%3A%2F%2F3533877337-files.gitbook.io%2F~%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FyX7WTYr0YMeQcemP26Of%252Ficon%252F76rbNGaJiDxSJwFIjsLQ%252FGroup%25201494.png%3Falt%3Dmedia%26token%3D829a380f-2d70-4ceb-ac23-8c2aaddf8fe5";
+          return require("../assets/dex-icons/Vortex.svg");
 
         case "spicyswap":
-          return "https://docs.spicyswap.xyz/img/spicy.png";
+        case "spicy":
+          return require("../assets/dex-icons/Spicy.png");
         case "lb":
-          return "https://res.cloudinary.com/melvin-manni/image/upload/v1663433569/lcmsyxatxezrrcovuklr.png";
-
+        case "sirius":
+          return require("../assets/dex-icons/Sirius.svg");
+        case "alien":
+          return require("../assets/dex-icons/Alien.png");
+        case "flame":
+          return require("../assets/dex-icons/Flame.png");
+        case "wtz":
+          return require("../assets/dex-icons/WtzUpdate.png");
+        case "ctez":
+          return require("../assets/dex-icons/Ctez.png");
+        case "dexter":
+        case "dexter_v2":
+          return require("../assets/dex-icons/Dexter.png");
         default:
           return "";
       }
     },
 
     capitalize(str) {
-      if (str === "lb") {
-        return "SIRS (Liquidity Baking)";
+      switch (str) {
+        case "lb":
+        case "sirius":
+          return "SIRS (Liquidity Baking)";
+        case "quipuswap":
+          return "Quipuswap";
+        case "quipuswap_v2":
+          return "Quipuswap V2";
+        case "quipuswap_v3":
+          return "Quipuswap V3";
+        case "quipuswap_stable":
+          return "Quipuswap Stable";
+        case "quipuswap_token2token":
+          return "Quipuswap Token to Token";
+        case "plenty_stable":
+          return "Plenty stable";
+        case "plenty":
+          return "Plenty network";
+        case "plenty_ctez":
+          return "Plenty Ctez";
+        case "plenty_tez":
+          return "Plenty Tez";
+        case "spicy":
+          return "Spicyswap";
+        case "dexter":
+          return "Dexter";
+        case "dexter_v2":
+          return "Dexter V2"
+        
+        default:
+          return str.replace(/\b[a-z]/gi, function (char) {
+            return char.toUpperCase();
+          });
       }
-      return str.replace(/\b[a-z]/gi, function (char) {
-        return char.toUpperCase();
-      });
     },
   },
 };

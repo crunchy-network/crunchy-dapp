@@ -49,6 +49,10 @@ const getDexName = (dexType) => {
     return "QuipuswapV3";
   }
 
+  if (dexType === "dexter" || dexType === "dexter_v2") {
+    return "Dexter";
+  }
+
   return pascalCase(dexType);
 };
 
@@ -187,12 +191,11 @@ const buildQuipuStablePair = (dex, token1Pool, token2Pool) => {
   };
 };
 
-const buildQuipuToken2TokenPair = (
-  dex,
-  token1Pool,
-  token2Pool,
-  inverted = false
-) => {
+const buildQuipuToken2TokenPair = (dex, token1Pool, token2Pool) => {
+  const inverted =
+    // eslint-disable-next-line no-unneeded-ternary
+    getParamValue(token1Pool.params, "token_a_pool") !== 0 ? false : true;
+
   return {
     poolId: token1Pool.pool_id,
     dex: getDexName(dex.dex_type),
@@ -207,7 +210,11 @@ const buildQuipuToken2TokenPair = (
   };
 };
 
-const buildQuipuV2Pair = (dex, token1Pool, token2Pool, inverted = false) => {
+const buildQuipuV2Pair = (dex, token1Pool, token2Pool) => {
+  const inverted =
+    // eslint-disable-next-line no-unneeded-ternary
+    getParamValue(token1Pool.params, "token_a_price_cml") !== 0 ? false : true;
+
   return {
     poolId: token1Pool.pool_id,
     dex: getDexName(dex.dex_type),
@@ -236,7 +243,11 @@ const buildQuipuV2Pair = (dex, token1Pool, token2Pool, inverted = false) => {
   };
 };
 
-const buildFlamePair = (dex, token1Pool, token2Pool, inverted = false) => {
+const buildFlamePair = (dex, token1Pool, token2Pool) => {
+  const inverted =
+    // eslint-disable-next-line no-unneeded-ternary
+    getParamValue(token1Pool.params, "token_a_res") !== 0 ? false : true;
+
   return {
     poolId: token1Pool.pool_id,
     dex: getDexName(dex.dex_type),
@@ -266,7 +277,7 @@ const buildQuipuV2Pairs = (dex) => {
       (el) => el.pool_id === token1.pool_id && el !== token1
     )[0];
     if (poolIds.includes(token1.pool_id)) {
-      p = buildQuipuV2Pair(dex, token1, token2, true);
+      p = buildQuipuV2Pair(dex, token1, token2);
     } else {
       p = buildQuipuV2Pair(dex, token1, token2);
       poolIds.push(token1.pool_id);
@@ -396,7 +407,7 @@ const buildQuipuToken2TokenPairs = (dex) => {
     )[0];
 
     if (poolIds.includes(token1.pool_id)) {
-      p = buildQuipuToken2TokenPair(dex, token1, token2, true);
+      p = buildQuipuToken2TokenPair(dex, token1, token2);
     } else {
       p = buildQuipuToken2TokenPair(dex, token1, token2);
       poolIds.push(token1.pool_id);
@@ -419,7 +430,7 @@ const buildFlamePairs = (dex) => {
     )[0];
 
     if (poolIds.includes(token1.pool_id)) {
-      p = buildFlamePair(dex, token1, token2, true);
+      p = buildFlamePair(dex, token1, token2);
     } else {
       p = buildFlamePair(dex, token1, token2);
       poolIds.push(token1.pool_id);
@@ -508,6 +519,8 @@ const buildSwapPairs = async (dexes) => {
       case "vortex":
       case "sirius":
       case "plenty":
+      case "dexter":
+      case "dexter_v2":
         pairs.push(buildSimplePair(dex, "tez"));
         pairs.push(buildSimplePair(dex, "tez", true));
         break;

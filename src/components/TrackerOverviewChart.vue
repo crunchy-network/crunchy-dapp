@@ -7,7 +7,7 @@
 <script lang="js">
 import { createChart } from "lightweight-charts";
 import { mapGetters } from "vuex";
-import numberFormat from "../utils/number-format";
+// import numberFormat from "../utils/number-format";
 import tokenTracker from "../utils/token-tracker";
 
 export default {
@@ -124,7 +124,7 @@ export default {
             new Date(element.bucket).getTime() + 1000 * 60 * 60 * 24
           );
           return {
-            time: new Date(element.bucket).getTime(),
+            time: new Date(element.bucket).getTime() / 1000,
             value: Number(element.aggregatedTvl) * timeUsdValue,
           };
         }
@@ -132,7 +132,7 @@ export default {
       this.updatedChartData.tvlXtz.days1 = this.getChartData.tvl1Day.map(
         (element) => {
           return {
-            time: new Date(element.bucket).getTime(),
+            time: new Date(element.bucket).getTime() / 1000,
             value: Number(element.aggregatedTvl),
           };
         }
@@ -145,7 +145,7 @@ export default {
             new Date(element.bucket).getTime() + 1000 * 60 * 60 * 24
           );
           return {
-            time: new Date(element.bucket).getTime(),
+            time: new Date(element.bucket).getTime() / 1000,
             value: Number(element.aggregatedTvl) * timeUsdValue,
           };
         }
@@ -154,7 +154,7 @@ export default {
       this.updatedChartData.tvlXtz.days7 = this.getChartData.tvl7Day.map(
         (element) => {
           return {
-            time: new Date(element.bucket).getTime(),
+            time: new Date(element.bucket).getTime() / 1000,
             value: Number(element.aggregatedTvl),
           };
         }
@@ -167,7 +167,7 @@ export default {
             new Date(element.bucket).getTime() + 1000 * 60 * 60 * 24
           );
           return {
-            time: new Date(element.bucket).getTime(),
+            time: new Date(element.bucket).getTime() / 1000,
             value: Number(element.aggregatedTvl) * timeUsdValue,
           };
         }
@@ -175,7 +175,7 @@ export default {
       this.updatedChartData.tvlXtz.days30 = this.getChartData.tvl30Day.map(
         (element) => {
           return {
-            time: new Date(element.bucket).getTime(),
+            time: new Date(element.bucket).getTime() / 1000,
             value: Number(element.aggregatedTvl),
           };
         }
@@ -188,7 +188,7 @@ export default {
             new Date(element.bucket).getTime() + 1000 * 60 * 60 * 24
           );
           return {
-            time: new Date(element.bucket).getTime(),
+            time: new Date(element.bucket).getTime() / 1000,
             value: Number(element.aggregatedTvl) * timeUsdValue,
           };
         }
@@ -196,7 +196,7 @@ export default {
       this.updatedChartData.tvlXtz.all = this.getChartData.tvlAll.map(
         (element) => {
           return {
-            time: new Date(element.bucket).getTime(),
+            time: new Date(element.bucket).getTime() / 1000,
             value: Number(element.aggregatedTvl),
           };
         }
@@ -209,7 +209,7 @@ export default {
             new Date(element.bucket).getTime() + 1000 * 60 * 60 * 24
           );
           return {
-            time: new Date(element.bucket).getTime(),
+            time: new Date(element.bucket).getTime() / 1000,
             value: Number(element.aggregatedClose) * timeUsdValue,
           };
         });
@@ -221,7 +221,7 @@ export default {
             new Date(element.bucket).getTime() + 1000 * 60 * 60 * 24
           );
           return {
-            time: new Date(element.bucket).getTime(),
+            time: new Date(element.bucket).getTime() / 1000,
             value: Number(element.aggregatedClose) * timeUsdValue,
           };
         });
@@ -229,7 +229,7 @@ export default {
       this.updatedChartData.priceXtz.hours1 =
         this.getChartData.volumeAndPrice1Hour.map((element) => {
           return {
-            time: new Date(element.bucket).getTime(),
+            time: new Date(element.bucket).getTime() / 1000,
             value: Number(element.aggregatedClose),
           };
         });
@@ -237,7 +237,7 @@ export default {
       this.updatedChartData.priceXtz.days1 =
         this.getChartData.volumeAndPrice1Day.map((element) => {
           return {
-            time: new Date(element.bucket).getTime(),
+            time: new Date(element.bucket).getTime() / 1000,
             value: Number(element.aggregatedClose),
           };
         });
@@ -249,7 +249,7 @@ export default {
             new Date(element.bucket).getTime()
           );
           return {
-            time: new Date(element.bucket).getTime(),
+            time: new Date(element.bucket).getTime() / 1000,
             value: Number(element.aggregatedXtzVolume) * timeUsdValue,
           };
         });
@@ -261,7 +261,7 @@ export default {
             new Date(element.bucket).getTime()
           );
           return {
-            time: new Date(element.bucket).getTime(),
+            time: new Date(element.bucket).getTime() / 1000,
             value: Number(element.aggregatedXtzVolume) * timeUsdValue,
           };
         });
@@ -269,7 +269,7 @@ export default {
       this.updatedChartData.volumeXtz.hours1 =
         this.getChartData.volumeAndPrice1Hour.map((element) => {
           return {
-            time: new Date(element.bucket).getTime(),
+            time: new Date(element.bucket).getTime() / 1000,
             value: Number(element.aggregatedXtzVolume),
           };
         });
@@ -277,7 +277,7 @@ export default {
       this.updatedChartData.volumeXtz.days1 =
         this.getChartData.volumeAndPrice1Day.map((element) => {
           return {
-            time: new Date(element.bucket).getTime(),
+            time: new Date(element.bucket).getTime() / 1000,
             value: Number(element.aggregatedXtzVolume),
           };
         });
@@ -300,14 +300,14 @@ export default {
             new Date(element.bucket).getTime()
           );
           return {
-            time: new Date(element.bucket).getTime(),
+            time: new Date(element.bucket).getTime() / 1000,
             value: Number(element.aggregatedXtzVolume) * timeUsdValue,
           };
         });
       this.updatedChartData.volumeXtz.days7 =
         this.getChartData.volumeAndPrice7Day.map((element) => {
           return {
-            time: new Date(element.bucket).getTime(),
+            time: new Date(element.bucket).getTime() / 1000,
             value: Number(element.aggregatedXtzVolume),
           };
         });
@@ -330,14 +330,14 @@ export default {
             new Date(element.bucket).getTime()
           );
           return {
-            time: new Date(element.bucket).getTime(),
+            time: new Date(element.bucket).getTime() / 1000,
             value: Number(element.aggregatedXtzVolume) * timeUsdValue,
           };
         });
       this.updatedChartData.volumeXtz.days30 =
         this.getChartData.volumeAndPrice30Day.map((element) => {
           return {
-            time: new Date(element.bucket).getTime(),
+            time: new Date(element.bucket).getTime() / 1000,
             value: Number(element.aggregatedXtzVolume),
           };
         });
@@ -358,7 +358,7 @@ export default {
       this.updatedChartData.volumeXtz.all =
         this.getChartData.allVolumeAndPrice.map((element) => {
           return {
-            time: new Date(element.bucket).getTime(),
+            time: new Date(element.bucket).getTime() / 1000,
             value: Number(element.aggregatedXtzVolume),
           };
         });
@@ -370,7 +370,7 @@ export default {
             new Date(element.bucket).getTime()
           );
           return {
-            time: new Date(element.bucket).getTime(),
+            time: new Date(element.bucket).getTime() / 1000,
             value: Number(element.aggregatedXtzVolume) * timeUsdValue,
           };
         });
@@ -466,11 +466,6 @@ export default {
           },
           timeScale: {
             borderVisible: false,
-            timeVisible: true,
-            tickMarkFormatter: (time) => {
-              const date = new Date(time);
-              return this.formatDate(date);
-            },
           },
           grid: {
             vertLines: {
@@ -576,6 +571,9 @@ export default {
             toolTip.style.top = top + "px";
           }
         });
+
+        // auto expand to fill the chart
+        chart.timeScale().fitContent();
       } catch (error) {
         console.log("ERROR", error);
       }
@@ -587,7 +585,7 @@ export default {
     },
 
     formatDate(date) {
-      const d = new Date(date);
+      const d = new Date(date * 1000);
       const DD = d.toLocaleString("default", { day: "2-digit" });
       const MMM = d.toLocaleString("default", { month: "short" });
       const YY = d.getFullYear().toString().slice(-2);
@@ -601,14 +599,20 @@ export default {
       let precision = 5;
       let minMove = 0.00001;
 
-      if (value < 0.0000000001 && value > 0) {
+      if (value >= 1) {
+        precision = 2;
+        minMove = 0.01;
+      } else if (value >= 0.01) {
+        precision = 4;
+        minMove = 0.0001;
+      } else if (value < 0.0000000001 && value > 0) {
         precision = 12;
         minMove = 0.00000000001;
       } else if (value < 0.00000001 && value > 0) {
-        precision = 10;
+        precision = 11;
         minMove = 0.000000001;
       } else if (value < 0.000001 && value > 0) {
-        precision = 8;
+        precision = 10;
         minMove = 0.00000001;
       } else if (value < 0.0001 && value > 0) {
         precision = 6;
@@ -624,8 +628,30 @@ export default {
       return { precision, minMove };
     },
 
-    formatNumShorthand(val, precision) {
-      return numberFormat.shorthand(val, precision);
+    formatNumShorthand(value, precision) {
+      const number = precision
+        ? parseFloat(value).toFixed(precision)
+        : Number(value);
+      if (isNaN(number)) return { value: 0, suffix: "" };
+      if (number < 1000) {
+        return { value: number, suffix: "" };
+      } else if (number < 1000000) {
+        const value = number / 1000;
+        const precisedValue = parseFloat(value).toFixed(precision)
+        return { value: precisedValue, suffix: "K" };
+      } else if (number < 1000000000) {
+        const value = number / 1000000;
+        const precisedValue = parseFloat(value).toFixed(precision)
+        return { value: precisedValue, suffix: "M" };
+      } else if (number < 1000000000000) {
+        const value = number / 1000000000;
+        const precisedValue = parseFloat(value).toFixed(precision)
+        return { value: precisedValue, suffix: "B" };
+      } else {
+        const value = number / 1000000000000;
+        const precisedValue = parseFloat(value).toFixed(precision)
+        return { value: precisedValue, suffix: "T" };
+      }
     },
   },
 };

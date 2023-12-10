@@ -1,8 +1,6 @@
 import tokenTracker from "../../utils/token-tracker";
-import tokensToTrack from "../../tokensTracked.json";
+import tokensBlocked from "../../tokensBlocked.json";
 import _ from "lodash";
-// import coingecko from "../../utils/coingecko";
-// import dexIndexer from "../../utils/dex-indexer";
 import tzkt from "../../utils/tzkt";
 
 export default {
@@ -18,46 +16,47 @@ export default {
     }
   },
 
+  async _setOverviewChartData({ commit, dispatch, state }, payload) {
+    !payload?.softLoad && commit("updateLoading", true);
+    const overviewChart = {};
+    try {
+      const { mktCapAndVol1D, mktCapAndVol1W, mktCapAndVol1Mo } =
+        await tokenTracker.getOverviewChartData(payload.tokens);
+
+      overviewChart.mktCapAndVol1D = mktCapAndVol1D;
+      overviewChart.mktCapAndVol1W = mktCapAndVol1W;
+      overviewChart.mktCapAndVol1Mo = mktCapAndVol1Mo;
+      commit("updateOverviewChart", overviewChart);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      commit("updateLoading", false);
+    }
+  },
+
   async _setTokenTracked({ commit, state, dispatch }, payload) {
     !payload?.softLoad && commit("updateLoading", true);
     try {
-      // const allTokensMetadata = await dexIndexer.getAllTokens();
-      const xtzUsd = await tzkt.getXtzUsdPrice();
-      // const xtzUsdHistory = await coingecko.getXtzUsdHistory();
-      const xtzUsdHistory = await tzkt.getXtzUsdHistory();
-      // const formattedXtzUsdHistory = [];
-      // for (let i = 0; i < xtzUsdHistory.length; i++) {
-      //   const bucket = new Date(xtzUsdHistory[i][0]).getTime();
-      //   const xtzUsdPrice = xtzUsdHistory[i][1].usd;
-      //   formattedXtzUsdHistory.push([bucket,xtzUsdPrice]);
-      // }
+      const [xtzUsd, xtzUsdHistory, tokenFeed] = await Promise.all([
+        tzkt.getXtzUsdPrice(),
+        tzkt.getXtzUsdHistory(),
+        tokenTracker.getTokenFeed(),
+      ]);
 
       commit("updateXtzUsdPrice", xtzUsd);
       commit("updateXtzUsdHistory", xtzUsdHistory);
 
-      let tokenFeed = {};
-
-      await tokenTracker.getTokenFeed().then((feed) => {
-        tokenFeed = feed;
-      });
-
       const tokens = [];
-      for (let i = 0; i < tokensToTrack.length; i++) {
-        const value = tokensToTrack[i];
-        value.id = `${value.tokenAddress}_${value.tokenId || 0}`;
-        const tokenData = value;
-
-        const element = tokenFeed[tokenData.id];
-
+      for (const [k, element] of Object.entries(tokenFeed)) {
         const token = await tokenTracker.calculateTokenData(
           element,
-          tokenData,
           tokenFeed,
           xtzUsd
-          // tokenVolumesYesterday
         );
 
-        console.log("tokenFeed", element);
+        if (tokensBlocked.includes(k)) {
+          continue;
+        }
 
         if (token) {
           tokens.push({
@@ -66,6 +65,7 @@ export default {
         }
       }
       await dispatch("sortTokensTracked", tokens);
+      await dispatch("_setOverviewChartData", { softLoad: true, tokens });
     } catch (error) {
       console.log(error);
     } finally {
@@ -78,7 +78,14 @@ export default {
   },
 
   async sortTokensTracked({ commit, state }, tokens) {
-    const orderedTokens = _.orderBy(tokens, ["mktCap"], ["desc"]);
+    for (const [i, token] of Object.entries(tokens)) {
+      tokens[i].isRanked = token.tokenTvl >= 5000 ? 1 : 0;
+    }
+    const orderedTokens = _.orderBy(
+      tokens,
+      ["isRanked", "mktCap"],
+      ["desc", "desc"]
+    );
     const tokenList = [];
     const lsData = JSON.parse(localStorage.getItem(state.LS_FAVORITES_KEY));
     for (let index = 0; index < orderedTokens.length; index++) {
@@ -138,14 +145,14 @@ export default {
   },
 
   async fetchChartData({ commit, state }, token) {
-    const xtzUsdHistory = await tzkt.getXtzUsdHistory();
+    // const xtzUsdHistory = await tzkt.getXtzUsdHistory();
     commit("updateChartDataLoading", true);
     const chartData = {};
-    const exchangeId = state.tokensTracked[token.id].exchanges[0].address || "";
-    token.spicyId = token.id.replace(":", "_");
-    if (token.standard === "fa12") {
-      token.spicyId = token.spicyId.replace("0", "null");
-    }
+    // const exchangeId = state.tokensTracked[token.id].exchanges[0].address || "";
+    // token.spicyId = token.id.replace(":", "_");
+    // if (token.standard === "fa12") {
+    //   token.spicyId = token.spicyId.replace("0", "null");
+    // }
     try {
       const [
         {
@@ -155,38 +162,28 @@ export default {
           quotes1mo: volumeAndPrice30Day,
         },
         allVolumeAndPrice,
-        { tvl1Day, tvl7Day, tvl30Day, tvlAll },
+        // { tvl1Day, tvl7Day, tvl30Day, tvlAll },
       ] = await Promise.all([
-        tokenTracker.getPriceAndVolumeQuotes(
-          token.spicyId,
-          token.id,
-          token.symbol,
-          xtzUsdHistory
-        ),
-        tokenTracker.getAllQuotes1d(
-          token.spicyId,
-          token.id,
-          token.symbol,
-          xtzUsdHistory
-        ),
-        tokenTracker.getChartTvl(
-          token.spicyId,
-          token.id,
-          exchangeId,
-          token.symbol,
-          xtzUsdHistory
-        ),
+        tokenTracker.getPriceAndVolumeQuotes(token.tokenAddress, token.tokenId),
+        tokenTracker.getAllQuotes1d(token.tokenAddress, token.tokenId),
+        // tokenTracker.getChartTvl(
+        //   token.spicyId,
+        //   token.id,
+        //   exchangeId,
+        //   token.symbol,
+        //   xtzUsdHistory
+        // ),
       ]);
-      
+
       chartData.allVolumeAndPrice = allVolumeAndPrice;
       chartData.volumeAndPrice1Hour = volumeAndPrice1Hour;
       chartData.volumeAndPrice1Day = volumeAndPrice1Day;
       chartData.volumeAndPrice7Day = volumeAndPrice7Day;
       chartData.volumeAndPrice30Day = volumeAndPrice30Day;
-      chartData.tvl1Day = tvl1Day;
-      chartData.tvl7Day = tvl7Day;
-      chartData.tvl30Day = tvl30Day;
-      chartData.tvlAll = tvlAll;
+      chartData.tvl1Day = [];
+      chartData.tvl7Day = [];
+      chartData.tvl30Day = [];
+      chartData.tvlAll = [];
 
       commit("updateChartData", chartData);
     } catch (error) {
