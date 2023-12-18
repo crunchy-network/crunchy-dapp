@@ -719,20 +719,21 @@ export default {
                 val.rewardTokenAddress,
                 val.rewardTokenId || 0
               );
+              
             } catch (e) {
-              rewardTokenMeta = {
-                tokenAddress: val.rewardTokenAddress,
-                tokenId: val.rewardTokenId || 0,
-              };
+              rewardTokenMeta = this.farms.priceFeed.find((el) => 
+                                el.tokenAddress === val.rewardTokenAddress && 
+                                el.tokenId === val.rewardTokenId
+                              )
             }
             rewardTokenMeta.tokenAddress = val.rewardTokenAddress;
             rewardTokenMeta = farmUtils.overrideMetadata(rewardTokenMeta);
             this.form.rewardTokenName =
               rewardTokenMeta.symbol || rewardTokenMeta.name;
             this.form.rewardTokenDecimals = rewardTokenMeta.decimals;
-            this.form.rewardTokenThumbnailUri = rewardTokenMeta.thumbnailUri ? ipfs.transformUri(
+            this.form.rewardTokenThumbnailUri = ipfs.transformUri(
               rewardTokenMeta.thumbnailUri
-            ) : "";
+            );
           }
         } else {
           const validation = validateContractAddress(val.rewardTokenAddress);
