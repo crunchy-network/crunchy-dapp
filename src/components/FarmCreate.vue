@@ -71,7 +71,7 @@
                               v-if="
                                 item.isLp &&
                                 Array.isArray(item.thumbnailUri) &&
-                                item.thumbnailUri.length > 0
+                                item.thumbnailUri?.length > 0
                               "
                               :src="item.thumbnailUri[0]"
                               fit="cover"
@@ -89,7 +89,7 @@
                               v-if="
                                 item.isLp &&
                                 Array.isArray(item.thumbnailUri) &&
-                                item.thumbnailUri.length > 0
+                                item.thumbnailUri?.length > 0
                               "
                               :src="item.thumbnailUri[1]"
                               fit="cover"
@@ -298,7 +298,7 @@
                     <el-avatar
                       v-if="
                         Array.isArray(form.poolTokenThumbnailUri) &&
-                        form.poolTokenThumbnailUri.length > 0
+                        form.poolTokenThumbnailUri?.length > 0
                       "
                       :src="form.poolTokenThumbnailUri[0]"
                       fit="cover"
@@ -730,9 +730,9 @@ export default {
             this.form.rewardTokenName =
               rewardTokenMeta.symbol || rewardTokenMeta.name;
             this.form.rewardTokenDecimals = rewardTokenMeta.decimals;
-            this.form.rewardTokenThumbnailUri = ipfs.transformUri(
+            this.form.rewardTokenThumbnailUri = rewardTokenMeta.thumbnailUri ? ipfs.transformUri(
               rewardTokenMeta.thumbnailUri
-            );
+            ) : "";
           }
         } else {
           const validation = validateContractAddress(val.rewardTokenAddress);
