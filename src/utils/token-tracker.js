@@ -42,11 +42,7 @@ function findPoolPairedWithTez(quotes) {
     return 0;
   }
   for (const address of TEZ_AND_WRAPPED_TEZ_ADDRESSES) {
-    const quote = quotes.find(
-      (el) =>
-        el.token.tokenAddress === address &&
-        !TOO_FEW_TVL_POOL_ADDRESSES.includes(el.pool.dex.address)
-    );
+    const quote = quotes.find((el) => el.token.tokenAddress === address);
     if (quote) {
       poolPriceInTez = quote.quote;
       break;
@@ -907,17 +903,17 @@ export default {
 
       const priceUsd = price.times(xtzUsd);
       element.usdValue = price.times(xtzUsd).toNumber();
-      
+
       element.calcSupply = new BigNumber(element.totalSupply)
         .div(new BigNumber(10).pow(element.decimals))
         .toNumber();
 
       // Fix supply for $POLE Token
-      if(element.tokenAddress === "KT1UQVEDf4twF2eMbrCKQAxN7YYunTAiCTTm") {
+      if (element.tokenAddress === "KT1UQVEDf4twF2eMbrCKQAxN7YYunTAiCTTm") {
         element.calcSupply = new BigNumber(element.totalSupply)
-        .div(new BigNumber(10).pow(element.decimals))
-        .minus(new BigNumber(37862100000000))
-        .toNumber();
+          .div(new BigNumber(10).pow(element.decimals))
+          .minus(new BigNumber(37862100000000))
+          .toNumber();
       }
 
       element.mktCap = new BigNumber(element.calcSupply)
