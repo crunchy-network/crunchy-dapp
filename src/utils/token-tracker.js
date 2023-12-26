@@ -924,14 +924,6 @@ export default {
         .div(new BigNumber(10).pow(element.decimals))
         .toNumber();
 
-      // Fix supply for $POLE Token
-      if (element.tokenAddress === "KT1UQVEDf4twF2eMbrCKQAxN7YYunTAiCTTm") {
-        element.calcSupply = new BigNumber(element.totalSupply)
-          .div(new BigNumber(10).pow(element.decimals))
-          .minus(new BigNumber(37862100000000))
-          .toNumber();
-      }
-
       element.mktCap = new BigNumber(element.calcSupply)
         .times(element.currentPrice)
         .toNumber();
