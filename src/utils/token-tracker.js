@@ -34,7 +34,16 @@ const TEZ_AND_WRAPPED_TEZ_ADDRESSES = [
 ];
 
 const TOO_FEW_TVL_POOL_ADDRESSES = ["KT1FDyQgVeU7pwJ3wKcEQbxp6PzQZgcumZxz"];
-const VOLATILE_PRICE_POOL = ["KT1VSK3ZFRKfzPhqE5yPszsdfkMwp2Z95SXb"];
+const VOLATILE_PRICE_POOL = [
+  {
+    poolAddress: "KT1VSK3ZFRKfzPhqE5yPszsdfkMwp2Z95SXb",
+    poolId: 0,
+  },
+  {
+    poolAddress: "KT1J8Hr3BP8bpbfmgGpRPoC9nAMSYtStZG43",
+    poolId: 143,
+  }
+];
 
 function findPoolPairedWithTez(quotes) {
   let poolPriceInTez = 0;
@@ -637,7 +646,10 @@ export default {
 
         for (const quoteData of element.quotes) {
           // Exclude aggregated price calculation from volatile pool
-          if(VOLATILE_PRICE_POOL.includes(quoteData.pool.dex.address)) {
+          const isQuoteInVolatilePricePool = VOLATILE_PRICE_POOL.some(pool =>
+            pool.poolAddress === quoteData.pool.dex.address && pool.poolId === quoteData.pool.poolId
+          );
+          if(isQuoteInVolatilePricePool) {
             continue;
           }
 
@@ -907,7 +919,7 @@ export default {
 
       const priceUsd = price.times(xtzUsd);
       element.usdValue = price.times(xtzUsd).toNumber();
-      
+
       element.calcSupply = new BigNumber(element.totalSupply)
         .div(new BigNumber(10).pow(element.decimals))
         .toNumber();

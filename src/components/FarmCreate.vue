@@ -71,7 +71,7 @@
                               v-if="
                                 item.isLp &&
                                 Array.isArray(item.thumbnailUri) &&
-                                item.thumbnailUri.length > 0
+                                item.thumbnailUri?.length > 0
                               "
                               :src="item.thumbnailUri[0]"
                               fit="cover"
@@ -89,7 +89,7 @@
                               v-if="
                                 item.isLp &&
                                 Array.isArray(item.thumbnailUri) &&
-                                item.thumbnailUri.length > 0
+                                item.thumbnailUri?.length > 0
                               "
                               :src="item.thumbnailUri[1]"
                               fit="cover"
@@ -298,7 +298,7 @@
                     <el-avatar
                       v-if="
                         Array.isArray(form.poolTokenThumbnailUri) &&
-                        form.poolTokenThumbnailUri.length > 0
+                        form.poolTokenThumbnailUri?.length > 0
                       "
                       :src="form.poolTokenThumbnailUri[0]"
                       fit="cover"
@@ -719,11 +719,12 @@ export default {
                 val.rewardTokenAddress,
                 val.rewardTokenId || 0
               );
+              
             } catch (e) {
-              rewardTokenMeta = {
-                tokenAddress: val.rewardTokenAddress,
-                tokenId: val.rewardTokenId || 0,
-              };
+              rewardTokenMeta = this.farms.priceFeed.find((el) => 
+                                el.tokenAddress === val.rewardTokenAddress && 
+                                el.tokenId === val.rewardTokenId
+                              )
             }
             rewardTokenMeta.tokenAddress = val.rewardTokenAddress;
             rewardTokenMeta = farmUtils.overrideMetadata(rewardTokenMeta);
