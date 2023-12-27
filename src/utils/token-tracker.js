@@ -793,8 +793,11 @@ export default {
             ).toNumber() || 0;
           // Push the exchange with too few tvl to the list
           if (element.exchanges[index].tokenTvl < 5) {
-            TOO_FEW_TVL_POOL_ADDRESSES.push(
-              element.exchanges[index].dex.address
+            TOO_FEW_TVL_POOL_ADDRESSES.push({
+              "poolAddress": element.exchanges[index].dex.address,
+              "poolId": element.exchanges[index].poolId,
+            }
+              
             );
           }
         });
