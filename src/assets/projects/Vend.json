@@ -14,13 +14,21 @@
   "circulatingSupply": 1000000000,
   "decimals": 6,
   "links": [
-      {
-          "name": "Twitter",
-          "link": "https://twitter.com/tezvendsmachine"
-      }
+    {
+      "name": "Vending Machine",
+      "link": "https://vendingnfts.xyz/"
+    },
+    {
+      "name": "Twitter",
+      "link": "https://twitter.com/tezvendsmachine"
+    },
+    {
+      "name": "Medium",
+      "link": "https://medium.com/@Vendingnfts/vendcoin-a-new-chapter-for-the-tezos-art-vending-machine-project-6d1f911304d4"
+    }
   ],
   "offeringSupply": 30000000,
   "accessTypes": [
-      "Initial Farm Offering"
+    "Initial Farm Offering"
   ]
 }
