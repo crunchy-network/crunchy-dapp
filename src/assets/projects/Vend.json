@@ -1,0 +1,26 @@
+{
+  "name": "Vendcoin",
+  "description": "$VEND is the art utility and trading token for the Vending Machine that gives you exclusive discounts on machine use and future events. As a holder of the $VEND token you support the growth of the Tezos De-Fi art ecosystem in a way that is uniquely part of the spirit of community and the arts on Tezos.<br/><br/>$XTZ raised during this IFO will fund initial liquidity pools and community rewards, as well as upgrades and maintenance to the Vending Machine for future iteration and use. $VEND sold during the IFO will be locked for 10 days and then farmed over the next 90 days.<br/><br/>Lets unlock the creative and economic spirit of the future on Tezos via the power of the Vending Machine.",
+  "swapRate": 0.000133,
+  "startTime": "2024-01-05T14:00:00Z",
+  "endTime": "2024-01-15T14:00:00Z",
+  "projectLogo": "vendcoin-logo.png",
+  "tokenLogo": "vend.png",
+  "contractId": "KT1KqqVyhPx89M3Mfg5ymqxKy4cL6cN8esPW",
+  "tokenName": "Vendcoin",
+  "tokenSymbol": "VEND",
+  "isIFO": true,
+  "totalSupply": 1000000000,
+  "circulatingSupply": 1000000000,
+  "decimals": 6,
+  "links": [
+      {
+          "name": "Twitter",
+          "link": "https://twitter.com/tezvendsmachine"
+      }
+  ],
+  "offeringSupply": 30000000,
+  "accessTypes": [
+      "Initial Farm Offering"
+  ]
+}
