@@ -33,8 +33,12 @@ const TEZ_AND_WRAPPED_TEZ_ADDRESSES = [
   "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn",
 ];
 
-const TOO_FEW_TVL_POOL_ADDRESSES = ["KT1FDyQgVeU7pwJ3wKcEQbxp6PzQZgcumZxz"];
-const VOLATILE_PRICE_POOL = [
+// const TOO_FEW_TVL_POOL_ADDRESSES = ["KT1FDyQgVeU7pwJ3wKcEQbxp6PzQZgcumZxz"];
+const TOO_FEW_TVL_POOL_ADDRESSES = [
+  {
+    poolAddress: "KT1FDyQgVeU7pwJ3wKcEQbxp6PzQZgcumZxz",
+    poolId: 0,
+  },
   {
     poolAddress: "KT1VSK3ZFRKfzPhqE5yPszsdfkMwp2Z95SXb",
     poolId: 0,
@@ -42,7 +46,11 @@ const VOLATILE_PRICE_POOL = [
   {
     poolAddress: "KT1J8Hr3BP8bpbfmgGpRPoC9nAMSYtStZG43",
     poolId: 143,
-  }
+  },
+  {
+    poolAddress: "KT1J8Hr3BP8bpbfmgGpRPoC9nAMSYtStZG43",
+    poolId: 30,
+  },
 ];
 
 function findPoolPairedWithTez(quotes) {
@@ -54,7 +62,11 @@ function findPoolPairedWithTez(quotes) {
     const quote = quotes.find(
       (el) =>
         el.token.tokenAddress === address &&
-        !TOO_FEW_TVL_POOL_ADDRESSES.includes(el.pool.dex.address)
+        !TOO_FEW_TVL_POOL_ADDRESSES.some(
+          (pool) =>
+            pool.poolAddress === el.pool.dex.address &&
+            pool.poolId === el.pool.poolId
+        )
     );
     if (quote) {
       poolPriceInTez = quote.quote;
@@ -198,7 +210,11 @@ function modifyQuotes(quotes, allTokenQuotes, type) {
     quoteTokenPriceInTez = quoteToken?.quotes.find(
       (el) =>
         TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(el.token.tokenAddress) &&
-        !TOO_FEW_TVL_POOL_ADDRESSES.includes(el.pool.dex.address)
+        !TOO_FEW_TVL_POOL_ADDRESSES.some(
+          (pool) =>
+            pool.poolAddress === el.pool.dex.address &&
+            pool.poolId === el.pool.poolId
+        )
     )?.buckets[0].close;
     // Only get element from one month for 1h chart
     if (type === "1h") {
@@ -267,7 +283,11 @@ function getAggregatedOpen(
       (el) =>
         el.token.tokenAddress === address &&
         new Date(el.buckets[0].bucket) >= currentDateIterator &&
-        !TOO_FEW_TVL_POOL_ADDRESSES.includes(el.pool.dex.address)
+        !TOO_FEW_TVL_POOL_ADDRESSES.some(
+          (pool) =>
+            pool.poolAddress === el.pool.dex.address &&
+            pool.poolId === el.pool.poolId
+        )
     );
     if (quote) {
       quoteTokenPriceInTez = quote?.buckets[0].open;
@@ -646,10 +666,12 @@ export default {
 
         for (const quoteData of element.quotes) {
           // Exclude aggregated price calculation from volatile pool
-          const isQuoteInVolatilePricePool = VOLATILE_PRICE_POOL.some(pool =>
-            pool.poolAddress === quoteData.pool.dex.address && pool.poolId === quoteData.pool.poolId
+          const isQuoteInVolatilePricePool = TOO_FEW_TVL_POOL_ADDRESSES.some(
+            (pool) =>
+              pool.poolAddress === quoteData.pool.dex.address &&
+              pool.poolId === quoteData.pool.poolId
           );
-          if(isQuoteInVolatilePricePool) {
+          if (isQuoteInVolatilePricePool) {
             continue;
           }
 
@@ -794,11 +816,9 @@ export default {
           // Push the exchange with too few tvl to the list
           if (element.exchanges[index].tokenTvl < 5) {
             TOO_FEW_TVL_POOL_ADDRESSES.push({
-              "poolAddress": element.exchanges[index].dex.address,
-              "poolId": element.exchanges[index].poolId,
-            }
-              
-            );
+              poolAddress: element.exchanges[index].dex.address,
+              poolId: element.exchanges[index].poolId,
+            });
           }
         });
         /**
