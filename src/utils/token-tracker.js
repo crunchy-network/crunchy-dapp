@@ -83,10 +83,6 @@ function getQuoteTokenPriceInTez(allTokenQuotes, allTokenSpot, pool) {
       pool.token.tokenId === el.tokenId
   );
   quoteTokenPriceInTez = findPoolPairedWithTez(quoteToken?.quotes);
-  if (quoteToken?.tokenAddress === "KT1XRPEPXbZK25r3Htzp2o1x7xdMMmfocKNW") {
-    console.log(quoteToken);
-    console.log(quoteTokenPriceInTez);
-  }
 
   // Quote token does not pair with tez
   if (quoteToken && !quoteTokenPriceInTez) {
@@ -707,10 +703,7 @@ export default {
           if (isNaN(close) || quoteData.pool.dex.type === "alien") {
             continue;
           }
-          if (element.tokenAddress === "KT1XnTn74bUtxHfDtBmm2bGZAQfhPbvKWR8o") {
-            console.log(quoteData);
-            console.log(quoteTokenPriceInTez);
-          }
+
           totalReserves += reserves;
           aggregatedClose += reserves * close;
         }
