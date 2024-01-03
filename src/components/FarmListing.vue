@@ -615,6 +615,10 @@ export default {
       width: 100% !important;
       height: 1px !important;
     }
+
+    .tab-wrapper {
+      display: none;
+    }
   }
 }
 </style>
