@@ -51,6 +51,10 @@ const TOO_FEW_TVL_POOL_ADDRESSES = [
     poolAddress: "KT1J8Hr3BP8bpbfmgGpRPoC9nAMSYtStZG43",
     poolId: 30,
   },
+  {
+    poolAddress: "KT1H5b7LxEExkFd2Tng77TfuWbM5aPvHstPr",
+    poolId: 0
+  }
 ];
 
 function findPoolPairedWithTez(quotes) {
