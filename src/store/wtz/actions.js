@@ -63,7 +63,7 @@ export default {
   async getWtzTransactions({ state }) {
     return tzkt
       .getTransactions({
-        "target.eq": state.contractSwap,
+        "target.eq": state.contractProxy,
         "entrypoint.in": "wrap,unwrap",
         limit: 100,
       })
