@@ -515,6 +515,18 @@ header .grid-content button.el-button {
   right: 14px;
   left: auto;
 }
+.stake-infor {
+  margin-bottom: 8px
+}
+.stake-warning {
+  margin-top: 10px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 21px;
+  text-align: left;
+  color: #8c8d8f;
+
+}
 .lock-dialog .el-date-editor.el-input,
 .lock-dialog .el-date-editor.el-input__inner {
   width: 100% !important;
