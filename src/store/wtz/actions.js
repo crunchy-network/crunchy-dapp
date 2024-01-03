@@ -82,7 +82,7 @@ export default {
   },
 
   async wtzWrap({ state, rootState, commit, dispatch }, amountToWrap) {
-    const wtzSwap = await getWalletContract(state.contractSwap);
+    const wtzSwap = await getWalletContract(state.contractProxy);
     const amount = BigNumber(amountToWrap)
       .times(BigNumber(10).pow(6))
       .idiv(1)
@@ -106,7 +106,7 @@ export default {
   },
 
   async wtzUnwrap({ state, rootState, commit, dispatch }, amountToUnwrap) {
-    const wtzSwap = await getWalletContract(state.contractSwap);
+    const wtzSwap = await getWalletContract(state.contractProxy);
     const amount = BigNumber(amountToUnwrap)
       .times(BigNumber(10).pow(6))
       .idiv(1)

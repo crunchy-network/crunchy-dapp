@@ -7,6 +7,7 @@ export default {
     loading: false,
     contractSwap: process.env.VUE_APP_CONTRACTS_WTZ_SWAP,
     contractWtz: process.env.VUE_APP_CONTRACTS_WTZ_FA2,
+    contractProxy: process.env.VUE_APP_CONTRACTS_WTZ_PROXY,
     balance: 0,
     usdVwap: 0,
     totalTvlTez: 0,
