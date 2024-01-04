@@ -58,8 +58,8 @@
                 <!-- </el-card> -->
               </div>
             </el-col>
-            <el-col :sm="12" :md="12" >
-              <div class="grid-content" style="height: 100%" >
+            <el-col :sm="12" :md="12">
+              <div class="grid-content" style="height: 100%">
                 <!-- <el-card class="box-card" shadow="always" style="height: 100%"> -->
                 <el-col>
                   <Overview
@@ -81,7 +81,7 @@
             style="margin-top: 30px"
             :gutter="10"
           >
-            <el-col :xs="12" :span="10">
+            <el-col :xs="isMobile ? 24 : 12" :span="10">
               <div class="grid-content search-input">
                 <el-input
                   :value="tokenTracker.searchInput"
@@ -104,17 +104,7 @@
         <el-card v-loading="tokenTracker.loading" shadow="always">
           <div class="responsive-table">
             <div>
-              <el-row
-                type="flex"
-                align="middle"
-                class="header-row-wrap"
-                style="
-                  border-bottom: var(--line-border);
-                  padding-bottom: 14px;
-                  margin-bottom: 14px;
-                  min-width: 900px;
-                "
-              >
+              <el-row type="flex" align="middle" class="header-row-wrap">
                 <el-col :span="24">
                   <el-row
                     :gutter="20"
@@ -123,11 +113,14 @@
                     style="padding: 0 20px; color: var(--color-subheading-text)"
                   >
                     <el-col style="text-align: right" :span="1"> </el-col>
-                    <el-col :span="23">
+                    <el-col
+                      :span="23"
+                      :style="{ 'padding-right': isMobile ? '0px' : '10px' }"
+                    >
                       <el-row>
-                        <el-col :span="2">#</el-col>
+                        <el-col :span="isMobile ? 4 : 2">#</el-col>
 
-                        <el-col :span="4">
+                        <el-col :span="isMobile ? 5 : 4">
                           <div
                             class="wrap-sort-icon"
                             @click="toggleColumSort('symbol')"
@@ -141,7 +134,10 @@
                           </div>
                         </el-col>
 
-                        <el-col style="text-align: right" :span="4">
+                        <el-col
+                          style="text-align: right"
+                          :span="isMobile ? 5 : 4"
+                        >
                           <div
                             class="wrap-sort-icon"
                             @click="toggleColumSort('cuurentPrice', 'usdValue')"
@@ -153,7 +149,11 @@
                             Price
                           </div>
                         </el-col>
-                        <el-col style="text-align: right" :span="4">
+                        <el-col
+                          v-show="!isMobile"
+                          style="text-align: right"
+                          :span="4"
+                        >
                           <div
                             class="wrap-sort-icon"
                             @click="toggleColumSort('volume24', 'volume24Usd')"
@@ -165,7 +165,10 @@
                             24 Volume
                           </div>
                         </el-col>
-                        <el-col style="text-align: right" :span="4">
+                        <el-col
+                          style="text-align: right"
+                          :span="isMobile ? 5 : 4"
+                        >
                           <div
                             class="wrap-sort-icon"
                             @click="toggleColumSort('mktCap', 'mktCapUsd')"
@@ -177,7 +180,10 @@
                             Mkt Cap
                           </div>
                         </el-col>
-                        <el-col style="text-align: right" :span="2">
+                        <el-col
+                          style="text-align: right"
+                          :span="isMobile ? 4 : 2"
+                        >
                           <div
                             class="wrap-sort-icon"
                             @click="
@@ -200,7 +206,11 @@
                             </el-tooltip>
                           </div>
                         </el-col>
-                        <el-col style="text-align: right" :span="2">
+                        <el-col
+                          v-show="!isMobile"
+                          style="text-align: right"
+                          :span="2"
+                        >
                           <div
                             class="wrap-sort-icon"
                             @click="
@@ -223,7 +233,11 @@
                             </el-tooltip>
                           </div>
                         </el-col>
-                        <el-col style="text-align: right" :span="2">
+                        <el-col
+                          v-show="!isMobile"
+                          style="text-align: right"
+                          :span="2"
+                        >
                           <div
                             class="wrap-sort-icon"
                             @click="
@@ -327,6 +341,9 @@ export default {
     },
     getLoading() {
       return this.tokenTracker.loading;
+    },
+    isMobile() {
+      return window.innerWidth <= 450;
     },
   },
 
@@ -486,6 +503,13 @@ export default {
     margin: 0 !important;
   }
 
+  .header-row-wrap {
+    border-bottom: var(--line-border);
+    padding-bottom: 14px;
+    margin-bottom: 14px;
+    min-width: 900px;
+  }
+
   .header-row-wrap .wrap-sort-icon {
     color: var(--color-subheading-text);
     font-size: 14px;
@@ -497,7 +521,6 @@ export default {
     cursor: pointer;
     width: 100%;
     height: 100%;
-
     &:hover {
       color: var(--color-subheading-text);
       transition: 0.2s ease-in-out color;
@@ -557,6 +580,13 @@ export default {
 
     .tab-custom-element {
       display: none;
+    }
+  }
+
+  @media (max-width: 450px) {
+    .header-row-wrap {
+      max-width: 100%;
+      min-width: 100%;
     }
   }
 }

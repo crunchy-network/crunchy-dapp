@@ -206,6 +206,16 @@ i.fa-icon-right {
   padding-left: 40px !important;
   padding-right: 40px !important;
   margin-top: 36px;
+  @media (max-width: 450px) {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+}
+.el-card__body {
+  @media (max-width: 450px) {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
 }
 .el-header {
   padding: 20px !important;

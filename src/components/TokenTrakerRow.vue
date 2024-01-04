@@ -8,7 +8,7 @@
       <div class="item-row">
         <el-row
           :gutter="20"
-          class="farm-row"
+          class="tokenTracker-row"
           style="margin-left: 0; margin-right: 0"
           type="flex"
           align="middle"
@@ -29,12 +29,21 @@
               <i class="fa-regular fa-star"></i>
             </button>
           </el-col>
-          <el-col :span="23">
+          <el-col
+            :span="23"
+            :style="{ 'padding-right': isMobile ? '0px' : '10px' }"
+          >
             <router-link :to="'/token/' + asset.id" exact>
-              <el-row type="flex" align="middle">
-                <el-col :span="2" v-if="asset.isRanked">{{ asset.order }}</el-col>
-                <el-col :span="2" v-else>-</el-col>
-                <el-col style="text-align: left" :span="4">
+              <el-row
+                type="flex"
+                align="middle"
+                :style="{ 'padding-left': isMobile ? '10px' : '0' }"
+              >
+                <el-col v-if="asset.isRanked" :span="isMobile ? 4 : 2">{{
+                  asset.order
+                }}</el-col>
+                <el-col v-else :span="isMobile ? 4 : 2">-</el-col>
+                <el-col style="text-align: left" :span="isMobile ? 5 : 4">
                   <el-row type="flex" style="align-items: center">
                     <el-avatar
                       :src="asset.thumbnailUri"
@@ -49,6 +58,7 @@
                       "
                     ></el-avatar>
                     <a
+                      v-show="!isMobile"
                       style="color: #555cff; text-decoration: none"
                       target="_blank"
                       :href="`https://tzkt.io/${asset.address}/operations/`"
@@ -58,25 +68,25 @@
                   </el-row>
                 </el-col>
 
-                <el-col style="text-align: right" :span="4">
+                <el-col style="text-align: right" :span="isMobile ? 5 : 4">
                   <price-format
                     prefix="$"
-                    :precision="5"
+                    :precision="!isMobile ? 5 : 2"
                     :value="asset.currentPrice"
                     :usd-value="asset.usdValue"
                   />
                 </el-col>
-                <el-col style="text-align: right" :span="4">
+                <el-col v-show="!isMobile" style="text-align: right" :span="4">
                   <price-format
                     v-if="asset.softCalcDone"
                     prefix="$"
-                    :precision="4"
+                    :precision="!isMobile ? 4 : 1"
                     :value="asset.volume24"
                     :usd-value="asset.volume24Usd"
                   />
                   <span v-else> - </span>
                 </el-col>
-                <el-col style="text-align: right" :span="4">
+                <el-col style="text-align: right" :span="isMobile ? 5 : 4">
                   <price-format
                     :precision="4"
                     prefix="$"
@@ -87,7 +97,7 @@
 
                 <el-col
                   style="text-align: right"
-                  :span="2"
+                  :span="isMobile ? 4 : 2"
                   :class="
                     handleChangeclass(asset, 'change1Day', 'change1DayUsd')
                   "
@@ -113,6 +123,7 @@
                   }}
                 </el-col>
                 <el-col
+                  v-show="!isMobile"
                   style="text-align: right"
                   :span="2"
                   :class="
@@ -140,6 +151,7 @@
                   }}
                 </el-col>
                 <el-col
+                  v-show="!isMobile"
                   style="text-align: right"
                   :span="2"
                   :class="
@@ -188,6 +200,9 @@ export default {
   },
   computed: {
     ...mapGetters(["getShowUsd"]),
+    isMobile() {
+      return window.innerWidth <= 450;
+    },
   },
   methods: {
     ...mapActions(["setTokenAsFavourite", "removeTokenAsFavourite"]),
@@ -248,6 +263,16 @@ export default {
   }
   &:hover {
     opacity: 0.65;
+  }
+  @media (max-width: 450px) {
+    .tokenTracker-row {
+      padding-left: 0px;
+      padding-right: 0px;
+      justify-content: space-between;
+    }
+    .row-between {
+      padding-left: 10px;
+    }
   }
 }
 </style>
