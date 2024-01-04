@@ -269,8 +269,8 @@
                           color: var(--color-subheading-text) !important;
                         "
                       >
-                        <el-col :span="4">Stake</el-col>
-                        <el-col :span="4">Farm</el-col>
+                        <el-col :span="isMobile ? 6 : 4">Stake</el-col>
+                        <el-col :span="isMobile ? 6 : 4">Farm</el-col>
                         <el-col
                           style="text-align: right"
                           :span="isMobile ? 6 : 4"
@@ -338,8 +338,23 @@
                     </el-col>
                   </el-row>
 
+                  <el-row
+                    v-if="myOrderedFarms.length === 0"
+                    style="text-align: center"
+                  >
+                    <span
+                      style="
+                        color: var(--color-subheading-text);
+                        font-weight: 400;
+                        font-size: 16px;
+                        line-height: 24px;
+                      "
+                      >When you join a farm, it will show here.
+                    </span>
+                  </el-row>
                   <FarmListingRow
                     v-for="farm in myOrderedFarms"
+                    v-else
                     v-show="farm.visible"
                     :key="farm.id"
                     :farm-tab="activeTab"
@@ -388,8 +403,8 @@
                           color: var(--color-subheading-text) !important;
                         "
                       >
-                        <el-col :span="4">Stake</el-col>
-                        <el-col :span="4">Farm</el-col>
+                        <el-col :span="isMobile ? 6 : 4">Stake</el-col>
+                        <el-col :span="isMobile ? 6 : 4">Farm</el-col>
                         <el-col
                           style="text-align: right"
                           :span="isMobile ? 6 : 4"
