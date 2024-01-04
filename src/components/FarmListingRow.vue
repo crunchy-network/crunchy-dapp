@@ -594,7 +594,6 @@
           </el-col>
           <i
               class="fas fa-arrow-alt-right"
-              style="font-size: 24px; color: #999; margin-left: -10px; margin-right: 6px"
             ></i>
           <el-col
             class="farm-rewardToken"
@@ -1462,6 +1461,15 @@ export default {
     flex-direction: column;
     padding-left: 0 !important;
     padding-right: 0 !important;
+  }
+}
+.fa-arrow-alt-right {
+  font-size: 24px; 
+  color: #999; 
+  margin-left: -10px; 
+  margin-right: 6px;
+  @media (max-width: 450px) {
+    margin-left: -15px; 
   }
 }
 </style>

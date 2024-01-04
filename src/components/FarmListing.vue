@@ -10,7 +10,7 @@
         align="middle"
         style="margin-bottom: 24px; flex-wrap: wrap; row-gap: 10px"
       >
-        <el-col :span="16">
+        <el-col :span="isMobile ? 24 : 16">
           <div class="grid-content">
             <h2
               style="
@@ -36,6 +36,24 @@
           </div>
         </el-col>
       </el-row>
+      <el-row v-show="isMobile" :span="24">
+        <el-col
+          :span="6"
+          style="
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 19px;
+            letter-spacing: 0.02em;
+            text-align: left;
+            color: var(--color-subheading-text);
+            display: flex;
+            align-items: end;
+            margin-bottom: 8px;
+          "
+        >
+          Stats
+        </el-col></el-row
+      >
       <el-row
         v-show="farms.searchInput.length === 0"
         :gutter="20"
@@ -193,21 +211,7 @@
         class="myFarm"
         style="margin-top: 16px; display: flex; justify-content: space-between"
       >
-        <el-col
-          :span="6"
-          style="
-            font-size: 16px;
-            font-weight: 600;
-            line-height: 19px;
-            letter-spacing: 0.02em;
-            text-align: left;
-            color: var(--color-subheading-text);
-            display: flex;
-            align-items: end;
-          "
-        >
-          My Farms
-        </el-col>
+        <el-col class="farm-box-title" :span="6"> My Farms </el-col>
         <el-col :span="18" style="display: flex; justify-content: flex-end">
           <el-button
             v-show="!isMobile"
@@ -355,21 +359,7 @@
       <FarmUnstakeDialog ref="unstakeDialog" />
 
       <el-row style="margin-top: 16px">
-        <el-col
-          :span="24"
-          style="
-            font-size: 16px;
-            font-weight: 600;
-            line-height: 19px;
-            letter-spacing: 0.02em;
-            text-align: left;
-            color: var(--color-subheading-text);
-            display: flex;
-            align-items: end;
-          "
-        >
-          All Farms
-        </el-col>
+        <el-col :span="24" class="farm-box-title"> All Farms </el-col>
       </el-row>
       <el-row type="flex" class="farm-list" style="margin-top: 8px">
         <el-col :span="24">
@@ -771,10 +761,20 @@ export default {
     text-align: left;
   }
   .farm-search {
-    width: 30%; 
-    border: 0 !important
+    width: 30%;
+    border: 0 !important;
   }
 
+  .farm-box-title {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 19px;
+    letter-spacing: 0.02em;
+    text-align: left;
+    color: var(--color-subheading-text);
+    display: flex;
+    align-items: end;
+  }
   @media (max-width: 450px) {
     .grid-content-filter {
       display: flex;
@@ -815,10 +815,13 @@ export default {
       width: 100%;
     }
     .el-input__inner {
-      text-align: center
+      text-align: center;
     }
     .myFarm {
       margin-top: 40px !important;
+    }
+    .farm-box-title {
+      align-items: center;
     }
   }
 }
