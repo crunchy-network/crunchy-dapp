@@ -39,10 +39,10 @@
                 align="middle"
                 :style="{ 'padding-left': isMobile ? '10px' : '0' }"
               >
-                <el-col v-if="asset.isRanked" :span="isMobile ? 4 : 2">{{
+                <el-col v-if="asset.isRanked" :span="2">{{
                   asset.order
                 }}</el-col>
-                <el-col v-else :span="isMobile ? 4 : 2">-</el-col>
+                <el-col v-else :span="2">-</el-col>
                 <el-col style="text-align: left" :span="isMobile ? 5 : 4">
                   <el-row type="flex" style="align-items: center">
                     <el-avatar
@@ -68,7 +68,7 @@
                   </el-row>
                 </el-col>
 
-                <el-col style="text-align: right" :span="isMobile ? 5 : 4">
+                <el-col style="text-align: right" :span="isMobile ? 8 : 4">
                   <price-format
                     prefix="$"
                     :precision="!isMobile ? 5 : 2"

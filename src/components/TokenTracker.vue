@@ -118,7 +118,7 @@
                       :style="{ 'padding-right': isMobile ? '0px' : '10px' }"
                     >
                       <el-row>
-                        <el-col :span="isMobile ? 4 : 2">#</el-col>
+                        <el-col :span="2">#</el-col>
 
                         <el-col :span="isMobile ? 5 : 4">
                           <div
@@ -136,7 +136,7 @@
 
                         <el-col
                           style="text-align: right"
-                          :span="isMobile ? 5 : 4"
+                          :span="isMobile ? 8 : 4"
                         >
                           <div
                             class="wrap-sort-icon"
