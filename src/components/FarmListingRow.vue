@@ -25,8 +25,8 @@
         >
           <el-col
             v-if="farm.poolToken.isLbLp"
-            :span="4"
-            style="font-weight: bold"
+            :span="isMobile ? 6 : 4"
+            style="font-weight: bold; display: flex; align-items: center"
           >
             <el-tooltip
               content="Liquidity Baking"
@@ -46,7 +46,7 @@
             </el-tooltip>
             <el-avatar
               shape="circle"
-              :size="40"
+              :size="isMobile ? 36 : 40"
               style="
                 position: relative;
                 border: 4px solid #fff;
@@ -74,27 +74,22 @@
                 </div>
               </div>
               <el-avatar
+                class="farm-poolTokens"
                 :src="farm.poolToken.thumbnailUri"
                 fit="cover"
                 shape="circle"
-                :size="40"
-                style="
-                  position: relative;
-                  border: 4px solid #fff;
-                  vertical-align: middle;
-                  margin-left: -18px;
-                  margin-right: 14px;
-                "
+                :size="isMobile ? 36 : 40"
               ></el-avatar>
             </el-tooltip>
-            XTZ/{{ farm.poolToken.symbol }}
+            <p v-show="!isMobile">XTZ/{{ farm.poolToken.symbol }}</p>
           </el-col>
           <el-col
             v-else-if="farm.poolToken.isQuipuLp"
-            :span="4"
-            style="font-weight: bold"
+            :span="isMobile ? 6 : 4"
+            style="font-weight: bold; display: flex; align-items: center"
           >
             <el-tooltip
+              v-show="!isMobile"
               v-if="farm.poolToken.isQuipuLp"
               content="Quipuswap"
               placement="top"
@@ -147,7 +142,7 @@
             </el-tooltip>
             <el-avatar
               shape="circle"
-              :size="40"
+              :size="isMobile ? 36 : 40"
               style="
                 position: relative;
                 border: 4px solid #fff;
@@ -176,22 +171,18 @@
                 </div>
               </div>
               <el-avatar
+                class="farm-poolTokens"
                 :src="farm.poolToken.token2.thumbnailUri"
                 fit="cover"
                 shape="circle"
-                :size="40"
-                style="
-                  position: relative;
-                  border: 4px solid #fff;
-                  vertical-align: middle;
-                  margin-left: -18px;
-                  margin-right: 14px;
-                "
+                :size="isMobile ? 36 : 40"
               ></el-avatar>
             </el-tooltip>
-            {{ farm.poolToken.token1.symbol }}/{{
-              farm.poolToken.token2.symbol
-            }}
+            <p v-show="!isMobile">
+              {{ farm.poolToken.token1.symbol }}/{{
+                farm.poolToken.token2.symbol
+              }}
+            </p>
           </el-col>
 
           <el-col
@@ -202,8 +193,8 @@
               farm.poolToken.isPlentyStableLp ||
               farm.poolToken.isSpicyLp
             "
-            :span="4"
-            style="font-weight: bold"
+            :span="isMobile ? 6 : 4"
+            style="font-weight: bold; display: flex; align-items: center"
           >
             <el-tooltip
               v-if="
@@ -228,6 +219,7 @@
               />
             </el-tooltip>
             <el-tooltip
+              v-show="!isMobile"
               v-else-if="farm.poolToken.isSpicyLp"
               content="SpicySwap"
               placement="top"
@@ -248,7 +240,7 @@
               :src="farm.poolToken.token1.thumbnailUri"
               fit="cover"
               shape="circle"
-              :size="40"
+              :size="isMobile ? 36 : 40"
               style="
                 position: relative;
                 border: 4px solid #fff;
@@ -276,22 +268,18 @@
                 </div>
               </div>
               <el-avatar
+                class="farm-poolTokens"
                 :src="farm.poolToken.token2.thumbnailUri"
                 fit="cover"
                 shape="circle"
-                :size="40"
-                style="
-                  position: relative;
-                  border: 4px solid #fff;
-                  vertical-align: middle;
-                  margin-left: -18px;
-                  margin-right: 14px;
-                "
+                :size="isMobile ? 36 : 40"
               ></el-avatar>
             </el-tooltip>
-            {{ farm.poolToken.token1.symbol }}/{{
-              farm.poolToken.token2.symbol
-            }}
+            <p v-show="!isMobile">
+              {{ farm.poolToken.token1.symbol }}/{{
+                farm.poolToken.token2.symbol
+              }}
+            </p>
           </el-col>
 
           <el-col
@@ -300,10 +288,11 @@
               farm.poolToken.isQuipuToken2TokenLp ||
               farm.poolToken.isQuipuStableLp
             "
-            :span="4"
-            style="font-weight: bold"
+            :span="isMobile ? 6 : 4"
+            style="font-weight: bold; display: flex; align-items: center"
           >
             <el-tooltip
+              v-show="!isMobile"
               v-if="farm.poolToken.isQuipuV2Lp"
               content="Quipuswap V2"
               placement="top"
@@ -321,6 +310,7 @@
               />
             </el-tooltip>
             <el-tooltip
+              v-show="!isMobile"
               v-else-if="farm.poolToken.isQuipuToken2TokenLp"
               content="Quipuswap Token to Token"
               placement="top"
@@ -338,6 +328,7 @@
               />
             </el-tooltip>
             <el-tooltip
+              v-show="!isMobile"
               v-else-if="farm.poolToken.isQuipuStableLp"
               content="Quipuswap Stable"
               placement="top"
@@ -358,7 +349,7 @@
               :src="farm.poolToken.token1.thumbnailUri"
               fit="cover"
               shape="circle"
-              :size="40"
+              :size="isMobile ? 36 : 40"
               style="
                 position: relative;
                 border: 4px solid #fff;
@@ -386,30 +377,27 @@
                 </div>
               </div>
               <el-avatar
+                class="farm-poolTokens"
                 :src="farm.poolToken.token2.thumbnailUri"
                 fit="cover"
                 shape="circle"
-                :size="40"
-                style="
-                  position: relative;
-                  border: 4px solid #fff;
-                  vertical-align: middle;
-                  margin-left: -18px;
-                  margin-right: 14px;
-                "
+                :size="isMobile ? 36 : 40"
               ></el-avatar>
             </el-tooltip>
-            {{ farm.poolToken.token1.symbol }}/{{
-              farm.poolToken.token2.symbol
-            }}
+            <p v-show="!isMobile">
+              {{ farm.poolToken.token1.symbol }}/{{
+                farm.poolToken.token2.symbol
+              }}
+            </p>
           </el-col>
 
           <el-col
             v-else-if="farm.poolToken.isQuipuToken2TokenLp"
-            :span="4"
-            style="font-weight: bold"
+            :span="isMobile ? 6 : 4"
+            style="font-weight: bold; display: flex; align-items: center"
           >
             <el-tooltip
+              v-show="!isMobile"
               v-if="farm.poolToken.isQuipuToken2TokenLp"
               content="Quipuswap Token to Token"
               placement="top"
@@ -430,7 +418,7 @@
               :src="farm.poolToken.token1.thumbnailUri"
               fit="cover"
               shape="circle"
-              :size="40"
+              :size="isMobile ? 36 : 40"
               style="
                 position: relative;
                 border: 4px solid #fff;
@@ -458,30 +446,27 @@
                 </div>
               </div>
               <el-avatar
+                class="farm-poolTokens"
                 :src="farm.poolToken.token2.thumbnailUri"
                 fit="cover"
                 shape="circle"
-                :size="40"
-                style="
-                  position: relative;
-                  border: 4px solid #fff;
-                  vertical-align: middle;
-                  margin-left: -18px;
-                  margin-right: 14px;
-                "
+                :size="isMobile ? 36 : 40"
               ></el-avatar>
             </el-tooltip>
-            {{ farm.poolToken.token1.symbol }}/{{
-              farm.poolToken.token2.symbol
-            }}
+            <p v-show="!isMobile">
+              {{ farm.poolToken.token1.symbol }}/{{
+                farm.poolToken.token2.symbol
+              }}
+            </p>
           </el-col>
 
           <el-col
             v-else-if="farm.poolToken.isQuipuStableLp"
-            :span="4"
-            style="font-weight: bold"
+            :span="isMobile ? 6 : 4"
+            style="font-weight: bold; display: flex; align-items: center"
           >
             <el-tooltip
+              v-show="!isMobile"
               v-if="farm.poolToken.isQuipuStableLp"
               content="Quipuswap Stable"
               placement="top"
@@ -502,7 +487,7 @@
               :src="farm.poolToken.token1.thumbnailUri"
               fit="cover"
               shape="circle"
-              :size="40"
+              :size="isMobile ? 36 : 40"
               style="
                 position: relative;
                 border: 4px solid #fff;
@@ -530,25 +515,21 @@
                 </div>
               </div>
               <el-avatar
+                class="farm-poolTokens"
                 :src="farm.poolToken.token2.thumbnailUri"
                 fit="cover"
                 shape="circle"
-                :size="40"
-                style="
-                  position: relative;
-                  border: 4px solid #fff;
-                  vertical-align: middle;
-                  margin-left: -18px;
-                  margin-right: 14px;
-                "
+                :size="isMobile ? 36 : 40"
               ></el-avatar>
             </el-tooltip>
-            {{ farm.poolToken.token1.symbol }}/{{
-              farm.poolToken.token2.symbol
-            }}
+            <p v-show="!isMobile">
+              {{ farm.poolToken.token1.symbol }}/{{
+                farm.poolToken.token2.symbol
+              }}
+            </p>
           </el-col>
 
-          <el-col v-else :span="4" style="font-weight: bold">
+          <el-col v-else :span="isMobile ? 6 : 4" style="font-weight: bold; display: flex; align-items: center">
             <el-tooltip
               v-if="farm.errant"
               content="Farm Error"
@@ -602,26 +583,25 @@
                 </div>
               </div>
               <el-avatar
+                class="farm-poolToken"
                 :src="farm.poolToken.thumbnailUri"
                 fit="cover"
                 shape="circle"
-                :size="40"
-                style="
-                  position: relative;
-                  border: 4px solid #fff;
-                  vertical-align: middle;
-                  margin-left: 22px;
-                  margin-right: 14px;
-                "
+                :size="isMobile ? 36 : 40"
               ></el-avatar>
             </el-tooltip>
-            {{ farm.poolToken.symbol }}
+            <p v-show="!isMobile">{{ farm.poolToken.symbol }}</p>
           </el-col>
-          <el-col :span="3" style="font-weight: bold">
-            <i
+          <i
               class="fas fa-arrow-alt-right"
-              style="color: #999; margin-left: 0px; margin-right: 6px"
+              style="font-size: 24px; color: #999; margin-left: -10px; margin-right: 6px"
             ></i>
+          <el-col
+            class="farm-rewardToken"
+            :span="isMobile ? 6 : 4"
+            style="font-weight: bold; display: flex; align-items: center"
+          >
+            
             <el-tooltip placement="top" effect="light">
               <div slot="content">
                 <div
@@ -644,7 +624,7 @@
                 :src="farm.rewardToken.thumbnailUri"
                 fit="cover"
                 shape="circle"
-                :size="40"
+                :size="isMobile ? 36 : 40"
                 style="
                   position: relative;
                   border: 4px solid #fff;
@@ -652,36 +632,48 @@
                 "
               ></el-avatar>
             </el-tooltip>
-            <span style="margin-left: 14px">{{ farm.rewardToken.symbol }}</span>
+            <span v-show="!isMobile" style="margin-left: 14px">{{
+              farm.rewardToken.symbol
+            }}</span>
           </el-col>
 
           <el-col
             v-if="wallet.connected && farm.depositAmount > 0"
             style="text-align: right"
-            :span="4"
+            :span="isMobile ? 6 : 4"
           >
             <!-- <ICountUp
                             :delay="countUpDelay"
                             :endVal="farm.rewardsEarned"
                             :options="countUpOpts"
                           /> -->
-            {{ vueNumberFormat(farm.rewardsEarned) }}
+            {{
+              isMobile
+                ? formatNumShorthand(farm.rewardsEarned, 2).value +
+                  formatNumShorthand(farm.rewardsEarned, 2).suffix
+                : vueNumberFormat(farm.rewardsEarned)
+            }}
           </el-col>
-          <el-col v-else style="text-align: right" :span="4">-</el-col>
+          <el-col v-else style="text-align: right" :span="isMobile ? 6 : 4"
+            >-</el-col
+          >
 
           <el-col
             v-if="farm.errant"
             style="text-align: right; color: #f64947; text-transform: uppercase"
-            :span="3"
+            :span="isMobile ? 6 : 3"
             >Error</el-col
           >
           <el-col
             v-else-if="farm.ended"
             style="text-align: right; text-transform: uppercase"
-            :span="3"
+            :span="isMobile ? 6 : 3"
             >Complete</el-col
           >
-          <el-col v-else-if="farm.apr >= 0" style="text-align: right" :span="3"
+          <el-col
+            v-else-if="farm.apr >= 0"
+            style="text-align: right"
+            :span="isMobile ? 6 : 3"
             >{{
               vueNumberFormat(farm.apr, {
                 prefix: "",
@@ -691,58 +683,79 @@
               })
             }}%</el-col
           >
-          <el-col v-else style="text-align: right" :span="3">Pending</el-col>
+          <el-col v-else style="text-align: right" :span="isMobile ? 6 : 3"
+            >Pending</el-col
+          >
 
-          <el-col v-if="showUsd === false" style="text-align: right" :span="4"
+          <el-col
+            v-show="!isMobile"
+            v-if="showUsd === false"
+            style="text-align: right"
+            :span="4"
             >{{ vueNumberFormat(farm.tvlTez) }} ꜩ</el-col
           >
-          <el-col v-if="showUsd === true" style="text-align: right" :span="4">{{
-            vueNumberFormat(farm.tvlTez * farms.usdVwap, {
-              prefix: "$",
-              decimal: ".",
-              thousand: ",",
-              precision: 2,
-            })
-          }}</el-col>
-          <el-col style="text-align: right" :span="3"
+          <el-col
+            v-show="!isMobile"
+            v-if="showUsd === true"
+            style="text-align: right"
+            :span="4"
+            >{{
+              vueNumberFormat(farm.tvlTez * farms.usdVwap, {
+                prefix: "$",
+                decimal: ".",
+                thousand: ",",
+                precision: 2,
+              })
+            }}</el-col
+          >
+          <el-col v-show="!isMobile" style="text-align: right" :span="3"
             >{{ farm.multiplier }}x</el-col
           >
           <el-col
-            v-show="farm.rowExpanded === false"
+            v-if="farm.rowExpanded === false"
             :span="3"
-            style="text-align: right"
+            style="text-align: right; display: flex; justify-content: end"
             ><el-button
               type="text"
-              style="font-weight: bold"
+              style="font-weight: bold; display: flex; align-items: center"
               @click="expandFarmRow(farm.id)"
-              >View Details
+            >
+              <span v-show="!isMobile">View Details</span>
               <i class="fas fa-chevron-down fa-icon-right"></i></el-button
           ></el-col>
           <el-col
-            v-show="farm.rowExpanded === true"
+            v-if="farm.rowExpanded === true"
             :span="3"
-            style="text-align: right"
+            style="text-align: right; display: flex; justify-content: end"
             ><el-button
               type="text"
-              style="font-weight: bold"
+              style="font-weight: bold; display: flex; align-items: center"
               @click="collapseFarmRow(farm.id)"
-              >Hide Details
+            >
+              <span v-show="!isMobile">Hide Details</span>
               <i class="fas fa-chevron-up fa-icon-right"></i></el-button
           ></el-col>
         </el-row>
         <collapse-transition :duration="250" name="slide">
           <div v-show="farm.rowExpanded">
             <el-row
+              class="row-expanded"
               type="flex"
               align="top"
               style="padding: 10px 20px; color: var(--primary-text)"
             >
               <el-col
                 v-if="wallet.connected"
-                :span="8"
+                :span="isMobile ? 24 : 8"
                 style="padding: 10px 20px; border-right: var(--line-border)"
               >
-                <div style="margin-bottom: 8px">
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    margin-bottom: 8px;
+                  "
+                >
                   <strong
                     style="
                       color: var(--color-subheading-text);
@@ -750,6 +763,15 @@
                       font-weight: 600;
                     "
                     >EST. {{ farm.rewardToken.symbol }} EARNED</strong
+                  >
+                  <strong
+                    v-show="isMobile"
+                    style="
+                      color: var(--color-subheading-text);
+                      font-size: 14px;
+                      font-weight: 600;
+                    "
+                    >Farm Multiplier</strong
                   >
                 </div>
                 <el-row
@@ -772,7 +794,7 @@
                   <el-col :span="10" style="font-weight: 600">{{
                     vueNumberFormat(farm.rewardsEarned)
                   }}</el-col>
-                  <el-col :span="10">
+                  <el-col v-if="!isMobile" :span="10">
                     <el-button
                       :disabled="farm.started === false"
                       style="
@@ -786,6 +808,9 @@
                       @click="harvestFarm(farm.id)"
                       >Harvest</el-button
                     >
+                  </el-col>
+                  <el-col style="text-align: right" v-else :span="10">
+                    {{ farm.multiplier }}x
                   </el-col>
                 </el-row>
                 <el-row
@@ -812,7 +837,7 @@
                   </el-col>
                 </el-row>
                 <el-row
-                  v-else
+                  v-else-if="!isMobile"
                   type="flex"
                   align="middle"
                   justify="space-between"
@@ -826,8 +851,21 @@
                     >
                   </el-col>
                 </el-row>
+                <el-row
+                  v-else-if="isMobile"
+                  type="flex"
+                  align="middle"
+                  justify="space-between"
+                >
+                  <el-col :span="10" style="font-weight: 600">-</el-col>
+                  <el-col style="text-align: right" :span="10">
+                    {{ farm.multiplier }}x
+                  </el-col>
+                </el-row>
+
                 <div style="margin-top: 16px">
                   <el-link
+                    v-show="!isMobile"
                     style="color: #555cff; font-weight: 600"
                     :href="`https://tzkt.io/${farm.rewardToken.address}`"
                     target="_blank"
@@ -838,7 +876,7 @@
               </el-col>
               <el-col
                 v-if="wallet.connected === false"
-                :span="8"
+                :span="isMobile ? 24 : 8"
                 style="padding: 10px 20px; border-right: var(--line-border)"
               >
                 <div style="margin-bottom: 8px">
@@ -850,7 +888,7 @@
               </el-col>
               <el-col
                 v-if="wallet.connected"
-                :span="8"
+                :span="isMobile ? 24 : 8"
                 style="padding: 10px 20px; border-right: var(--line-border)"
               >
                 <div style="margin-bottom: 8px">
@@ -916,7 +954,20 @@
                       >
                     </el-popover>
                   </el-col>
-                  <el-col v-else :span="14" style="font-weight: 600">-</el-col>
+                  <el-col
+                    v-else-if="!isMobile"
+                    :span="14"
+                    style="font-weight: 600"
+                    >-</el-col
+                  >
+                  <el-col v-else :span="14" style="font-weight: 600">
+                    <el-button
+                      type="success"
+                      style="border-radius: 10px; font-weight: 600; width: 100%"
+                      @click="$emit('request-stake-farm', farm.id)"
+                      >Stake to Earn Rewards</el-button
+                    >
+                  </el-col>
                   <el-col :span="10" style="text-align: right">
                     <el-button
                       class="_action-btn"
@@ -1111,7 +1162,7 @@
               </el-col>
               <el-col
                 v-if="wallet.connected === false"
-                :span="8"
+                :span="isMobile ? 24 : 8"
                 style="padding: 10px 20px; border-right: var(--line-border)"
               >
                 <div style="margin-bottom: 8px">
@@ -1126,7 +1177,11 @@
                 </div>
                 <connect-button></connect-button>
               </el-col>
-              <el-col v-if="farm.errant" :span="8" style="padding: 10px 20px">
+              <el-col
+                v-if="farm.errant"
+                :span="isMobile ? 24 : 8"
+                style="padding: 10px 20px; border-right: var(--line-border)"
+              >
                 <div style="margin-bottom: 8px">
                   <strong
                     style="
@@ -1141,8 +1196,8 @@
               </el-col>
               <el-col
                 v-if="farm.errant === false"
-                :span="8"
-                style="padding: 10px 20px"
+                :span="isMobile ? 24 : 8"
+                style="padding: 10px 20px; border-right: var(--line-border)"
               >
                 <div style="margin-bottom: 8px">
                   <strong
@@ -1323,6 +1378,9 @@ export default {
     };
   },
   computed: {
+    isMobile() {
+      return window.innerWidth <= 450;
+    },
     ...mapState(["wallet", "farms"]),
   },
   methods: {
@@ -1340,6 +1398,31 @@ export default {
     isFa2(token) {
       return farmUtils.isFa2(token);
     },
+
+    formatNumShorthand(value, precision) {
+      const number = precision
+        ? parseFloat(value).toFixed(precision)
+        : Number(value);
+      if (isNaN(number)) return { value: 0, suffix: "" };
+      if (number < 1000) {
+        return { value: number, suffix: "" };
+      } else if (number < 1000000) {
+        const value = number / 1000;
+        const precisedValue = parseFloat(value).toFixed(precision);
+        return { value: precisedValue, suffix: "K" };
+      } else if (number < 1000000000) {
+        const value = (number / 1000000).toFixed(precision);
+        return { value, suffix: "M" };
+      } else if (number < 1000000000000) {
+        const value = number / 1000000000;
+        const precisedValue = parseFloat(value).toFixed(precision);
+        return { value: precisedValue, suffix: "B" };
+      } else {
+        const value = number / 1000000000000;
+        const precisedValue = parseFloat(value).toFixed(precision);
+        return { value: precisedValue, suffix: "T" };
+      }
+    },
   },
 };
 </script>
@@ -1347,4 +1430,38 @@ export default {
 <style lang="scss" scoped>
 @import "../crunchy-variables.scss";
 @import "~element-ui/packages/theme-chalk/src/common/var";
+.farm-poolToken {
+  position: relative;
+  border: 4px solid #fff;
+  vertical-align: middle;
+  margin-right: 14px;
+  @media (max-width: 450px) {
+    margin-left: 0;
+  }
+}
+.farm-poolTokens {
+  position: relative;
+  border: 4px solid #fff;
+  vertical-align: middle;
+  margin-left: -18px;
+  margin-right: 14px;
+  @media (max-width: 450px) {
+    margin-right: 0;
+  }
+}
+.farm-rewardToken {
+  @media (max-width: 450px) {
+    display: flex;
+    align-items: center;
+    padding-left: 0 !important;
+    margin-left: 0px;
+  }
+}
+.row-expanded {
+  @media (max-width: 450px) {
+    flex-direction: column;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
 </style>

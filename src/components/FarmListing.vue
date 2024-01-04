@@ -30,19 +30,10 @@
                 font-size: 16px;
                 line-height: 24px;
               "
-              >Stake tokens to earn rewards. Help Gardens grow into Farms
+              >Stake tokens to earn rewards or <strong>create</strong> your own
+              farm to allow others to earn rewards staking your tokens.
             </span>
           </div>
-        </el-col>
-        <el-col :span="8" style="text-align: right">
-          <el-button
-            type="primary"
-            round
-            style="font-weight: bold"
-            @click="$router.push({ name: 'farm-create' })"
-          >
-            Create a Farm
-          </el-button>
         </el-col>
       </el-row>
       <el-row
@@ -57,7 +48,7 @@
             type="flex"
             style="flex-wrap: wrap; row-gap: 20px"
           >
-            <el-col :sm="12" :md="8">
+            <el-col class="farm-box" :sm="12" :md="6">
               <div class="grid-content" style="height: 100%">
                 <el-card
                   v-loading="farms.loading"
@@ -65,133 +56,70 @@
                   shadow="always"
                   style="height: 100%"
                 >
-                  <el-avatar
-                    shape="circle"
-                    icon="fas fa-farm"
-                    :size="48"
-                    style="background: #1ec37f; font-size: 24px"
-                  >
-                  </el-avatar>
-                  <el-avatar
-                    shape="circle"
-                    icon="fas fa-user-cowboy"
-                    :size="48"
-                    style="font-size: 24px; float: right"
-                  >
-                  </el-avatar>
-                  <p
-                    style="
-                      font-size: 20px;
-                      font-weight: 600;
-                      margin-top: 14px;
-                      margin-bottom: 8px;
-                    "
-                  >
+                  <p class="farm-box-content">
+                    {{ isMobile ? "Total Farms" : "Total Farms Created" }}
+                  </p>
+                  <h2 class="farm-box-value">
                     {{ totalFarms.toFixed(0) }}
-                    <span style="float: right">{{
+                  </h2>
+                </el-card>
+              </div>
+            </el-col>
+            <el-col class="farm-box" :sm="12" :md="6">
+              <div class="grid-content" style="height: 100%">
+                <el-card
+                  v-loading="farms.loading"
+                  class="box-card"
+                  shadow="always"
+                  style="height: 100%"
+                >
+                  <p class="farm-box-content">Total Farmers</p>
+                  <h2 class="farm-box-value">
+                    {{
                       vueNumberFormat(farms.storage.vaults.activeKeys, {
                         prefix: "",
                         decimal: ".",
                         thousand: ",",
                         precision: 0,
                       })
-                    }}</span>
-                  </p>
-                  <h2
-                    style="
-                      color: var(--color-subheading-text);
-                      font-size: 12px;
-                      margin-bottom: 0px;
-                    "
-                  >
-                    Active Farms <span style="float: right">Farmers</span>
-                  </h2>
-                </el-card>
-              </div>
-            </el-col>
-            <el-col :sm="12" :md="8">
-              <div class="grid-content" style="height: 100%">
-                <el-card
-                  v-loading="farms.loading"
-                  class="box-card"
-                  shadow="always"
-                  style="height: 100%"
-                >
-                  <el-avatar
-                    shape="circle"
-                    :size="48"
-                    style="background: #555cff"
-                  >
-                    <img
-                      src="./../assets/svg-icons/lock.svg"
-                      style="width: 24px; height: 24px; padding: 12px"
-                    />
-                  </el-avatar>
-                  <p
-                    style="
-                      font-size: 20px;
-                      font-weight: 600;
-                      margin-top: 14px;
-                      margin-bottom: 8px;
-                    "
-                  >
-                    {{ vueNumberFormat(farms.totalTvlTez) }} ꜩ
-                  </p>
-                  <h2
-                    style="
-                      color: var(--color-subheading-text);
-                      font-size: 12px;
-                      margin-bottom: 0px;
-                    "
-                  >
-                    Total Value Locked (XTZ)
-                  </h2>
-                </el-card>
-              </div>
-            </el-col>
-            <el-col :sm="12" :md="8">
-              <div class="grid-content" style="height: 100%">
-                <el-card
-                  v-loading="farms.loading"
-                  class="box-card"
-                  shadow="always"
-                  style="height: 100%"
-                >
-                  <el-avatar
-                    shape="circle"
-                    :size="48"
-                    style="background: #ffcf36"
-                  >
-                    <img
-                      src="./../assets/svg-icons/lock.svg"
-                      style="width: 24px; height: 24px; padding: 12px"
-                    />
-                  </el-avatar>
-                  <p
-                    style="
-                      font-size: 20px;
-                      font-weight: 600;
-                      margin-top: 14px;
-                      margin-bottom: 8px;
-                    "
-                  >
-                    {{
-                      vueNumberFormat(farms.totalTvlTez * farms.usdVwap, {
-                        prefix: "$",
-                        decimal: ".",
-                        thousand: ",",
-                        precision: 2,
-                      })
                     }}
-                  </p>
-                  <h2
-                    style="
-                      color: var(--color-subheading-text);
-                      font-size: 12px;
-                      margin-bottom: 0px;
-                    "
-                  >
-                    Total Value Locked (USD)
+                  </h2>
+                </el-card>
+              </div>
+            </el-col>
+            <el-col class="farm-box" :sm="12" :md="6">
+              <div class="grid-content" style="height: 100%">
+                <el-card
+                  v-loading="farms.loading"
+                  class="box-card"
+                  shadow="always"
+                  style="height: 100%"
+                >
+                  <p class="farm-box-content">Total USD Locked</p>
+                  <h2 class="farm-box-value">
+                    ${{
+                      formatNumShorthand(farms.totalTvlTez * farms.usdVwap, 2)
+                        .value
+                    }}{{
+                      formatNumShorthand(farms.totalTvlTez * farms.usdVwap, 2)
+                        .suffix
+                    }}
+                  </h2>
+                </el-card>
+              </div>
+            </el-col>
+            <el-col class="farm-box" :sm="12" :md="6">
+              <div class="grid-content" style="height: 100%">
+                <el-card
+                  v-loading="farms.loading"
+                  class="box-card"
+                  shadow="always"
+                  style="height: 100%"
+                >
+                  <p class="farm-box-content">Total XTZ Locked</p>
+                  <h2 class="farm-box-value">
+                    {{ formatNumShorthand(farms.totalTvlTez, 2).value
+                    }}{{ formatNumShorthand(farms.totalTvlTez, 2).suffix }}ꜩ
                   </h2>
                 </el-card>
               </div>
@@ -211,84 +139,106 @@
           padding-bottom: 2px;
         "
       >
-        <el-col :sm="8">
-          <div class="tab-wrapper tab-custom-element">
-            <button
-              :class="activeTab === 'allFarms' && 'active'"
-              @click="setActiveTab('allFarms')"
-            >
-              All Farms
-            </button>
-            <button
-              :class="activeTab === 'myFarms' && 'active'"
-              @click="setActiveTab('myFarms')"
-            >
-              My Farms
-            </button>
-          </div>
-        </el-col>
-        <el-col :sm="16">
-          <div
-            class="grid-content grid-content-filter"
-            style="text-align: right"
+        <el-col
+          class="farm-search-filter"
+          :sm="24"
+          style="display: flex; justify-content: space-between"
+        >
+          <el-button
+            v-show="isMobile"
+            type="primary"
+            round
+            style="font-weight: bold"
+            @click="$router.push({ name: 'farm-create' })"
           >
-            <el-select
-              multiple
-              collapse-tags
-              :value="farms.filters"
-              placeholder="All Farms & Gardens"
-              @input="updateFilters"
-            >
-              <el-option-group
-                v-for="group in filterOptions"
-                :key="group.label"
-                :label="group.label"
-              >
-                <el-option
-                  v-for="item in group.options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                >
-                </el-option>
-              </el-option-group>
-            </el-select>
+            + Create a Farm
+          </el-button>
 
-            <el-button
-              type="primary"
-              plain
-              :disabled="wallet.connected === false"
-              style="
-                border-radius: 10px;
-                font-weight: bold;
-                padding-left: 48px;
-                padding-right: 48px;
-                margin-left: 5px;
-                background: var(--color-alt-btn);
-                color: #fff;
-                border: 1px solid var(--color-alt-btn);
-              "
-              @click="harvestAllFarms"
-              >Harvest All</el-button
+          <el-input
+            :sm="8"
+            :value="farms.searchInput"
+            placeholder="Search farms and pools"
+            prefix-icon="fad fa-search"
+            class="farm-search el-card is-always-shadow"
+            @input="updateSearchInput"
+          >
+          </el-input>
+
+          <el-select
+            :sm="8"
+            multiple
+            collapse-tags
+            :value="farms.filters"
+            placeholder="All Farms & Gardens"
+            @input="updateFilters"
+          >
+            <el-option-group
+              v-for="group in filterOptions"
+              :key="group.label"
+              :label="group.label"
             >
-          </div>
+              <el-option
+                v-for="item in group.options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-option-group>
+          </el-select>
         </el-col>
       </el-row>
-      <el-row style="margin-top: 10px">
-        <el-col :span="24">
-          <div class="grid-content search-input">
-            <el-input
-              :value="farms.searchInput"
-              placeholder="Search farms and pools"
-              prefix-icon="fad fa-search"
-              class="el-card is-always-shadow"
-              style="border: 0 !important"
-              @input="updateSearchInput"
-            >
-            </el-input></div
-        ></el-col>
+
+      <el-row
+        class="myFarm"
+        style="margin-top: 16px; display: flex; justify-content: space-between"
+      >
+        <el-col
+          :span="6"
+          style="
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 19px;
+            letter-spacing: 0.02em;
+            text-align: left;
+            color: var(--color-subheading-text);
+            display: flex;
+            align-items: end;
+          "
+        >
+          My Farms
+        </el-col>
+        <el-col :span="18" style="display: flex; justify-content: flex-end">
+          <el-button
+            v-show="!isMobile"
+            type="primary"
+            round
+            style="font-weight: bold"
+            @click="$router.push({ name: 'farm-create' })"
+          >
+            + Create a Farm
+          </el-button>
+          <el-button
+            type="primary"
+            plain
+            :disabled="wallet.connected === false"
+            style="
+              border-radius: 10px;
+              font-weight: bold;
+              padding-left: 48px;
+              padding-right: 48px;
+              margin-left: 5px;
+              background: var(--color-alt-btn);
+              color: #fff;
+              border: 1px solid var(--color-alt-btn);
+            "
+            @click="harvestAllFarms"
+            >Harvest All</el-button
+          >
+        </el-col>
       </el-row>
-      <el-row type="flex" class="farm-list" style="margin-top: 25px">
+
+      <el-row type="flex" class="farm-list" style="margin-top: 8px">
         <el-col :span="24">
           <div class="grid-content">
             <el-card v-loading="farms.loading" shadow="always" class="box-card">
@@ -311,16 +261,26 @@
                         type="flex"
                         align="middle"
                         style="
-                          padding: 0 20px;
+                          padding: 0 16px;
                           color: var(--color-subheading-text) !important;
                         "
                       >
-                        <el-col :span="7">Farm</el-col>
-                        <el-col style="text-align: right" :span="4"
+                        <el-col :span="4">Stake</el-col>
+                        <el-col :span="4">Farm</el-col>
+                        <el-col
+                          style="text-align: right"
+                          :span="isMobile ? 6 : 4"
                           >Earned</el-col
                         >
-                        <el-col style="text-align: right" :span="3">APR</el-col>
-                        <el-col style="text-align: right" :span="4"
+                        <el-col
+                          style="text-align: right"
+                          :span="isMobile ? 6 : 3"
+                          >APR</el-col
+                        >
+                        <el-col
+                          v-show="!isMobile"
+                          style="text-align: right"
+                          :span="4"
                           >TVL
                           <el-tooltip
                             content="Total Value Locked"
@@ -330,7 +290,143 @@
                             <i class="fas fa-question-circle"></i>
                           </el-tooltip>
                         </el-col>
-                        <el-col style="text-align: right" :span="3"
+                        <el-col
+                          v-show="!isMobile"
+                          style="text-align: right"
+                          :span="3"
+                          >Multiplier</el-col
+                        >
+                        <el-col
+                          v-show="farms.myFarmExpanded === false"
+                          :span="3"
+                          style="text-align: right"
+                        >
+                          <el-button
+                            type="text"
+                            style="font-weight: bold"
+                            @click="expandMyFarmRows"
+                          >
+                            <span v-show="!isMobile">Expand All</span>
+                            <i
+                              v-show="!isMobile"
+                              class="fas fa-chevron-down fa-icon-right"
+                            ></i>
+                          </el-button>
+                        </el-col>
+                        <el-col
+                          v-show="farms.myFarmExpanded === true"
+                          :span="3"
+                          style="text-align: right"
+                        >
+                          <el-button
+                            type="text"
+                            style="font-weight: bold"
+                            @click="collapseMyFarmRows"
+                          >
+                            <span v-show="!isMobile">Collapse All</span>
+                            <i
+                              v-show="!isMobile"
+                              class="fas fa-chevron-up fa-icon-right"
+                            ></i>
+                          </el-button>
+                        </el-col>
+                      </el-row>
+                    </el-col>
+                  </el-row>
+
+                  <FarmListingRow
+                    v-for="farm in myOrderedFarms"
+                    v-show="farm.visible"
+                    :key="farm.id"
+                    :farm-tab="activeTab"
+                    :farm="farm"
+                    :show-usd="showUsd"
+                    @request-unstake-farm="showUnstakeDialogMyFarm"
+                    @request-stake-farm="showStakeDialogMyFarm"
+                  >
+                  </FarmListingRow>
+                </div>
+              </div>
+            </el-card>
+          </div>
+        </el-col>
+      </el-row>
+      <FarmStakeDialog ref="stakeDialog" />
+      <FarmUnstakeDialog ref="unstakeDialog" />
+
+      <el-row style="margin-top: 16px">
+        <el-col
+          :span="24"
+          style="
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 19px;
+            letter-spacing: 0.02em;
+            text-align: left;
+            color: var(--color-subheading-text);
+            display: flex;
+            align-items: end;
+          "
+        >
+          All Farms
+        </el-col>
+      </el-row>
+      <el-row type="flex" class="farm-list" style="margin-top: 8px">
+        <el-col :span="24">
+          <div class="grid-content">
+            <el-card v-loading="farms.loading" shadow="always" class="box-card">
+              <div class="responsive-table">
+                <div>
+                  <el-row
+                    type="flex"
+                    align="middle"
+                    style="
+                      font-size: 14px;
+                      font-weight: 600;
+                      border-bottom: var(--line-border);
+                      padding-bottom: 14px;
+                      margin-bottom: 14px;
+                    "
+                  >
+                    <el-col :span="24">
+                      <el-row
+                        :gutter="20"
+                        type="flex"
+                        align="middle"
+                        style="
+                          padding: 0 16px;
+                          color: var(--color-subheading-text) !important;
+                        "
+                      >
+                        <el-col :span="4">Stake</el-col>
+                        <el-col :span="4">Farm</el-col>
+                        <el-col
+                          style="text-align: right"
+                          :span="isMobile ? 6 : 4"
+                          >Earned</el-col
+                        >
+                        <el-col
+                          style="text-align: right"
+                          :span="isMobile ? 6 : 3"
+                          >APR</el-col
+                        >
+                        <el-col
+                          v-show="!isMobile"
+                          style="text-align: right"
+                          :span="4"
+                          >TVL
+                          <el-tooltip
+                            content="Total Value Locked"
+                            placement="top"
+                            effect="light"
+                          >
+                            <i class="fas fa-question-circle"></i>
+                          </el-tooltip>
+                        </el-col>
+                        <el-col
+                          v-show="!isMobile"
+                          style="text-align: right"
+                          :span="3"
                           >Multiplier</el-col
                         >
                         <el-col
@@ -342,8 +438,12 @@
                             type="text"
                             style="font-weight: bold"
                             @click="expandAllFarmRows"
-                            >Expand All
-                            <i class="fas fa-chevron-down fa-icon-right"></i>
+                          >
+                            <span v-show="!isMobile">Expand All</span>
+                            <i
+                              v-show="!isMobile"
+                              class="fas fa-chevron-down fa-icon-right"
+                            ></i>
                           </el-button>
                         </el-col>
                         <el-col
@@ -355,8 +455,12 @@
                             type="text"
                             style="font-weight: bold"
                             @click="collapseAllFarmRows"
-                            >Collapse All
-                            <i class="fas fa-chevron-up fa-icon-right"></i>
+                          >
+                            <span v-show="!isMobile">Collapse All</span>
+                            <i
+                              v-show="!isMobile"
+                              class="fas fa-chevron-up fa-icon-right"
+                            ></i>
                           </el-button>
                         </el-col>
                       </el-row>
@@ -364,14 +468,14 @@
                   </el-row>
 
                   <FarmListingRow
-                    v-for="farm in orderedFarms"
+                    v-for="farm in allOrderedFarms"
                     v-show="farm.visible"
                     :key="farm.id"
                     :farm-tab="activeTab"
                     :farm="farm"
                     :show-usd="showUsd"
-                    @request-unstake-farm="showUnstakeDialog"
-                    @request-stake-farm="showStakeDialog"
+                    @request-unstake-farm="showStakeDialogAllFarm"
+                    @request-stake-farm="showStakeDialogAllFarm"
                   >
                   </FarmListingRow>
                 </div>
@@ -458,9 +562,24 @@ export default {
     showUsd() {
       return this.getShowUsd;
     },
-    orderedFarms: function () {
-      const farms =
-        this.activeTab === "myFarms" ? this.farms.userData : this.farms.data;
+    isMobile() {
+      return window.innerWidth <= 450;
+    },
+
+    allOrderedFarms: function () {
+      const farms = this.farms.data;
+
+      return _.orderBy(
+        farms,
+        ["ended", "badges.core", "tvlTez"],
+        ["asc", "desc", "desc"]
+      );
+    },
+
+    myOrderedFarms: function () {
+      const farms = Object.values(this.farms.data).filter(
+        (farm) => farm.depositAmount > 0
+      );
 
       return _.orderBy(
         farms,
@@ -496,7 +615,9 @@ export default {
       "fetchAllFarms",
       "harvestAllFarms",
       "expandAllFarmRows",
+      "expandMyFarmRows",
       "collapseAllFarmRows",
+      "collapseMyFarmRows",
       "filterAllFarmRows",
       "searchAllFarmRows",
     ]),
@@ -538,16 +659,49 @@ export default {
       this.filterAllFarmRows();
     },
 
-    showStakeDialog(farmId) {
+    showStakeDialogMyFarm(farmId) {
       this.$refs.stakeDialog.showDialog(farmId);
     },
 
-    showUnstakeDialog(farmId) {
+    showUnstakeDialogMyFarm(farmId) {
+      this.$refs.unstakeDialog.showDialog(farmId);
+    },
+
+    showStakeDialogAllFarm(farmId) {
+      this.$refs.stakeDialog.showDialog(farmId);
+    },
+
+    showUnstakeDialogAllFarm(farmId) {
       this.$refs.unstakeDialog.showDialog(farmId);
     },
 
     viewFarmStats(farm) {
       console.log("viewFarmStats", farm); // this will go to dedicated farm page
+    },
+
+    formatNumShorthand(value, precision) {
+      const number = precision
+        ? parseFloat(value).toFixed(precision)
+        : Number(value);
+      if (isNaN(number)) return { value: 0, suffix: "" };
+      if (number < 1000) {
+        return { value: number, suffix: "" };
+      } else if (number < 1000000) {
+        const value = number / 1000;
+        const precisedValue = parseFloat(value).toFixed(precision);
+        return { value: precisedValue, suffix: "K" };
+      } else if (number < 1000000000) {
+        const value = (number / 1000000).toFixed(precision);
+        return { value, suffix: "M" };
+      } else if (number < 1000000000000) {
+        const value = number / 1000000000;
+        const precisedValue = parseFloat(value).toFixed(precision);
+        return { value: precisedValue, suffix: "B" };
+      } else {
+        const value = number / 1000000000000;
+        const precisedValue = parseFloat(value).toFixed(precision);
+        return { value: precisedValue, suffix: "T" };
+      }
     },
   },
 };
@@ -601,6 +755,26 @@ export default {
     font-weight: 700;
   }
 
+  .farm-box-content {
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 14px;
+    margin-bottom: 8px;
+    color: var(--color-subheading-text);
+  }
+
+  .farm-box-value {
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 19px;
+    letter-spacing: 0.02em;
+    text-align: left;
+  }
+  .farm-search {
+    width: 30%; 
+    border: 0 !important
+  }
+
   @media (max-width: 450px) {
     .grid-content-filter {
       display: flex;
@@ -616,8 +790,35 @@ export default {
       height: 1px !important;
     }
 
-    .tab-wrapper {
-      display: none;
+    .farm-box {
+      width: 50%;
+    }
+    .farm-box-content {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 19px;
+      letter-spacing: 0.02em;
+      text-align: left;
+    }
+    .farm-box-value {
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 19px;
+      letter-spacing: 0.02em;
+      text-align: left;
+    }
+    .farm-search-filter {
+      flex-direction: column;
+      gap: 16px;
+    }
+    .farm-search {
+      width: 100%;
+    }
+    .el-input__inner {
+      text-align: center
+    }
+    .myFarm {
+      margin-top: 40px !important;
     }
   }
 }

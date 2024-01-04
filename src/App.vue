@@ -110,6 +110,10 @@ body {
 
 .responsive-table > div {
   min-width: max-content;
+  @media (max-width: 450px) {
+    max-width: 100%;
+    min-width: 100%;
+  }
 }
 /* FONT WEIGHTS */
 h1,
@@ -206,6 +210,10 @@ i.fa-icon-right {
   padding-left: 40px !important;
   padding-right: 40px !important;
   margin-top: 36px;
+  @media (max-width: 450px) {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
 }
 .el-header {
   padding: 20px !important;
@@ -405,6 +413,10 @@ header .grid-content button.el-button {
   padding: 10px 20px;
   background: var(--background-card);
   border-radius: 14px;
+  @media (max-width: 450px) {
+    padding-left: 0;
+    padding-right: 0;
+  }
 }
 .farm-row:hover,
 .farm-row.expanded {
