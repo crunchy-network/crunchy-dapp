@@ -58,7 +58,7 @@
                 <!-- </el-card> -->
               </div>
             </el-col>
-            <el-col :sm="12" :md="12">
+            <el-col :sm="12" :md="12" style="padding-left: 0">
               <div class="grid-content" style="height: 100%">
                 <!-- <el-card class="box-card" shadow="always" style="height: 100%"> -->
                 <el-col>
