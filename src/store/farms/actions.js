@@ -1961,11 +1961,27 @@ export default {
     commit("updateFarmsExpanded", true);
   },
 
+  expandMyFarmRows({ commit, state, dispatch }) {
+    console.log(state.userData)
+    console.log(state.data)
+    for (const farmId in state.userData) {
+      dispatch("expandFarmRow", farmId);
+    }
+    commit("updateMyFarmsExpanded", true);
+  },
+
   collapseAllFarmRows({ commit, state, dispatch }) {
     for (const farmId in state.data) {
       dispatch("collapseFarmRow", farmId);
     }
     commit("updateFarmsExpanded", false);
+  },
+
+  collapseMyFarmRows({ commit, state, dispatch }) {
+    for (const farmId in state.userData) {
+      dispatch("collapseFarmRow", farmId);
+    }
+    commit("updateMyFarmsExpanded", false);
   },
 
   filterFarmRow({ commit, state }, farmId) {
@@ -2185,7 +2201,7 @@ export default {
       }
 
       // all groups must match
-      const visible =
+      const visible = 
         keywordsMatch &&
         typeMatches &&
         stakedMatches &&

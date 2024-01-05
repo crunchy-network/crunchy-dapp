@@ -7,6 +7,10 @@ export default {
     state.expanded = isExpanded;
   },
 
+  updateMyFarmsExpanded(state, isExpanded) {
+    state.myFarmExpanded = isExpanded;
+  },
+
   updateFarmsSearchInput(state, input) {
     state.searchInput = input;
   },
