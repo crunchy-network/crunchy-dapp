@@ -8,7 +8,7 @@
         :gutter="20"
         type="flex"
         align="middle"
-        style="margin-bottom: 24px; flex-wrap: wrap; row-gap: 10px"
+        style="margin-bottom: 24px; margin-top: 40px; flex-wrap: wrap; row-gap: 10px"
       >
         <el-col :span="isMobile ? 24 : 16">
           <div class="grid-content">
@@ -269,19 +269,22 @@
                           color: var(--color-subheading-text) !important;
                         "
                       >
-                        <el-col :span="isMobile ? 6 : 4">Stake</el-col>
-                        <el-col :span="isMobile ? 6 : 4">Farm</el-col>
+                        <el-col class="card-title" :span="isMobile ? 6 : 4">Stake</el-col>
+                        <el-col class="card-title" :span="isMobile ? 6 : 4">Farm</el-col>
                         <el-col
+                          class="card-title"
                           style="text-align: right"
                           :span="isMobile ? 6 : 4"
                           >Earned</el-col
                         >
                         <el-col
+                          class="card-title"
                           style="text-align: right"
                           :span="isMobile ? 6 : 3"
                           >APR</el-col
                         >
                         <el-col
+                          class="card-title"
                           v-show="!isMobile"
                           style="text-align: right"
                           :span="4"
@@ -301,6 +304,7 @@
                           >Multiplier</el-col
                         >
                         <el-col
+                          class="card-title"
                           v-show="farms.myFarmExpanded === false"
                           :span="3"
                           style="text-align: right"
@@ -318,6 +322,7 @@
                           </el-button>
                         </el-col>
                         <el-col
+                          class="card-title"
                           v-show="farms.myFarmExpanded === true"
                           :span="3"
                           style="text-align: right"
@@ -789,6 +794,12 @@ export default {
     color: var(--color-subheading-text);
     display: flex;
     align-items: end;
+  }
+  .card-title {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 19px;
+    letter-spacing: 0.02em;
   }
   @media (max-width: 450px) {
     .grid-content-filter {

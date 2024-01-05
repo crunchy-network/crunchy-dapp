@@ -171,7 +171,7 @@
         @click="stakeFarm(form.farm.id)"
         >STAKE</el-button
       >
-      <p class="stake-warning">
+      <p class="stake-warning" style="word-break: auto-phrase">
         Crunchy Network is a tool that anyone can use to create a token or farm.
         Please make sure you understand the risks of farming before staking into
         a farm.
