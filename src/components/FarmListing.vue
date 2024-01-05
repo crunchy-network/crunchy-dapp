@@ -8,7 +8,12 @@
         :gutter="20"
         type="flex"
         align="middle"
-        style="margin-bottom: 24px; margin-top: 40px; flex-wrap: wrap; row-gap: 10px"
+        style="
+          margin-bottom: 24px;
+          margin-top: 40px;
+          flex-wrap: wrap;
+          row-gap: 10px;
+        "
       >
         <el-col :span="isMobile ? 24 : 16">
           <div class="grid-content">
@@ -269,8 +274,12 @@
                           color: var(--color-subheading-text) !important;
                         "
                       >
-                        <el-col class="card-title" :span="isMobile ? 6 : 4">Stake</el-col>
-                        <el-col class="card-title" :span="isMobile ? 6 : 4">Farm</el-col>
+                        <el-col class="card-title" :span="isMobile ? 6 : 4"
+                          >Stake</el-col
+                        >
+                        <el-col class="card-title" :span="isMobile ? 6 : 4"
+                          >Farm</el-col
+                        >
                         <el-col
                           class="card-title"
                           style="text-align: right"
@@ -766,8 +775,11 @@ export default {
   }
 
   .farm-box-content {
-    font-size: 20px;
+    font-size: 14px;
     font-weight: 600;
+    line-height: 19px;
+    letter-spacing: 0.02em;
+    text-align: left;
     margin-top: 14px;
     margin-bottom: 8px;
     color: var(--color-subheading-text);
