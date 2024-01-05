@@ -334,11 +334,11 @@ export default {
         outputToken: { ...this.getSwapForm.inputToken },
       });
     },
-    updateBestTrade() {
+    async updateBestTrade() {
       if (this.getSwapPairs.length < 1) {
         console.log("swap pairs haven't loaded yet");
       }
-      const bestTrade = getBestTrade(this.getSwapForm, this.getSwapPairs);
+      const bestTrade = await getBestTrade(this.getSwapForm, this.getSwapPairs);
       if (bestTrade) {
         this.updateCurrentTrade(bestTrade);
       } else {

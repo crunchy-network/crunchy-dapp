@@ -5,6 +5,7 @@ const _ = require("lodash");
 // eslint-disable-next-line no-unused-vars
 const { default: BigNumber } = require("bignumber.js");
 // throws verbose errors for better developer experience
+const axios = require("axios");
 
 const validateSlippageToleranceInput = (route, slippageTolerance) => {
   if (!Array.isArray(route.trades)) {
@@ -218,52 +219,29 @@ const addSlippageToleranceToWeightedRoute = (route, slippageTolerance) => {
   });
 };
 
-const findBestRoute = (
+const findBestRoute = async (
   inputAmount,
   routePairCombos,
   slippageTolerance,
   routingFee
 ) => {
-  inputAmount = parseFloat(inputAmount);
-  validateFindBestRouteInput(inputAmount, routePairCombos);
-  let bestRoute = { inputAmount, type: "linear" };
-  for (var i = 0; i < routePairCombos.length; i++) {
-    const slippagePerTrade =
-      percentToDecimal(slippageTolerance) ** (1 / routePairCombos[i].length);
-    var tradeinput = inputAmount;
-    if (routePairCombos[i].length > 1) {
-      if (routePairCombos[i][0].a.decimals !== 0 && routingFee) {
-        tradeinput = tradeinput * routingFee;
-      }
+  try {
+    const response = await axios.post("http://localhost:3000/findBestRoute", {
+      inputAmount,
+      routePairCombos,
+      slippageTolerance,
+      routingFee,
+    });
+
+    const { success, result, error } = response.data;
+    if (!success) {
+      throw new Error(`Error: ${error}`);
     }
-    const { trades, outputAmount } = {
-      ...getOutputOfTrade(
-        tradeinput,
-        routePairCombos[i],
-        0,
-        [],
-        slippagePerTrade
-      ),
-    };
-    if (bestRoute.outputAmount === undefined) {
-      bestRoute = {
-        ...bestRoute,
-        inputAmount: tradeinput,
-        outputAmount,
-        trades,
-      };
-    }
-    // console.log(bestRoute);
-    if (outputAmount > bestRoute.outputAmount) {
-      bestRoute = {
-        ...bestRoute,
-        inputAmount: tradeinput,
-        outputAmount,
-        trades: [...trades],
-      };
-    }
+
+    return result;
+  } catch (error) {
+    throw new Error(`Failed to find the best route: ${error.message}`);
   }
-  return { ...bestRoute };
 };
 
 const findTopRoutes = (inputAmount, routePairCombos, slippageTolerance) => {

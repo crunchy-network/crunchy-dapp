@@ -64,7 +64,7 @@ const buildTokenListFromWalletAndPriceFeed = (
   return buildTokenListWithoutWallet(pricefeedTokens);
 };
 
-const getBestTrade = (form, routePairs) => {
+const getBestTrade = async (form, routePairs) => {
   const { inputToken, outputToken, inputAmount, slippageTolerance } = form;
   if (
     !inputToken.assetSlug ||
@@ -88,7 +88,7 @@ const getBestTrade = (form, routePairs) => {
     inputAfterRatio = inputAmount;
   }
 
-  const bestRoute = findBestRoute(inputAfterRatio, combos, slippageTolerance);
+  const bestRoute = await findBestRoute(inputAfterRatio, combos, slippageTolerance);
 
   const topRoutes = findTopRoutes(inputAfterRatio, combos, slippageTolerance);
   const weightedCombos = topRoutes.map((r) => r.combo);
