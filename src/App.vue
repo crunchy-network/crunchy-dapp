@@ -110,6 +110,10 @@ body {
 
 .responsive-table > div {
   min-width: max-content;
+  @media (max-width: 450px) {
+    max-width: 100%;
+    min-width: 100%;
+  }
 }
 /* FONT WEIGHTS */
 h1,
@@ -415,6 +419,10 @@ header .grid-content button.el-button {
   padding: 10px 20px;
   background: var(--background-card);
   border-radius: 14px;
+  @media (max-width: 450px) {
+    padding-left: 0;
+    padding-right: 0;
+  }
 }
 .farm-row:hover,
 .farm-row.expanded {
@@ -524,6 +532,18 @@ header .grid-content button.el-button {
 .stake-dialog .el-form-item__error {
   right: 14px;
   left: auto;
+}
+.stake-infor {
+  margin-bottom: 8px
+}
+.stake-warning {
+  margin-top: 10px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 21px;
+  text-align: left;
+  color: #8c8d8f;
+
 }
 .lock-dialog .el-date-editor.el-input,
 .lock-dialog .el-date-editor.el-input__inner {
