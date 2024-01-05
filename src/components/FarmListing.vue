@@ -158,7 +158,6 @@
           margin-top: 20px;
           flex-wrap: wrap;
           row-gap: 20px;
-          border-bottom: 1.5px solid rgba(117, 118, 121, 0.1);
           padding-bottom: 2px;
         "
       >
