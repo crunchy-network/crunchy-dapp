@@ -1,5 +1,6 @@
 import axios from "axios";
 import farmUtils from "./farm";
+import prices from "./teztools-prices.json";
 
 const makeReqest = async (uri) => {
   return axios.get(`${process.env.VUE_APP_TEZTOOLS_API_URL}${uri}`);
@@ -17,39 +18,37 @@ export default {
   async getPricefeed() {
     // eslint-disable-next-line prefer-const
     let contracts = [];
-    return makeReqest("/v1/prices").then((res) => {
-      const ret = res.data;
-      for (const c of ret.contracts) {
-        const idx = contracts.findIndex((el) => {
-          return (
-            c.tokenAddress === el.tokenAddress &&
-            (c.type === "fa1.2" || c.tokenId === el.tokenId)
-          );
-        });
+    const ret = prices;
+    for (const c of ret.contracts) {
+      const idx = contracts.findIndex((el) => {
+        return (
+          c.tokenAddress === el.tokenAddress &&
+          (c.type === "fa1.2" || c.tokenId === el.tokenId)
+        );
+      });
 
-        if (idx > -1) {
-          contracts[idx].pairs = contracts[idx].pairs.concat(c.pairs);
-        } else {
-          contracts.push(c);
-        }
+      if (idx > -1) {
+        contracts[idx].pairs = contracts[idx].pairs.concat(c.pairs);
+      } else {
+        contracts.push(c);
       }
+    }
 
-      // contracts.push({
-      //   symbol: "MTTR",
-      //   name: "Matter",
-      //   tokenAddress: "KT1K4jn23GonEmZot3pMGth7unnzZ6EaMVjY",
-      //   tokenId: 0,
-      //   decimals: 12,
-      //   type: "fa2",
-      //   thumbnailUri: "ipfs://QmZ3BWTnxAp87yfKnUGka9UeQLhHjMkDAB3KTo1UChhQas",
-      //   shouldPreferSymbol: false,
-      //   usdValue: 0,
-      //   pairs: [],
-      // });
+    // contracts.push({
+    //   symbol: "MTTR",
+    //   name: "Matter",
+    //   tokenAddress: "KT1K4jn23GonEmZot3pMGth7unnzZ6EaMVjY",
+    //   tokenId: 0,
+    //   decimals: 12,
+    //   type: "fa2",
+    //   thumbnailUri: "ipfs://QmZ3BWTnxAp87yfKnUGka9UeQLhHjMkDAB3KTo1UChhQas",
+    //   shouldPreferSymbol: false,
+    //   usdValue: 0,
+    //   pairs: [],
+    // });
 
-      ret.contracts = contracts;
-      return ret;
-    });
+    ret.contracts = contracts;
+    return ret;
   },
 
   async getTokenPrice(tokenAddress, tokenId) {

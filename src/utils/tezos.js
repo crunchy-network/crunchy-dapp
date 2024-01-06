@@ -12,6 +12,7 @@ const wallet = new BeaconWallet({
   name: process.env.VUE_APP_TEZOS_DAPP_NAME,
   preferredNetwork: process.env.VUE_APP_TEZOS_NETWORK,
   colorMode: "light",
+  featuredWallets: ["temple", "kukai", "naan", "airgap"],
 });
 
 // Setting the wallet as the wallet provider for Taquito.

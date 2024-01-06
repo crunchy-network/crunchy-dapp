@@ -95,10 +95,19 @@ const getAllCombinations = (inputAssetSlug, outputAssetSlug, routePairs) => {
   return [...combos.values()];
 };
 
-const getDexOutput = (input, pair) => {
-  const Dex = Dexes[pair.dex];
+const getDexOutput = (input, pair, index = 0) => {
+  const isPairArr = Array.isArray(pair);
+  const newPair = isPairArr ? pair[index] : pair;
+  const Dex = Dexes[newPair.dex];
   if (Dex) {
-    return Dex.getSwapOutput(input, pair);
+    const output = Dex.getSwapOutput(input, newPair);
+    if (!isPairArr || index === pair.length - 1) {
+      return output;
+    } else {
+      if (index < pair.length - 1) {
+        return getDexOutput(output, pair, index + 1);
+      }
+    }
   } else {
     throw new Error(`Unknown Dex: ${pair.dex}`);
   }
@@ -244,7 +253,7 @@ const findBestRoute = (
         trades,
       };
     }
-    console.log(bestRoute);
+    // console.log(bestRoute);
     if (outputAmount > bestRoute.outputAmount) {
       bestRoute = {
         ...bestRoute,

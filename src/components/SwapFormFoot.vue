@@ -182,7 +182,7 @@ export default {
       try {
         const { inputAmount, inputToken, outputToken } = this.getSwapForm;
         const rate = this.getCurrentTrade.outputAmount / inputAmount;
-        return `1 ${inputToken.asset} ≈ ${this.vueNumberFormat(rate, {
+        return `1 ${inputToken?.asset} ≈ ${this.vueNumberFormat(rate, {
           precision: 6,
         })} ${outputToken.asset}`;
       } catch (err) {

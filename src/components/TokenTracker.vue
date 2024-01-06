@@ -8,7 +8,7 @@
         type="flex"
         style="margin-bottom: 30px; flex-wrap: wrap; row-gap: 10px"
       >
-        <el-col :md="19">
+        <el-col :md="24">
           <el-row
             type="flex"
             justify="space-between"
@@ -44,118 +44,32 @@
             :gutter="20"
             style="margin-top: 24px; flex-wrap: wrap; row-gap: 20px"
           >
-            <el-col :sm="12" :md="6">
+            <el-col :sm="12" :md="12" style="padding-left: 0">
               <div class="grid-content" style="height: 100%">
-                <el-card class="box-card" shadow="always" style="height: 100%">
-                  <h2
-                    style="
-                      color: var(--color-subheading-text);
-
-                      font-size: 14px;
-                      margin: 0;
-                    "
-                  >
-                    EST Total Mkt Cap
-                  </h2>
-                  <div
-                    style="
-                      margin-top: 14px;
-                      margin-bottom: 5px;
-                      margin-top: 4px;
-                    "
-                  >
-                    <price-format
-                      :font-weight="700"
-                      :font-size="24"
-                      :value="getTrackerData.estimatedMktCap"
-                      :usd-value="getTrackerData.estimatedMktCapUsd"
-                    />
-                  </div>
-                </el-card>
+                <!-- <el-card class="box-card" shadow="always" style="height: 100%"> -->
+                <el-col>
+                  <Overview
+                    id="mktCap-chart"
+                    :key="'mktCap'"
+                    :loading="getLoading"
+                    :chart-type="'mktCap'"
+                  />
+                </el-col>
+                <!-- </el-card> -->
               </div>
             </el-col>
-            <el-col :sm="12" :md="6">
-              <div class="grid-content" style="height: 100%">
-                <el-card class="box-card" shadow="always" style="height: 100%">
-                  <h2
-                    style="
-                      color: var(--color-subheading-text);
-
-                      font-size: 14px;
-                      margin: 0;
-                    "
-                  >
-                    24h Total Vol
-                  </h2>
-                  <div
-                    style="
-                      margin-top: 14px;
-                      margin-bottom: 5px;
-                      margin-top: 4px;
-                    "
-                  >
-                    <price-format
-                      :font-weight="700"
-                      :font-size="24"
-                      :value="getTrackerData.total24hVolume"
-                      :usd-value="getTrackerData.total24hVolumeUsd"
-                    />
-                  </div>
-                </el-card>
-              </div>
-            </el-col>
-            <el-col :sm="12" :md="6">
-              <div class="grid-content" style="height: 100%">
-                <el-card class="box-card" shadow="always" style="height: 100%">
-                  <h2
-                    style="
-                      color: var(--color-subheading-text);
-
-                      font-size: 14px;
-                      margin: 0;
-                    "
-                  >
-                    Tokens Tracked
-                  </h2>
-                  <p
-                    style="
-                      font-weight: 700;
-                      font-size: 24px;
-                      margin-top: 14px;
-                      margin-bottom: 5px;
-                      margin-top: 4px;
-                    "
-                  >
-                    {{ getTrackerData.tokensTracked }}
-                  </p>
-                </el-card>
-              </div>
-            </el-col>
-            <el-col :sm="12" :md="6">
-              <div class="grid-content" style="height: 100%">
-                <el-card class="box-card" shadow="always" style="height: 100%">
-                  <h2
-                    style="
-                      color: var(--color-subheading-text);
-
-                      font-size: 14px;
-                      margin: 0;
-                    "
-                  >
-                    DEX’s Tracked
-                  </h2>
-                  <p
-                    style="
-                      font-weight: 700;
-                      font-size: 24px;
-                      margin-top: 14px;
-                      margin-bottom: 5px;
-                      margin-top: 4px;
-                    "
-                  >
-                    {{ getTrackerData.dexCovered }}
-                  </p>
-                </el-card>
+            <el-col :sm="12" :md="12" >
+              <div class="grid-content" style="height: 100%" >
+                <!-- <el-card class="box-card" shadow="always" style="height: 100%"> -->
+                <el-col>
+                  <Overview
+                    id="vol-chart"
+                    :key="'volume'"
+                    :loading="getLoading"
+                    :chart-type="'volume'"
+                  />
+                </el-col>
+                <!-- </el-card> -->
               </div>
             </el-col>
           </el-row>
@@ -184,15 +98,6 @@
                 </el-input></div
             ></el-col>
           </el-row>
-        </el-col>
-        <el-col class="hide-md" :span="5" style="text-align: right">
-          <div style="margin-top: 14px">
-            <img
-              style="width: 80%"
-              src="../assets/token-tracker-vector.svg"
-              alt=""
-            />
-          </div>
         </el-col>
       </el-row>
       <div>
@@ -376,19 +281,19 @@ import TokenTrakerRow from "./TokenTrakerRow.vue";
 import NavMenu from "./NavMenu.vue";
 import { mapActions, mapGetters, mapState } from "vuex";
 import numberFormat from "../utils/number-format";
-import PriceFormat from "./PriceFormat.vue";
 import _ from "lodash";
 import SortArrowIndicator from "./SortArrowIndicator.vue";
 import TablePagination from "./TablePagination.vue";
+import Overview from "./Overview.vue";
 
 export default {
   name: "TokenTracker",
   components: {
     TokenTrakerRow,
     NavMenu,
-    PriceFormat,
     SortArrowIndicator,
     TablePagination,
+    Overview,
   },
   data() {
     return {
@@ -410,7 +315,7 @@ export default {
 
   computed: {
     ...mapState(["tokenTracker"]),
-    ...mapGetters(["getTrackerData", "getTokens", "getShowUsd"]),
+    ...mapGetters(["getTrackerData", "getTokens", "getShowUsd", "getTheme"]),
     sortedTokensTracked() {
       return (
         _.orderBy(
@@ -419,6 +324,9 @@ export default {
           ["desc", this.sort.rule]
         ) || []
       );
+    },
+    getLoading() {
+      return this.tokenTracker.loading;
     },
   },
 

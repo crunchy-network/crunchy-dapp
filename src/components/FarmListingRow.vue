@@ -25,8 +25,8 @@
         >
           <el-col
             v-if="farm.poolToken.isLbLp"
-            :span="4"
-            style="font-weight: bold"
+            :span="isMobile ? 6 : 4"
+            style="font-weight: bold; display: flex; align-items: center"
           >
             <el-tooltip
               content="Liquidity Baking"
@@ -46,7 +46,7 @@
             </el-tooltip>
             <el-avatar
               shape="circle"
-              :size="40"
+              :size="isMobile ? 36 : 40"
               style="
                 position: relative;
                 border: 4px solid #fff;
@@ -74,26 +74,38 @@
                 </div>
               </div>
               <el-avatar
+                class="farm-poolTokens"
                 :src="farm.poolToken.thumbnailUri"
                 fit="cover"
                 shape="circle"
-                :size="40"
-                style="
-                  position: relative;
-                  border: 4px solid #fff;
-                  vertical-align: middle;
-                  margin-left: -18px;
-                  margin-right: 14px;
-                "
+                :size="isMobile ? 36 : 40"
               ></el-avatar>
             </el-tooltip>
-            XTZ/{{ farm.poolToken.symbol }}
+            <p v-show="!isMobile">XTZ/{{ farm.poolToken.symbol }}</p>
           </el-col>
           <el-col
             v-else-if="farm.poolToken.isQuipuLp"
-            :span="4"
-            style="font-weight: bold"
+            :span="isMobile ? 6 : 4"
+            style="font-weight: bold; display: flex; align-items: center"
           >
+            <el-tooltip
+              v-show="!isMobile"
+              v-if="farm.poolToken.isQuipuLp"
+              content="Quipuswap"
+              placement="top"
+              effect="light"
+            >
+              <img
+                src="../assets/dex-icons/QuipuSwap.png"
+                style="
+                  position: absolute;
+                  left: 8px;
+                  top: 22px;
+                  width: 18px;
+                  height: 18px;
+                "
+              />
+            </el-tooltip>
             <el-tooltip
               v-if="farm.errant"
               content="Farm Error"
@@ -130,13 +142,13 @@
             </el-tooltip>
             <el-avatar
               shape="circle"
-              :size="40"
+              :size="isMobile ? 36 : 40"
               style="
                 position: relative;
                 border: 4px solid #fff;
                 vertical-align: middle;
               "
-              src="data:image/png;base64,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"
+              :src="farm.poolToken.token1.thumbnailUri"
             ></el-avatar>
             <el-tooltip placement="top" effect="light">
               <div slot="content">
@@ -152,36 +164,69 @@
                   Total Staked
                 </div>
                 <div style="text-align: center">
-                  {{ vueNumberFormat(farm.poolBalance) }} XTZ/{{
-                    farm.poolToken.symbol
+                  {{ vueNumberFormat(farm.poolBalance) }}
+                  {{ farm.poolToken.token1.symbol }}/{{
+                    farm.poolToken.token2.symbol
                   }}
                 </div>
               </div>
               <el-avatar
-                :src="farm.poolToken.thumbnailUri"
+                class="farm-poolTokens"
+                :src="farm.poolToken.token2.thumbnailUri"
                 fit="cover"
                 shape="circle"
-                :size="40"
-                style="
-                  position: relative;
-                  border: 4px solid #fff;
-                  vertical-align: middle;
-                  margin-left: -18px;
-                  margin-right: 14px;
-                "
+                :size="isMobile ? 36 : 40"
               ></el-avatar>
             </el-tooltip>
-            XTZ/{{ farm.poolToken.symbol }}
+            <p v-show="!isMobile">
+              {{ farm.poolToken.token1.symbol }}/{{
+                farm.poolToken.token2.symbol
+              }}
+            </p>
           </el-col>
 
           <el-col
-            v-else-if="farm.poolToken.isPlentyLp"
-            :span="4"
-            style="font-weight: bold"
+            v-else-if="
+              farm.poolToken.isPlentyLp ||
+              farm.poolToken.isPlentyCtezLp ||
+              farm.poolToken.isPlentyTezLp ||
+              farm.poolToken.isPlentyStableLp ||
+              farm.poolToken.isSpicyLp
+            "
+            :span="isMobile ? 6 : 4"
+            style="font-weight: bold; display: flex; align-items: center"
           >
-            <el-tooltip content="PlentySwap" placement="top" effect="light">
+            <el-tooltip
+              v-if="
+                farm.poolToken.isPlentyLp ||
+                farm.poolToken.isPlentyCtezLp ||
+                farm.poolToken.isPlentyTezLp ||
+                farm.poolToken.isPlentyStableLp
+              "
+              content="Plenty"
+              placement="top"
+              effect="light"
+            >
               <img
-                src="https://raw.githubusercontent.com/Plenty-DeFi/Plenty-Logo/main/Plenty%20Liquidity%20Provider%20Token.png"
+                src="https://res.cloudinary.com/melvin-manni/image/upload/v1677417526/nstgjnest4jrhcsgwymf.png"
+                style="
+                  position: absolute;
+                  left: 8px;
+                  top: 22px;
+                  width: 18px;
+                  height: 18px;
+                "
+              />
+            </el-tooltip>
+            <el-tooltip
+              v-show="!isMobile"
+              v-else-if="farm.poolToken.isSpicyLp"
+              content="SpicySwap"
+              placement="top"
+              effect="light"
+            >
+              <img
+                src="../assets/dex-icons/Spicy.png"
                 style="
                   position: absolute;
                   left: 8px;
@@ -195,7 +240,7 @@
               :src="farm.poolToken.token1.thumbnailUri"
               fit="cover"
               shape="circle"
-              :size="40"
+              :size="isMobile ? 36 : 40"
               style="
                 position: relative;
                 border: 4px solid #fff;
@@ -223,25 +268,268 @@
                 </div>
               </div>
               <el-avatar
+                class="farm-poolTokens"
                 :src="farm.poolToken.token2.thumbnailUri"
                 fit="cover"
                 shape="circle"
-                :size="40"
-                style="
-                  position: relative;
-                  border: 4px solid #fff;
-                  vertical-align: middle;
-                  margin-left: -18px;
-                  margin-right: 14px;
-                "
+                :size="isMobile ? 36 : 40"
               ></el-avatar>
             </el-tooltip>
-            {{ farm.poolToken.token1.symbol }}/{{
-              farm.poolToken.token2.symbol
-            }}
+            <p v-show="!isMobile">
+              {{ farm.poolToken.token1.symbol }}/{{
+                farm.poolToken.token2.symbol
+              }}
+            </p>
           </el-col>
 
-          <el-col v-else :span="4" style="font-weight: bold">
+          <el-col
+            v-else-if="
+              farm.poolToken.isQuipuV2Lp ||
+              farm.poolToken.isQuipuToken2TokenLp ||
+              farm.poolToken.isQuipuStableLp
+            "
+            :span="isMobile ? 6 : 4"
+            style="font-weight: bold; display: flex; align-items: center"
+          >
+            <el-tooltip
+              v-show="!isMobile"
+              v-if="farm.poolToken.isQuipuV2Lp"
+              content="Quipuswap V2"
+              placement="top"
+              effect="light"
+            >
+              <img
+                src="../assets/dex-icons/QuipuSwap.png"
+                style="
+                  position: absolute;
+                  left: 8px;
+                  top: 22px;
+                  width: 18px;
+                  height: 18px;
+                "
+              />
+            </el-tooltip>
+            <el-tooltip
+              v-show="!isMobile"
+              v-else-if="farm.poolToken.isQuipuToken2TokenLp"
+              content="Quipuswap Token to Token"
+              placement="top"
+              effect="light"
+            >
+              <img
+                src="../assets/dex-icons/QuipuSwap.png"
+                style="
+                  position: absolute;
+                  left: 8px;
+                  top: 22px;
+                  width: 18px;
+                  height: 18px;
+                "
+              />
+            </el-tooltip>
+            <el-tooltip
+              v-show="!isMobile"
+              v-else-if="farm.poolToken.isQuipuStableLp"
+              content="Quipuswap Stable"
+              placement="top"
+              effect="light"
+            >
+              <img
+                src="../assets/dex-icons/QuipuSwap.png"
+                style="
+                  position: absolute;
+                  left: 8px;
+                  top: 22px;
+                  width: 18px;
+                  height: 18px;
+                "
+              />
+            </el-tooltip>
+            <el-avatar
+              :src="farm.poolToken.token1.thumbnailUri"
+              fit="cover"
+              shape="circle"
+              :size="isMobile ? 36 : 40"
+              style="
+                position: relative;
+                border: 4px solid #fff;
+                vertical-align: middle;
+              "
+            ></el-avatar>
+            <el-tooltip placement="top" effect="light">
+              <div slot="content">
+                <div
+                  style="
+                    color: #1ec37f;
+                    text-align: center;
+                    font-weight: bold;
+                    margin-bottom: 8px;
+                    text-transform: uppercase;
+                  "
+                >
+                  Total Staked
+                </div>
+                <div style="text-align: center">
+                  {{ vueNumberFormat(farm.poolBalance) }}
+                  {{ farm.poolToken.token1.symbol }}/{{
+                    farm.poolToken.token2.symbol
+                  }}
+                </div>
+              </div>
+              <el-avatar
+                class="farm-poolTokens"
+                :src="farm.poolToken.token2.thumbnailUri"
+                fit="cover"
+                shape="circle"
+                :size="isMobile ? 36 : 40"
+              ></el-avatar>
+            </el-tooltip>
+            <p v-show="!isMobile">
+              {{ farm.poolToken.token1.symbol }}/{{
+                farm.poolToken.token2.symbol
+              }}
+            </p>
+          </el-col>
+
+          <el-col
+            v-else-if="farm.poolToken.isQuipuToken2TokenLp"
+            :span="isMobile ? 6 : 4"
+            style="font-weight: bold; display: flex; align-items: center"
+          >
+            <el-tooltip
+              v-show="!isMobile"
+              v-if="farm.poolToken.isQuipuToken2TokenLp"
+              content="Quipuswap Token to Token"
+              placement="top"
+              effect="light"
+            >
+              <img
+                src="../assets/dex-icons/QuipuSwap.png"
+                style="
+                  position: absolute;
+                  left: 8px;
+                  top: 22px;
+                  width: 18px;
+                  height: 18px;
+                "
+              />
+            </el-tooltip>
+            <el-avatar
+              :src="farm.poolToken.token1.thumbnailUri"
+              fit="cover"
+              shape="circle"
+              :size="isMobile ? 36 : 40"
+              style="
+                position: relative;
+                border: 4px solid #fff;
+                vertical-align: middle;
+              "
+            ></el-avatar>
+            <el-tooltip placement="top" effect="light">
+              <div slot="content">
+                <div
+                  style="
+                    color: #1ec37f;
+                    text-align: center;
+                    font-weight: bold;
+                    margin-bottom: 8px;
+                    text-transform: uppercase;
+                  "
+                >
+                  Total Staked
+                </div>
+                <div style="text-align: center">
+                  {{ vueNumberFormat(farm.poolBalance) }}
+                  {{ farm.poolToken.token1.symbol }}/{{
+                    farm.poolToken.token2.symbol
+                  }}
+                </div>
+              </div>
+              <el-avatar
+                class="farm-poolTokens"
+                :src="farm.poolToken.token2.thumbnailUri"
+                fit="cover"
+                shape="circle"
+                :size="isMobile ? 36 : 40"
+              ></el-avatar>
+            </el-tooltip>
+            <p v-show="!isMobile">
+              {{ farm.poolToken.token1.symbol }}/{{
+                farm.poolToken.token2.symbol
+              }}
+            </p>
+          </el-col>
+
+          <el-col
+            v-else-if="farm.poolToken.isQuipuStableLp"
+            :span="isMobile ? 6 : 4"
+            style="font-weight: bold; display: flex; align-items: center"
+          >
+            <el-tooltip
+              v-show="!isMobile"
+              v-if="farm.poolToken.isQuipuStableLp"
+              content="Quipuswap Stable"
+              placement="top"
+              effect="light"
+            >
+              <img
+                src="../assets/dex-icons/QuipuSwap.png"
+                style="
+                  position: absolute;
+                  left: 8px;
+                  top: 22px;
+                  width: 18px;
+                  height: 18px;
+                "
+              />
+            </el-tooltip>
+            <el-avatar
+              :src="farm.poolToken.token1.thumbnailUri"
+              fit="cover"
+              shape="circle"
+              :size="isMobile ? 36 : 40"
+              style="
+                position: relative;
+                border: 4px solid #fff;
+                vertical-align: middle;
+              "
+            ></el-avatar>
+            <el-tooltip placement="top" effect="light">
+              <div slot="content">
+                <div
+                  style="
+                    color: #1ec37f;
+                    text-align: center;
+                    font-weight: bold;
+                    margin-bottom: 8px;
+                    text-transform: uppercase;
+                  "
+                >
+                  Total Staked
+                </div>
+                <div style="text-align: center">
+                  {{ vueNumberFormat(farm.poolBalance) }}
+                  {{ farm.poolToken.token1.symbol }}/{{
+                    farm.poolToken.token2.symbol
+                  }}
+                </div>
+              </div>
+              <el-avatar
+                class="farm-poolTokens"
+                :src="farm.poolToken.token2.thumbnailUri"
+                fit="cover"
+                shape="circle"
+                :size="isMobile ? 36 : 40"
+              ></el-avatar>
+            </el-tooltip>
+            <p v-show="!isMobile">
+              {{ farm.poolToken.token1.symbol }}/{{
+                farm.poolToken.token2.symbol
+              }}
+            </p>
+          </el-col>
+
+          <el-col v-else :span="isMobile ? 6 : 4" style="font-weight: bold; display: flex; align-items: center">
             <el-tooltip
               v-if="farm.errant"
               content="Farm Error"
@@ -295,26 +583,24 @@
                 </div>
               </div>
               <el-avatar
+                class="farm-poolToken"
                 :src="farm.poolToken.thumbnailUri"
                 fit="cover"
                 shape="circle"
-                :size="40"
-                style="
-                  position: relative;
-                  border: 4px solid #fff;
-                  vertical-align: middle;
-                  margin-left: 22px;
-                  margin-right: 14px;
-                "
+                :size="isMobile ? 36 : 40"
               ></el-avatar>
             </el-tooltip>
-            {{ farm.poolToken.symbol }}
+            <p v-show="!isMobile">{{ farm.poolToken.symbol }}</p>
           </el-col>
-          <el-col :span="3" style="font-weight: bold">
-            <i
+          <i
               class="fas fa-arrow-alt-right"
-              style="color: #999; margin-left: 0px; margin-right: 6px"
             ></i>
+          <el-col
+            class="farm-rewardToken"
+            :span="isMobile ? 6 : 4"
+            style="font-weight: bold; display: flex; align-items: center"
+          >
+            
             <el-tooltip placement="top" effect="light">
               <div slot="content">
                 <div
@@ -337,7 +623,7 @@
                 :src="farm.rewardToken.thumbnailUri"
                 fit="cover"
                 shape="circle"
-                :size="40"
+                :size="isMobile ? 36 : 40"
                 style="
                   position: relative;
                   border: 4px solid #fff;
@@ -345,36 +631,48 @@
                 "
               ></el-avatar>
             </el-tooltip>
-            <span style="margin-left: 14px">{{ farm.rewardToken.symbol }}</span>
+            <span v-show="!isMobile" style="margin-left: 14px">{{
+              farm.rewardToken.symbol
+            }}</span>
           </el-col>
 
           <el-col
             v-if="wallet.connected && farm.depositAmount > 0"
             style="text-align: right"
-            :span="4"
+            :span="isMobile ? 6 : 4"
           >
             <!-- <ICountUp
                             :delay="countUpDelay"
                             :endVal="farm.rewardsEarned"
                             :options="countUpOpts"
                           /> -->
-            {{ vueNumberFormat(farm.rewardsEarned) }}
+            {{
+              isMobile
+                ? formatNumShorthand(farm.rewardsEarned, 2).value +
+                  formatNumShorthand(farm.rewardsEarned, 2).suffix
+                : vueNumberFormat(farm.rewardsEarned)
+            }}
           </el-col>
-          <el-col v-else style="text-align: right" :span="4">-</el-col>
+          <el-col v-else style="text-align: right" :span="isMobile ? 6 : 4"
+            >-</el-col
+          >
 
           <el-col
             v-if="farm.errant"
             style="text-align: right; color: #f64947; text-transform: uppercase"
-            :span="3"
+            :span="isMobile ? 6 : 3"
             >Error</el-col
           >
           <el-col
             v-else-if="farm.ended"
             style="text-align: right; text-transform: uppercase"
-            :span="3"
+            :span="isMobile ? 6 : 3"
             >Complete</el-col
           >
-          <el-col v-else-if="farm.apr >= 0" style="text-align: right" :span="3"
+          <el-col
+            v-else-if="farm.apr >= 0"
+            style="text-align: right"
+            :span="isMobile ? 6 : 3"
             >{{
               vueNumberFormat(farm.apr, {
                 prefix: "",
@@ -384,58 +682,79 @@
               })
             }}%</el-col
           >
-          <el-col v-else style="text-align: right" :span="3">Pending</el-col>
+          <el-col v-else style="text-align: right" :span="isMobile ? 6 : 3"
+            >Pending</el-col
+          >
 
-          <el-col v-if="showUsd === false" style="text-align: right" :span="4"
+          <el-col
+            v-show="!isMobile"
+            v-if="showUsd === false"
+            style="text-align: right"
+            :span="4"
             >{{ vueNumberFormat(farm.tvlTez) }} ꜩ</el-col
           >
-          <el-col v-if="showUsd === true" style="text-align: right" :span="4">{{
-            vueNumberFormat(farm.tvlTez * farms.usdVwap, {
-              prefix: "$",
-              decimal: ".",
-              thousand: ",",
-              precision: 2,
-            })
-          }}</el-col>
-          <el-col style="text-align: right" :span="3"
+          <el-col
+            v-show="!isMobile"
+            v-if="showUsd === true"
+            style="text-align: right"
+            :span="4"
+            >{{
+              vueNumberFormat(farm.tvlTez * farms.usdVwap, {
+                prefix: "$",
+                decimal: ".",
+                thousand: ",",
+                precision: 2,
+              })
+            }}</el-col
+          >
+          <el-col v-show="!isMobile" style="text-align: right" :span="3"
             >{{ farm.multiplier }}x</el-col
           >
           <el-col
-            v-show="farm.rowExpanded === false"
+            v-if="farm.rowExpanded === false"
             :span="3"
-            style="text-align: right"
+            style="text-align: right; display: flex; justify-content: end"
             ><el-button
               type="text"
-              style="font-weight: bold"
+              style="font-weight: bold; display: flex; align-items: center"
               @click="expandFarmRow(farm.id)"
-              >View Details
+            >
+              <span v-show="!isMobile">View Details</span>
               <i class="fas fa-chevron-down fa-icon-right"></i></el-button
           ></el-col>
           <el-col
-            v-show="farm.rowExpanded === true"
+            v-if="farm.rowExpanded === true"
             :span="3"
-            style="text-align: right"
+            style="text-align: right; display: flex; justify-content: end"
             ><el-button
               type="text"
-              style="font-weight: bold"
+              style="font-weight: bold; display: flex; align-items: center"
               @click="collapseFarmRow(farm.id)"
-              >Hide Details
+            >
+              <span v-show="!isMobile">Hide Details</span>
               <i class="fas fa-chevron-up fa-icon-right"></i></el-button
           ></el-col>
         </el-row>
         <collapse-transition :duration="250" name="slide">
           <div v-show="farm.rowExpanded">
             <el-row
+              class="row-expanded"
               type="flex"
               align="top"
               style="padding: 10px 20px; color: var(--primary-text)"
             >
               <el-col
                 v-if="wallet.connected"
-                :span="8"
+                :span="isMobile ? 24 : 8"
                 style="padding: 10px 20px; border-right: var(--line-border)"
               >
-                <div style="margin-bottom: 8px">
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    margin-bottom: 8px;
+                  "
+                >
                   <strong
                     style="
                       color: var(--color-subheading-text);
@@ -443,6 +762,15 @@
                       font-weight: 600;
                     "
                     >EST. {{ farm.rewardToken.symbol }} EARNED</strong
+                  >
+                  <strong
+                    v-show="isMobile"
+                    style="
+                      color: var(--color-subheading-text);
+                      font-size: 14px;
+                      font-weight: 600;
+                    "
+                    >Farm Multiplier</strong
                   >
                 </div>
                 <el-row
@@ -465,7 +793,7 @@
                   <el-col :span="10" style="font-weight: 600">{{
                     vueNumberFormat(farm.rewardsEarned)
                   }}</el-col>
-                  <el-col :span="10">
+                  <el-col v-if="!isMobile" :span="10">
                     <el-button
                       :disabled="farm.started === false"
                       style="
@@ -479,6 +807,9 @@
                       @click="harvestFarm(farm.id)"
                       >Harvest</el-button
                     >
+                  </el-col>
+                  <el-col style="text-align: right" v-else :span="10">
+                    {{ farm.multiplier }}x
                   </el-col>
                 </el-row>
                 <el-row
@@ -505,7 +836,7 @@
                   </el-col>
                 </el-row>
                 <el-row
-                  v-else
+                  v-else-if="!isMobile"
                   type="flex"
                   align="middle"
                   justify="space-between"
@@ -519,10 +850,23 @@
                     >
                   </el-col>
                 </el-row>
+                <el-row
+                  v-else-if="isMobile"
+                  type="flex"
+                  align="middle"
+                  justify="space-between"
+                >
+                  <el-col :span="10" style="font-weight: 600">-</el-col>
+                  <el-col style="text-align: right" :span="10">
+                    {{ farm.multiplier }}x
+                  </el-col>
+                </el-row>
+
                 <div style="margin-top: 16px">
                   <el-link
+                    v-show="!isMobile"
                     style="color: #555cff; font-weight: 600"
-                    :href="`https://better-call.dev/${wallet.network}/${farm.rewardToken.address}`"
+                    :href="`https://tzkt.io/${farm.rewardToken.address}`"
                     target="_blank"
                     >View {{ farm.rewardToken.symbol }} Contract
                     <i class="far fa-external-link fa-icon-right"></i
@@ -531,7 +875,7 @@
               </el-col>
               <el-col
                 v-if="wallet.connected === false"
-                :span="8"
+                :span="isMobile ? 24 : 8"
                 style="padding: 10px 20px; border-right: var(--line-border)"
               >
                 <div style="margin-bottom: 8px">
@@ -543,7 +887,7 @@
               </el-col>
               <el-col
                 v-if="wallet.connected"
-                :span="8"
+                :span="isMobile ? 24 : 8"
                 style="padding: 10px 20px; border-right: var(--line-border)"
               >
                 <div style="margin-bottom: 8px">
@@ -609,7 +953,20 @@
                       >
                     </el-popover>
                   </el-col>
-                  <el-col v-else :span="14" style="font-weight: 600">-</el-col>
+                  <el-col
+                    v-else-if="!isMobile"
+                    :span="14"
+                    style="font-weight: 600"
+                    >-</el-col
+                  >
+                  <el-col v-else :span="14" style="font-weight: 600">
+                    <el-button
+                      type="success"
+                      style="border-radius: 10px; font-weight: 600; width: 100%"
+                      @click="$emit('request-stake-farm', farm.id)"
+                      >Stake to Earn Rewards</el-button
+                    >
+                  </el-col>
                   <el-col :span="10" style="text-align: right">
                     <el-button
                       class="_action-btn"
@@ -641,9 +998,9 @@
                     <i class="far fa-external-link fa-icon-right"></i
                   ></el-link>
                   <el-link
-                    v-if="farm.poolToken.isPlentyLp"
+                    v-else-if="farm.poolToken.isPlentyLp"
                     style="color: #555cff; font-weight: 600"
-                    :href="`https://www.plentydefi.com/liquidity/add?tokenA=${farm.poolToken.token1.symbol}&tokenB=${farm.poolToken.token2.symbol}`"
+                    :href="`https://app.plenty.network/pools`"
                     target="_blank"
                     >Get {{ farm.poolToken.token1.symbol }}/{{
                       farm.poolToken.token2.symbol
@@ -651,43 +1008,151 @@
                     PLP <i class="far fa-external-link fa-icon-right"></i
                   ></el-link>
                   <el-link
-                    v-if="farm.poolToken.isQuipuLp && isFa1(farm.poolToken)"
+                    v-if="farm.poolToken.isSpicyLp"
+                    style="color: #555cff; font-weight: 600"
+                    :href="`https://spicyswap.xyz/#/liq?tokenLeft=${farm.poolToken.token1.tokenAddress}:${farm.poolToken.token1.tokenId}&tokenRight=${farm.poolToken.token2.tokenAddress}:${farm.poolToken.token2.tokenId}`"
+                    target="_blank"
+                    >Get {{ farm.poolToken.token1.symbol }}/{{
+                      farm.poolToken.token2.symbol
+                    }}
+                    SSLP <i class="far fa-external-link fa-icon-right"></i
+                  ></el-link>
+                  <el-link
+                    v-else-if="
+                      farm.poolToken.isQuipuLp && isFa1(farm.poolToken)
+                    "
                     style="color: #555cff; font-weight: 600"
                     :href="`https://quipuswap.com/liquidity/add/tez-${farm.poolToken.realTokenAddress}`"
                     target="_blank"
-                    >Get XTZ/{{ farm.poolToken.symbol }} LP
+                    >Get {{ farm.poolToken.symbol }} LP
                     <i class="far fa-external-link fa-icon-right"></i
                   ></el-link>
                   <el-link
-                    v-if="farm.poolToken.isQuipuLp && isFa2(farm.poolToken)"
+                    v-else-if="
+                      farm.poolToken.isQuipuLp && isFa2(farm.poolToken)
+                    "
                     style="color: #555cff; font-weight: 600"
                     :href="`https://quipuswap.com/liquidity/add/tez-${farm.poolToken.realTokenAddress}_${farm.poolToken.realTokenId}`"
                     target="_blank"
-                    >Get XTZ/{{ farm.poolToken.symbol }} LP
+                    >Get {{ farm.poolToken.symbol }} LP
                     <i class="far fa-external-link fa-icon-right"></i
                   ></el-link>
                   <el-link
-                    v-if="
-                      farm.poolToken.isQuipuLp === false &&
-                      farm.poolToken.isLbLp === false &&
-                      farm.poolToken.isPlentyLp === false &&
-                      isFa1(farm.poolToken)
+                    v-else-if="
+                      farm.poolToken.isQuipuV2Lp &&
+                      isFa2(farm.poolToken.token1) &&
+                      isFa2(farm.poolToken.token2)
                     "
                     style="color: #555cff; font-weight: 600"
-                    :href="`https://quipuswap.com/swap/tez-${farm.poolToken.address}`"
+                    :href="`https://quipuswap.com/liquidity/cpmm/add/${farm.poolToken.token1.tokenAddress}_${farm.poolToken.token1.tokenId}-${farm.poolToken.token2.tokenAddress}_${farm.poolToken.token2.tokenId}`"
+                    target="_blank"
+                    >Get {{ farm.poolToken.symbol }} LP
+                    <i class="far fa-external-link fa-icon-right"></i
+                  ></el-link>
+                  <el-link
+                    v-else-if="
+                      farm.poolToken.isQuipuV2Lp &&
+                      !isFa2(farm.poolToken.token1) &&
+                      isFa2(farm.poolToken.token2)
+                    "
+                    style="color: #555cff; font-weight: 600"
+                    :href="`https://quipuswap.com/liquidity/cpmm/add/${farm.poolToken.token1.tokenAddress}-${farm.poolToken.token2.tokenAddress}_${farm.poolToken.token2.tokenId}`"
+                    target="_blank"
+                    >Get {{ farm.poolToken.symbol }} LP
+                    <i class="far fa-external-link fa-icon-right"></i
+                  ></el-link>
+                  <el-link
+                    v-else-if="
+                      farm.poolToken.isQuipuV2Lp &&
+                      isFa2(farm.poolToken.token1) &&
+                      !isFa2(farm.poolToken.token2)
+                    "
+                    style="color: #555cff; font-weight: 600"
+                    :href="`https://quipuswap.com/liquidity/cpmm/add/${farm.poolToken.token1.tokenAddress}_${farm.poolToken.token1.tokenId}-${farm.poolToken.token2.tokenAddress}`"
+                    target="_blank"
+                    >Get {{ farm.poolToken.symbol }} LP
+                    <i class="far fa-external-link fa-icon-right"></i
+                  ></el-link>
+                  <el-link
+                    v-else-if="
+                      farm.poolToken.isQuipuV2Lp &&
+                      !isFa2(farm.poolToken.token1) &&
+                      !isFa2(farm.poolToken.token2)
+                    "
+                    style="color: #555cff; font-weight: 600"
+                    :href="`https://quipuswap.com/liquidity/cpmm/add/${farm.poolToken.token1.tokenAddress}-${farm.poolToken.token2.tokenAddress}`"
+                    target="_blank"
+                    >Get {{ farm.poolToken.symbol }} LP
+                    <i class="far fa-external-link fa-icon-right"></i
+                  ></el-link>
+                  <el-link
+                    v-else-if="
+                      farm.poolToken.isQuipuToken2TokenLp &&
+                      isFa2(farm.poolToken.token1) &&
+                      isFa2(farm.poolToken.token2)
+                    "
+                    style="color: #555cff; font-weight: 600"
+                    :href="`https://quipuswap.com/liquidity/add/${farm.poolToken.token1.tokenAddress}_${farm.poolToken.token1.tokenId}-${farm.poolToken.token2.tokenAddress}_${farm.poolToken.token2.tokenId}`"
+                    target="_blank"
+                    >Get {{ farm.poolToken.symbol }} LP
+                    <i class="far fa-external-link fa-icon-right"></i
+                  ></el-link>
+                  <el-link
+                    v-else-if="
+                      farm.poolToken.isQuipuToken2TokenLp &&
+                      !isFa2(farm.poolToken.token1) &&
+                      isFa2(farm.poolToken.token2)
+                    "
+                    style="color: #555cff; font-weight: 600"
+                    :href="`https://quipuswap.com/liquidity/add/${farm.poolToken.token1.tokenAddress}-${farm.poolToken.token2.tokenAddress}_${farm.poolToken.token2.tokenId}`"
+                    target="_blank"
+                    >Get {{ farm.poolToken.symbol }} LP
+                    <i class="far fa-external-link fa-icon-right"></i
+                  ></el-link>
+                  <el-link
+                    v-else-if="
+                      farm.poolToken.isQuipuToken2TokenLp &&
+                      isFa2(farm.poolToken.token1) &&
+                      !isFa2(farm.poolToken.token2)
+                    "
+                    style="color: #555cff; font-weight: 600"
+                    :href="`https://quipuswap.com/liquidity/add/${farm.poolToken.token1.tokenAddress}_${farm.poolToken.token1.tokenId}-${farm.poolToken.token2.tokenAddress}`"
+                    target="_blank"
+                    >Get {{ farm.poolToken.symbol }} LP
+                    <i class="far fa-external-link fa-icon-right"></i
+                  ></el-link>
+                  <el-link
+                    v-else-if="
+                      farm.poolToken.isQuipuToken2TokenLp &&
+                      !isFa2(farm.poolToken.token1) &&
+                      !isFa2(farm.poolToken.token2)
+                    "
+                    style="color: #555cff; font-weight: 600"
+                    :href="`https://quipuswap.com/liquidity/add/${farm.poolToken.token1.tokenAddress}-${farm.poolToken.token2.tokenAddress}`"
+                    target="_blank"
+                    >Get {{ farm.poolToken.symbol }} LP
+                    <i class="far fa-external-link fa-icon-right"></i
+                  ></el-link>
+                  <el-link
+                    v-else-if="farm.poolToken.isQuipuStableLp"
+                    style="color: #555cff; font-weight: 600"
+                    :href="`https://quipuswap.com/liquidity/cpmm/add/${farm.poolToken.token1.tokenAddress}_${farm.poolToken.token1.tokenId}-${farm.poolToken.token2.tokenAddress}_${farm.poolToken.token2.tokenId}`"
+                    target="_blank"
+                    >Get {{ farm.poolToken.symbol }} LP
+                    <i class="far fa-external-link fa-icon-right"></i
+                  ></el-link>
+                  <el-link
+                    v-else-if="isFa1(farm.poolToken)"
+                    style="color: #555cff; font-weight: 600"
+                    :href="`/#/swap?from=tez&to=${farm.poolToken.tokenAddress}_${farm.poolToken.tokenId}`"
                     target="_blank"
                     >Buy {{ farm.poolToken.symbol }}
                     <i class="far fa-external-link fa-icon-right"></i
                   ></el-link>
                   <el-link
-                    v-if="
-                      farm.poolToken.isQuipuLp === false &&
-                      farm.poolToken.isLbLp === false &&
-                      farm.poolToken.isPlentyLp === false &&
-                      isFa2(farm.poolToken)
-                    "
+                    v-else-if="isFa2(farm.poolToken)"
                     style="color: #555cff; font-weight: 600"
-                    :href="`https://quipuswap.com/swap/tez-${farm.poolToken.address}_${farm.poolToken.tokenId}`"
+                    :href="`/#/swap?from=tez&to=${farm.poolToken.tokenAddress}_${farm.poolToken.tokenId}`"
                     target="_blank"
                     >Buy {{ farm.poolToken.symbol }}
                     <i class="far fa-external-link fa-icon-right"></i
@@ -696,7 +1161,7 @@
               </el-col>
               <el-col
                 v-if="wallet.connected === false"
-                :span="8"
+                :span="isMobile ? 24 : 8"
                 style="padding: 10px 20px; border-right: var(--line-border)"
               >
                 <div style="margin-bottom: 8px">
@@ -711,7 +1176,11 @@
                 </div>
                 <connect-button></connect-button>
               </el-col>
-              <el-col v-if="farm.errant" :span="8" style="padding: 10px 20px">
+              <el-col
+                v-if="farm.errant"
+                :span="isMobile ? 24 : 8"
+                style="padding: 10px 20px; border-right: var(--line-border)"
+              >
                 <div style="margin-bottom: 8px">
                   <strong
                     style="
@@ -726,8 +1195,8 @@
               </el-col>
               <el-col
                 v-if="farm.errant === false"
-                :span="8"
-                style="padding: 10px 20px"
+                :span="isMobile ? 24 : 8"
+                style="padding: 10px 20px; border-right: var(--line-border)"
               >
                 <div style="margin-bottom: 8px">
                   <strong
@@ -908,6 +1377,9 @@ export default {
     };
   },
   computed: {
+    isMobile() {
+      return window.innerWidth <= 450;
+    },
     ...mapState(["wallet", "farms"]),
   },
   methods: {
@@ -925,6 +1397,31 @@ export default {
     isFa2(token) {
       return farmUtils.isFa2(token);
     },
+
+    formatNumShorthand(value, precision) {
+      const number = precision
+        ? parseFloat(value).toFixed(precision)
+        : Number(value);
+      if (isNaN(number)) return { value: 0, suffix: "" };
+      if (number < 1000) {
+        return { value: number, suffix: "" };
+      } else if (number < 1000000) {
+        const value = number / 1000;
+        const precisedValue = parseFloat(value).toFixed(precision);
+        return { value: precisedValue, suffix: "K" };
+      } else if (number < 1000000000) {
+        const value = (number / 1000000).toFixed(precision);
+        return { value, suffix: "M" };
+      } else if (number < 1000000000000) {
+        const value = number / 1000000000;
+        const precisedValue = parseFloat(value).toFixed(precision);
+        return { value: precisedValue, suffix: "B" };
+      } else {
+        const value = number / 1000000000000;
+        const precisedValue = parseFloat(value).toFixed(precision);
+        return { value: precisedValue, suffix: "T" };
+      }
+    },
   },
 };
 </script>
@@ -932,4 +1429,47 @@ export default {
 <style lang="scss" scoped>
 @import "../crunchy-variables.scss";
 @import "~element-ui/packages/theme-chalk/src/common/var";
+.farm-poolToken {
+  position: relative;
+  border: 4px solid #fff;
+  vertical-align: middle;
+  margin-right: 14px;
+  @media (max-width: 450px) {
+    margin-left: 0;
+  }
+}
+.farm-poolTokens {
+  position: relative;
+  border: 4px solid #fff;
+  vertical-align: middle;
+  margin-left: -18px;
+  margin-right: 14px;
+  @media (max-width: 450px) {
+    margin-right: 0;
+  }
+}
+.farm-rewardToken {
+  @media (max-width: 450px) {
+    display: flex;
+    align-items: center;
+    padding-left: 0 !important;
+    margin-left: 0px;
+  }
+}
+.row-expanded {
+  @media (max-width: 450px) {
+    flex-direction: column;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+.fa-arrow-alt-right {
+  font-size: 24px; 
+  color: #999; 
+  margin-left: -10px; 
+  margin-right: 6px;
+  @media (max-width: 450px) {
+    margin-left: -15px; 
+  }
+}
 </style>

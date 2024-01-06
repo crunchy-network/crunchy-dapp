@@ -1,7 +1,7 @@
 const { default: BigNumber } = require("bignumber.js");
 const { getQuipuCurveOutput } = require("../SwapRates/quipuCurve");
 const { addTokenApprovalOperators } = require("../TokenTypes");
-const { convertToMuTez, secondsFromNow } = require("../utils");
+const { convertToMuTez, secondsFromNow, isValidDexFee } = require("../utils");
 
 const FEE_DENOMINATOR = new BigNumber(10000000000);
 
@@ -22,6 +22,11 @@ function calcFees(pair, swapRate) {
 function getSwapOutput(input, pair) {
   const swapRate = getQuipuCurveOutput(pair, getAmountIn(input, pair.a));
   const fees = calcFees(pair, swapRate);
+  const inputAfterFee = input * fees;
+  const feeAmount = input - inputAfterFee;
+  if (!isValidDexFee(feeAmount, pair)) {
+    return 0;
+  }
   const output = swapRate.minus(fees);
   return output.div(10 ** pair.b.decimals).toNumber();
 }
@@ -37,7 +42,7 @@ const buildDexOperation = (dex, trade, walletAddres, tezos) => {
         trade.b.index,
         input,
         output,
-        `${secondsFromNow(300)}`
+        `${secondsFromNow(1200)}`
       )
       .toTransferParams({
         mutez: true,

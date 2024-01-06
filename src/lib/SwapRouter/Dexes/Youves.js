@@ -3,6 +3,7 @@ const {
   convertToMuTez,
   secondsFromNow,
   fromOpOpts,
+  isValidDexFee
 } = require("../utils");
 const { getFlatCfmmOutput } = require("../SwapRates/flat-cfmm");
 const { addTokenApprovalOperators } = require("../TokenTypes");
@@ -12,6 +13,10 @@ const DEX_FEE = 0.15;
 
 const getSwapOutput = (input, pair) => {
   const inputAfterFee = input * percentToDecimal(DEX_FEE);
+  const feeAmount = input - inputAfterFee;
+  if (!isValidDexFee(feeAmount, pair)) {
+    return 0;
+  }
   return getFlatCfmmOutput(inputAfterFee, pair);
 };
 
@@ -25,7 +30,7 @@ const cashToToken = async (dex, trade, walletAddress, tezos) => {
 
   const transfers = [
     dex.methods
-      .cashToToken(walletAddress, output, input, `${secondsFromNow(300)}`)
+      .cashToToken(walletAddress, output, input, `${secondsFromNow(1200)}`)
       .toTransferParams(fromOpOpts(undefined)),
   ];
   return await addTokenApprovalOperators(
@@ -41,7 +46,7 @@ const tokenToCash = async (dex, trade, walletAddress, tezos) => {
   const output = convertToMuTez(trade.minOut, trade.b);
   const transfers = [
     dex.methods
-      .tokenToCash(walletAddress, input, output, `${secondsFromNow(300)}`)
+      .tokenToCash(walletAddress, input, output, `${secondsFromNow(1200)}`)
       .toTransferParams(fromOpOpts(undefined)),
   ];
   return await addTokenApprovalOperators(

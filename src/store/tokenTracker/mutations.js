@@ -11,7 +11,13 @@ export default {
   },
 
   updateTokenList(state, payload) {
-    state.tokenList.push(payload);
+    if (
+      typeof payload === "object" &&
+      !Array.isArray(payload) &&
+      payload !== null
+    ) {
+      state.tokenList.push(payload);
+    }
   },
 
   updateTokenListIndex(state, payload) {
@@ -45,6 +51,10 @@ export default {
     state.tokenOverview.chartData = payload;
   },
 
+  updateOverviewChart(state, payload) {
+    state.overViewChart = payload;
+  },
+
   updateChartDataLoading(state, payload) {
     state.loadingChart = payload;
   },
@@ -60,6 +70,7 @@ export default {
   cleanTokenOverview(state) {
     state.tokenOverview = {
       chartData: {
+        volumeAndPrice1Hour: [],
         volumeAndPrice1Day: [],
         volumeAndPrice7Day: [],
         volumeAndPrice30Day: [],

@@ -57,7 +57,7 @@
                   margin: 0;
                 "
               >
-                {{ getTokenOverview.order }}
+                {{ getTokenOverview.isRanked ? getTokenOverview.order : 'NA' }}
               </p>
             </el-col>
             <el-col><el-divider direction="horizontal"></el-divider></el-col>
@@ -152,7 +152,6 @@ import PriceFormat from "./PriceFormat.vue";
 export default {
   name: "TokenMetrics",
   components: { PriceFormat, NumberFormat },
-
   computed: {
     ...mapGetters(["getTokenOverview"]),
     ...mapState(["tokenTracker"]),

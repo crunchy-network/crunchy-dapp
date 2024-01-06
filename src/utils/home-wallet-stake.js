@@ -1,9 +1,6 @@
-// import axios from "axios";
 import BigNumber from "bignumber.js";
 import ipfs from "./ipfs";
-// import queryDipdup from "./queryDipdup";
 import teztools from "./teztools";
-// import teztools from "./teztools";
 import tzkt from "./tzkt";
 
 function calculateGIFRewards(

@@ -7,6 +7,10 @@ export default {
     state.expanded = isExpanded;
   },
 
+  updateMyFarmsExpanded(state, isExpanded) {
+    state.myFarmExpanded = isExpanded;
+  },
+
   updateFarmsSearchInput(state, input) {
     state.searchInput = input;
   },
@@ -63,6 +67,15 @@ export default {
   updatePriceFeed(state, feed) {
     state.priceFeed = feed;
   },
+
+  updateTokenPools(state, tokenPools) {
+    state.tokenPools = tokenPools;
+  },
+  
+  updateLpTokens(state, lpTokens) {
+    state.lpTokens = lpTokens;
+  },
+  
 
   updateFarmStorage(state, data) {
     state.storage.farms = data;

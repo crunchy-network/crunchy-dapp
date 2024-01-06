@@ -27,14 +27,12 @@
                 {{ link.name }}
               </a>
             </div>
-            <p>
-              {{ project.description }}
-            </p>
+            <p v-html="project.description"></p>
 
             <div class="swap-box space-top">
               <p>Token Swap Rate</p>
               <p class="mid">
-                <b>{{ ifo.data.swapRate }} $XTZ</b>
+                <b>{{ ifo.data.swapRate }} XTZ</b>
               </p>
             </div>
           </el-card>
@@ -78,28 +76,38 @@
 
                 <div class="detail-row">
                   <div class="data-col">
-                    <p v-if="!live">Harvest Begins in:</p>
-                    <p v-if="live">Harvesting Ends in:</p>
+                    <p v-if="!ifo.data.started">Farming Begins in:</p>
+                    <p v-else>Farming Ends in:</p>
                   </div>
-
                   <div class="data-col">
-                    <p
-                      v-if="
-                        new Date().getTime() <
-                        new Date(project.endTime).getTime()
-                      "
-                    >
+                    <p v-if="!ifo.data.ended">
                       {{ displayDays }} days {{ displayHours }} hr
                       {{ displayMinutes }} min
                     </p>
-                    <p
-                      v-if="
-                        new Date().getTime() >
-                        new Date(project.endTime).getTime()
-                      "
-                    >
-                      Ended
+                    <p v-else>Ended</p>
+                  </div>
+                </div>
+
+                <div class="detail-row" v-if="ifo.data.ended">
+                  <div class="data-col">
+                    <p v-if="!ifo.data.harvesting">Harvesting Begins in:</p>
+                    <p v-else>Harvesting Ends in:</p>
+                  </div>
+                  <div class="data-col">
+                    <p v-if="displayMinutes">
+                      {{ displayDays }} days {{ displayHours }} hr
+                      {{ displayMinutes }} min
                     </p>
+                    <p v-else>Ended</p>
+                  </div>
+                </div>
+
+                <div class="detail-row" v-if="!ifo.data.harvesting && ifo.data.harvestDuration">
+                  <div class="data-col">
+                    <p>Harvest Lasts:</p>
+                  </div>
+                  <div class="data-col">
+                    <p>{{ ifo.data.harvestDuration | humanizeDuration({ units: ["d"] }) }}</p>
                   </div>
                 </div>
 
@@ -109,7 +117,7 @@
                   </div>
 
                   <div class="data-col">
-                    <p>$XTZ</p>
+                    <p>XTZ</p>
                   </div>
                 </div>
 
@@ -119,7 +127,7 @@
                   </div>
 
                   <div class="data-col">
-                    <p>${{ project.tokenSymbol }}</p>
+                    <p>{{ project.tokenSymbol }}</p>
                   </div>
                 </div>
               </div>
@@ -174,7 +182,7 @@
                       {{
                         vueNumberFormat(ifo.data.userRecord.projectedHarvest)
                       }}
-                      PXL
+                      {{ project.tokenSymbol }}
                     </p>
                   </div>
                 </div>
@@ -224,7 +232,7 @@
 
                 <div class="detail-row">
                   <div class="data-col">
-                    <p>$CRUNCH to burn:</p>
+                    <p>$CRNCHY to burn:</p>
                   </div>
 
                   <div class="data-col">
@@ -262,17 +270,16 @@
                     >{{
                       vueNumberFormat(ifo.data.userRecord.pendingHarvest)
                     }}
-                    PXL</el-col
+                    {{ project.tokenSymbol }}</el-col
                   >
                 </el-row>
               </div>
 
               <div style="width: 100%; margin-top: 18px">
                 <connect-button v-if="wallet.connected === false" />
-                <!-- <el-button v-else :disabled="!live" type="primary" @click="showStakeDialog" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px;">FARM</el-button> -->
                 <el-button
-                  v-else
-                  :disabled="!live"
+                  v-else-if="ifo.data.ended"
+                  :disabled="!ifo.data.harvesting"
                   type="primary"
                   style="
                     border-radius: 10px;
@@ -284,6 +291,7 @@
                   @click="harvestIfo"
                   >HARVEST</el-button
                 >
+                <el-button v-else :disabled="!ifo.data.started" type="primary" @click="showStakeDialog" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px; color: #ffffff;">FARM</el-button>
               </div>
             </div>
           </el-card></el-col
@@ -317,7 +325,7 @@
               </div>
 
               <div class="data-col">
-                <p>{{ project.endDate | moment("calendar") }}</p>
+                <p>{{ project.endTime | moment("calendar") }}</p>
               </div>
             </div>
 
@@ -327,7 +335,7 @@
               </div>
 
               <div class="data-col">
-                <p>{{ ifo.data.swapRate }} $XTZ</p>
+                <p>{{ ifo.data.swapRate }} XTZ</p>
               </div>
             </div>
 
@@ -356,7 +364,7 @@
                       precision: 0,
                     })
                   }}
-                  ${{ project.tokenSymbol }}
+                  {{ project.tokenSymbol }}
                 </p>
               </div>
             </div>
@@ -447,7 +455,7 @@
       width="380px"
       class="stake-dialog"
     >
-      <p>Commit XTZ to harvest PXL.</p>
+      <p>Commit XTZ to harvest {{ project.tokenSymbol }}.</p>
       <el-form
         ref="form"
         :model="form"
@@ -455,7 +463,7 @@
         hide-required-asterisk
       >
         <div
-          class="current-balance"
+          class="current-balance _info-card"
           style="
             border-radius: 22px;
             background: #ffeecc;
@@ -464,10 +472,10 @@
           "
         >
           <el-row type="flex" align="middle" justify="space-between">
-            <el-col :span="8" style="font-size: 12px">BALANCE</el-col>
+            <el-col :span="8" style="font-size: 12px" class="_info-card__title">BALANCE</el-col>
             <el-col
               :span="16"
-              style="color: #303133; font-weight: bold; text-align: right"
+              style="font-weight: 600; text-align: right"
               >{{
                 vueNumberFormat(wallet.balance.toNumber() / 1000000)
               }}</el-col
@@ -572,9 +580,6 @@ export default {
     this.fetchProject();
     this.refresh();
   },
-  mounted() {
-    this.showTimer();
-  },
   methods: {
     ...mapActions(["connectWallet", "loadIfoData", "stakeIfo", "harvestIfo"]),
 
@@ -587,41 +592,48 @@ export default {
       this.loading = false;
     },
     refresh() {
-      this.loadIfoData();
+      const vm = this;
+      this.loadIfoData().then(() => {
+        vm.showTimer();
+      })
     },
-
     formatCount(value) {
       return value < 10 ? "0" + value : value;
     },
     showTimer() {
       const vm = this;
-      // vm.live = true;
-      vm.live =
-        new Date().getTime() > new Date(this.project.startTime).getTime();
       const timer = setInterval(() => {
-        let startTime = new Date(this.project.startTime).getTime();
-        if (vm.live) {
-          startTime =
-            new Date(this.project.startTime).getTime() + 1296000 * 1000;
+        const currentTime = new Date().getTime();
+
+        let startTime = new Date(vm.ifo.data.startTime).getTime();
+        if (vm.ifo.data.started) {
+          startTime = new Date(vm.ifo.data.endTime).getTime();
+        }
+        if (vm.ifo.data.ended) {
+          startTime = new Date(vm.ifo.data.harvestTime).getTime();
+          if (startTime < currentTime) {
+            startTime = startTime + vm.ifo.data.harvestDuration;
+          }
         }
 
-        const currentDate = new Date().getTime();
-        let dateDifference = startTime - currentDate;
-
-        if (vm.live && dateDifference <= 0) {
-          vm.ended = true;
+        let timeDiff = startTime - currentTime;
+        if (timeDiff <= 0) {
+          vm.displayDays = "";
+          vm.displayHours = "";
+          vm.displayMinutes = "";
           clearInterval(timer);
+          return;
         }
 
-        const days = Math.floor(dateDifference / this._days);
-        dateDifference -= days * this._days;
-        const hours = Math.floor(dateDifference / this._hours) % 24;
-        dateDifference -= hours * this._hours;
-        const minutes = Math.floor(dateDifference / this._minutes) % 60;
+        const days = Math.floor(timeDiff / vm._days);
+        timeDiff -= days * vm._days;
+        const hours = Math.floor(timeDiff / vm._hours) % 24;
+        timeDiff -= hours * vm._hours;
+        const minutes = Math.floor(timeDiff / vm._minutes) % 60;
 
-        this.displayDays = this.formatCount(days);
-        this.displayHours = this.formatCount(hours);
-        this.displayMinutes = this.formatCount(minutes);
+        vm.displayDays = vm.formatCount(days);
+        vm.displayHours = vm.formatCount(hours);
+        vm.displayMinutes = vm.formatCount(minutes);
       }, 1000);
     },
 

@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import queryDipdup from "../utils/queryDipdup";
+import dexIndexer from "../utils/dex-indexer";
 import tzkt from "../utils/tzkt";
 import PriceFormat from "./PriceFormat.vue";
 export default {
@@ -70,12 +70,17 @@ export default {
     async getCrnchyPrice() {
       this.loading = true;
       try {
-        const xtzUsd = await tzkt.getXtzUsdPrice();
-        const priceXTZ = await queryDipdup.getTokenPriceXTZ(
-          `${process.env.VUE_APP_CONTRACTS_CRNCHY}_0`
+        let crnchy = await dexIndexer.getToken(
+          process.env.VUE_APP_CONTRACTS_CRNCHY,
+          "0"
         );
+        crnchy = crnchy[0];
+        const xtzUsd = await tzkt.getXtzUsdPrice();
+        const priceXTZ = crnchy?.quotes.find(
+          (el) => el.token.tokenAddress === "tez"
+        )?.quote;
 
-        this.price = priceXTZ;
+        this.price = Number(priceXTZ);
         this.priceUsd = xtzUsd * priceXTZ;
       } catch (error) {
         console.log("\n\n------ begin:  ------");
@@ -87,10 +92,15 @@ export default {
     },
     async softLoadCrnchyPrice() {
       try {
-        const xtzUsd = await tzkt.getXtzUsdPrice();
-        const priceXTZ = await queryDipdup.getTokenPriceXTZ(
-          `${process.env.VUE_APP_CONTRACTS_CRNCHY}_0`
+        let crnchy = await dexIndexer.getToken(
+          process.env.VUE_APP_CONTRACTS_CRNCHY,
+          "0"
         );
+        crnchy = crnchy[0];
+        const xtzUsd = await tzkt.getXtzUsdPrice();
+        const priceXTZ = crnchy?.quotes.find(
+          (el) => el.token.tokenAddress === "tez"
+        )?.quote;
 
         this.price = priceXTZ;
         this.priceUsd = xtzUsd * priceXTZ;

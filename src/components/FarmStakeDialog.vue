@@ -5,11 +5,11 @@
     width="380px"
     class="stake-dialog"
   >
-    <p v-if="form.farm.poolToken.isQuipuLp">
+    <p class="stake-infor" v-if="form.farm.poolToken.isQuipuLp">
       Stake XTZ/{{ form.farm.poolToken.symbol }} LP tokens to earn
       {{ form.farm.rewardToken.symbol }}.
     </p>
-    <p v-else>
+    <p class="stake-infor" v-else>
       Stake {{ form.farm.poolToken.symbol }} to earn
       {{ form.farm.rewardToken.symbol }}.
     </p>
@@ -33,12 +33,99 @@
           <el-col :span="8" style="font-size: 12px" class="_info-card__title"
             >BALANCE</el-col
           >
-          <el-col :span="16" style="font-weight: bold; text-align: right">{{
-            vueNumberFormat(form.farm.poolToken.balance)
-          }}</el-col>
+          <el-col
+            v-if="
+              form.farm.poolToken.balance >= 0.0001 ||
+              !form.farm.poolToken.balance
+            "
+            :span="16"
+            style="font-weight: bold; text-align: right"
+            >{{ vueNumberFormat(form.farm.poolToken.balance) }}</el-col
+          >
+          <el-col
+            v-else-if="form.farm.poolToken.balance >= 0.000001"
+            :span="16"
+            style="font-weight: bold; text-align: right"
+            >{{
+              vueNumberFormat(form.farm.poolToken.balance, { precision: 6 })
+            }}</el-col
+          >
+          <el-col
+            v-else-if="form.farm.poolToken.balance >= 0.00000001"
+            :span="16"
+            style="font-weight: bold; text-align: right"
+            >{{
+              vueNumberFormat(form.farm.poolToken.balance, { precision: 8 })
+            }}</el-col
+          >
+          <el-col
+            v-else-if="form.farm.poolToken.balance >= 0.000000000001"
+            :span="16"
+            style="font-weight: bold; text-align: right"
+            >{{
+              vueNumberFormat(form.farm.poolToken.balance, { precision: 12 })
+            }}</el-col
+          >
+          <el-col
+            v-else
+            :span="16"
+            style="font-weight: bold; text-align: right"
+            >{{
+              vueNumberFormat(form.farm.poolToken.balance, { precision: 18 })
+            }}</el-col
+          >
         </el-row>
       </div>
       <el-form-item
+        v-if="form.farm.poolToken.isPlentyLp"
+        label="Stake Tokens"
+        prop="input"
+        :rules="[
+          {
+            type: 'number',
+            required: true,
+            message: 'Enter an amount',
+            transform: (v) => Number(v),
+          },
+          {
+            type: 'number',
+            min: 0.000000000001,
+            message: 'Enter a valid amount (at least 0.000000000001)',
+            transform: (v) => Number(v),
+          },
+        ]"
+        style="margin-bottom: 14px"
+      >
+        <el-input v-model="form.input" label="Stake Tokens">
+          <span slot="suffix">{{ form.farm.poolToken.symbol }}</span>
+        </el-input>
+      </el-form-item>
+      <el-form-item
+        v-else-if="form.farm.poolToken.isSpicyLp"
+        label="Stake Tokens"
+        prop="input"
+        :rules="[
+          {
+            type: 'number',
+            required: true,
+            message: 'Enter an amount',
+            transform: (v) => Number(v),
+          },
+          {
+            type: 'number',
+            min: 0.000000000000000001,
+            message: 'Enter a valid amount (at least 0.000000000000000001)',
+            transform: (v) => Number(v),
+          },
+        ]"
+        style="margin-bottom: 14px"
+      >
+        <el-input v-model="form.input" label="Stake Tokens">
+          <span slot="suffix">{{ form.farm.poolToken.symbol }}</span>
+        </el-input>
+      </el-form-item>
+      <el-form-item
+        v-else
         label="Stake Tokens"
         prop="input"
         :rules="[
@@ -84,6 +171,11 @@
         @click="stakeFarm(form.farm.id)"
         >STAKE</el-button
       >
+      <p class="stake-warning" style="word-break: auto-phrase">
+        Crunchy Network is a tool that anyone can use to create a token or farm.
+        Please make sure you understand the risks of farming before staking into
+        a farm.
+      </p>
     </el-form>
   </el-dialog>
 </template>
@@ -99,7 +191,10 @@ export default {
         input: "",
         loading: false,
         visible: false,
-        farm: { poolToken: { balance: 0 }, rewardToken: {} },
+        farm: {
+          poolToken: { balance: 0, isSpicyLp: false, isPlentyLp: false },
+          rewardToken: {},
+        },
       },
     };
   },
@@ -107,7 +202,7 @@ export default {
     ...mapState(["farms"]),
   },
   methods: {
-    ...mapActions(["stakeInFarm", "getPoolTokenBalance"]),
+    ...mapActions(["stakeInFarm", "initFarm", "getPoolTokenBalance"]),
 
     async showDialog(farmId) {
       this.form.input = "";
@@ -117,6 +212,7 @@ export default {
       }
       this.form.loading = true;
       this.form.visible = true;
+      await this.initFarm({ farmId });
       const bal = await this.getPoolTokenBalance(farmId);
       this.form.farm = this.farms.data[farmId];
       this.form.farm.poolToken.balance = bal;

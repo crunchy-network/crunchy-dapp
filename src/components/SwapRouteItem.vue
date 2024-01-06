@@ -41,6 +41,10 @@ import vortex from "../assets/dex-icons/Vortex.svg";
 import spicy from "../assets/dex-icons/Spicy.png";
 import wtz from "../assets/dex-icons/Wtz.png";
 import youves from "../assets/dex-icons/Youves.svg";
+import alien from "../assets/dex-icons/Alien.png";
+import flame from "../assets/dex-icons/Flame.png";
+import dexter from "../assets/dex-icons/Dexter.png";
+
 export default {
   props: {
     route: { type: Object, required: true },
@@ -55,10 +59,15 @@ export default {
         PlentyStable: plenty,
         PlentyCtezTez: plenty,
         QuipuSwap: quipuswap,
-        QuipuSwapTokenToTokenDex: quipuswap,
+        QuipuswapTokenToTokenDex: quipuswap,
         Quipuswap: quipuswap,
         QuipuswapStable: quipuswap,
+        QuipuswapV2: quipuswap,
+        QuipuswapV3: quipuswap,
         Vortex: vortex,
+        Alien: alien,
+        Flame: flame,
+        Dexter: dexter,
         Spicy: spicy,
         WTZ: wtz,
         Youves: youves,
@@ -69,10 +78,15 @@ export default {
         PlentyStable: "Plenty",
         PlentyCtezTez: "Plenty",
         QuipuSwap: "Quipu",
-        QuipuSwapTokenToTokenDex: "Quipu",
+        QuipuswapTokenToTokenDex: "Quipu",
         Quipuswap: "Quipu",
         QuipuswapStable: "Quipu",
+        QuipuswapV2: "Quipu v2",
+        QuipuswapV3: "Quipu v3",
         Vortex: "Vortex",
+        Alien: "Alien",
+        Flame: "Flame",
+        Dexter: "Dexter",
         Spicy: "Spicy",
         WTZ: "WTZ",
         Youves: "Youves",

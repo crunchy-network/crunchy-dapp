@@ -1,6 +1,7 @@
 import { pascalCase } from "change-case";
 import BigNumber from "bignumber.js";
 import config from "./../config";
+// import tzkt from "../../../utils/tzkt";
 
 const isPoolBelowMinThreshold = (mutez) => {
   return BigNumber(mutez).lt(config.minPoolSize);
@@ -34,6 +35,22 @@ const getDexName = (dexType) => {
 
   if (dexType === "plenty_ctez") {
     return "PlentyCtezTez";
+  }
+
+  if (dexType === "quipuswap_token2token") {
+    return "QuipuswapTokenToTokenDex";
+  }
+
+  if (dexType === "quipuswap_v2") {
+    return "QuipuswapV2";
+  }
+
+  if (dexType === "quipuswap_v3") {
+    return "QuipuswapV3";
+  }
+
+  if (dexType === "dexter" || dexType === "dexter_v2") {
+    return "Dexter";
   }
 
   return pascalCase(dexType);
@@ -174,6 +191,247 @@ const buildQuipuStablePair = (dex, token1Pool, token2Pool) => {
   };
 };
 
+const buildQuipuToken2TokenPair = (dex, token1Pool, token2Pool) => {
+  const inverted =
+    // eslint-disable-next-line no-unneeded-ternary
+    getParamValue(token1Pool.params, "token_a_pool") !== 0 ? false : true;
+
+  return {
+    poolId: token1Pool.pool_id,
+    dex: getDexName(dex.dex_type),
+    dexAddress: dex.dex_address,
+    direction: inverted ? "Inverted" : "Direct",
+    a: {
+      ...createSimplePairSide(token1Pool),
+    },
+    b: {
+      ...createSimplePairSide(token2Pool),
+    },
+  };
+};
+
+const buildQuipuV2Pair = (dex, token1Pool, token2Pool) => {
+  const inverted =
+    // eslint-disable-next-line no-unneeded-ternary
+    getParamValue(token1Pool.params, "token_a_price_cml") !== 0 ? false : true;
+
+  return {
+    poolId: token1Pool.pool_id,
+    dex: getDexName(dex.dex_type),
+    dexAddress: dex.dex_address,
+    direction: inverted ? "Inverted" : "Direct",
+    fee: {
+      interfaceFee: BigNumber(getParamValue(dex.params, "interface_fee")),
+      swapFee: BigNumber(getParamValue(dex.params, "swap_fee")),
+      auctionFee: BigNumber(getParamValue(dex.params, "auction_fee")),
+      withdrawFeeReward: BigNumber(
+        getParamValue(dex.params, "withdraw_fee_reward")
+      ),
+    },
+    a: {
+      ...createSimplePairSide(token1Pool),
+      token_a_price_cml: inverted
+        ? getParamValue(token2Pool.params, "token_b_price_cml")
+        : getParamValue(token1Pool.params, "token_a_price_cml"),
+    },
+    b: {
+      ...createSimplePairSide(token2Pool),
+      token_b_price_cml: inverted
+        ? getParamValue(token1Pool.params, "token_a_price_cml")
+        : getParamValue(token2Pool.params, "token_b_price_cml"),
+    },
+  };
+};
+
+const buildFlamePair = (dex, token1Pool, token2Pool) => {
+  const inverted =
+    // eslint-disable-next-line no-unneeded-ternary
+    getParamValue(token1Pool.params, "token_a_res") !== 0 ? false : true;
+
+  return {
+    poolId: token1Pool.pool_id,
+    dex: getDexName(dex.dex_type),
+    dexAddress: dex.dex_address,
+    direction: inverted ? "Inverted" : "Direct",
+    fee: getParamValue(token1Pool.params, "fee"),
+    lastRewardPerTez: getParamValue(token1Pool.params, "last_reward_per_tez"),
+    rewardPerShare: getParamValue(token1Pool.params, "reward_per_share"),
+    a: {
+      ...createSimplePairSide(token1Pool),
+      totalSupply: getParamValue(token1Pool.params, "total_supply"),
+    },
+    b: {
+      ...createSimplePairSide(token2Pool),
+      totalSupply: getParamValue(token1Pool.params, "total_supply"),
+    },
+  };
+};
+
+const buildQuipuV2Pairs = (dex) => {
+  const pairs = [];
+  const poolIds = [];
+  for (let t1 = 0; t1 < dex.pools.length; t1++) {
+    let p = null;
+    const token1 = dex.pools[t1];
+    const token2 = dex.pools.filter(
+      (el) => el.pool_id === token1.pool_id && el !== token1
+    )[0];
+    if (poolIds.includes(token1.pool_id)) {
+      p = buildQuipuV2Pair(dex, token1, token2);
+    } else {
+      p = buildQuipuV2Pair(dex, token1, token2);
+      poolIds.push(token1.pool_id);
+    }
+    if (p) {
+      pairs.push(p);
+    }
+  }
+  return pairs;
+};
+
+// function convertToCamelCase(obj) {
+//   const newObj = {};
+//   for (const key in obj) {
+//     const newKey = key.charAt(0).toLowerCase() + key.slice(1).replace(/_([a-z])/g, (m, p1) => p1.toUpperCase());
+//     newObj[newKey] = typeof obj[key] === "object" ? convertToCamelCase(obj[key]) : obj[key];
+//   }
+//   return newObj;
+// }
+
+// const getModifiedTicks = async (ticksKey) => {
+//   const ticks = (await tzkt.getBigMapKeys(ticksKey)).data;
+//   const ticksObj = ticks.reduce((acc, curr) => {
+//     // Change to pascalCase
+//     const modifiedValue = convertToCamelCase(curr.value);
+//     acc[curr.key] = modifiedValue;
+//     return acc;
+//   }, {});
+//   return ticksObj;
+// };
+
+// const getModifiedBuffer = async (bufferKey) => {
+//   const buffer = (await tzkt.getBigMapKeys(bufferKey)).data;
+//   const bufferObj = buffer.reduce((acc, curr) => {
+//     acc[curr.key] = curr.value;
+//     return acc;
+//   }, {});
+//   return bufferObj;
+// };
+
+// const buildQuipuV3Pairs = async (dex, inverted = false) => {
+//   const aSide = dex.pools[inverted ? 1 : 0];
+//   const bSide = dex.pools[inverted ? 0 : 1];
+
+//   const ticksKey = getParamValue(dex.params, "ticksKey");
+//   const bufferKey = getParamValue(dex.params, "bufferKey");
+
+//   const ticks = await getModifiedTicks(ticksKey);
+//   const buffer = await getModifiedBuffer(bufferKey);
+
+//   return {
+//     poolId: aSide.pool_id,
+//     dex: getDexName(dex.dex_type),
+//     dexAddress: dex.dex_address,
+//     direction: inverted ? "Inverted" : "Direct",
+//     fee: {
+//       feeBps: getParamValue(dex.params, "fee_bps").replace(/^"(.*)"$/, "$1"),
+//       devFeeA: inverted
+//         ? getParamValue(bSide.params, "dev_fee_B")
+//         : getParamValue(aSide.params, "dev_fee_A"),
+//       feeGrowthA: inverted
+//         ? getParamValue(bSide.params, "fee_growth_B")
+//         : getParamValue(aSide.params, "fee_growth_A"),
+//       devFeeB: inverted
+//         ? getParamValue(aSide.params, "dev_fee_A")
+//         : getParamValue(bSide.params, "dev_fee_B"),
+//       feeGrowthB: inverted
+//         ? getParamValue(bSide.params, "fee_growth_A")
+//         : getParamValue(aSide.params, "fee_growth_B"),
+//     },
+//     ticks: ticks,
+//     cumulativesBuffer: buffer,
+//     lastCumulativesBuffer: getParamValue(dex.params, "last_cumulatives_buffer"),
+//     curTickIndex: getParamValue(dex.params, "cur_tick_index").replace(
+//       /^"(.*)"$/,
+//       "$1"
+//     ),
+//     curTickWitness: getParamValue(dex.params, "cur_tick_witness").replace(
+//       /^"(.*)"$/,
+//       "$1"
+//     ),
+//     liquidity: getParamValue(dex.params, "liquidity").replace(/^"(.*)"$/, "$1"),
+//     factoryAddress: getParamValue(dex.params, "factory_address"),
+//     sqrtPrice: getParamValue(dex.params, "sqrt_price").replace(
+//       /^"(.*)"$/,
+//       "$1"
+//     ),
+//     a: {
+//       ...createSimplePairSide(aSide),
+//       devFeeA: inverted
+//         ? getParamValue(bSide.params, "dev_fee_B")
+//         : getParamValue(aSide.params, "dev_fee_A"),
+//       feeGrowthA: inverted
+//         ? getParamValue(bSide.params, "fee_growth_B")
+//         : getParamValue(aSide.params, "fee_growth_A"),
+//     },
+//     b: {
+//       ...createSimplePairSide(bSide),
+//       devFeeB: inverted
+//         ? getParamValue(aSide.params, "dev_fee_A")
+//         : getParamValue(bSide.params, "dev_fee_B"),
+//       feeGrowthB: inverted
+//         ? getParamValue(bSide.params, "fee_growth_A")
+//         : getParamValue(aSide.params, "fee_growth_B"),
+//     },
+//   };
+// };
+
+const buildQuipuToken2TokenPairs = (dex) => {
+  const pairs = [];
+  const poolIds = [];
+  for (let t1 = 0; t1 < dex.pools.length; t1++) {
+    let p = null;
+    const token1 = dex.pools[t1];
+    const token2 = dex.pools.filter(
+      (el) => el.pool_id === token1.pool_id && el !== token1
+    )[0];
+
+    if (poolIds.includes(token1.pool_id)) {
+      p = buildQuipuToken2TokenPair(dex, token1, token2);
+    } else {
+      p = buildQuipuToken2TokenPair(dex, token1, token2);
+      poolIds.push(token1.pool_id);
+    }
+    if (p) {
+      pairs.push(p);
+    }
+  }
+  return pairs;
+};
+
+const buildFlamePairs = (dex) => {
+  const pairs = [];
+  const poolIds = [];
+  for (let t1 = 0; t1 < dex.pools.length; t1++) {
+    let p = null;
+    const token1 = dex.pools[t1];
+    const token2 = dex.pools.filter(
+      (el) => el.pool_id === token1.pool_id && el !== token1
+    )[0];
+
+    if (poolIds.includes(token1.pool_id)) {
+      p = buildFlamePair(dex, token1, token2);
+    } else {
+      p = buildFlamePair(dex, token1, token2);
+      poolIds.push(token1.pool_id);
+    }
+    if (p) {
+      pairs.push(p);
+    }
+  }
+  return pairs;
+};
+
 const buildQuipuStablePairs = (dex) => {
   const pairs = [];
   for (let t1 = 0; t1 < dex.pools.length; t1++) {
@@ -192,10 +450,43 @@ const buildQuipuStablePairs = (dex) => {
   return pairs;
 };
 
-const buildSwapPairs = (dexes) => {
-  let pairs = [];
+const modifyMasterDex = (dex) => {
+  const removedPoolIds = [];
+  for (let i = 0; i < dex.pools.length; i++) {
+    const pool = dex.pools[i];
+    if (config.excludedTokens.includes(pool.token.symbol)) {
+      removedPoolIds.push(pool.pool_id);
+      continue;
+    }
 
-  for (const dex of dexes) {
+    if (
+      ["XTZ", "WTZ"].includes(pool.token.symbol) &&
+      isPoolBelowMinThreshold(pool.reserves)
+    ) {
+      removedPoolIds.push(pool.pool_id);
+    }
+  }
+
+  const modifiedPools = dex.pools.filter(function (el) {
+    if (removedPoolIds.includes(el.pool_id)) {
+      return false;
+    }
+    return true;
+  });
+
+  const { pools, ...rest } = dex;
+  rest.pools = modifiedPools;
+  return rest;
+};
+
+const buildSwapPairs = async (dexes) => {
+  let pairs = [];
+  const masterDex = ["quipuswap_token2token", "quipuswap_v2", "flame", "alien"];
+  for (let dex of dexes) {
+    if (masterDex.includes(dex.dex_type)) {
+      dex = modifyMasterDex(dex);
+    }
+
     if (shouldSkip(dex)) {
       continue;
     }
@@ -205,6 +496,8 @@ const buildSwapPairs = (dexes) => {
       case "vortex":
       case "sirius":
       case "plenty":
+      case "dexter":
+      case "dexter_v2":
         pairs.push(buildSimplePair(dex, "tez"));
         pairs.push(buildSimplePair(dex, "tez", true));
         break;
@@ -229,6 +522,23 @@ const buildSwapPairs = (dexes) => {
         pairs.push(buildPlentyStablePair(dex));
         pairs.push(buildPlentyStablePair(dex, true));
         break;
+
+      case "flame":
+        pairs = pairs.concat(buildFlamePairs(dex));
+        break;
+
+      case "quipuswap_token2token":
+        pairs = pairs.concat(buildQuipuToken2TokenPairs(dex));
+        break;
+
+      case "quipuswap_v2":
+        pairs = pairs.concat(buildQuipuV2Pairs(dex));
+        break;
+
+      // case "quipuswap_v3":
+      //   pairs.push(await buildQuipuV3Pairs(dex));
+      //   pairs.push(await buildQuipuV3Pairs(dex, true));
+      //   break;
 
       case "quipuswap_stable":
         pairs = pairs.concat(buildQuipuStablePairs(dex));

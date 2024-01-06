@@ -15,6 +15,7 @@ import CrnchyStaking from "./../components/CrnchyStaking.vue";
 import Swap from "./../components/Swap.vue";
 import TokenTracker from "./../components/TokenTracker.vue";
 import TokenTrackerItem from "./../components/TokenTrackerItem.vue";
+import CreateToken from "./../components/CreateToken.vue"
 // import Bakery from './../components/Bakery.vue'
 
 Vue.use(VueRouter);
@@ -57,7 +58,7 @@ const routes = [
   },
 
   { name: "ifo-pixel-priv", path: "/ifo/p1x3l-l33t", component: IfoPixelPriv },
-
+  { name: "create-token", path: "/createToken", component: CreateToken },
   { name: "ifo-list", path: "/ifo", component: IFOList },
   { name: "ifo", path: "/ifo/:tokenName", component: IFO },
   { name: "farm-listing", path: "/farms", component: FarmListing },

@@ -5,7 +5,7 @@ import { getCurrContractId, projects } from "./tmp";
 export default {
   async updateIfoStorage({ state }) {
     const id = getCurrContractId();
-    return tzkt.getContractStorage(id || state.contracts.pixel).then((resp) => {
+    return tzkt.getContractStorage(id || state.contracts.default).then((resp) => {
       return resp.data;
     });
   },
@@ -15,7 +15,7 @@ export default {
     const contractId = getCurrContractId();
 
     return tzkt
-      .getContractBigMapKeys(contractId || state.contracts.pixel, "ledger", {
+      .getContractBigMapKeys(contractId || state.contracts.default, "ledger", {
         key: rootState.wallet.pkh,
         active: "true",
       })
@@ -27,9 +27,8 @@ export default {
   async loadIfoData({ state, commit, dispatch }) {
     if (!state.loading) {
       commit("updateIfoLoading", true);
-      dispatch("softUpdateIfo").then(() => {
-        commit("updateIfoLoading", false);
-      });
+      await dispatch("softUpdateIfo");
+      commit("updateIfoLoading", false);
     }
   },
 
@@ -73,6 +72,11 @@ export default {
       dispatch("handleLegacyIDO");
       return;
     }
+
+    const projectJson = projects.find(
+      (p) => p.contractId === getCurrContractId()
+    );
+
     // Some date stuff
     const nowD = new Date();
     const startTimeD = new Date(storage.ifo.startTime);
@@ -100,13 +104,13 @@ export default {
       )
         .div(dividend)
         .times(BigNumber(storage.ifo.offeringSupply))
-        .div(BigNumber(10).pow(6))
+        .div(BigNumber(10).pow(projectJson.decimals || 6))
         .toNumber();
       userRecord.lastHarvest = new Date(userRecordStorage.value.lastHarvest);
       userRecord.projectedHarvest = BigNumber(userRecordStorage.value.amount)
         .div(dividend)
         .times(BigNumber(storage.ifo.offeringSupply))
-        .div(BigNumber(10).pow(6))
+        .div(BigNumber(10).pow(projectJson.decimals || 6))
         .toNumber();
       userRecord.projectedFee = userRecord.committed;
       if (BigNumber(storage.ifo.totalRaised).gt(storage.ifo.raisingGoal)) {
@@ -136,10 +140,14 @@ export default {
         .div(BigNumber(10).pow(6))
         .toNumber(),
       offeringSupply: BigNumber(storage.ifo.offeringSupply)
-        .div(BigNumber(10).pow(6))
+        .div(BigNumber(10).pow(projectJson.decimals || 6))
         .toNumber(),
       swapRate: BigNumber(storage.ifo.raisingGoal)
-        .div(BigNumber(storage.ifo.offeringSupply))
+        .div(BigNumber(10).pow(6))
+        .div((
+          BigNumber(storage.ifo.offeringSupply)
+          .div(BigNumber(10).pow(projectJson.decimals || 6))
+        ))
         .toNumber(),
       startTime: storage.ifo.startTime,
       endTime: storage.ifo.endTime,
@@ -147,7 +155,7 @@ export default {
       harvestTime: storage.ifo.harvestTime,
       ended: isEnded,
       harvesting: isHarvesting,
-      harvestDuration: parseInt(storage.ifo.harvestDuration),
+      harvestDuration: parseInt(storage.ifo.harvestDuration) * 1000,
       userRecord: userRecord,
     });
 
@@ -173,7 +181,7 @@ export default {
     const nowD = new Date();
     const harvestTimeD = new Date(state.data.harvestTime);
     const harvestEndTimeD = new Date(
-      harvestTimeD.getTime() + state.data.harvestDuration * 1000
+      harvestTimeD.getTime() + state.data.harvestDuration
     );
     const isHarvestingEnded = harvestEndTimeD < nowD;
     const isHarvesting = harvestTimeD < nowD;
@@ -187,7 +195,7 @@ export default {
     }
 
     const harvestPerSec =
-      userRecord.projectedHarvest / state.data.harvestDuration;
+      (userRecord.projectedHarvest / state.data.harvestDuration) * 1000;
     const numSec = (nowD - userRecord.lastHarvest) / 1000;
     userRecord.pendingHarvest = harvestPerSec * numSec;
 
@@ -215,7 +223,7 @@ export default {
 
   async stakeIfo({ commit, dispatch, state }, amount) {
     const id = getCurrContractId();
-    const ifoContract = await getWalletContract(id || state.contracts.pixel);
+    const ifoContract = await getWalletContract(id || state.contracts.default);
     const amountB = BigNumber(amount)
       .times(10 ** 6)
       .idiv(1)
@@ -237,7 +245,7 @@ export default {
   async harvestIfo({ commit, dispatch, state }) {
     const id = getCurrContractId();
     console.log("getting wallet for ", getCurrContractId());
-    const ifoContract = await getWalletContract(id || state.contracts.pixel);
+    const ifoContract = await getWalletContract(id || state.contracts.default);
     console.log(`got contract for`, ifoContract);
     ifoContract.methods
       .harvest()
