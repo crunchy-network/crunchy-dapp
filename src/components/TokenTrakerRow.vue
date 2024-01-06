@@ -43,13 +43,13 @@
                   asset.order
                 }}</el-col>
                 <el-col v-else :span="2">-</el-col>
-                <el-col style="text-align: left" :span="isMobile ? 5 : 4">
+                <el-col style="text-align: left" :span="3">
                   <el-row type="flex" style="align-items: center">
                     <el-avatar
                       :src="asset.thumbnailUri"
                       fit="cover"
                       shape="circle"
-                      :size="40"
+                      :size="isMobile ? 34 : 40"
                       style="
                         position: relative;
                         border: 4px solid #fff;
@@ -86,7 +86,7 @@
                   />
                   <span v-else> - </span>
                 </el-col>
-                <el-col style="text-align: right" :span="isMobile ? 5 : 4">
+                <el-col style="text-align: right" :span="isMobile ? 6 : 4">
                   <price-format
                     :precision="4"
                     prefix="$"
@@ -97,7 +97,7 @@
 
                 <el-col
                   style="text-align: right"
-                  :span="isMobile ? 4 : 2"
+                  :span="isMobile ? 5 : 2"
                   :class="
                     handleChangeclass(asset, 'change1Day', 'change1DayUsd')
                   "

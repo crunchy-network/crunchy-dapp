@@ -120,7 +120,7 @@
                       <el-row>
                         <el-col :span="2">#</el-col>
 
-                        <el-col :span="isMobile ? 5 : 4">
+                        <el-col :span="3">
                           <div
                             class="wrap-sort-icon"
                             @click="toggleColumSort('symbol')"
@@ -167,7 +167,7 @@
                         </el-col>
                         <el-col
                           style="text-align: right"
-                          :span="isMobile ? 5 : 4"
+                          :span="isMobile ? 6 : 4"
                         >
                           <div
                             class="wrap-sort-icon"
@@ -182,7 +182,7 @@
                         </el-col>
                         <el-col
                           style="text-align: right"
-                          :span="isMobile ? 4 : 2"
+                          :span="isMobile ? 5 : 2"
                         >
                           <div
                             class="wrap-sort-icon"
