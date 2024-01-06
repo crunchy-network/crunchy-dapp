@@ -9,7 +9,7 @@
         <el-row
           :gutter="20"
           class="tokenTracker-row"
-          style="margin-left: 0; margin-right: 0"
+          style="margin-left: 0; margin-right: 0; padding: 20px 10px"
           type="flex"
           align="middle"
         >
@@ -266,8 +266,8 @@ export default {
   }
   @media (max-width: 450px) {
     .tokenTracker-row {
-      padding-left: 0px;
-      padding-right: 0px;
+      padding-left: 0px !important;
+      padding-right: 0px !important;
       justify-content: space-between;
     }
     .row-between {
