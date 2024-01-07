@@ -573,7 +573,7 @@ export default {
     ._fave-btn-wrapper {
       height: 20px;
       position: sticky;
-      left: 0px;
+      left: -1px;
       z-index: 2;
       background-color: #191b1f;
     }
@@ -583,7 +583,7 @@ export default {
     }
     .table-title .el-col:nth-child(1) {
       position: sticky;
-      left: 38px;
+      left: 36px;
       z-index: 1;
       background-color: #191b1f;
     }

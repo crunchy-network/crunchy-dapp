@@ -267,7 +267,7 @@ export default {
 @media (max-width: 450px) {
   .tokenTracker-row .el-col:nth-child(1) {
     position: sticky;
-    left: 38px;
+    left: 36px;
     z-index: 1;
     background-color: #191b1f;
   }
@@ -284,7 +284,7 @@ export default {
   }
   ._fave-btn-wrapper {
     position: sticky;
-    left: 0px;
+    left: -1px;
     z-index: 2;
     background-color: #191b1f;
   }
