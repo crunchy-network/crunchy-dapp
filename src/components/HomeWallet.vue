@@ -408,6 +408,5 @@ export default {
     z-index: 1;
     background-color: #191b1f;
   }
-
 }
 </style>

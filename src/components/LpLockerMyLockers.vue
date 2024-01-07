@@ -18,6 +18,7 @@
               >
                 <el-col :span="24">
                   <el-row
+                    class="my-locker-row"
                     :gutter="20"
                     type="flex"
                     align="middle"
@@ -119,6 +120,20 @@ export default {
   .el-empty__bottom {
     font-size: 72px;
     color: $--color-text-light-gray;
+  }
+}
+@media (max-width: 450px) {
+  .my-locker-row .el-col:nth-child(1) {
+    position: sticky;
+    left: 10px;
+    z-index: 1;
+    background-color: #191b1f;
+  }
+  .my-locker-row .el-col:nth-child(2) {
+    position: sticky;
+    left: 100px;
+    z-index: 1;
+    background-color: #191b1f;
   }
 }
 </style>
