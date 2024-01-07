@@ -570,6 +570,9 @@ export default {
   }
 
   @media (max-width: 450px) {
+    .responsive-table > div {
+      min-width: 100%;
+    }
     ._fave-btn-wrapper {
       height: 20px;
       position: sticky;

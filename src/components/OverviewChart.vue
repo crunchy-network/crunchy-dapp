@@ -582,13 +582,13 @@ export default {
     > tr:nth-child(1)
     > td:nth-child(2)
     > div {
-    width: 200px !important;
+    width: 300px !important;
   }
   .overview-chart #volume > div.tv-lightweight-charts > table > tr:nth-child(1) > td:nth-child(2) > div > canvas:nth-child(1){
-    width: 200px !important;
+    width: 300px !important;
   }
   .overview-chart #volume > div.tv-lightweight-charts > table > tr:nth-child(1) > td:nth-child(2) > div > canvas:nth-child(2) {
-    width: 200px !important;
+    width: 300px !important;
   } 
 }
 </style>
