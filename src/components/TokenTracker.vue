@@ -112,12 +112,19 @@
                     align="middle"
                     style="padding: 0 20px; color: var(--color-subheading-text)"
                   >
-                    <el-col style="text-align: right" :span="1"> </el-col>
+                    <el-col
+                      class="_fave-btn-wrapper"
+                      style="text-align: right; background-color: #191b1f"
+                      :span="1"
+                    >
+                    </el-col>
                     <el-col
                       :span="23"
-                      :style="{ 'padding-right': isMobile ? '0px' : '10px' }"
+                      :style="{
+                        'padding-right': isMobile ? '0px' : '10px'
+                      }"
                     >
-                      <el-row>
+                      <el-row class="table-title">
                         <el-col :span="2">#</el-col>
 
                         <el-col :span="3">
@@ -134,10 +141,7 @@
                           </div>
                         </el-col>
 
-                        <el-col
-                          style="text-align: right"
-                          :span="isMobile ? 8 : 4"
-                        >
+                        <el-col style="text-align: right" :span="4">
                           <div
                             class="wrap-sort-icon"
                             @click="toggleColumSort('cuurentPrice', 'usdValue')"
@@ -149,11 +153,7 @@
                             Price
                           </div>
                         </el-col>
-                        <el-col
-                          v-show="!isMobile"
-                          style="text-align: right"
-                          :span="4"
-                        >
+                        <el-col style="text-align: right" :span="4">
                           <div
                             class="wrap-sort-icon"
                             @click="toggleColumSort('volume24', 'volume24Usd')"
@@ -165,10 +165,7 @@
                             24 Volume
                           </div>
                         </el-col>
-                        <el-col
-                          style="text-align: right"
-                          :span="isMobile ? 6 : 4"
-                        >
+                        <el-col style="text-align: right" :span="4">
                           <div
                             class="wrap-sort-icon"
                             @click="toggleColumSort('mktCap', 'mktCapUsd')"
@@ -180,10 +177,7 @@
                             Mkt Cap
                           </div>
                         </el-col>
-                        <el-col
-                          style="text-align: right"
-                          :span="isMobile ? 5 : 2"
-                        >
+                        <el-col style="text-align: right" :span="2">
                           <div
                             class="wrap-sort-icon"
                             @click="
@@ -206,11 +200,7 @@
                             </el-tooltip>
                           </div>
                         </el-col>
-                        <el-col
-                          v-show="!isMobile"
-                          style="text-align: right"
-                          :span="2"
-                        >
+                        <el-col style="text-align: right" :span="2">
                           <div
                             class="wrap-sort-icon"
                             @click="
@@ -233,11 +223,7 @@
                             </el-tooltip>
                           </div>
                         </el-col>
-                        <el-col
-                          v-show="!isMobile"
-                          style="text-align: right"
-                          :span="2"
-                        >
+                        <el-col style="text-align: right" :span="2">
                           <div
                             class="wrap-sort-icon"
                             @click="
@@ -584,9 +570,33 @@ export default {
   }
 
   @media (max-width: 450px) {
-    .header-row-wrap {
-      max-width: 100%;
-      min-width: 100%;
+    ._fave-btn-wrapper {
+      height: 20px;
+      position: sticky;
+      left: 0px;
+      z-index: 2;
+      background-color: #191b1f;
+    }
+    .table-title {
+      display: flex;
+      justify-content: space-between;
+    }
+    .table-title .el-col:nth-child(1) {
+      position: sticky;
+      left: 38px;
+      z-index: 1;
+      background-color: #191b1f;
+    }
+
+    .table-title .el-col:nth-child(2) {
+      position: sticky;
+      left: 100px;
+      z-index: 2;
+      background-color: #191b1f;
+    }
+
+    .table-title {
+      padding: 0 !important;
     }
   }
 }

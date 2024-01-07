@@ -1,6 +1,11 @@
 <template>
   <el-row
-    style="padding-bottom: 14px; font-size: 14px; font-weight: 600"
+    style="
+      padding-bottom: 14px;
+      font-size: 14px;
+      font-weight: 600;
+      min-width: 900px;
+    "
     type="flex"
     align="top"
   >
@@ -8,12 +13,11 @@
       <div class="item-row">
         <el-row
           :gutter="20"
-          class="tokenTracker-row"
           style="margin-left: 0; margin-right: 0; padding: 20px 10px"
           type="flex"
           align="middle"
         >
-          <el-col style="height: 100%" :span="1">
+          <el-col class="_fave-btn-wrapper" style="height: 100%" :span="1">
             <button
               v-if="asset.isFavorite"
               class="_fave-btn active"
@@ -31,14 +35,12 @@
           </el-col>
           <el-col
             :span="23"
-            :style="{ 'padding-right': isMobile ? '0px' : '10px' }"
+            :style="{
+              'padding-right': isMobile ? '0px' : '10px',
+            }"
           >
             <router-link :to="'/token/' + asset.id" exact>
-              <el-row
-                type="flex"
-                align="middle"
-                :style="{ 'padding-left': isMobile ? '10px' : '0' }"
-              >
+              <el-row class="tokenTracker-row" type="flex" align="middle">
                 <el-col v-if="asset.isRanked" :span="2">{{
                   asset.order
                 }}</el-col>
@@ -58,7 +60,6 @@
                       "
                     ></el-avatar>
                     <a
-                      v-show="!isMobile"
                       style="color: #555cff; text-decoration: none"
                       target="_blank"
                       :href="`https://tzkt.io/${asset.address}/operations/`"
@@ -68,7 +69,7 @@
                   </el-row>
                 </el-col>
 
-                <el-col style="text-align: right" :span="isMobile ? 8 : 4">
+                <el-col style="text-align: right" :span="4">
                   <price-format
                     prefix="$"
                     :precision="!isMobile ? 5 : 2"
@@ -76,7 +77,7 @@
                     :usd-value="asset.usdValue"
                   />
                 </el-col>
-                <el-col v-show="!isMobile" style="text-align: right" :span="4">
+                <el-col style="text-align: right" :span="4">
                   <price-format
                     v-if="asset.softCalcDone"
                     prefix="$"
@@ -86,7 +87,7 @@
                   />
                   <span v-else> - </span>
                 </el-col>
-                <el-col style="text-align: right" :span="isMobile ? 6 : 4">
+                <el-col style="text-align: right" :span="4">
                   <price-format
                     :precision="4"
                     prefix="$"
@@ -97,7 +98,7 @@
 
                 <el-col
                   style="text-align: right"
-                  :span="isMobile ? 5 : 2"
+                  :span="2"
                   :class="
                     handleChangeclass(asset, 'change1Day', 'change1DayUsd')
                   "
@@ -123,7 +124,6 @@
                   }}
                 </el-col>
                 <el-col
-                  v-show="!isMobile"
                   style="text-align: right"
                   :span="2"
                   :class="
@@ -151,7 +151,6 @@
                   }}
                 </el-col>
                 <el-col
-                  v-show="!isMobile"
                   style="text-align: right"
                   :span="2"
                   :class="
@@ -264,15 +263,30 @@ export default {
   &:hover {
     opacity: 0.65;
   }
-  @media (max-width: 450px) {
-    .tokenTracker-row {
-      padding-left: 0px !important;
-      padding-right: 0px !important;
-      justify-content: space-between;
-    }
-    .row-between {
-      padding-left: 10px;
-    }
+}
+@media (max-width: 450px) {
+  .tokenTracker-row .el-col:nth-child(1) {
+    position: sticky;
+    left: 38px;
+    z-index: 1;
+    background-color: #191b1f;
+  }
+
+  .tokenTracker-row .el-col:nth-child(2) {
+    position: sticky;
+    left: 100px;
+    z-index: 2;
+    background-color: #191b1f;
+  }
+  .tokenTracker-row {
+    display: flex;
+    justify-content: space-between;
+  }
+  ._fave-btn-wrapper {
+    position: sticky;
+    left: 0px;
+    z-index: 2;
+    background-color: #191b1f;
   }
 }
 </style>
