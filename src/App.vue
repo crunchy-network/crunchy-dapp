@@ -110,10 +110,6 @@ body {
 
 .responsive-table > div {
   min-width: max-content;
-  @media (max-width: 450px) {
-    max-width: 100%;
-    min-width: 100%;
-  }
 }
 /* FONT WEIGHTS */
 h1,
