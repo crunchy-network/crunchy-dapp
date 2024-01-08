@@ -813,6 +813,10 @@ export default {
     letter-spacing: 0.02em;
   }
   @media (max-width: 450px) {
+    .responsive-table > div {
+      min-width: 100%;
+      max-width: 100%;
+    }
     .grid-content-filter {
       display: flex;
       flex-direction: column;

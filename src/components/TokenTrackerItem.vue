@@ -28,7 +28,7 @@
             style="
               background: var(--wallet-background) !important;
               border: 0.5px solid #555cff;
-              color: var(--alt-btn-color) !important; ;
+              color: var(--alt-btn-color) !important;
             "
             icon="fa-sharp fa-solid fa-arrow-left"
             >{{ " " }}BACK

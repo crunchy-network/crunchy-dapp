@@ -232,4 +232,12 @@ export default {
 .p-change {
   color: $--color-success;
 }
+@media (max-width: 450px) {
+  .farm-row .el-col:nth-child(1) {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background-color: inherit;
+  }
+}
 </style>

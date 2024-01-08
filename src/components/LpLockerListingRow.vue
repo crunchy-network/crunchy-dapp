@@ -17,7 +17,7 @@
       >
         <el-row
           :gutter="20"
-          class="locker-row"
+          class="locker-item-row"
           :class="{ expanded: locker.rowExpanded }"
           style="margin-left: 0; margin-right: 0"
           type="flex"
@@ -47,7 +47,10 @@
                 margin-right: 14px;
               "
             ></el-avatar>
-            {{ locker.token.token1.symbol }} / {{ locker.token.token2.symbol }}
+            <p v-show="!isMobile">
+              {{ locker.token.token1.symbol }} /
+              {{ locker.token.token2.symbol }}
+            </p>
           </el-col>
 
           <el-col :sm="2" :lg="5">
@@ -72,13 +75,15 @@
                 "
               ></el-avatar>
               {{
-                locker.token.isQuipuToken2TokenLp
-                  ? "QuipuswapTokenToToken"
-                  : locker.token.isQuipuV2Lp
-                  ? "QuipuswapV2"
-                  : locker.token.isQuipuStableLp
-                  ? "QuipuswapStable"
-                  : "Quipuswap"
+                !isMobile
+                  ? locker.token.isQuipuToken2TokenLp
+                    ? "QuipuswapTokenToToken"
+                    : locker.token.isQuipuV2Lp
+                    ? "QuipuswapV2"
+                    : locker.token.isQuipuStableLp
+                    ? "QuipuswapStable"
+                    : "Quipuswap"
+                  : ""
               }}
             </template>
             <template v-else-if="locker.token.isSpicyLp">
@@ -94,7 +99,7 @@
                   margin-right: 14px;
                 "
               ></el-avatar>
-              Spicyswap
+              {{ !isMobile ? "Spicyswap" : "" }}
             </template>
             <template
               v-else-if="
@@ -116,7 +121,7 @@
                   margin-right: 14px;
                 "
               ></el-avatar>
-              Plenty
+              {{ !isMobile ? Plenty : "" }}
             </template>
           </el-col>
 
@@ -232,6 +237,9 @@ export default {
   },
   computed: {
     ...mapState(["wallet", "lpLockers"]),
+    isMobile() {
+      return window.innerWidth <= 450;
+    },
   },
   methods: {
     format() {
@@ -245,4 +253,18 @@ export default {
 <style lang="scss" scoped>
 @import "../crunchy-variables.scss";
 @import "~element-ui/packages/theme-chalk/src/common/var";
+@media (max-width: 450px) {
+  .locker-item-row .el-col:nth-child(1) {
+    position: sticky;
+    left: 5px;
+    z-index: 1;
+    background-color: #191b1f;
+  }
+  .locker-item-row .el-col:nth-child(2) {
+    position: sticky;
+    left: 130px;
+    z-index: 1;
+    background-color: #191b1f;
+  }
+}
 </style>

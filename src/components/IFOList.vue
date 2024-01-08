@@ -40,6 +40,7 @@
                   >
                     <el-col>
                       <el-row
+                        class="ifo-row"
                         :gutter="20"
                         type="flex"
                         align="middle"
@@ -95,5 +96,13 @@ export default {
 <style>
 .el-row {
   font-size: 14px;
+}
+@media (max-width: 450px) {
+  .ifo-row .el-col:nth-child(1) {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background-color: #191b1f;
+  }
 }
 </style>
