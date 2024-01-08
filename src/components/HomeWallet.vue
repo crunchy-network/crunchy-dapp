@@ -398,6 +398,9 @@ export default {
   }
 }
 @media (max-width: 450px) {
+  .responsive-table > div {
+    min-width: 900px;
+  }
   .portfolio-row {
     display: flex;
     justify-content: space-between;

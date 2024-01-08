@@ -98,5 +98,37 @@ export default {
       background: transparent !important;
     }
   }
+  @media (max-width: 450px) {
+    width: 1500px;
+    position: relative;
+    margin-left: 40px;
+    left: -600px;
+    z-index: 1;
+    .el-button:nth-child(1) {
+      position: sticky;
+      left: 50px;
+      z-index: 1;
+    }
+    .el-button:nth-child(2) {
+      position: sticky;
+      left: 105px;
+      z-index: 1;
+    }
+    .el-button:nth-child(4) {
+      position: sticky;
+      left: 250px;
+      z-index: 1;
+    }
+    .el-button:nth-child(5) {
+      position: sticky;
+      left: 305px;
+      z-index: 1;
+    }
+    h2 {
+      position: sticky;
+      left: 170px;
+      z-index: 1;
+    }
+  }
 }
 </style>
