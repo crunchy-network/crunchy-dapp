@@ -120,16 +120,15 @@
 
                 <span>Swap</span>
               </router-link>
-              <router-link
+              <!-- <router-link
                 tag="li"
                 class="el-menu-item"
                 to="/stake"
                 active-class="is-active"
               >
-                <!-- <i v-if="mobile" class="fak fa-crunchy-swap-alt"></i> -->
-
+                <i v-if="mobile" class="fak fa-crunchy-swap-alt"></i>
                 <span>Stake</span>
-              </router-link>
+              </router-link> -->
               <el-submenu
                 id="defi-menu"
                 :popper-append-to-body="false"
@@ -508,7 +507,8 @@ export default {
         color: var(--color-menu-active) !important;
       }
       img {
-        filter: invert(38%) sepia(87%) saturate(2093%) hue-rotate(333deg) brightness(103%) contrast(100%) !important;
+        filter: invert(38%) sepia(87%) saturate(2093%) hue-rotate(333deg)
+          brightness(103%) contrast(100%) !important;
       }
     }
   }
