@@ -17,7 +17,7 @@
       >
         <el-row
           :gutter="20"
-          class="locker-row"
+          class="my-locker-item-row"
           :class="{ expanded: locker.rowExpanded, withdrawn: !locker.active }"
           style="margin-left: 0; margin-right: 0"
           type="flex"
@@ -50,7 +50,7 @@
                 margin-right: 14px;
               "
             ></el-avatar>
-            {{ locker.token.symbol }}
+            <p v-show="!isMobile">{{ locker.token.symbol }}</p>
           </el-col>
 
           <el-col :sm="2" :lg="5">
@@ -75,6 +75,7 @@
                 "
               ></el-avatar>
               {{
+                !isMobile ? 
                 locker.token.isQuipuToken2TokenLp
                   ? "QuipuswapTokenToToken"
                   : locker.token.isQuipuV2Lp
@@ -82,6 +83,7 @@
                   : locker.token.isQuipuStableLp
                   ? "QuipuswapStable"
                   : "Quipuswap"
+                : ""
               }}
             </template>
             <template
@@ -104,7 +106,7 @@
                   margin-right: 14px;
                 "
               ></el-avatar>
-              Plenty
+              <p v-show="!isMobile">Plenty</p>
             </template>
             <template v-if="locker.token.isSpicyLp">
               <el-avatar
@@ -119,7 +121,7 @@
                   margin-right: 14px;
                 "
               ></el-avatar>
-              Spicy
+              <p v-show="!isMobile">Spicy</p>
             </template>
           </el-col>
 
@@ -271,6 +273,9 @@ export default {
   },
   computed: {
     ...mapState(["wallet", "lpLockers"]),
+    isMobile() {
+      return window.innerWidth <= 450;
+    },
   },
   methods: {
     ...mapActions(["withdrawLp", "withdrawLpProfit"]),
@@ -326,6 +331,20 @@ html[data-theme="dark"] ._more-btn {
   &:hover {
     background: #eeefff !important;
     color: #555cff;
+  }
+}
+@media (max-width: 450px) {
+  .my-locker-item-row .el-col:nth-child(1) {
+    position: sticky;
+    left: 5px;
+    z-index: 1;
+    background-color: #191b1f;
+  }
+  .my-locker-item-row .el-col:nth-child(2) {
+    position: sticky;
+    left: 100px;
+    z-index: 1;
+    background-color: #191b1f;
   }
 }
 </style>

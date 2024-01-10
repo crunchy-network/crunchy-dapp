@@ -2,7 +2,7 @@
   <div style="height: 100%">
     <el-card
       v-loading="!loading && !getLoadingChart ? false : true"
-      style="height: 100%"
+      style="height: 100%; padding-left: 16px; padding-right: 16px"
       shadow="always"
     >
       <el-row

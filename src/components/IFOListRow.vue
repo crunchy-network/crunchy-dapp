@@ -44,7 +44,12 @@
               </div>
             </el-col>
             <el-col :span="5" style="font-weight: bold; text-align: right">
-              {{ vueNumberFormat(project.offeringSupply) }}
+              {{
+                isMobile
+                  ? formatNumShorthand(project.offeringSupply, 2).value +
+                    formatNumShorthand(project.offeringSupply, 2).suffix
+                  : vueNumberFormat(project.offeringSupply)
+              }}
               {{ project.tokenSymbol }}
             </el-col>
             <el-col
@@ -81,6 +86,37 @@ export default {
       require.context("../assets/project_images", false, /\.(png|jpe?g|svg)$/)
     ),
   }),
+  computed: {
+    isMobile() {
+      return window.innerWidth <= 450;
+    },
+  },
+  methods: {
+    formatNumShorthand(value, precision) {
+      const number = precision
+        ? parseFloat(value).toFixed(precision)
+        : Number(value);
+      if (isNaN(number)) return { value: 0, suffix: "" };
+      if (number < 1000) {
+        return { value: number, suffix: "" };
+      } else if (number < 1000000) {
+        const value = number / 1000;
+        const precisedValue = parseFloat(value).toFixed(precision);
+        return { value: precisedValue, suffix: "K" };
+      } else if (number < 1000000000) {
+        const value = (number / 1000000).toFixed(precision);
+        return { value, suffix: "M" };
+      } else if (number < 1000000000000) {
+        const value = number / 1000000000;
+        const precisedValue = parseFloat(value).toFixed(precision);
+        return { value: precisedValue, suffix: "B" };
+      } else {
+        const value = number / 1000000000000;
+        const precisedValue = parseFloat(value).toFixed(precision);
+        return { value: precisedValue, suffix: "T" };
+      }
+    },
+  },
 };
 </script>
 <style scoped>
@@ -93,5 +129,13 @@ export default {
   display: flex;
   justify-content: start;
   align-items: center;
+}
+@media (max-width: 450px) {
+  .farm-row .el-col:nth-child(1) {
+    position: sticky;
+    left: -1px;
+    z-index: 1;
+    background-color: inherit;
+  }
 }
 </style>

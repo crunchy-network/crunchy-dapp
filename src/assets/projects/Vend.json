@@ -15,6 +15,10 @@
   "decimals": 6,
   "links": [
     {
+      "name": "Vendcoin",
+      "link": "https://www.vendcoin.xyz/"
+    },
+    {
       "name": "Vending Machine",
       "link": "https://vendingnfts.xyz/"
     },

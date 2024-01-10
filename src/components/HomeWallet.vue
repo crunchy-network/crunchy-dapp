@@ -100,6 +100,7 @@
             >
               <el-col :span="24">
                 <el-row
+                  class="portfolio-row"
                   :gutter="20"
                   type="flex"
                   align="middle"
@@ -386,6 +387,7 @@ export default {
   display: none;
   width: 100%;
 }
+
 @media (max-width: 600px) {
   .tab-select-element {
     display: block;
@@ -393,6 +395,21 @@ export default {
 
   .tab-custom-element {
     display: none;
+  }
+}
+@media (max-width: 450px) {
+  .responsive-table > div {
+    min-width: 900px;
+  }
+  .portfolio-row {
+    display: flex;
+    justify-content: space-between;
+  }
+  .portfolio-row .el-col:nth-child(1) {
+    position: sticky;
+    left: 0px;
+    z-index: 1;
+    background-color: #191b1f;
   }
 }
 </style>
