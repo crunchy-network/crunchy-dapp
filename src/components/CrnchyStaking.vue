@@ -22,7 +22,8 @@
                 <a
                   ref="link"
                   style="color: var(--link-btn-color); text-decoration: none"
-                  href="#"
+                  href="https://crunchytez.medium.com/crunchy-network-crnhcy-staking-b4ae3ac6167e"
+                  target="_blank"
                   >Read more</a
                 >
               </h2>
