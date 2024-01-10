@@ -1,6 +1,11 @@
 <template>
   <el-row
-    style="padding-bottom: 14px; font-size: 14px; font-weight: 600"
+    style="
+      padding-bottom: 14px;
+      font-size: 14px;
+      font-weight: 600;
+      min-width: 900px;
+    "
     type="flex"
     align="top"
   >
@@ -8,12 +13,11 @@
       <div class="item-row">
         <el-row
           :gutter="20"
-          class="farm-row"
-          style="margin-left: 0; margin-right: 0"
+          style="margin-left: 0; margin-right: 0; padding: 20px 10px"
           type="flex"
           align="middle"
         >
-          <el-col style="height: 100%" :span="1">
+          <el-col class="_fave-btn-wrapper" style="height: 100%" :span="1">
             <button
               v-if="asset.isFavorite"
               class="_fave-btn active"
@@ -29,18 +33,25 @@
               <i class="fa-regular fa-star"></i>
             </button>
           </el-col>
-          <el-col :span="23">
+          <el-col
+            :span="23"
+            :style="{
+              'padding-right': isMobile ? '0px' : '10px',
+            }"
+          >
             <router-link :to="'/token/' + asset.id" exact>
-              <el-row type="flex" align="middle">
-                <el-col :span="2" v-if="asset.isRanked">{{ asset.order }}</el-col>
-                <el-col :span="2" v-else>-</el-col>
-                <el-col style="text-align: left" :span="4">
+              <el-row class="tokenTracker-row" type="flex" align="middle">
+                <el-col v-if="asset.isRanked" :span="2">{{
+                  asset.order
+                }}</el-col>
+                <el-col v-else :span="2">-</el-col>
+                <el-col style="text-align: left" :span="3">
                   <el-row type="flex" style="align-items: center">
                     <el-avatar
                       :src="asset.thumbnailUri"
                       fit="cover"
                       shape="circle"
-                      :size="40"
+                      :size="isMobile ? 34 : 40"
                       style="
                         position: relative;
                         border: 4px solid #fff;
@@ -61,7 +72,7 @@
                 <el-col style="text-align: right" :span="4">
                   <price-format
                     prefix="$"
-                    :precision="5"
+                    :precision="!isMobile ? 5 : 2"
                     :value="asset.currentPrice"
                     :usd-value="asset.usdValue"
                   />
@@ -70,7 +81,7 @@
                   <price-format
                     v-if="asset.softCalcDone"
                     prefix="$"
-                    :precision="4"
+                    :precision="!isMobile ? 4 : 1"
                     :value="asset.volume24"
                     :usd-value="asset.volume24Usd"
                   />
@@ -188,6 +199,9 @@ export default {
   },
   computed: {
     ...mapGetters(["getShowUsd"]),
+    isMobile() {
+      return window.innerWidth <= 450;
+    },
   },
   methods: {
     ...mapActions(["setTokenAsFavourite", "removeTokenAsFavourite"]),
@@ -248,6 +262,31 @@ export default {
   }
   &:hover {
     opacity: 0.65;
+  }
+}
+@media (max-width: 450px) {
+  .tokenTracker-row .el-col:nth-child(1) {
+    position: sticky;
+    left: 36px;
+    z-index: 1;
+    background-color: #191b1f;
+  }
+
+  .tokenTracker-row .el-col:nth-child(2) {
+    position: sticky;
+    left: 100px;
+    z-index: 2;
+    background-color: #191b1f;
+  }
+  .tokenTracker-row {
+    display: flex;
+    justify-content: space-between;
+  }
+  ._fave-btn-wrapper {
+    position: sticky;
+    left: -1px;
+    z-index: 2;
+    background-color: #191b1f;
   }
 }
 </style>

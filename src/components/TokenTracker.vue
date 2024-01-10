@@ -58,8 +58,8 @@
                 <!-- </el-card> -->
               </div>
             </el-col>
-            <el-col :sm="12" :md="12" >
-              <div class="grid-content" style="height: 100%" >
+            <el-col :sm="12" :md="12" style="padding-left: 0">
+              <div class="grid-content" style="height: 100%">
                 <!-- <el-card class="box-card" shadow="always" style="height: 100%"> -->
                 <el-col>
                   <Overview
@@ -81,7 +81,7 @@
             style="margin-top: 30px"
             :gutter="10"
           >
-            <el-col :xs="12" :span="10">
+            <el-col :xs="isMobile ? 24 : 12" :span="10">
               <div class="grid-content search-input">
                 <el-input
                   :value="tokenTracker.searchInput"
@@ -104,17 +104,7 @@
         <el-card v-loading="tokenTracker.loading" shadow="always">
           <div class="responsive-table">
             <div>
-              <el-row
-                type="flex"
-                align="middle"
-                class="header-row-wrap"
-                style="
-                  border-bottom: var(--line-border);
-                  padding-bottom: 14px;
-                  margin-bottom: 14px;
-                  min-width: 900px;
-                "
-              >
+              <el-row type="flex" align="middle" class="header-row-wrap">
                 <el-col :span="24">
                   <el-row
                     :gutter="20"
@@ -122,12 +112,22 @@
                     align="middle"
                     style="padding: 0 20px; color: var(--color-subheading-text)"
                   >
-                    <el-col style="text-align: right" :span="1"> </el-col>
-                    <el-col :span="23">
-                      <el-row>
+                    <el-col
+                      class="_fave-btn-wrapper"
+                      style="text-align: right; background-color: #191b1f"
+                      :span="1"
+                    >
+                    </el-col>
+                    <el-col
+                      :span="23"
+                      :style="{
+                        'padding-right': isMobile ? '0px' : '10px'
+                      }"
+                    >
+                      <el-row class="table-title">
                         <el-col :span="2">#</el-col>
 
-                        <el-col :span="4">
+                        <el-col :span="3">
                           <div
                             class="wrap-sort-icon"
                             @click="toggleColumSort('symbol')"
@@ -328,6 +328,9 @@ export default {
     getLoading() {
       return this.tokenTracker.loading;
     },
+    isMobile() {
+      return window.innerWidth <= 450;
+    },
   },
 
   watch: {
@@ -486,6 +489,13 @@ export default {
     margin: 0 !important;
   }
 
+  .header-row-wrap {
+    border-bottom: var(--line-border);
+    padding-bottom: 14px;
+    margin-bottom: 14px;
+    min-width: 900px;
+  }
+
   .header-row-wrap .wrap-sort-icon {
     color: var(--color-subheading-text);
     font-size: 14px;
@@ -497,7 +507,6 @@ export default {
     cursor: pointer;
     width: 100%;
     height: 100%;
-
     &:hover {
       color: var(--color-subheading-text);
       transition: 0.2s ease-in-out color;
@@ -557,6 +566,40 @@ export default {
 
     .tab-custom-element {
       display: none;
+    }
+  }
+
+  @media (max-width: 450px) {
+    .responsive-table > div {
+      min-width: 100%;
+    }
+    ._fave-btn-wrapper {
+      height: 20px;
+      position: sticky;
+      left: -1px;
+      z-index: 2;
+      background-color: #191b1f;
+    }
+    .table-title {
+      display: flex;
+      justify-content: space-between;
+    }
+    .table-title .el-col:nth-child(1) {
+      position: sticky;
+      left: 36px;
+      z-index: 1;
+      background-color: #191b1f;
+    }
+
+    .table-title .el-col:nth-child(2) {
+      position: sticky;
+      left: 100px;
+      z-index: 2;
+      background-color: #191b1f;
+    }
+
+    .table-title {
+      padding: 0 !important;
     }
   }
 }

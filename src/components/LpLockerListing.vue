@@ -19,6 +19,7 @@
                 <el-col :span="24">
                   <el-row
                     :gutter="20"
+                    class="locker-row"
                     type="flex"
                     align="middle"
                     style="padding: 0 20px; color: var(--color-subheading-text)"
@@ -91,3 +92,22 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+@import "../crunchy-variables.scss";
+@import "~element-ui/packages/theme-chalk/src/common/var";
+@media (max-width: 450px) {
+  .locker-row .el-col:nth-child(1) {
+    position: sticky;
+    left: 10px;
+    z-index: 1;
+    background-color: #191b1f;
+  }
+  .locker-row .el-col:nth-child(2) {
+    position: sticky;
+    left: 130px;
+    z-index: 1;
+    background-color: #191b1f;
+  }
+}
+</style>
