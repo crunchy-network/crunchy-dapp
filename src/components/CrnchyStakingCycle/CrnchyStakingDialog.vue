@@ -9,7 +9,7 @@
       class="box-card"
       style="flex: 1; display: flex; flex-direction: column"
     >
-      <div style="margin-bottom: 24px; display: flex; align-items: end">
+      <div v-if="step !== 'success'" style="margin-bottom: 24px; display: flex; align-items: end">
         <el-button
           class="text-btn"
           type="text"
@@ -22,6 +22,7 @@
           Stake
         </el-button>
         <el-button
+          v-if="crnchyStaking.myStaking.nextCycle.deposit > 0"
           class="text-btn"
           type="text"
           :style="
@@ -32,6 +33,34 @@
         >
           Re-Stake
         </el-button>
+      </div>
+
+      <div v-if="step === 'success'">
+        <h2 class="title">Stake Successful!</h2>
+        <p
+          style="
+            margin-top: 16px;
+            font-weight: 300 !important;
+            font-size: 14px;
+            line-height: normal;
+            letter-spacing: normal;
+            color: var(--color-subheading-text);
+          "
+        >
+          Your CRNCHY tokens are staked and will be reflected in the "Next Cycle" tab.
+        </p>
+        <p
+          style="
+            margin-top: 16px;
+            font-weight: 300 !important;
+            font-size: 14px;
+            line-height: normal;
+            letter-spacing: normal;
+            color: var(--color-subheading-text);
+          "
+        >
+          Check your wallet for your crVOTE allocation. Don't lose that crVOTE. You must have it in your wallet when you are able to unstake your CRNCHY
+        </p>
       </div>
 
       <div v-if="step === 'input'">
@@ -157,7 +186,7 @@
         </div>
         <el-row style="margin-top: 10px" :gutter="8">
           <el-col
-            v-for="(label, lockTime) in lockOpts"
+            v-for="([lockTime, label]) in Object.entries(lockOpts).reverse()"
             :key="lockTime"
             :span="8"
           >
@@ -216,21 +245,22 @@
         </el-row>
       </div>
 
-      <div style="margin: 10px 0 32px 0" class="lock-display _info-card">
+      <div v-if="step !== 'success'" style="margin: 10px 0 32px 0" class="lock-display _info-card">
         <small style="color: var(--primary-text)">
           Unlocks: {{ selectedLockTimeUnlocks | moment("MMM DD YYYY HH:mm Z") }}
         </small>
       </div>
-      <div style="margin-bottom: 10px">
+      <div v-if="step !== 'success'" style="margin-bottom: 10px">
         <h2>
           <template v-if="tab === 'stake'"
-            >After Staking You Will Have</template
+            >You Will Receive</template
           >
           <template v-else>After Re-Stake You Will Have</template>
         </h2>
       </div>
 
       <el-row
+        v-if="step !== 'success'"
         :gutter="5"
         type="flex"
         justify="space-between"
@@ -265,7 +295,7 @@
         </div>
       </el-row>
 
-      <el-row style="margin-top: 32px" type="flex" justify="center">
+      <el-row v-if="step !== 'success'" style="margin-top: 32px" type="flex" justify="center">
         <template v-if="step === 'input'">
           <el-button
             round
@@ -311,11 +341,11 @@ export default {
       visible: false,
       submitDisabled: false,
       tab: "stake", // stake | restake
-      step: "input", // input | confirm
+      step: "input", // input | confirm | success
       inputAmount: null,
       minLock: 0,
       selectedLockTime:
-        process.env.VUE_APP_TEZOS_NETWORK === "ghostnet" ? 1209600 : 12614400,
+        process.env.VUE_APP_TEZOS_NETWORK === "ghostnet" ? 1209600 : 126144000,
       lockOpts:
         process.env.VUE_APP_TEZOS_NETWORK === "ghostnet"
           ? {
@@ -327,7 +357,7 @@ export default {
               3600: "1 Hour",
             }
           : {
-              12614400: "4 Years",
+              126144000: "4 Years",
               63072000: "2 Years",
               31536000: "1 Year",
               15768000: "6 Months",
@@ -412,7 +442,8 @@ export default {
           amount: this.tab === "restake" ? 0 : this.inputAmount,
           stakingPower: this.selectedLockTime,
         });
-        this.visible = false;
+        this.setStep("success");
+        this.submitDisabled = false;
       } catch (e) {
         this.submitDisabled = false;
       }

@@ -140,7 +140,7 @@
                     ></el-progress>
                   </el-row>
 
-                  <h2
+                  <!-- <h2
                     style="
                       color: var(--color-subheading-text);
                       font-size: 16px;
@@ -148,7 +148,7 @@
                     "
                   >
                     $8.2m
-                  </h2>
+                  </h2> -->
                 </el-card>
               </el-col>
               <el-col :span="24" :md="12" :lg="6">
@@ -297,7 +297,7 @@
                     >
                     </el-avatar>
                   </el-row>
-                  <h2
+                  <!-- <h2
                     style="
                       color: var(--color-subheading-text);
                       font-size: 16px;
@@ -305,7 +305,7 @@
                     "
                   >
                     $6.2K
-                  </h2>
+                  </h2> -->
                 </el-card>
               </el-col>
             </el-row>
