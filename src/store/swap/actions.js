@@ -66,6 +66,10 @@ export default {
     state.commit("updateCurrentTrade", payload);
   },
 
+  updateTransactionParams(state, payload) {
+    state.commit("updateTransactionParams", payload);
+  },
+  
   async loadSwapPairs(state) {
     const dex = "core";
     const dexPools = await dexIndexer.getAllTokenPools();

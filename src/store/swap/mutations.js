@@ -5,6 +5,9 @@ export default {
   updateCurrentTrade(state, trade) {
     state.currentTrade = trade;
   },
+  updateTransactionParams(state, params) {
+    state.transactionParams = params;
+  },
   updateTokenList(state, tokens) {
     state.tokenList = tokens;
   },

@@ -10,7 +10,10 @@ function getAmountIn(input, token) {
 }
 
 function getFees(fees) {
-  const { liquidityProvidersFee, stakersFee, interfaceFee, devFee } = fees;
+  const liquidityProvidersFee = new BigNumber(fees.liquidityProvidersFee);
+  const stakersFee = new BigNumber(fees.stakersFee);
+  const interfaceFee = new BigNumber(fees.interfaceFee);
+  const devFee = new BigNumber(fees.devFee);
 
   return liquidityProvidersFee.plus(stakersFee).plus(interfaceFee).plus(devFee);
 }

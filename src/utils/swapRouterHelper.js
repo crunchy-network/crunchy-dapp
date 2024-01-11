@@ -1,15 +1,8 @@
-import {
-  addSlippageToleranceToRoute,
-  addSlippageToleranceToWeightedRoute,
-  findBestRoute,
-  findTopRoutes,
-  findBestWeightedRoute,
-  getAllCombinations,
-} from "../lib/SwapRouter";
-import { ROUTING_FEE_RATIO } from "../components/swapConfig";
 import ipfs from "./ipfs";
 import farmUtils from "./farm";
+import axios from "axios";
 
+const DEX_AGG_API = "https://crunchy-swap-api.metal01.cclabs.tech";
 const getAssetSlug = (token) => {
   if (token.assetSlug) return token.assetSlug;
   if (token.symbol === "XTZ") return "tez";
@@ -64,7 +57,7 @@ const buildTokenListFromWalletAndPriceFeed = (
   return buildTokenListWithoutWallet(pricefeedTokens);
 };
 
-const getBestTrade = async (form, routePairs) => {
+const getBestTrade = async (form, routePairs, pkh) => {
   const { inputToken, outputToken, inputAmount, slippageTolerance } = form;
   if (
     !inputToken.assetSlug ||
@@ -73,55 +66,24 @@ const getBestTrade = async (form, routePairs) => {
     !routePairs.length > 0
   )
     return undefined;
-  const combos = getAllCombinations(
-    inputToken.assetSlug,
-    outputToken.assetSlug,
-    routePairs
-  );
-  if (combos.length < 1) {
-    console.log("no combos");
-    return undefined;
-  }
+  try {
+    const response = await axios.post(`${DEX_AGG_API}/findBestRoute`, {
+      inputToken,
+      inputAmount,
+      outputToken,
+      slippageTolerance,
+      pkh,
+    });
 
-  let inputAfterRatio = inputAmount * ROUTING_FEE_RATIO;
-  if (inputToken.decimals === 0) {
-    inputAfterRatio = inputAmount;
-  }
-
-  const bestRoute = await findBestRoute(inputAfterRatio, combos, slippageTolerance);
-
-  const topRoutes = findTopRoutes(inputAfterRatio, combos, slippageTolerance);
-  const weightedCombos = topRoutes.map((r) => r.combo);
-
-  if (weightedCombos.length > 1) {
-    inputAfterRatio = inputAmount;
-    if (inputToken.decimals !== 0) {
-      inputAfterRatio = inputAmount * ROUTING_FEE_RATIO;
+    const { success, currentTrade, transactionParams, error } = response.data;
+    if (!success) {
+      throw new Error(`Error: ${error}`);
     }
 
-    const bestWeightedRoute = findBestWeightedRoute(
-      inputAfterRatio,
-      weightedCombos
-    );
-
-    if (bestWeightedRoute.outputAmount > bestRoute.outputAmount) {
-      return addSlippageToleranceToWeightedRoute(
-        bestWeightedRoute,
-        slippageTolerance
-      );
-    }
+    return { currentTrade, transactionParams};
+  } catch (error) {
+    throw new Error(`Failed to find the best route: ${error.message}`);
   }
-
-  if (bestRoute.trades.length === 0) {
-    return {
-      trades: [],
-      inputAmount: inputAmount,
-      outputAmount: 0,
-      outputWithSlippage: 0,
-    };
-  }
-
-  return addSlippageToleranceToRoute(bestRoute, slippageTolerance);
 };
 
 export { buildTokenListFromWalletAndPriceFeed, getBestTrade };

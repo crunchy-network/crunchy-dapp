@@ -12,6 +12,7 @@ export default {
       slippageTolerance: 0.5,
     },
     currentTrade: {},
+    transactionParams: {},
     swapPairs: [],
     dexApis: {
       core: {
@@ -26,6 +27,7 @@ export default {
   getters: {
     getTokenList: (state) => state.tokenList,
     getCurrentTrade: (state) => state.currentTrade,
+    getTransactionParams: (state) => state.transactionParams,
     getSwapForm: (state) => state.swapForm,
     getSwapPairs: (state) => state.dexApis.core.pairs,
     getApiLoadingStatus: (state) => {

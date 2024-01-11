@@ -94,7 +94,7 @@
           :disabled="buttonDisabled"
           type="primary"
           :style="{
-            border:'none',
+            border: 'none',
             'border-radius': '20px',
             width: '340px',
             'max-width': '100%',
@@ -141,7 +141,6 @@ import { getBestTrade } from "../utils/swapRouterHelper";
 
 import TokenSelectMenu from "./TokenSelectMenu.vue";
 import { buildRoutingFeeOperation } from "../utils/routing-fee";
-import { buildOperationParams } from "../lib/SwapRouter";
 import { Tezos } from "../utils/tezos";
 import * as signalR from "@microsoft/signalr";
 import ConnectButton from "./ConnectButton.vue";
@@ -170,6 +169,7 @@ export default {
       "getSwapForm",
       "getSwapPairs",
       "getCurrentTrade",
+      "getTransactionParams",
       "getApiLoadingStatus",
     ]),
     areApisLoading() {
@@ -248,6 +248,7 @@ export default {
       "updateForm",
       "updateCurrentPrices",
       "updateCurrentTrade",
+      "updateTransactionParams",
       "connectWallet",
       "updateDexApis",
       "loadWalletAsssets",
@@ -338,9 +339,17 @@ export default {
       if (this.getSwapPairs.length < 1) {
         console.log("swap pairs haven't loaded yet");
       }
-      const bestTrade = await getBestTrade(this.getSwapForm, this.getSwapPairs);
-      if (bestTrade) {
-        this.updateCurrentTrade(bestTrade);
+
+      const { currentTrade, transactionParams } = await getBestTrade(
+        this.getSwapForm,
+        this.getSwapPairs,
+        this.getPkh
+      );
+
+      if (currentTrade) {
+        console.log(currentTrade, transactionParams);
+        this.updateCurrentTrade(currentTrade);
+        this.updateTransactionParams(transactionParams);
       } else {
         this.updateCurrentTrade([]);
       }
@@ -435,11 +444,7 @@ export default {
           this.getSwapPairs
         );
       }
-      const op = await buildOperationParams(
-        this.getCurrentTrade,
-        Tezos,
-        this.getPkh
-      );
+      const op = this.getTransactionParams();
       const toBatch = [...op, ...fee].map((o) => ({
         ...o,
         kind: "transaction",
