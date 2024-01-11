@@ -347,7 +347,6 @@ export default {
       );
 
       if (currentTrade) {
-        console.log(currentTrade, transactionParams);
         this.updateCurrentTrade(currentTrade);
         this.updateTransactionParams(transactionParams);
       } else {
@@ -444,7 +443,7 @@ export default {
           this.getSwapPairs
         );
       }
-      const op = this.getTransactionParams();
+      const op = this.getTransactionParams;
       const toBatch = [...op, ...fee].map((o) => ({
         ...o,
         kind: "transaction",
