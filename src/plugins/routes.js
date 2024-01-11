@@ -15,7 +15,7 @@ import CrnchyStaking from "./../components/CrnchyStaking.vue";
 import Swap from "./../components/Swap.vue";
 import TokenTracker from "./../components/TokenTracker.vue";
 import TokenTrackerItem from "./../components/TokenTrackerItem.vue";
-import CreateToken from "./../components/CreateToken.vue"
+import CreateToken from "./../components/CreateToken.vue";
 // import Bakery from './../components/Bakery.vue'
 
 Vue.use(VueRouter);

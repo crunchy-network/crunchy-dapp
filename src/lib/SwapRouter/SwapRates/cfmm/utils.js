@@ -1,18 +1,13 @@
 /* eslint-disable new-cap */
 import BigNumber from "bignumber.js";
-import {
-  Int,
-  Nat,
-  quipuswapV3Types,
-
-} from "./types";
+import { Int, Nat, quipuswapV3Types } from "./types";
 const { validateAddress } = require("@taquito/utils");
 
 /**
  * @category Utils
  */
 class AddressPrimitive {
-  _address
+  _address;
   constructor(address) {
     if (validateAddress(address) !== 3) {
       throw new Error(`Invalid address: ${address}`);
@@ -27,8 +22,7 @@ class AddressPrimitive {
 /**
  * @category Utils
  */
-export class Address extends AddressPrimitive {
-}
+export class Address extends AddressPrimitive {}
 
 export class Timestamp {
   _timestamp;
@@ -54,10 +48,7 @@ export class Timestamp {
 /**
  * @category Utils
  */
-export function batchify(
-  batch,
-  transfers,
-) {
+export function batchify(batch, transfers) {
   for (const tParams of transfers) {
     batch.withTransfer(tParams);
   }
@@ -69,14 +60,10 @@ export function batchify(
  * @example
  * const batch = await sendBatch(tezos, [transferParams])
  */
-export const sendBatch = async (
-  tezos,
-  operationParams,
-) => batchify(tezos.wallet.batch([]), operationParams).send();
+export const sendBatch = async (tezos, operationParams) =>
+  batchify(tezos.wallet.batch([]), operationParams).send();
 
-export const initTimedCumulatives = (
-  time,
-) => {
+export const initTimedCumulatives = (time) => {
   return {
     time: time,
     tick: {
@@ -90,12 +77,10 @@ export const initTimedCumulatives = (
   };
 };
 
-export const initTimedCumulativesBuffer = async (
-  extraReservedSlots,
-) => {
+export const initTimedCumulativesBuffer = async (extraReservedSlots) => {
   return {
     map: quipuswapV3Types.CumulativeBufferMap.initCustom(
-      extraReservedSlots.toNumber(),
+      extraReservedSlots.toNumber()
     ),
     first: new Int(0),
     last: new Int(0),
@@ -106,31 +91,24 @@ export const initTimedCumulativesBuffer = async (
 /**
  * @x `isInRange` y $ (down, up)@ checks that @x@ is in the range @[y - down, y + up]@.
  */
-export const isInRange = (
-  x,
-  y,
-  marginDown,
-  marginUp,
-) => {
-  return !!(x.isGreaterThanOrEqualTo(y.minus(marginDown)) &&
-    x.isLessThanOrEqualTo(y.plus(marginUp)));
+export const isInRange = (x, y, marginDown, marginUp) => {
+  return !!(
+    x.isGreaterThanOrEqualTo(y.minus(marginDown)) &&
+    x.isLessThanOrEqualTo(y.plus(marginUp))
+  );
 };
 
 /**
  * -Similar to `isInRange`, but checks that the lower bound cannot be less than 0.
  */
-export const isInRangeNat = (
-  x,
-  y,
-  marginDown,
-  marginUp,
-) => {
+export const isInRangeNat = (x, y, marginDown, marginUp) => {
   const upperBound = y.plus(marginUp);
   const lowerBound = marginDown.isLessThanOrEqualTo(y)
     ? y.minus(marginDown)
     : new BigNumber(0);
-  return !!(x.isGreaterThanOrEqualTo(lowerBound) &&
-    x.isLessThanOrEqualTo(upperBound));
+  return !!(
+    x.isGreaterThanOrEqualTo(lowerBound) && x.isLessThanOrEqualTo(upperBound)
+  );
 };
 
 export function actualLength(buffer) {
@@ -150,15 +128,13 @@ export function isMonotonic(l) {
 /**
  * -- All records.
  */
-export function entries(
-  storage,
-) {
+export function entries(storage) {
   const buffer = storage.cumulativesBuffer;
   const map = buffer.map.map;
   return Object.entries(map)
     .filter(
       ([k, _]) =>
-        buffer.first.lte(new BigNumber(k)) && new BigNumber(k).lte(buffer.last),
+        buffer.first.lte(new BigNumber(k)) && new BigNumber(k).lte(buffer.last)
     )
     .map(([_, v]) => v);
 }
@@ -177,7 +153,7 @@ export const safeObserve = async (pool, time) => {
   } catch (e) {
     const block = await pool.tezos.rpc.getBlockHeader();
     const ts = new BigNumber(Date.parse(block.timestamp) / 1000).integerValue(
-      BigNumber.ROUND_CEIL,
+      BigNumber.ROUND_CEIL
     );
     return safeObserve(pool, ts);
   }

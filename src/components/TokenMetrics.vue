@@ -57,7 +57,7 @@
                   margin: 0;
                 "
               >
-                {{ getTokenOverview.isRanked ? getTokenOverview.order : 'NA' }}
+                {{ getTokenOverview.isRanked ? getTokenOverview.order : "NA" }}
               </p>
             </el-col>
             <el-col><el-divider direction="horizontal"></el-divider></el-col>

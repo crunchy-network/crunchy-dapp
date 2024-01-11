@@ -75,15 +75,15 @@
                 "
               ></el-avatar>
               {{
-                !isMobile ? 
-                locker.token.isQuipuToken2TokenLp
-                  ? "QuipuswapTokenToToken"
-                  : locker.token.isQuipuV2Lp
-                  ? "QuipuswapV2"
-                  : locker.token.isQuipuStableLp
-                  ? "QuipuswapStable"
-                  : "Quipuswap"
-                : ""
+                !isMobile
+                  ? locker.token.isQuipuToken2TokenLp
+                    ? "QuipuswapTokenToToken"
+                    : locker.token.isQuipuV2Lp
+                    ? "QuipuswapV2"
+                    : locker.token.isQuipuStableLp
+                    ? "QuipuswapStable"
+                    : "Quipuswap"
+                  : ""
               }}
             </template>
             <template

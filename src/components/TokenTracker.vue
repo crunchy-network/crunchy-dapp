@@ -121,7 +121,7 @@
                     <el-col
                       :span="23"
                       :style="{
-                        'padding-right': isMobile ? '0px' : '10px'
+                        'padding-right': isMobile ? '0px' : '10px',
                       }"
                     >
                       <el-row class="table-title">

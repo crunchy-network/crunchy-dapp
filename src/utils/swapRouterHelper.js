@@ -80,7 +80,7 @@ const getBestTrade = async (form, routePairs, pkh) => {
       throw new Error(`Error: ${error}`);
     }
 
-    return { currentTrade, transactionParams};
+    return { currentTrade, transactionParams };
   } catch (error) {
     throw new Error(`Failed to find the best route: ${error.message}`);
   }

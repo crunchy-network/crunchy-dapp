@@ -34,7 +34,6 @@ export default {
   methods: {
     ...mapActions(["updateTokenList"]),
   },
-  
 };
 </script>
 <style lang="scss">

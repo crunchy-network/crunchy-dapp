@@ -9,7 +9,10 @@
       class="box-card"
       style="flex: 1; display: flex; flex-direction: column"
     >
-      <div v-if="step !== 'success'" style="margin-bottom: 24px; display: flex; align-items: end">
+      <div
+        v-if="step !== 'success'"
+        style="margin-bottom: 24px; display: flex; align-items: end"
+      >
         <el-button
           class="text-btn"
           type="text"
@@ -47,7 +50,8 @@
             color: var(--color-subheading-text);
           "
         >
-          Your CRNCHY tokens are staked and will be reflected in the "Next Cycle" tab.
+          Your CRNCHY tokens are staked and will be reflected in the "Next
+          Cycle" tab.
         </p>
         <p
           style="
@@ -59,7 +63,9 @@
             color: var(--color-subheading-text);
           "
         >
-          Check your wallet for your crVOTE allocation. Don't lose that crVOTE. You must have it in your wallet when you are able to unstake your CRNCHY
+          Check your wallet for your crVOTE allocation. Don't lose that crVOTE.
+          You must have it in your wallet when you are able to unstake your
+          CRNCHY
         </p>
       </div>
 
@@ -186,7 +192,7 @@
         </div>
         <el-row style="margin-top: 10px" :gutter="8">
           <el-col
-            v-for="([lockTime, label]) in Object.entries(lockOpts).reverse()"
+            v-for="[lockTime, label] in Object.entries(lockOpts).reverse()"
             :key="lockTime"
             :span="8"
           >
@@ -245,16 +251,18 @@
         </el-row>
       </div>
 
-      <div v-if="step !== 'success'" style="margin: 10px 0 32px 0" class="lock-display _info-card">
+      <div
+        v-if="step !== 'success'"
+        style="margin: 10px 0 32px 0"
+        class="lock-display _info-card"
+      >
         <small style="color: var(--primary-text)">
           Unlocks: {{ selectedLockTimeUnlocks | moment("MMM DD YYYY HH:mm Z") }}
         </small>
       </div>
       <div v-if="step !== 'success'" style="margin-bottom: 10px">
         <h2>
-          <template v-if="tab === 'stake'"
-            >You Will Receive</template
-          >
+          <template v-if="tab === 'stake'">You Will Receive</template>
           <template v-else>After Re-Stake You Will Have</template>
         </h2>
       </div>
@@ -295,7 +303,12 @@
         </div>
       </el-row>
 
-      <el-row v-if="step !== 'success'" style="margin-top: 32px" type="flex" justify="center">
+      <el-row
+        v-if="step !== 'success'"
+        style="margin-top: 32px"
+        type="flex"
+        justify="center"
+      >
         <template v-if="step === 'input'">
           <el-button
             round

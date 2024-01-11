@@ -83,35 +83,35 @@ function xToYRec(p) {
     if (p.s.liquidity === 0) {
       return p;
     }
-  
+
     // TODO: change fees logic after new Quipuswap V3 contracts are deployed
-  
+
     let totalFee = calcSwapFee(p.s.constants.feeBps, p.dx);
-  
+
     let sqrtPriceNew = calcNewPriceX(
       p.s.sqrtPrice,
       p.s.liquidity,
       p.dx.minus(totalFee)
     );
-    
+
     const curTickIndexNew = calcNewCurTickIndex(
       p.s.curTickIndex,
       p.s.sqrtPrice,
       sqrtPriceNew
     );
-  
+
     if (curTickIndexNew.gte(p.s.curTickWitness)) {
       const dy = shiftRight(
         p.s.sqrtPrice.minus(sqrtPriceNew).multipliedBy(p.s.liquidity),
         new BigNumber(80)
       ).integerValue(BigNumber.ROUND_FLOOR);
-  
+
       const newStorage = {
         ...p.s,
         sqrtPrice: sqrtPriceNew,
         curTickIndex: curTickIndexNew,
       };
-  
+
       return {
         s: newStorage,
         dx: new Nat(0),
@@ -119,7 +119,7 @@ function xToYRec(p) {
       };
     }
     const tick = p.s.ticks[p.s.curTickWitness.toFixed()];
-  
+
     const loNew = tick.prev;
     sqrtPriceNew = new quipuswapV3Types.x80n(
       BigNumber(tick.sqrtPrice).minus(1)
@@ -164,11 +164,11 @@ function xToYRec(p) {
       dx: p.dx.minus(dxConsumed),
       dy: p.dy.plus(dy),
     };
-  
+
     return xToYRec(paramNew);
   } catch (error) {
     console.log("Error has happened when calculating x to y", error.toString());
-    return { s: p.s, dx: p.dx, dy: new Nat(0) }
+    return { s: p.s, dx: p.dx, dy: new Nat(0) };
   }
 }
 
@@ -187,19 +187,19 @@ function yToXRec(p) {
     if (p.s.liquidity.isZero()) {
       return p;
     }
-  
+
     let totalFee = calcSwapFee(p.s.constants.feeBps, p.dy);
     let dyMinusFee = p.dy.minus(totalFee);
     let sqrtPriceNew = calcNewPriceY(p.s.sqrtPrice, p.s.liquidity, dyMinusFee);
-    
+
     const tenx = new BigNumber(sqrtPriceNew).times(10);
 
-  if (
-    tenx.isLessThan(new BigNumber(p.s.sqrtPrice).times(7)) ||
-    tenx.isGreaterThan(new BigNumber(p.s.sqrtPrice).times(15))
-  ) {
-    console.log(p, tenx);
-  }
+    if (
+      tenx.isLessThan(new BigNumber(p.s.sqrtPrice).times(7)) ||
+      tenx.isGreaterThan(new BigNumber(p.s.sqrtPrice).times(15))
+    ) {
+      console.log(p, tenx);
+    }
 
     const curTickIndexNew = calcNewCurTickIndex(
       p.s.curTickIndex,
@@ -221,14 +221,14 @@ function yToXRec(p) {
         sqrtPrice: new quipuswapV3Types.x80n(sqrtPriceNew),
         curTickIndex: curTickIndexNew,
       };
-  
+
       return { s: sNew, dy: new Nat(0), dx: p.dx.plus(dx) };
     }
-  
+
     const nextTick = p.s.ticks[nextTickIndex.toFixed()];
     sqrtPriceNew = nextTick.sqrtPrice;
     sqrtPriceNew = BigNumber(nextTick.sqrtPrice);
-  
+
     const dx = new Nat(
       p.s.liquidity
         .multipliedBy(
@@ -245,12 +245,14 @@ function yToXRec(p) {
         .integerValue(BigNumber.ROUND_CEIL)
     );
     dyMinusFee = dyForDx;
-    console.log(dyMinusFee
-      .multipliedBy(HUNDRED_PERCENT_BPS),
-      oneMinusFeeBps(p.s.constants.feeBps))
-    console.log(dyMinusFee
-      .multipliedBy(HUNDRED_PERCENT_BPS).toFixed(),
-      oneMinusFeeBps(p.s.constants.feeBps).toFixed())
+    console.log(
+      dyMinusFee.multipliedBy(HUNDRED_PERCENT_BPS),
+      oneMinusFeeBps(p.s.constants.feeBps)
+    );
+    console.log(
+      dyMinusFee.multipliedBy(HUNDRED_PERCENT_BPS).toFixed(),
+      oneMinusFeeBps(p.s.constants.feeBps).toFixed()
+    );
     const dyConsumed = dyMinusFee
       .multipliedBy(HUNDRED_PERCENT_BPS)
       .dividedBy(oneMinusFeeBps(p.s.constants.feeBps))
@@ -284,11 +286,11 @@ function yToXRec(p) {
       dy: p.dy.minus(dyConsumed),
       dx: p.dx.plus(dx),
     };
-  
+
     return yToXRec(paramNew);
   } catch (error) {
     console.log("Error has happened when calculating y to x", error.toString());
-    return { s: p.s, dy: p.dy, dx: new Nat(0) }
+    return { s: p.s, dy: p.dy, dx: new Nat(0) };
   }
 }
 

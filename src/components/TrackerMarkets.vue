@@ -27,15 +27,9 @@
                 <el-col style="text-align: right" :span="isMobile ? 6 : 5"
                   >Market</el-col
                 >
-                <el-col style="text-align: right" :span="5"
-                  >Price</el-col
-                >
-                <el-col style="text-align: right" :span="5"
-                  >TVL</el-col
-                >
-                <el-col style="text-align: right" :span="5"
-                  >24h Volume</el-col
-                >
+                <el-col style="text-align: right" :span="5">Price</el-col>
+                <el-col style="text-align: right" :span="5">TVL</el-col>
+                <el-col style="text-align: right" :span="5">24h Volume</el-col>
               </el-row>
             </el-col>
           </el-row>
@@ -69,7 +63,7 @@
                             height: 29px;
                           "
                         />
-                        
+
                         <a
                           :href="`https://tzkt.io/${item.dex.address}`"
                           target="_blank"

@@ -292,8 +292,8 @@
                           >APR</el-col
                         >
                         <el-col
-                          class="card-title"
                           v-show="!isMobile"
+                          class="card-title"
                           style="text-align: right"
                           :span="4"
                           >TVL
@@ -312,8 +312,8 @@
                           >Multiplier</el-col
                         >
                         <el-col
-                          class="card-title"
                           v-show="farms.myFarmExpanded === false"
+                          class="card-title"
                           :span="3"
                           style="text-align: right"
                         >
@@ -330,8 +330,8 @@
                           </el-button>
                         </el-col>
                         <el-col
-                          class="card-title"
                           v-show="farms.myFarmExpanded === true"
+                          class="card-title"
                           :span="3"
                           style="text-align: right"
                         >

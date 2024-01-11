@@ -274,7 +274,7 @@ export default {
           priceObj.dayCloseUsd = token?.dayCloseUsd;
           priceObj.weekCloseUsd = token?.weekCloseUsd;
           priceObj.monthCloseUsd = token?.monthCloseUsd;
-          currentPrice = token.currentPrice
+          currentPrice = token.currentPrice;
         }
 
         const price = new BigNumber(currentPrice);

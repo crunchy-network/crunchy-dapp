@@ -1420,46 +1420,46 @@ export default {
           .toNumber();
       } else if (farm.poolToken.isQuipuV2Lp) {
         tvlTez = BigNumber(farmStorage.poolBalance)
-        .div(BigNumber(10).pow(6))
-        .times(farm.poolToken.tezPool)
-        .div(farm.poolToken.totalSupply)
-        .times(2)
-        .toNumber();
+          .div(BigNumber(10).pow(6))
+          .times(farm.poolToken.tezPool)
+          .div(farm.poolToken.totalSupply)
+          .times(2)
+          .toNumber();
       } else if (farm.poolToken.isQuipuStableLp) {
         tvlTez = BigNumber(farmStorage.poolBalance)
-        .div(BigNumber(10).pow(18))
-        .times(farm.poolToken.tezPool)
-        .div(farm.poolToken.totalSupply)
-        .times(2)
-        .toNumber();
+          .div(BigNumber(10).pow(18))
+          .times(farm.poolToken.tezPool)
+          .div(farm.poolToken.totalSupply)
+          .times(2)
+          .toNumber();
       } else if (farm.poolToken.isQuipuToken2TokenLp) {
         tvlTez = BigNumber(farmStorage.poolBalance)
-        .div(BigNumber(10).pow(6))
-        .times(farm.poolToken.tezPool)
-        .div(farm.poolToken.totalSupply)
-        .times(2)
-        .toNumber();
+          .div(BigNumber(10).pow(6))
+          .times(farm.poolToken.tezPool)
+          .div(farm.poolToken.totalSupply)
+          .times(2)
+          .toNumber();
       } else if (farm.poolToken.isPlentyLp) {
         tvlTez = BigNumber(farmStorage.poolBalance)
-        .div(BigNumber(10).pow(18))
-        .times(farm.poolToken.tezPool)
-        .div(farm.poolToken.totalSupply)
-        .times(2)
-        .toNumber();
+          .div(BigNumber(10).pow(18))
+          .times(farm.poolToken.tezPool)
+          .div(farm.poolToken.totalSupply)
+          .times(2)
+          .toNumber();
       } else if (farm.poolToken.isPlentyCtezLp) {
         tvlTez = BigNumber(farmStorage.poolBalance)
-        .div(BigNumber(10).pow(6))
-        .times(farm.poolToken.tezPool)
-        .div(farm.poolToken.totalSupply)
-        .times(2)
-        .toNumber();
+          .div(BigNumber(10).pow(6))
+          .times(farm.poolToken.tezPool)
+          .div(farm.poolToken.totalSupply)
+          .times(2)
+          .toNumber();
       } else if (farm.poolToken.isPlentyStableLp) {
         tvlTez = BigNumber(farmStorage.poolBalance)
-        .div(BigNumber(10).pow(12))
-        .times(farm.poolToken.tezPool)
-        .div(farm.poolToken.totalSupply)
-        .times(2)
-        .toNumber();
+          .div(BigNumber(10).pow(12))
+          .times(farm.poolToken.tezPool)
+          .div(farm.poolToken.totalSupply)
+          .times(2)
+          .toNumber();
       } else if (farm.poolToken.isSpicyLp) {
         tvlTez = BigNumber(farmStorage.poolBalance)
           .div(BigNumber(10).pow(18))
@@ -1565,46 +1565,46 @@ export default {
           .toNumber();
       } else if (farm.poolToken.isQuipuV2Lp) {
         tvlTez = BigNumber(farmStorage.poolBalance)
-        .div(BigNumber(10).pow(6))
-        .times(farm.poolToken.tezPool)
-        .div(farm.poolToken.totalSupply)
-        .times(2)
-        .toNumber();
+          .div(BigNumber(10).pow(6))
+          .times(farm.poolToken.tezPool)
+          .div(farm.poolToken.totalSupply)
+          .times(2)
+          .toNumber();
       } else if (farm.poolToken.isQuipuStableLp) {
         tvlTez = BigNumber(farmStorage.poolBalance)
-        .div(BigNumber(10).pow(18))
-        .times(farm.poolToken.tezPool)
-        .div(farm.poolToken.totalSupply)
-        .times(2)
-        .toNumber();
+          .div(BigNumber(10).pow(18))
+          .times(farm.poolToken.tezPool)
+          .div(farm.poolToken.totalSupply)
+          .times(2)
+          .toNumber();
       } else if (farm.poolToken.isQuipuToken2TokenLp) {
         tvlTez = BigNumber(farmStorage.poolBalance)
-        .div(BigNumber(10).pow(6))
-        .times(farm.poolToken.tezPool)
-        .div(farm.poolToken.totalSupply)
-        .times(2)
-        .toNumber();
+          .div(BigNumber(10).pow(6))
+          .times(farm.poolToken.tezPool)
+          .div(farm.poolToken.totalSupply)
+          .times(2)
+          .toNumber();
       } else if (farm.poolToken.isPlentyLp) {
         tvlTez = BigNumber(farmStorage.poolBalance)
-        .div(BigNumber(10).pow(18))
-        .times(farm.poolToken.tezPool)
-        .div(farm.poolToken.totalSupply)
-        .times(2)
-        .toNumber();
+          .div(BigNumber(10).pow(18))
+          .times(farm.poolToken.tezPool)
+          .div(farm.poolToken.totalSupply)
+          .times(2)
+          .toNumber();
       } else if (farm.poolToken.isPlentyCtezLp) {
         tvlTez = BigNumber(farmStorage.poolBalance)
-        .div(BigNumber(10).pow(6))
-        .times(farm.poolToken.tezPool)
-        .div(farm.poolToken.totalSupply)
-        .times(2)
-        .toNumber();
+          .div(BigNumber(10).pow(6))
+          .times(farm.poolToken.tezPool)
+          .div(farm.poolToken.totalSupply)
+          .times(2)
+          .toNumber();
       } else if (farm.poolToken.isPlentyStableLp) {
         tvlTez = BigNumber(farmStorage.poolBalance)
-        .div(BigNumber(10).pow(12))
-        .times(farm.poolToken.tezPool)
-        .div(farm.poolToken.totalSupply)
-        .times(2)
-        .toNumber();
+          .div(BigNumber(10).pow(12))
+          .times(farm.poolToken.tezPool)
+          .div(farm.poolToken.totalSupply)
+          .times(2)
+          .toNumber();
       } else if (farm.poolToken.isSpicyLp) {
         tvlTez = BigNumber(farmStorage.poolBalance)
           .div(BigNumber(10).pow(18))
@@ -1962,8 +1962,8 @@ export default {
   },
 
   expandMyFarmRows({ commit, state, dispatch }) {
-    console.log(state.userData)
-    console.log(state.data)
+    console.log(state.userData);
+    console.log(state.data);
     for (const farmId in state.userData) {
       dispatch("expandFarmRow", farmId);
     }
@@ -2201,7 +2201,7 @@ export default {
       }
 
       // all groups must match
-      const visible = 
+      const visible =
         keywordsMatch &&
         typeMatches &&
         stakedMatches &&

@@ -168,10 +168,7 @@
                     plain
                     type="primary"
                     class="btn-alt__3"
-                    style="
-                      font-weight: 700;
-                      text-transform: uppercase;
-                    "
+                    style="font-weight: 700; text-transform: uppercase"
                     @click="showUnstakeDialog"
                     >Un-stake
                   </el-button>

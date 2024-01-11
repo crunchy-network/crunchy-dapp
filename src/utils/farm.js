@@ -168,7 +168,8 @@ export default {
     if (meta.tokenAddress === "KT1PN7B36fgrtYaysL5Wxq795cdsabUVkvnC") {
       meta.symbol = "HOOD";
       meta.name = "Hoodmorning";
-      meta.thumbnailUri = "ipfs://QmTyxXav78nNFk46goPFjS4TvgC4DATF72dhHTDbxnZvqd";
+      meta.thumbnailUri =
+        "ipfs://QmTyxXav78nNFk46goPFjS4TvgC4DATF72dhHTDbxnZvqd";
       meta.decimals = 5;
     }
 
