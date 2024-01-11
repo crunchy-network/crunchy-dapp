@@ -123,7 +123,12 @@ const buildRoutingFeeOperation = async (
   if (inputToken.decimals === 0) {
     return [];
   }
+
   const fee = route.inputAmount / ROUTING_FEE_RATIO - route.inputAmount;
+
+  if (convertToMuTez(fee, inputToken) === 0) {
+    return [];
+  }
 
   if (fee < 0) {
     throw Error(`invalid fee, can't be negative, ${fee}`);

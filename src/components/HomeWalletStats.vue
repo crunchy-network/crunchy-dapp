@@ -133,8 +133,8 @@ import { mapGetters } from "vuex";
 import PortfolioVector from "./PortfolioVector.vue";
 
 export default {
-  components: { PortfolioVector },
   name: "HomeWalletStats",
+  components: { PortfolioVector },
   props: {
     loading: {
       type: Boolean,

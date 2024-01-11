@@ -24,7 +24,7 @@
         <a
           :href="banner.link"
           target="_blank"
-          style="text-decoration: none; color: #555CFF"
+          style="text-decoration: none; color: #555cff"
         >
           here
         </a>
@@ -57,7 +57,6 @@ export default {
   padding: 8px 24px;
   gap: 10px;
   height: 40px;
-  
 }
 #outline {
   width: 1032px;

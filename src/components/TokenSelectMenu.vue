@@ -397,6 +397,7 @@ export default {
 }
 .asset-swap-amount {
   border: none;
+  flex: 1;
   input {
     text-align: right;
     color: black;
