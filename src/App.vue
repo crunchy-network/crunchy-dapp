@@ -431,6 +431,10 @@ header .grid-content button.el-button {
   height: 36px !important;
   width: 36px !important;
 }
+
+.el-loading-mask {
+  border-radius: 18px !important;
+}
 .farm-list .el-loading-mask {
   border-radius: 14px !important;
 }
@@ -816,7 +820,7 @@ input {
 /* customs */
 
 ._with-bg-image .el-card__body {
-  /* background: url("./assets/taco-card-bg.png"); */
+  background: url("./assets/taco-card-bg.png");
   background-repeat: no-repeat;
   background-size: 25%;
   background-position: 96% 95%;

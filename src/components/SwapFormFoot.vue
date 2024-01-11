@@ -47,7 +47,9 @@
     </div>
     <div class="row">
       <span> Minimum Received</span>
-      <span style="color: var(--primary-text)"> {{ getCurrentTrade.outputWithSlippage }}</span>
+      <span style="color: var(--primary-text)">
+        {{ getCurrentTrade.outputWithSlippage }}</span
+      >
     </div>
     <div class="row">
       <span>Price Impact</span>

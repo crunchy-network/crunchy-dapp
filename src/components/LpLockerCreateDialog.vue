@@ -165,8 +165,8 @@
       </div>
 
       <div
-        style="color: var(--color-subheading-text)"
         v-if="step === 2 && form.lpTokenAddress"
+        style="color: var(--color-subheading-text)"
       >
         <p>Enter the below details to proceed.</p>
         <p style="word-break: break-word">

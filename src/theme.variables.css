@@ -1,5 +1,7 @@
 html[data-theme="dark"] {
   --primary-text: #fff;
+  --success-text: #1ec37f;
+  --danger-text: #ff4d4b;
   --color-main-heading: #fff;
   --color-subheading-text: #8c8d8f;
   --color-menu-inactive: #8c8d8f;
@@ -57,6 +59,8 @@ html[data-theme="dark"] {
 
 html[data-theme="light"] {
   --primary-text: #191b1f;
+  --success-text: #1ec37f;
+  --danger-text: #ff4d4b;
   --color-main-heading: #191b1f;
   --color-subheading-text: #757679;
   --color-menu-inactive: #757679;

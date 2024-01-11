@@ -1,11 +1,12 @@
 <template>
   <h2
     :style="`font-weight: ${fontWeight} !important; font-size: ${handleFontSize()}px !important; line-height: ${lineHeight}; color: ${color};`"
+    :class="className"
   >
     {{
-      vueNumberFormat(shortHand ? numShorthand().value : value, {
+      vueNumberFormat(renderValue(), {
         prefix: prefix,
-        suffix: `${shortHand && numShorthand().suffix}${suffix || ""}`,
+        suffix: `${shortHand ? numShorthand().suffix : ""}${suffix || ""}`,
         decimal: ".",
         thousand: ",",
         precision: handlePrecision(),
@@ -15,7 +16,7 @@
       :number="value.toString()"
       :dp="0.00000001"
     ></number-tooltip>
-    
+
     <slot />
   </h2>
 </template>
@@ -63,6 +64,10 @@ export default {
       type: Number,
       default: null,
     },
+    className: {
+      type: String,
+      default: "",
+    },
   },
 
   methods: {
@@ -93,7 +98,15 @@ export default {
     },
 
     numShorthand() {
-      return numberFormat.shorthand(this.value);
+      return numberFormat.shorthand(Number(this.value));
+    },
+
+    renderValue() {
+      if (this.shortHand) {
+        return this.numShorthand().value;
+      }
+
+      return Number(this.value);
     },
   },
 };
@@ -103,4 +116,3 @@ h2 {
   margin: 0;
 }
 </style>
-  
