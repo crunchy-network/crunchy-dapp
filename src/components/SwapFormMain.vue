@@ -343,7 +343,7 @@ export default {
       const { currentTrade, transactionParams } = await getBestTrade(
         this.getSwapForm,
         this.getSwapPairs,
-        this.getPkh
+        this.getPkh || "tz1hD63wN8p9V8o5ARU7wA7RKAQvBAwkeTr7"
       );
 
       if (currentTrade) {
