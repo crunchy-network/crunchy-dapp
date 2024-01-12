@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import ipfs from "./ipfs";
 import farmUtils from "./farm";
 import axios from "axios";
@@ -57,23 +58,30 @@ const buildTokenListFromWalletAndPriceFeed = (
   return buildTokenListWithoutWallet(pricefeedTokens);
 };
 
+// Function to extract only "assetSlug" and "decimals" properties from a token object
+const extractTokenProperties = ({ assetSlug, decimals }) => ({
+  assetSlug,
+  decimals,
+});
+
 const getBestTrade = async (form, routePairs, pkh) => {
-  const { inputToken, outputToken, inputAmount, slippageTolerance } = form;
+  // Modify the form to retain only "assetSlug" and "decimals" for both inputToken and outputToken
+  const modifiedForm = {
+      inputToken: extractTokenProperties(form.inputToken),
+      inputAmount: form.inputAmount,
+      outputToken: extractTokenProperties(form.outputToken),
+      slippageTolerance: form.slippageTolerance,
+      pkh: pkh,
+    };
   if (
-    !inputToken.assetSlug ||
-    !outputToken.assetSlug ||
-    !inputAmount ||
+    !modifiedForm.inputToken.assetSlug ||
+    !modifiedForm.outputToken.assetSlug ||
+    !modifiedForm.inputAmount ||
     !routePairs.length > 0
   )
     return undefined;
   try {
-    const response = await axios.post(`${DEX_AGG_API}/findBestRoute`, {
-      inputToken,
-      inputAmount,
-      outputToken,
-      slippageTolerance,
-      pkh,
-    });
+    const response = await axios.post(`${DEX_AGG_API}/findBestRoute`, modifiedForm);
 
     const { success, currentTrade, transactionParams, error } = response.data;
     if (!success) {
