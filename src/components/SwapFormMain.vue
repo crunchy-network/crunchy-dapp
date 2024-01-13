@@ -105,7 +105,7 @@
             width: '340px',
             'max-width': '100%',
             margin: 'auto',
-            'font-weight': '700',
+            'font-weight': '500',
           }"
           @click="onSubmit"
         >
