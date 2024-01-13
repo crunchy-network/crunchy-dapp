@@ -231,6 +231,11 @@ export default {
       if (this.homeWallet.loading) {
         return false;
       }
+
+      if (!this.getCurrentTrade.trades) {
+        return true;
+      }
+      
       const bal = this.getBalanceOfSelectedToken(this.getSwapForm.inputToken);
       return bal < this.getSwapForm.inputAmount;
     },
@@ -285,14 +290,6 @@ export default {
     ]),
     getStatusText() {
       const bal = this.getBalanceOfSelectedToken(this.getSwapForm.inputToken);
-
-      if (!this.getPkh) {
-        return "";
-      }
-
-      if (this.homeWallet.loading) {
-        return "";
-      }
 
       if (this.isCalculatingBestRoute) {
         return "Calculating Best Route";
