@@ -136,6 +136,7 @@
   </el-card>
 </template>
 <script>
+import _ from "lodash";
 import { mapActions, mapGetters, mapState } from "vuex";
 import { getBestTrade } from "../utils/swapRouterHelper";
 
@@ -161,6 +162,7 @@ export default {
       customClass: "custom-notify-blurb",
       position: "bottom-right",
     },
+    debouncedUpdateBestTrade: null,
   }),
   computed: {
     ...mapState(["homeWallet"]),
@@ -219,7 +221,12 @@ export default {
   },
   watch: {
     getSwapForm() {
-      this.updateBestTrade();
+      // Cancel previous pending debounced function
+      if (this.debouncedUpdateBestTrade) {
+        this.debouncedUpdateBestTrade.cancel();
+      }
+
+      this.debouncedUpdateBestTrade();
       this.updateUrlParams(
         this.getSwapForm.inputToken,
         this.getSwapForm.outputToken
@@ -227,7 +234,12 @@ export default {
     },
 
     getSwapPairs() {
-      this.updateBestTrade();
+      // Cancel previous pending debounced function
+      if (this.debouncedUpdateBestTrade) {
+        this.debouncedUpdateBestTrade.cancel();
+      }
+
+      this.debouncedUpdateBestTrade();
     },
     tokenList(val) {
       if (val.length > 0) {
@@ -241,6 +253,7 @@ export default {
     this.updateDexApis();
     // this.updateCurrentPrices();
     this.subscribeToTzktForDexUpdateTrigger(this.updateDexApis);
+    this.createDebouncedUpdateBestTrade();
   },
 
   methods: {
@@ -353,6 +366,14 @@ export default {
         this.updateCurrentTrade([]);
       }
     },
+
+    // Create a new debounced function and store it in debouncedUpdateBestTrade
+    createDebouncedUpdateBestTrade() {
+      this.debouncedUpdateBestTrade = _.debounce(() => {
+        this.updateBestTrade();
+      }, 500);
+    },
+
     getBalanceOfSelectedToken(token) {
       if (token === undefined) return 0;
       const found = this.homeWallet.assets.find(
