@@ -92,9 +92,9 @@
       <div :style="`${!getPkh ? 'display: none;' : ''}`">
         <el-button
           :disabled="
-            isLoading || 
-            formSubmitting || 
-            isGettingBalance || 
+            isLoading ||
+            formSubmitting ||
+            isGettingBalance ||
             isCalculatingBestRoute ||
             buttonDisabled
           "
@@ -102,34 +102,36 @@
           :style="{
             border: 'none',
             'border-radius': '20px',
-            width: '340px',
+            width: '100%',
             'max-width': '100%',
             margin: 'auto',
             'font-weight': '500',
+            padding: '16px 20px',
           }"
           @click="onSubmit"
         >
           <i
             v-if="
-              isLoading || 
-              formSubmitting || 
+              isLoading ||
+              formSubmitting ||
               isGettingBalance ||
               isCalculatingBestRoute
             "
-            :style="{ color: '#ffffff'}"
+            :style="{ color: '#ffffff' }"
             class="el-icon-loading"
           >
           </i>
-          <span >
-          {{
-            formSubmitting
-              ? "Swapping"
-              : isGettingBalance
-              ? "Loading Balance"
-              : isCalculatingBestRoute
-              ? "Calculating Best Route"
-              : "Swap"
-          }}</span></el-button
+          <span>
+            {{
+              formSubmitting
+                ? "Swapping"
+                : isGettingBalance
+                ? "Loading Balance"
+                : isCalculatingBestRoute
+                ? "Calculating Best Route"
+                : "Swap"
+            }}</span
+          ></el-button
         >
       </div>
       <div :style="`${getPkh ? 'display: none;' : ''}`">
