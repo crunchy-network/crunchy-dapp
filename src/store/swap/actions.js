@@ -100,6 +100,10 @@ export default {
   walletConnected({ dispatch }) {
     dispatch("updateDexApis");
   },
+
+  updateCalculatingBestRoute({ commit }, payload) {
+    commit("updateIsCalculatingBestRoute", payload);
+  }
 };
 // get price data
 // convert to route pairsisLoading

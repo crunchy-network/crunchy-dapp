@@ -2,11 +2,15 @@
   <div class="bottom-section">
     <div class="row">
       <span>Routing Fee</span>
-      <span style="color: var(--primary-text)">{{ routingFee }}%</span>
+      <span style="color: var(--primary-text)">{{
+        isCalculatingBestRoute ? "-" : routingFee + "%"
+      }}</span>
     </div>
     <div class="row">
       <span>Rate</span>
-      <span style="color: var(--primary-text)">{{ getSwapRate() }}</span>
+      <span style="color: var(--primary-text)">{{
+        isCalculatingBestRoute ? "-" : getSwapRate()
+      }}</span>
     </div>
     <div class="row">
       <span>Slippage Tolerance</span>
@@ -48,17 +52,22 @@
     <div class="row">
       <span> Minimum Received</span>
       <span style="color: var(--primary-text)">
-        {{ getCurrentTrade.outputWithSlippage }}</span
+        {{
+          isCalculatingBestRoute ? "-" : getCurrentTrade.outputWithSlippage
+        }}</span
       >
     </div>
     <div class="row">
       <span>Price Impact</span>
-      <span :style="`color: ${impactColor}`"> {{ getPriceImpact() }}</span>
+      <span :style="`color: ${impactColor}`">
+        {{ isCalculatingBestRoute ? "-" : getPriceImpact() }}</span
+      >
     </div>
     <div class="row last">
       <span>Swap Route</span>
       <div style="color: var(--link-btn-color)">
-        <span v-if="numRoutes === 1 && numHops === 1">1 route / 1 hop</span>
+        <span v-if="isCalculatingBestRoute">  Calculating </span>
+        <span v-else-if="numRoutes === 1 && numHops === 1">1 route / 1 hop</span>
         <span v-else-if="numRoutes === 1 && numHops > 1"
           >1 route / {{ numHops }} hops</span
         >
@@ -69,7 +78,7 @@
       </div>
     </div>
 
-    <div v-if="getCurrentTrade.trades">
+    <div v-if="!isCalculatingBestRoute && getCurrentTrade.trades">
       <template v-if="getCurrentTrade.type === 'weighted'">
         <div
           v-for="(trade, n) in getCurrentTradesSorted"
@@ -142,7 +151,14 @@ export default {
   }),
 
   computed: {
-    ...mapGetters(["getSwapForm", "getCurrentTrade"]),
+    ...mapGetters([
+      "getSwapForm",
+      "getCurrentTrade",
+      "getIsCalculatingBestRoute",
+    ]),
+    isCalculatingBestRoute() {
+      return this.getIsCalculatingBestRoute;
+    },
     getCurrentTradesSorted() {
       return _.orderBy(this.getCurrentTrade.trades, ["[0].weight"], ["desc"]);
     },

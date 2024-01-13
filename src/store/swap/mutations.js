@@ -29,4 +29,7 @@ export default {
   updateDexLoading(state, payload) {
     state.dexApis[payload.dex].loading = payload.loading;
   },
+  updateIsCalculatingBestRoute(state, payload) {
+    state.isCalculatingBestRoute = payload;
+  },
 };

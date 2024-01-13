@@ -21,6 +21,7 @@ export default {
       },
     },
     swapPairsNew: [],
+    isCalculatingBestRoute: false,
   },
   mutations,
   actions,
@@ -37,5 +38,6 @@ export default {
       }));
     },
     getDexApis: (state) => state.dexApis,
+    getIsCalculatingBestRoute: (state) => state.isCalculatingBestRoute,
   },
 };

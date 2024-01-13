@@ -102,8 +102,13 @@
       v-if="inputDisabled"
       :class="`asset-swap-amount-placeholder ${getInputFontSize}`"
     >
-      {{ amount }}
-    </div>
+      <template v-if="isLoading">
+            <i :style="{ color: '#ffffff' }" class="el-icon-loading"></i>
+      </template>
+      <template v-else>
+        {{ amount }}
+      </template>
+  </div>
   </div>
 </template>
 <script>
@@ -117,6 +122,7 @@ export default {
     id: { type: String, required: true },
     inputDisabled: { type: Boolean, default: false },
     selectedToken: { type: Object, required: true },
+    isLoading: { type: Boolean, default: false },
   },
   data: function () {
     return {

@@ -85,13 +85,19 @@
         "
         :input-disabled="true"
         :selected-token="getSwapForm.outputToken || {}"
+        :is-loading="isCalculatingBestRoute"
       />
     </div>
     <div style="width: 100%; margin-top: 16px; text-align: center">
       <div :style="`${!getPkh ? 'display: none;' : ''}`">
         <el-button
-          v-loading="isLoading || formSubmitting || isGettingBalance"
-          :disabled="buttonDisabled"
+          :disabled="
+            isLoading || 
+            formSubmitting || 
+            isGettingBalance || 
+            isCalculatingBestRoute ||
+            buttonDisabled
+          "
           type="primary"
           :style="{
             border: 'none',
@@ -103,13 +109,27 @@
           }"
           @click="onSubmit"
         >
+          <i
+            v-if="
+              isLoading || 
+              formSubmitting || 
+              isGettingBalance ||
+              isCalculatingBestRoute
+            "
+            :style="{ color: '#ffffff'}"
+            class="el-icon-loading"
+          >
+          </i>
+          <span >
           {{
             formSubmitting
-              ? "SWAPPING"
+              ? "Swapping"
               : isGettingBalance
-              ? "LOADING BALANCE"
-              : "SWAP"
-          }}</el-button
+              ? "Loading Balance"
+              : isCalculatingBestRoute
+              ? "Calculating Best Route"
+              : "Swap"
+          }}</span></el-button
         >
       </div>
       <div :style="`${getPkh ? 'display: none;' : ''}`">
@@ -173,7 +193,11 @@ export default {
       "getCurrentTrade",
       "getTransactionParams",
       "getApiLoadingStatus",
+      "getIsCalculatingBestRoute",
     ]),
+    isCalculatingBestRoute() {
+      return this.getIsCalculatingBestRoute;
+    },
     areApisLoading() {
       return this.getApiLoadingStatus.some((a) => a.loading);
     },
@@ -265,6 +289,7 @@ export default {
       "connectWallet",
       "updateDexApis",
       "loadWalletAsssets",
+      "updateCalculatingBestRoute",
     ]),
     ensureTokensMatchQuery() {
       if (
@@ -349,6 +374,8 @@ export default {
       });
     },
     async updateBestTrade() {
+      this.updateCalculatingBestRoute(true); // Set to true when starting the calculation
+
       if (this.getSwapPairs.length < 1) {
         console.log("swap pairs haven't loaded yet");
       }
@@ -365,6 +392,8 @@ export default {
       } else {
         this.updateCurrentTrade([]);
       }
+
+      this.updateCalculatingBestRoute(false); // Reset to false when the calculation is complete
     },
 
     // Create a new debounced function and store it in debouncedUpdateBestTrade
