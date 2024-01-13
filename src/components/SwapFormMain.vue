@@ -129,6 +129,8 @@
                 ? "Loading Balance"
                 : isCalculatingBestRoute
                 ? "Calculating Best Route"
+                : !getCurrentTrade.trades
+                ? "No route available"
                 : "Swap"
             }}</span
           ></el-button
@@ -382,20 +384,24 @@ export default {
         console.log("swap pairs haven't loaded yet");
       }
 
-      const { currentTrade, transactionParams } = await getBestTrade(
-        this.getSwapForm,
-        this.getSwapPairs,
-        this.getPkh || "tz1hD63wN8p9V8o5ARU7wA7RKAQvBAwkeTr7"
-      );
+      try {
+        const { currentTrade, transactionParams } = await getBestTrade(
+          this.getSwapForm,
+          this.getSwapPairs,
+          this.getPkh || "tz1hD63wN8p9V8o5ARU7wA7RKAQvBAwkeTr7"
+        );
 
-      if (currentTrade) {
-        this.updateCurrentTrade(currentTrade);
-        this.updateTransactionParams(transactionParams);
-      } else {
-        this.updateCurrentTrade([]);
+        if (currentTrade) {
+          this.updateCurrentTrade(currentTrade);
+          this.updateTransactionParams(transactionParams);
+        } else {
+          this.updateCurrentTrade([]);
+        }
+      } catch (error) {
+        console.error(error); // Log the error for debugging purposes
+      } finally {
+        this.updateCalculatingBestRoute(false); // Reset to false when the calculation is complete (whether it succeeded or failed)
       }
-
-      this.updateCalculatingBestRoute(false); // Reset to false when the calculation is complete
     },
 
     // Create a new debounced function and store it in debouncedUpdateBestTrade
