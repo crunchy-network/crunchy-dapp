@@ -121,19 +121,7 @@
             class="el-icon-loading"
           >
           </i>
-          <span>
-            {{
-              formSubmitting
-                ? "Swapping"
-                : isGettingBalance
-                ? "Loading Balance"
-                : isCalculatingBestRoute
-                ? "Calculating Best Route"
-                : !getCurrentTrade.trades
-                ? "No route available"
-                : "Swap"
-            }}</span
-          ></el-button
+          <span> {{ getStatusText() }}</span></el-button
         >
       </div>
       <div :style="`${getPkh ? 'display: none;' : ''}`">
@@ -295,6 +283,39 @@ export default {
       "loadWalletAsssets",
       "updateCalculatingBestRoute",
     ]),
+    getStatusText() {
+      const bal = this.getBalanceOfSelectedToken(this.getSwapForm.inputToken);
+
+      if (!this.getPkh) {
+        return "";
+      }
+
+      if (this.homeWallet.loading) {
+        return "";
+      }
+
+      if (this.isCalculatingBestRoute) {
+        return "Calculating Best Route";
+      }
+
+      if (this.formSubmitting) {
+        return "Swapping";
+      }
+
+      if (this.isGettingBalance) {
+        return "Loading Balance";
+      }
+
+      if (bal < this.getSwapForm.inputAmount) {
+        return "Insufficient Balance";
+      }
+
+      if (!this.getCurrentTrade.trades) {
+        return "No route available";
+      }
+
+      return "Swap";
+    },
     ensureTokensMatchQuery() {
       if (
         this.tokenList.length > 0 &&
