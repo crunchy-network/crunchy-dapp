@@ -57,7 +57,7 @@
                   margin: 0;
                 "
               >
-                {{ getTokenOverview.isRanked ? getTokenOverview.order : 'NA' }}
+                {{ getTokenOverview.isRanked ? getTokenOverview.order : "NA" }}
               </p>
             </el-col>
             <el-col><el-divider direction="horizontal"></el-divider></el-col>
@@ -121,7 +121,13 @@
             </el-col>
             <el-col><el-divider direction="horizontal"></el-divider></el-col>
             <el-col style="text-align: right"
-              >Total Supply
+              >
+              {{
+                getTokenOverview.tokenAddress ===
+                "KT1914CUZ7EegAFPbfgQMRkw8Uz5mYkEz2ui"
+                  ? "Circulating Supply"
+                  : "Total Supply"
+              }}
               <number-format
                 :precision="4"
                 :font-size="20"
@@ -156,6 +162,8 @@ export default {
     ...mapGetters(["getTokenOverview"]),
     ...mapState(["tokenTracker"]),
     loading() {
+      console.log(process.env.VUE_APP_CONTRACTS_CRNCHY)
+      console.log(this.getTokenOverview.tokenAddress)
       return this.tokenTracker.loading;
     },
   },
