@@ -95,7 +95,10 @@ export default {
       type: Function,
       default: () => {},
     },
-    initialAmount: 0,
+    initialAmount: {
+      type: Number, // Specify the prop type
+      default: 0,
+    },
     mode: {
       type: String,
       default: "stake",
