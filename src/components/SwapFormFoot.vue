@@ -59,15 +59,15 @@
     </div>
     <div class="row">
       <span>Price Impact</span>
-      <span :style="`color: ${impactColor}`">
-        {{ isCalculatingBestRoute ? "-" : getPriceImpact() }}</span
-      >
+      <span style="color: var(--primary-text)"> {{ isCalculatingBestRoute ? "-" : getPriceImpact() }}</span>
     </div>
     <div class="row last">
       <span>Swap Route</span>
-      <div style="color: var(--link-btn-color)">
-        <span v-if="isCalculatingBestRoute">  Calculating </span>
-        <span v-else-if="numRoutes === 1 && numHops === 1">1 route / 1 hop</span>
+      <div style="color: var(--primary-text)">
+        <span v-if="isCalculatingBestRoute"> Calculating </span>
+        <span v-else-if="numRoutes === 1 && numHops === 1"
+          >1 route / 1 hop</span
+        >
         <span v-else-if="numRoutes === 1 && numHops > 1"
           >1 route / {{ numHops }} hops</span
         >
