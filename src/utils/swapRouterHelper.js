@@ -4,6 +4,7 @@ import farmUtils from "./farm";
 import axios from "axios";
 
 const DEX_AGG_API = "https://crunchy-swap-api.metal01.cclabs.tech";
+
 const getAssetSlug = (token) => {
   if (token.assetSlug) return token.assetSlug;
   if (token.symbol === "XTZ") return "tez";
@@ -58,24 +59,19 @@ const buildTokenListFromWalletAndPriceFeed = (
   return buildTokenListWithoutWallet(pricefeedTokens);
 };
 
-// Function to extract only "assetSlug" and "decimals" properties from a token object
-const extractTokenProperties = ({ assetSlug, decimals }) => ({
-  assetSlug,
-  decimals,
-});
 
 const getBestTrade = async (form, routePairs, pkh) => {
   // Modify the form to retain only "assetSlug" and "decimals" for both inputToken and outputToken
   const modifiedForm = {
-      inputToken: extractTokenProperties(form.inputToken),
+      inputToken: form.inputToken.assetSlug,
       inputAmount: form.inputAmount,
-      outputToken: extractTokenProperties(form.outputToken),
+      outputToken: form.outputToken.assetSlug,
       slippageTolerance: form.slippageTolerance,
       pkh: pkh,
     };
   if (
-    !modifiedForm.inputToken.assetSlug ||
-    !modifiedForm.outputToken.assetSlug ||
+    !modifiedForm.inputToken ||
+    !modifiedForm.outputToken ||
     !modifiedForm.inputAmount ||
     !routePairs.length > 0
   )
