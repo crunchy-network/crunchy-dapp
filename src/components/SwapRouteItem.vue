@@ -44,6 +44,7 @@ import youves from "../assets/dex-icons/Youves.svg";
 import alien from "../assets/dex-icons/Alien.png";
 import flame from "../assets/dex-icons/Flame.png";
 import dexter from "../assets/dex-icons/Dexter.png";
+import ctez from "../assets/dex-icons/Ctez.png";
 
 export default {
   props: {
@@ -71,12 +72,14 @@ export default {
         Spicy: spicy,
         WTZ: wtz,
         Youves: youves,
+        Ctez: ctez,
       },
       displayName: {
         LiquidityBaking: "Sirius",
         Plenty: "Plenty",
         PlentyStable: "Plenty",
         PlentyCtezTez: "Plenty",
+        PlentyTez: "Plenty",
         QuipuSwap: "Quipu",
         QuipuswapTokenToTokenDex: "Quipu",
         Quipuswap: "Quipu",
@@ -90,6 +93,8 @@ export default {
         Spicy: "Spicy",
         WTZ: "WTZ",
         Youves: "Youves",
+        Yupana: "Yupana",
+        Ctez: "Ctez"
       },
     };
   },

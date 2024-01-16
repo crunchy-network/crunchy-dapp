@@ -53,6 +53,10 @@ const getDexName = (dexType) => {
     return "Dexter";
   }
 
+  if(dexType === "ctez") {
+    return "Ctez";
+  }
+  
   return pascalCase(dexType);
 };
 

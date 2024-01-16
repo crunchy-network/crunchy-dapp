@@ -13,6 +13,7 @@ const QuipuswapV2 = require("./QuipuswapV2");
 const QuipuswapV3 = require("./QuipuswapV3");
 const Flame = require("./Flame");
 const Dexter = require("./Dexter");
+const Ctez = require("./Ctez")
 
 module.exports = {
   LiquidityBaking,
@@ -30,4 +31,5 @@ module.exports = {
   QuipuswapV3,
   Flame,
   Dexter,
+  Ctez
 };
