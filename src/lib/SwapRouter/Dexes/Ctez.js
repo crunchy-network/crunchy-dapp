@@ -1,49 +1,35 @@
 const utils = require("../utils.js");
-const flatCfmm = require("../SwapRates/flat-cfmm.js");
+const tezCtezEstimator = require("../SwapRates/tezCtezEstimator.js");
 const tokenTypes = require("../TokenTypes/index.js");
 
-const DEX_FEE = 0.15;
+const FEE_DENOM = 1000;
 
 const getSwapOutput = (input, pair) => {
-  const inputAfterFee = input * utils.percentToDecimal(DEX_FEE);
-  const feeAmount = input - inputAfterFee;
-  if (!utils.isValidDexFee(feeAmount, pair)) {
-    return 0;
-  }
-  return flatCfmm.getFlatCfmmOutput(inputAfterFee, pair);
+  const inputMuTez = utils.convertToMuTez(input, pair.a);
+  const tez = [pair.a, pair.b].find((token) => token.assetSlug === "tez");
+  const ctez = [pair.a, pair.b].find((token) => token.assetSlug !== "tez");
+  const toRet = tezCtezEstimator.calculateRate(
+    utils.convertToMuTez(tez.pool, tez),
+    utils.convertToMuTez(ctez.pool, ctez),
+    inputMuTez,
+    FEE_DENOM,
+    pair.target,
+    pair.a.tokenSymbol
+  );
+  return toRet.tokenOut;
 };
 
-const isCash = (token) => {
-  return ["XTZ"].includes(token.tokenSymbol);
+const tezToCtez = (dex, trade, walletAddress, input, output, tezos) => {
+  const toRet = dex.contract.methods
+  .cashToToken(walletAddress, output, input, `${utils.secondsFromNow(1200)}`)
+    .toTransferParams(utils.fromOpOpts(input));
+  return toRet;
 };
 
-const cashToToken = async (dex, trade, walletAddress, tezos) => {
-  const input = utils.convertToMuTez(trade.input, trade.a);
-  const output = utils.convertToMuTez(trade.minOut, trade.b);
-
+const cTezToTez = async (dex, trade, walletAddress, input, output, tezos) => {
   const transfers = [
-    dex.methods
-      .cashToToken(
-        walletAddress,
-        output,
-        input,
-        `${utils.secondsFromNow(1200)}`
-      )
-      .toTransferParams(utils.fromOpOpts(undefined)),
-  ];
-  return transfers;
-};
-const tokenToCash = async (dex, trade, walletAddress, tezos) => {
-  const input = utils.convertToMuTez(trade.input, trade.a);
-  const output = utils.convertToMuTez(trade.minOut, trade.b);
-  const transfers = [
-    dex.methods
-      .tokenToCash(
-        walletAddress,
-        input,
-        output,
-        `${utils.secondsFromNow(1200)}`
-      )
+    dex.contract.methods
+    .tokenToCash(walletAddress, input, output, `${utils.secondsFromNow(1200)}`)
       .toTransferParams(utils.fromOpOpts(undefined)),
   ];
   return await tokenTypes.addTokenApprovalOperators(
@@ -55,18 +41,20 @@ const tokenToCash = async (dex, trade, walletAddress, tezos) => {
   );
 };
 
-const getTransactionType = (trade) => {
-  if (isCash(trade.a)) {
-    return cashToToken;
+const getEntrypoint = (trade) => {
+  if (utils.isTez(trade.a)) {
+    return tezToCtez;
   }
-  if (isCash(trade.b)) {
-    return tokenToCash;
+  if (utils.isTez(trade.b)) {
+    return cTezToTez;
   }
 };
-const buildDexOperation = (dex, trade, walletAddress, tezos) => {
-  const operation = getTransactionType(trade);
-  const op = operation(dex.contract, trade, walletAddress, tezos);
-  return op;
+
+const buildDexOperation = async (dex, trade, walletAddress, tezos) => {
+  const output = utils.convertToMuTez(trade.minOut, trade.b);
+  const input = utils.convertToMuTez(trade.input, trade.a);
+  const buildSwapParams = getEntrypoint(trade);
+  return buildSwapParams(dex, trade, walletAddress, input, output, tezos);
 };
 
 module.exports = {
