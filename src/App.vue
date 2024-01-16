@@ -282,6 +282,7 @@ i.fa-icon-right {
   .el-submenu .el-menu--horizontal {
     top: 65px !important;
     position: fixed;
+    z-index: 2 !important;
   }
 
   .hide-desktop {
@@ -434,6 +435,7 @@ header .grid-content button.el-button {
 
 .el-loading-mask {
   border-radius: 18px !important;
+  z-index: 1 !important;
 }
 .farm-list .el-loading-mask {
   border-radius: 14px !important;
