@@ -192,6 +192,8 @@ export default {
         case "dexter":
         case "dexter_v2":
           return require("../assets/dex-icons/Dexter.png");
+        case "yupana":
+          return require("../assets/dex-icons/yupana.jpeg");
         default:
           return "";
       }
@@ -226,7 +228,8 @@ export default {
           return "Dexter";
         case "dexter_v2":
           return "Dexter V2";
-
+        case "yupana":
+          return "Yupana";
         default:
           return str.replace(/\b[a-z]/gi, function (char) {
             return char.toUpperCase();

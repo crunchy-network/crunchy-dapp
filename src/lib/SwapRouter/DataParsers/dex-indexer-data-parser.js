@@ -37,6 +37,10 @@ const getDexName = (dexType) => {
     return "PlentyCtezTez";
   }
 
+  if (dexType === "plenty_tez") {
+    return "Plentyez";
+  }
+
   if (dexType === "quipuswap_token2token") {
     return "QuipuswapTokenToTokenDex";
   }
@@ -55,6 +59,10 @@ const getDexName = (dexType) => {
 
   if(dexType === "ctez") {
     return "Ctez";
+  }
+
+  if(dexType === "yupana") {
+    return "Yupana";
   }
   
   return pascalCase(dexType);
@@ -502,6 +510,7 @@ const buildSwapPairs = async (dexes) => {
       case "plenty":
       case "dexter":
       case "dexter_v2":
+      case "plenty_tez":
         pairs.push(buildSimplePair(dex, "tez"));
         pairs.push(buildSimplePair(dex, "tez", true));
         break;
@@ -544,6 +553,7 @@ const buildSwapPairs = async (dexes) => {
       //   pairs.push(await buildQuipuV3Pairs(dex, true));
       //   break;
 
+      case "yupana":
       case "quipuswap_stable":
         pairs = pairs.concat(buildQuipuStablePairs(dex));
         break;
