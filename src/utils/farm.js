@@ -1,5 +1,6 @@
 import _ from "lodash";
 import { BigNumber } from "bignumber.js";
+import tzkt from "./tzkt";
 
 export default {
   isFa1(token) {
@@ -16,7 +17,7 @@ export default {
     );
   },
 
-  getTokenLedgerKey(address, dexType) {
+  async getTokenLedgerKey(address, dexType) {
     // HEH
     if (address === "KT1G1cCRNBgQ48mVDjopHjEmTN5Sbtar8nn9") {
       return "balances";
@@ -45,8 +46,11 @@ export default {
     ].includes(dexType);
 
     if (isPlentyLP) {
-      return "balances";
+      const { data } = await tzkt.getContractStorage(address);
+      const keys = Object.keys(data);
+      return keys.includes("ledger") ? "ledger" : "balances";
     }
+
     return "ledger";
   },
 
