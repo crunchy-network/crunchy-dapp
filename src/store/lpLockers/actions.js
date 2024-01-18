@@ -538,7 +538,7 @@ export default {
     return await tzkt
       .getContractBigMapKeys(
         tokenAddress,
-        farmUtils.getTokenLedgerKey(tokenAddress, dexType),
+        await farmUtils.getTokenLedgerKey(tokenAddress, dexType),
         { key: key, active: "true" }
       )
       .then((tokenLedger) => {

@@ -492,7 +492,7 @@
                     :farm-tab="activeTab"
                     :farm="farm"
                     :show-usd="showUsd"
-                    @request-unstake-farm="showStakeDialogAllFarm"
+                    @request-unstake-farm="showUnstakeDialogMyFarm"
                     @request-stake-farm="showStakeDialogAllFarm"
                   >
                   </FarmListingRow>
@@ -687,10 +687,6 @@ export default {
 
     showStakeDialogAllFarm(farmId) {
       this.$refs.stakeDialog.showDialog(farmId);
-    },
-
-    showUnstakeDialogAllFarm(farmId) {
-      this.$refs.unstakeDialog.showDialog(farmId);
     },
 
     viewFarmStats(farm) {
