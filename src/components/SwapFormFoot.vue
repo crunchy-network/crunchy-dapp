@@ -59,7 +59,9 @@
     </div>
     <div class="row">
       <span>Price Impact</span>
-      <span style="color: var(--primary-text)"> {{ isCalculatingBestRoute ? "-" : getPriceImpact() }}</span>
+      <span style="color: var(--primary-text)">
+        {{ isCalculatingBestRoute ? "-" : priceImpact }}</span
+      >
     </div>
     <div class="row last">
       <span>Swap Route</span>
@@ -148,6 +150,7 @@ export default {
     toleranceOptions: [0.5, 1],
     customSlippage: "",
     impactColor: "var(color-subheading-text)",
+    priceImpact: "",
   }),
 
   computed: {
@@ -191,6 +194,9 @@ export default {
     customSlippage() {
       this.updateSlippage(this.customSlippage);
     },
+    getCurrentTrade() {
+      this.getPriceImpact();
+    }
   },
   methods: {
     ...mapActions(["updateForm"]),
@@ -213,11 +219,19 @@ export default {
         this.updateForm({ slippageTolerance: value });
       }
     },
-    getPriceImpact() {
-      const impact = calculatePriceImpact(this.getCurrentTrade);
-      this.impactColor = impact > 5 ? "#FF4D4B" : "var(--color-menu-inactiv)";
-      if (!impact) return "";
-      return `${impact}%`;
+    async getPriceImpact() {
+      try {
+        console.log(this.getCurrentTrade)
+        const impact = await calculatePriceImpact(this.getCurrentTrade);
+        this.impactColor = impact > 5 ? "#FF4D4B" : "var(--color-menu-inactiv)";
+        // Update the priceImpact data property when the Promise resolves
+        this.priceImpact = `${impact}%`;
+        return this.priceImpact;
+      } catch (error) {
+        console.error("Error calculating price impact:", error);
+        this.priceImpact = ""; // Set to empty string in case of an error
+        return this.priceImpact;
+      }
     },
   },
 };

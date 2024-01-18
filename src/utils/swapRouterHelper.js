@@ -3,8 +3,6 @@ import ipfs from "./ipfs";
 import farmUtils from "./farm";
 import axios from "axios";
 
-const DEX_AGG_API = "https://crunchy-swap-api.metal01.cclabs.tech";
-
 const getAssetSlug = (token) => {
   if (token.assetSlug) return token.assetSlug;
   if (token.symbol === "XTZ") return "tez";
@@ -77,7 +75,7 @@ const getBestTrade = async (form, routePairs, pkh) => {
   )
     return undefined;
   try {
-    const response = await axios.post(`${DEX_AGG_API}/findBestRoute`, modifiedForm);
+    const response = await axios.post(`${process.env.VUE_APP_DEX_AGG_API}/findBestRoute`, modifiedForm);
 
     const { success, currentTrade, transactionParams, error } = response.data;
     if (!success) {
