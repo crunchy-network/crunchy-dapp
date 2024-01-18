@@ -58,7 +58,7 @@ const buildTokenListFromWalletAndPriceFeed = (
 };
 
 
-const getBestTrade = async (form, routePairs, pkh) => {
+const getBestTrade = async (form, pkh) => {
   // Modify the form to retain only "assetSlug" and "decimals" for both inputToken and outputToken
   const modifiedForm = {
       inputToken: form.inputToken.assetSlug,
@@ -70,8 +70,7 @@ const getBestTrade = async (form, routePairs, pkh) => {
   if (
     !modifiedForm.inputToken ||
     !modifiedForm.outputToken ||
-    !modifiedForm.inputAmount ||
-    !routePairs.length > 0
+    !modifiedForm.inputAmount
   )
     return undefined;
   try {
