@@ -150,7 +150,7 @@
 <script>
 import { mapActions, mapGetters, mapState } from "vuex";
 import { getBestTrade } from "../utils/swapRouterHelper";
-
+import _ from "lodash";
 import TokenSelectMenu from "./TokenSelectMenu.vue";
 import { buildRoutingFeeOperation } from "../utils/routing-fee";
 import { Tezos } from "../utils/tezos";
@@ -234,14 +234,18 @@ export default {
       if (!this.getCurrentTrade.trades) {
         return true;
       }
-      
+
       const bal = this.getBalanceOfSelectedToken(this.getSwapForm.inputToken);
       return bal < this.getSwapForm.inputAmount;
     },
   },
   watch: {
     getSwapForm() {
-      this.updateBestTrade();
+      // Cancel previous pending debounced function
+      if (this.debouncedUpdateBestTrade) {
+        this.debouncedUpdateBestTrade.cancel();
+      }
+      this.debouncedUpdateBestTrade();
       this.updateUrlParams(
         this.getSwapForm.inputToken,
         this.getSwapForm.outputToken
@@ -249,7 +253,11 @@ export default {
     },
 
     getSwapPairs() {
-      this.updateBestTrade();
+      // Cancel previous pending debounced function
+      if (this.debouncedUpdateBestTrade) {
+        this.debouncedUpdateBestTrade.cancel();
+      }
+      this.debouncedUpdateBestTrade();
     },
     tokenList(val) {
       if (val.length > 0) {
@@ -260,7 +268,10 @@ export default {
   },
   created() {
     this.ensureTokensMatchQuery();
-    this.subscribeToTzktForDexUpdateTrigger(this.updateBestTrade);
+    this.subscribeToTzktForDexUpdateTrigger(
+      this.createDebouncedUpdateBestTrade
+    );
+    this.createDebouncedUpdateBestTrade();
   },
 
   methods: {
@@ -399,6 +410,13 @@ export default {
       } finally {
         this.updateCalculatingBestRoute(false); // Reset to false when the calculation is complete (whether it succeeded or failed)
       }
+    },
+
+    // Create a new debounced function and store it in debouncedUpdateBestTrade
+    createDebouncedUpdateBestTrade() {
+      this.debouncedUpdateBestTrade = _.debounce(() => {
+        this.updateBestTrade();
+      }, 500);
     },
 
     getBalanceOfSelectedToken(token) {
