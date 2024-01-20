@@ -240,7 +240,7 @@ export default {
     this.ensureTokensMatchQuery();
     this.updateDexApis();
     // this.updateCurrentPrices();
-    this.subscribeToTzktForDexUpdateTrigger(this.updateDexApis);
+    // this.subscribeToTzktForDexUpdateTrigger(this.updateDexApis);
   },
 
   methods: {

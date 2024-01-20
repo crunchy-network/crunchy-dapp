@@ -10,6 +10,8 @@ const getSwapOutput = (input, pair) => {
   const outdatedDex = [
     "KT1LCGKA33zGk8GDQbtonGzFMzqx8QPbeZbr",
     "KT1CZj28Xc3Rtg1AsRfsagZyxcLEzAkwGXug",
+    "KT19meKW8ufKiAiCeBkVwirGmX61nxx6D3ZH",
+    "KT1N4a5QCW4hh4b4Rm5ZwZan6wQNfwLAhgNw",
   ];
 
   if (outdatedDex.includes(pair.dexAddress)) {
@@ -46,7 +48,7 @@ const getSwapOutput = (input, pair) => {
 const directTransaction = (dex, trade, walletAddres, input, output) => {
   return [
     dex.contract.methods
-      .x_to_y(input, `${secondsFromNow(300)}`, 1, walletAddres, null)
+      .x_to_y(input, `${secondsFromNow(1200)}`, 1, walletAddres, null)
       .toTransferParams({
         mutez: true,
       }),
@@ -56,14 +58,13 @@ const directTransaction = (dex, trade, walletAddres, input, output) => {
 const invertTransaction = (dex, trade, walletAddres, input, output) => {
   return [
     dex.contract.methods
-      .y_to_x(input, `${secondsFromNow(300)}`, 1, walletAddres, null)
+      .y_to_x(input, `${secondsFromNow(1200)}`, 1, walletAddres, null)
       .toTransferParams({
         mutez: true,
       }),
   ];
 };
 const buildDexOperation = (dex, trade, walletAddres, tezos) => {
-  console.log(trade);
   const input = convertToMuTez(trade.input, trade.a);
   const output = convertToMuTez(trade.minOut, trade.b);
   const transfers =

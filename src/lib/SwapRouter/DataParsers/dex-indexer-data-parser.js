@@ -1,7 +1,7 @@
 import { pascalCase } from "change-case";
 import BigNumber from "bignumber.js";
 import config from "./../config";
-// import tzkt from "../../../utils/tzkt";
+import tzkt from "../../../utils/tzkt";
 
 const isPoolBelowMinThreshold = (mutez) => {
   return BigNumber(mutez).lt(config.minPoolSize);
@@ -289,102 +289,112 @@ const buildQuipuV2Pairs = (dex) => {
   return pairs;
 };
 
-// function convertToCamelCase(obj) {
-//   const newObj = {};
-//   for (const key in obj) {
-//     const newKey = key.charAt(0).toLowerCase() + key.slice(1).replace(/_([a-z])/g, (m, p1) => p1.toUpperCase());
-//     newObj[newKey] = typeof obj[key] === "object" ? convertToCamelCase(obj[key]) : obj[key];
-//   }
-//   return newObj;
-// }
+function convertToCamelCase(obj) {
+  const newObj = {};
+  for (const key in obj) {
+    const newKey =
+      key.charAt(0).toLowerCase() +
+      key.slice(1).replace(/_([a-z])/g, (m, p1) => p1.toUpperCase());
+    newObj[newKey] =
+      typeof obj[key] === "object" ? convertToCamelCase(obj[key]) : obj[key];
+  }
+  return newObj;
+}
 
-// const getModifiedTicks = async (ticksKey) => {
-//   const ticks = (await tzkt.getBigMapKeys(ticksKey)).data;
-//   const ticksObj = ticks.reduce((acc, curr) => {
-//     // Change to pascalCase
-//     const modifiedValue = convertToCamelCase(curr.value);
-//     acc[curr.key] = modifiedValue;
-//     return acc;
-//   }, {});
-//   return ticksObj;
-// };
+const getModifiedTicks = async (ticksKey) => {
+  const ticks = (await tzkt.getBigMapKeys(ticksKey)).data;
+  const ticksObj = ticks.reduce((acc, curr) => {
+    // Change to pascalCase
+    const modifiedValue = convertToCamelCase(curr.value);
+    acc[curr.key] = modifiedValue;
+    return acc;
+  }, {});
+  return ticksObj;
+};
 
-// const getModifiedBuffer = async (bufferKey) => {
-//   const buffer = (await tzkt.getBigMapKeys(bufferKey)).data;
-//   const bufferObj = buffer.reduce((acc, curr) => {
-//     acc[curr.key] = curr.value;
-//     return acc;
-//   }, {});
-//   return bufferObj;
-// };
+const getModifiedBuffer = async (bufferKey) => {
+  const buffer = (await tzkt.getBigMapKeys(bufferKey)).data;
+  const bufferObj = buffer.reduce((acc, curr) => {
+    acc[curr.key] = curr.value;
+    return acc;
+  }, {});
+  return bufferObj;
+};
 
-// const buildQuipuV3Pairs = async (dex, inverted = false) => {
-//   const aSide = dex.pools[inverted ? 1 : 0];
-//   const bSide = dex.pools[inverted ? 0 : 1];
+const buildQuipuV3Pairs = async (dex, ticks, buffer, inverted = false) => {
+  const aSide = inverted
+    ? getParamValue(dex.pools[0].params, "dev_fee_B") !== 0
+      ? dex.pools[0]
+      : dex.pools[1]
+    : getParamValue(dex.pools[0].params, "dev_fee_A") !== 0
+    ? dex.pools[0]
+    : dex.pools[1];
 
-//   const ticksKey = getParamValue(dex.params, "ticksKey");
-//   const bufferKey = getParamValue(dex.params, "bufferKey");
+  const bSide = inverted
+    ? getParamValue(dex.pools[0].params, "dev_fee_A") !== 0
+      ? dex.pools[0]
+      : dex.pools[1]
+    : getParamValue(dex.pools[0].params, "dev_fee_B") !== 0
+    ? dex.pools[0]
+    : dex.pools[1];
 
-//   const ticks = await getModifiedTicks(ticksKey);
-//   const buffer = await getModifiedBuffer(bufferKey);
-
-//   return {
-//     poolId: aSide.pool_id,
-//     dex: getDexName(dex.dex_type),
-//     dexAddress: dex.dex_address,
-//     direction: inverted ? "Inverted" : "Direct",
-//     fee: {
-//       feeBps: getParamValue(dex.params, "fee_bps").replace(/^"(.*)"$/, "$1"),
-//       devFeeA: inverted
-//         ? getParamValue(bSide.params, "dev_fee_B")
-//         : getParamValue(aSide.params, "dev_fee_A"),
-//       feeGrowthA: inverted
-//         ? getParamValue(bSide.params, "fee_growth_B")
-//         : getParamValue(aSide.params, "fee_growth_A"),
-//       devFeeB: inverted
-//         ? getParamValue(aSide.params, "dev_fee_A")
-//         : getParamValue(bSide.params, "dev_fee_B"),
-//       feeGrowthB: inverted
-//         ? getParamValue(bSide.params, "fee_growth_A")
-//         : getParamValue(aSide.params, "fee_growth_B"),
-//     },
-//     ticks: ticks,
-//     cumulativesBuffer: buffer,
-//     lastCumulativesBuffer: getParamValue(dex.params, "last_cumulatives_buffer"),
-//     curTickIndex: getParamValue(dex.params, "cur_tick_index").replace(
-//       /^"(.*)"$/,
-//       "$1"
-//     ),
-//     curTickWitness: getParamValue(dex.params, "cur_tick_witness").replace(
-//       /^"(.*)"$/,
-//       "$1"
-//     ),
-//     liquidity: getParamValue(dex.params, "liquidity").replace(/^"(.*)"$/, "$1"),
-//     factoryAddress: getParamValue(dex.params, "factory_address"),
-//     sqrtPrice: getParamValue(dex.params, "sqrt_price").replace(
-//       /^"(.*)"$/,
-//       "$1"
-//     ),
-//     a: {
-//       ...createSimplePairSide(aSide),
-//       devFeeA: inverted
-//         ? getParamValue(bSide.params, "dev_fee_B")
-//         : getParamValue(aSide.params, "dev_fee_A"),
-//       feeGrowthA: inverted
-//         ? getParamValue(bSide.params, "fee_growth_B")
-//         : getParamValue(aSide.params, "fee_growth_A"),
-//     },
-//     b: {
-//       ...createSimplePairSide(bSide),
-//       devFeeB: inverted
-//         ? getParamValue(aSide.params, "dev_fee_A")
-//         : getParamValue(bSide.params, "dev_fee_B"),
-//       feeGrowthB: inverted
-//         ? getParamValue(bSide.params, "fee_growth_A")
-//         : getParamValue(aSide.params, "fee_growth_B"),
-//     },
-//   };
-// };
+  return {
+    poolId: aSide.pool_id,
+    dex: getDexName(dex.dex_type),
+    dexAddress: dex.dex_address,
+    direction: inverted ? "Inverted" : "Direct",
+    fee: {
+      feeBps: getParamValue(dex.params, "fee_bps").replace(/^"(.*)"$/, "$1"),
+      devFeeA: inverted
+        ? getParamValue(bSide.params, "dev_fee_B")
+        : getParamValue(aSide.params, "dev_fee_A"),
+      feeGrowthA: inverted
+        ? getParamValue(bSide.params, "fee_growth_B")
+        : getParamValue(aSide.params, "fee_growth_A"),
+      devFeeB: inverted
+        ? getParamValue(aSide.params, "dev_fee_A")
+        : getParamValue(bSide.params, "dev_fee_B"),
+      feeGrowthB: inverted
+        ? getParamValue(bSide.params, "fee_growth_A")
+        : getParamValue(aSide.params, "fee_growth_B"),
+    },
+    ticks: ticks,
+    cumulativesBuffer: buffer,
+    lastCumulativesBuffer: getParamValue(dex.params, "last_cumulatives_buffer"),
+    curTickIndex: getParamValue(dex.params, "cur_tick_index").replace(
+      /^"(.*)"$/,
+      "$1"
+    ),
+    curTickWitness: getParamValue(dex.params, "cur_tick_witness").replace(
+      /^"(.*)"$/,
+      "$1"
+    ),
+    liquidity: getParamValue(dex.params, "liquidity").replace(/^"(.*)"$/, "$1"),
+    factoryAddress: getParamValue(dex.params, "factory_address"),
+    sqrtPrice: getParamValue(dex.params, "sqrt_price").replace(
+      /^"(.*)"$/,
+      "$1"
+    ),
+    a: {
+      ...createSimplePairSide(aSide),
+      devFeeA: inverted
+        ? getParamValue(bSide.params, "dev_fee_B")
+        : getParamValue(aSide.params, "dev_fee_A"),
+      feeGrowthA: inverted
+        ? getParamValue(bSide.params, "fee_growth_B")
+        : getParamValue(aSide.params, "fee_growth_A"),
+    },
+    b: {
+      ...createSimplePairSide(bSide),
+      devFeeB: inverted
+        ? getParamValue(aSide.params, "dev_fee_A")
+        : getParamValue(bSide.params, "dev_fee_B"),
+      feeGrowthB: inverted
+        ? getParamValue(bSide.params, "fee_growth_A")
+        : getParamValue(aSide.params, "fee_growth_B"),
+    },
+  };
+};
 
 const buildQuipuToken2TokenPairs = (dex) => {
   const pairs = [];
@@ -491,6 +501,19 @@ const buildSwapPairs = async (dexes) => {
       continue;
     }
 
+    let ticksKey;
+    let bufferKey;
+
+    let ticks;
+    let buffer;
+    if (dex.dex_type === "quipuswap_v3") {
+      ticksKey = getParamValue(dex.params, "ticksKey");
+      bufferKey = getParamValue(dex.params, "bufferKey");
+
+      ticks = await getModifiedTicks(ticksKey);
+      buffer = await getModifiedBuffer(bufferKey);
+    }
+
     switch (dex.dex_type) {
       case "quipuswap":
       case "vortex":
@@ -535,10 +558,10 @@ const buildSwapPairs = async (dexes) => {
         pairs = pairs.concat(buildQuipuV2Pairs(dex));
         break;
 
-      // case "quipuswap_v3":
-      //   pairs.push(await buildQuipuV3Pairs(dex));
-      //   pairs.push(await buildQuipuV3Pairs(dex, true));
-      //   break;
+      case "quipuswap_v3":
+        pairs.push(await buildQuipuV3Pairs(dex, ticks, buffer));
+        pairs.push(await buildQuipuV3Pairs(dex, ticks, buffer, true));
+        break;
 
       case "quipuswap_stable":
         pairs = pairs.concat(buildQuipuStablePairs(dex));
