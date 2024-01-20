@@ -282,6 +282,7 @@ i.fa-icon-right {
   .el-submenu .el-menu--horizontal {
     top: 65px !important;
     position: fixed;
+    z-index: 2 !important;
   }
 
   .hide-desktop {
@@ -434,6 +435,7 @@ header .grid-content button.el-button {
 
 .el-loading-mask {
   border-radius: 18px !important;
+  z-index: 1 !important;
 }
 .farm-list .el-loading-mask {
   border-radius: 14px !important;
@@ -534,7 +536,7 @@ header .grid-content button.el-button {
   left: auto;
 }
 .stake-infor {
-  margin-bottom: 8px
+  margin-bottom: 8px;
 }
 .stake-warning {
   margin-top: 10px;
@@ -543,7 +545,6 @@ header .grid-content button.el-button {
   line-height: 21px;
   text-align: left;
   color: #8c8d8f;
-
 }
 .lock-dialog .el-date-editor.el-input,
 .lock-dialog .el-date-editor.el-input__inner {
@@ -1187,6 +1188,26 @@ html[data-theme="dark"] {
   }
   .warning-modal {
     color: var(--primary-text);
+  }
+
+  ::-webkit-scrollbar {
+    width: 12px;
+    right: 0;
+    -webkit-transition: all 300ms;
+    transition: all 300ms;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #303236;
+    border-radius: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 2px solid #303236;
+    border-radius: 6px;
+    background-color: #1f2128;
   }
 }
 </style>
