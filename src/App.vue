@@ -1189,5 +1189,25 @@ html[data-theme="dark"] {
   .warning-modal {
     color: var(--primary-text);
   }
+
+  ::-webkit-scrollbar {
+    width: 12px;
+    right: 0;
+    -webkit-transition: all 300ms;
+    transition: all 300ms;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #303236;
+    border-radius: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 2px solid #303236;
+    border-radius: 6px;
+    background-color: #1f2128;
+  }
 }
 </style>

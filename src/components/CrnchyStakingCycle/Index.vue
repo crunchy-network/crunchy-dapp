@@ -376,8 +376,8 @@ export default {
 
     cycleOwnershipPct: function () {
       return (
-        (this.myStakingSelectedCycle.deposit /
-          this.selectedCycle.totalDeposit) *
+        (this.myStakingSelectedCycle.issued /
+          this.selectedCycle.totalIssued) *
         100
       );
     },
