@@ -162,8 +162,6 @@ export default {
     ...mapGetters(["getTokenOverview"]),
     ...mapState(["tokenTracker"]),
     loading() {
-      console.log(process.env.VUE_APP_CONTRACTS_CRNCHY)
-      console.log(this.getTokenOverview.tokenAddress)
       return this.tokenTracker.loading;
     },
   },
