@@ -164,6 +164,7 @@ export default {
         case "plenty":
         case "plenty_tez":
         case "plenty_ctez":
+        case "plenty_v3":
           return require("../assets/dex-icons/Plenty.png");
 
         case "quipuswap":
@@ -226,6 +227,8 @@ export default {
           return "Plenty Ctez";
         case "plenty_tez":
           return "Plenty Tez";
+        case "plenty_v3":
+          return "Plenty V3";
         case "spicy":
           return "Spicyswap";
         case "dexter":
