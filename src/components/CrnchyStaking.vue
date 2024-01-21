@@ -28,7 +28,7 @@
                 >
               </h2>
             </el-col>
-            <div>
+            <!-- <div>
               <button
                 style="
                   background: transparent !important;
@@ -83,7 +83,7 @@
                 </svg>
                 DAO Voting
               </button>
-            </div>
+            </div> -->
           </el-row>
 
           <div>
