@@ -72,7 +72,9 @@
                 <el-col style="text-align: right" :span="4">
                   <price-format
                     prefix="$"
-                    :precision="!isMobile ? 5 : 2"
+                    :precision="
+                      !isMobile ? 5 : handlePrecision(asset.currentPrice)
+                    "
                     :value="asset.currentPrice"
                     :usd-value="asset.usdValue"
                   />
@@ -224,6 +226,29 @@ export default {
     },
     formatNumShorthand(val) {
       return numberFormat.shorthand(val);
+    },
+    handlePrecision(value) {
+      let precision = 5;
+
+      if (value >= 1) {
+        precision = 2;
+      } else if (value >= 0.01) {
+        precision = 4;
+      } else if (value < 0.0000000001 && value > 0) {
+        precision = 12;
+      } else if (value < 0.00000001 && value > 0) {
+        precision = 11;
+      } else if (value < 0.000001 && value > 0) {
+        precision = 10;
+      } else if (value < 0.0001 && value > 0) {
+        precision = 6;
+      } else if (value < 0.001 && value > 0) {
+        precision = 5;
+      } else {
+        precision = 5;
+      }
+
+      return precision;
     },
   },
 };
