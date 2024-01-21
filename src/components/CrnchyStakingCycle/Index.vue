@@ -76,7 +76,7 @@
                     <el-button
                       v-if="myStakingPowerPct < 100 && activeTab !== 'current'"
                       type="text"
-                      style="font-weight: 500; font-size: 12px"
+                      style="font-weight: 500; font-size: 12px; padding-top: 0px; padding-bottom: 0px"
                       @click="showRestakeDialog"
                       >Increase</el-button
                     >
@@ -132,7 +132,7 @@
                   <h2 class="stake-text_big">
                     <el-button
                       type="text"
-                      style="font-weight: 500; font-size: 12px"
+                      style="font-weight: 500; font-size: 12px; padding-top: 0px; padding-bottom: 0px;"
                       @click="showRestakeDialog"
                       >Re-Stake</el-button
                     >
@@ -177,7 +177,7 @@
                     type="primary"
                     style="font-weight: 700; text-transform: uppercase"
                     @click="showStakeDialog"
-                    >stake
+                    >Stake
                   </el-button>
                 </el-row>
               </div>
