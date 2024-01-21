@@ -1,5 +1,6 @@
 import tzkt from "./../../utils/tzkt";
 import { getBatch, getContract, getWalletContract } from "./../../utils/tezos";
+import dexIndexer from "./../../utils/dex-indexer";
 import { BigNumber } from "bignumber.js";
 
 export default {
@@ -169,7 +170,7 @@ export default {
     commit("updateCrnchyStakingSummary", summary);
 
     if (rootState.wallet.pkh) {
-      const [myStakingLedger] = await Promise.all([
+      const [myStakingLedger, crnchyToken, wtzToken] = await Promise.all([
         tzkt
           .getContractBigMapKeys(state.contract, "ledger", {
             active: "true",
@@ -179,7 +180,12 @@ export default {
           .then((resp) =>
             resp.data && resp.data.length ? resp.data[0] : null
           ),
+          dexIndexer.getToken(process.env.VUE_APP_CONTRACTS_CRNCHY, "0"),
+          dexIndexer.getToken(process.env.VUE_APP_CONTRACTS_WTZ_FA2, "0"),
       ]);
+
+      const crnchyPriceTez = Number(crnchyToken[0]?.quotes.find(el => el.token.tokenAddress === "tez")?.quote);
+      const wtzPriceTez = Number(wtzToken[0]?.quotes.find(el => el.pool.dex.type === 'wtz')?.quote || 1);
 
       if (myStakingLedger) {
         // sync cycles for my ledger
@@ -200,6 +206,7 @@ export default {
             .toNumber(),
           stakingPower: parseInt(myStakingLedger.current_cycle.staking_power),
           pendingHarvest: 0,
+          apr: 0,
         };
 
         const myNextCycleObj = {
@@ -213,6 +220,7 @@ export default {
           amountHarvested: 0,
           stakingPower: parseInt(myStakingLedger.next_cycle.staking_power),
           pendingHarvest: 0,
+          apr: 0,
         };
 
         while (myCurrentCycleObj.cycleId < currentCycle) {
@@ -232,6 +240,8 @@ export default {
           myNextCycleObj.cycleId += 1;
         }
 
+        let myCurrentCycleApr = 0;
+
         if (myCurrentCycleObj.issued > 0 && currentCycleObj.totalRewards > 0) {
           const rps =
             currentCycleObj.totalRewards /
@@ -250,19 +260,36 @@ export default {
           if (currHarvest > 0) {
             pendingHarvest += currHarvest;
           }
+
+          const thisCycleTotalHarvest = BigNumber(myCurrentCycleObj.issued)
+            .times(currentCycleObj.totalRewards)
+            .div(currentCycleObj.totalIssued)
+            .toNumber();
+          if (thisCycleTotalHarvest > 0) {
+            const annualRewardTez = thisCycleTotalHarvest * (31449600 / parseInt(stakingStorage.settings.cycle_duration)) * wtzPriceTez;
+            myCurrentCycleApr = (annualRewardTez / (myCurrentCycleObj.deposit * crnchyPriceTez)) * 100;
+          }
         }
 
         myCurrentCycleObj.pendingHarvest = pendingHarvest;
+        myCurrentCycleObj.apr = myCurrentCycleApr;
 
         let futureHarvest = 0;
+        let futureApr = 0;
         if (myNextCycleObj.issued > 0 && nextCycleObj.totalRewards > 0) {
           futureHarvest = BigNumber(myNextCycleObj.issued)
             .times(nextCycleObj.totalRewards)
             .div(nextCycleObj.totalIssued)
             .toNumber();
+
+          if (futureHarvest > 0) {
+            const annualRewardTez = futureHarvest * (31449600 / parseInt(stakingStorage.settings.cycle_duration)) * wtzPriceTez;
+            futureApr = (annualRewardTez / (myNextCycleObj.deposit * crnchyPriceTez)) * 100;
+          }
         }
 
         myNextCycleObj.pendingHarvest = futureHarvest;
+        myNextCycleObj.apr = futureApr;
 
         commit("updateCrnchyMyStaking", {
           crnchyBalance: await dispatch("getCrnchyBalance"),
@@ -271,6 +298,12 @@ export default {
           nextCycle: myNextCycleObj,
         });
       } else {
+        const currentAnnualRewardTez = currentCycleObj.totalRewards * (31449600 / parseInt(stakingStorage.settings.cycle_duration)) * wtzPriceTez;
+        const currentApr = (currentAnnualRewardTez / (currentCycleObj.totalDeposit * crnchyPriceTez)) * 100;
+
+        const nextAnnualRewardTez = nextCycleObj.totalRewards * (31449600 / parseInt(stakingStorage.settings.cycle_duration)) * wtzPriceTez;
+        const nextApr = (nextAnnualRewardTez / (nextCycleObj.totalDeposit * crnchyPriceTez)) * 100;
+
         commit("updateCrnchyMyStaking", {
           crnchyBalance: await dispatch("getCrnchyBalance"),
           lockEndTime: new Date(),
@@ -280,6 +313,7 @@ export default {
             deposit: 0,
             stakingPower: 0,
             pendingHarvest: 0,
+            apr: currentApr,
           },
           nextCycle: {
             cycleId: 0,
@@ -287,6 +321,7 @@ export default {
             deposit: 0,
             stakingPower: 0,
             pendingHarvest: 0,
+            apr: nextApr,
           },
         });
       }
