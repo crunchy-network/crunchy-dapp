@@ -315,6 +315,7 @@
             type="primary"
             style="min-width: 50%"
             @click="setStep('confirm')"
+            :disabled="tab === 'stake' && inputAmount <= 0"
           >
             <template v-if="tab === 'stake'"> Stake </template>
             <template v-else> Re-Stake </template>
