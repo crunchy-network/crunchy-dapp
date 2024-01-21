@@ -100,7 +100,7 @@ export class Int extends BigNumber {
     }
     super(number);
   }
-  
+
   static max(...n) {
     return new Int(super.max(...n));
   }

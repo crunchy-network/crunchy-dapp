@@ -27,15 +27,9 @@
                 <el-col style="text-align: right" :span="isMobile ? 6 : 5"
                   >Market</el-col
                 >
-                <el-col style="text-align: right" :span="5"
-                  >Price</el-col
-                >
-                <el-col style="text-align: right" :span="5"
-                  >TVL</el-col
-                >
-                <el-col style="text-align: right" :span="5"
-                  >24h Volume</el-col
-                >
+                <el-col style="text-align: right" :span="5">Price</el-col>
+                <el-col style="text-align: right" :span="5">TVL</el-col>
+                <el-col style="text-align: right" :span="5">24h Volume</el-col>
               </el-row>
             </el-col>
           </el-row>
@@ -69,7 +63,7 @@
                             height: 29px;
                           "
                         />
-                        
+
                         <a
                           :href="`https://tzkt.io/${item.dex.address}`"
                           target="_blank"
@@ -198,6 +192,8 @@ export default {
         case "dexter":
         case "dexter_v2":
           return require("../assets/dex-icons/Dexter.png");
+        case "yupana":
+          return require("../assets/dex-icons/yupana.jpeg");
         default:
           return "";
       }
@@ -232,7 +228,8 @@ export default {
           return "Dexter";
         case "dexter_v2":
           return "Dexter V2";
-
+        case "yupana":
+          return "Yupana";
         default:
           return str.replace(/\b[a-z]/gi, function (char) {
             return char.toUpperCase();

@@ -85,31 +85,43 @@
         "
         :input-disabled="true"
         :selected-token="getSwapForm.outputToken || {}"
+        :is-loading="isCalculatingBestRoute"
       />
     </div>
     <div style="width: 100%; margin-top: 16px; text-align: center">
       <div :style="`${!getPkh ? 'display: none;' : ''}`">
         <el-button
-          v-loading="isLoading || formSubmitting || isGettingBalance"
-          :disabled="buttonDisabled"
+          :disabled="
+            isLoading ||
+            formSubmitting ||
+            isGettingBalance ||
+            isCalculatingBestRoute ||
+            buttonDisabled
+          "
           type="primary"
           :style="{
-            border:'none',
+            border: 'none',
             'border-radius': '20px',
-            width: '340px',
+            width: '100%',
             'max-width': '100%',
             margin: 'auto',
-            'font-weight': '700',
+            'font-weight': '500',
+            padding: '16px 20px',
           }"
           @click="onSubmit"
         >
-          {{
-            formSubmitting
-              ? "SWAPPING"
-              : isGettingBalance
-              ? "LOADING BALANCE"
-              : "SWAP"
-          }}</el-button
+          <i
+            v-if="
+              isLoading ||
+              formSubmitting ||
+              isGettingBalance ||
+              isCalculatingBestRoute
+            "
+            :style="{ color: '#ffffff' }"
+            class="el-icon-loading"
+          >
+          </i>
+          <span> {{ getStatusText() }}</span></el-button
         >
       </div>
       <div :style="`${getPkh ? 'display: none;' : ''}`">
@@ -138,10 +150,9 @@
 <script>
 import { mapActions, mapGetters, mapState } from "vuex";
 import { getBestTrade } from "../utils/swapRouterHelper";
-
+import _ from "lodash";
 import TokenSelectMenu from "./TokenSelectMenu.vue";
 import { buildRoutingFeeOperation } from "../utils/routing-fee";
-import { buildOperationParams } from "../lib/SwapRouter";
 import { Tezos } from "../utils/tezos";
 import * as signalR from "@microsoft/signalr";
 import ConnectButton from "./ConnectButton.vue";
@@ -162,6 +173,7 @@ export default {
       customClass: "custom-notify-blurb",
       position: "bottom-right",
     },
+    debouncedUpdateBestTrade: null,
   }),
   computed: {
     ...mapState(["homeWallet"]),
@@ -170,8 +182,13 @@ export default {
       "getSwapForm",
       "getSwapPairs",
       "getCurrentTrade",
+      "getTransactionParams",
       "getApiLoadingStatus",
+      "getIsCalculatingBestRoute",
     ]),
+    isCalculatingBestRoute() {
+      return this.getIsCalculatingBestRoute;
+    },
     areApisLoading() {
       return this.getApiLoadingStatus.some((a) => a.loading);
     },
@@ -213,13 +230,22 @@ export default {
       if (this.homeWallet.loading) {
         return false;
       }
+
+      if (!this.getCurrentTrade.trades) {
+        return true;
+      }
+
       const bal = this.getBalanceOfSelectedToken(this.getSwapForm.inputToken);
       return bal < this.getSwapForm.inputAmount;
     },
   },
   watch: {
     getSwapForm() {
-      this.updateBestTrade();
+      // Cancel previous pending debounced function
+      if (this.debouncedUpdateBestTrade) {
+        this.debouncedUpdateBestTrade.cancel();
+      }
+      this.debouncedUpdateBestTrade();
       this.updateUrlParams(
         this.getSwapForm.inputToken,
         this.getSwapForm.outputToken
@@ -227,7 +253,11 @@ export default {
     },
 
     getSwapPairs() {
-      this.updateBestTrade();
+      // Cancel previous pending debounced function
+      if (this.debouncedUpdateBestTrade) {
+        this.debouncedUpdateBestTrade.cancel();
+      }
+      this.debouncedUpdateBestTrade();
     },
     tokenList(val) {
       if (val.length > 0) {
@@ -238,20 +268,46 @@ export default {
   },
   created() {
     this.ensureTokensMatchQuery();
-    this.updateDexApis();
-    // this.updateCurrentPrices();
-    this.subscribeToTzktForDexUpdateTrigger(this.updateDexApis);
+    this.subscribeToTzktForDexUpdateTrigger(
+      this.createDebouncedUpdateBestTrade
+    );
+    this.createDebouncedUpdateBestTrade();
   },
 
   methods: {
     ...mapActions([
       "updateForm",
-      "updateCurrentPrices",
       "updateCurrentTrade",
+      "updateTransactionParams",
       "connectWallet",
-      "updateDexApis",
       "loadWalletAsssets",
+      "updateCalculatingBestRoute",
     ]),
+    getStatusText() {
+      const bal = this.getBalanceOfSelectedToken(this.getSwapForm.inputToken);
+
+      if (this.isCalculatingBestRoute) {
+        return "Calculating Best Route";
+      }
+
+      if (this.formSubmitting) {
+        return "Swapping";
+      }
+
+      if (this.isGettingBalance) {
+        return "Loading Balance";
+      }
+
+      if (bal < this.getSwapForm.inputAmount) {
+        return "Insufficient Balance";
+      }
+
+      if (!this.getCurrentTrade.trades) {
+        return "No route available";
+      }
+
+      return "Swap";
+    },
     ensureTokensMatchQuery() {
       if (
         this.tokenList.length > 0 &&
@@ -334,17 +390,35 @@ export default {
         outputToken: { ...this.getSwapForm.inputToken },
       });
     },
-    updateBestTrade() {
-      if (this.getSwapPairs.length < 1) {
-        console.log("swap pairs haven't loaded yet");
-      }
-      const bestTrade = getBestTrade(this.getSwapForm, this.getSwapPairs);
-      if (bestTrade) {
-        this.updateCurrentTrade(bestTrade);
-      } else {
-        this.updateCurrentTrade([]);
+    async updateBestTrade() {
+      this.updateCalculatingBestRoute(true); // Set to true when starting the calculation
+
+      try {
+        const { currentTrade, transactionParams } = await getBestTrade(
+          this.getSwapForm,
+          this.getPkh || "tz1hD63wN8p9V8o5ARU7wA7RKAQvBAwkeTr7"
+        );
+
+        if (currentTrade) {
+          this.updateCurrentTrade(currentTrade);
+          this.updateTransactionParams(transactionParams);
+        } else {
+          this.updateCurrentTrade([]);
+        }
+      } catch (error) {
+        console.error(error); // Log the error for debugging purposes
+      } finally {
+        this.updateCalculatingBestRoute(false); // Reset to false when the calculation is complete (whether it succeeded or failed)
       }
     },
+
+    // Create a new debounced function and store it in debouncedUpdateBestTrade
+    createDebouncedUpdateBestTrade() {
+      this.debouncedUpdateBestTrade = _.debounce(() => {
+        this.updateBestTrade();
+      }, 500);
+    },
+
     getBalanceOfSelectedToken(token) {
       if (token === undefined) return 0;
       const found = this.homeWallet.assets.find(
@@ -371,7 +445,6 @@ export default {
     },
     refresh() {
       this.loadWalletAsssets(this.getPkh);
-      // this.updateCurrentPrices();
     },
     applyOption(option) {
       const tokenBalance = this.getBalanceOfSelectedToken(
@@ -435,11 +508,7 @@ export default {
           this.getSwapPairs
         );
       }
-      const op = await buildOperationParams(
-        this.getCurrentTrade,
-        Tezos,
-        this.getPkh
-      );
+      const op = this.getTransactionParams;
       const toBatch = [...op, ...fee].map((o) => ({
         ...o,
         kind: "transaction",

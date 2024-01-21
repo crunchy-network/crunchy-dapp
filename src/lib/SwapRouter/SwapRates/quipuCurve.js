@@ -8,7 +8,7 @@ function getD(xp, ampF) {
     return acc.plus(value);
   }, new BigNumber(0));
   var tokensCount = xp.length;
-  var aNnF = ampF.times(tokensCount);
+  var aNnF = new BigNumber(ampF).times(tokensCount);
   var d = sumC;
   var prevD = new BigNumber(0);
 
@@ -63,7 +63,7 @@ function calculateY(c, aNnF, s_, d, pair) {
 function getXp(_ref) {
   const toRet = [];
   for (const pool of _ref.poolParams) {
-    toRet.push(pool.rate.times(pool.reserves).idiv(precision));
+    toRet.push(new BigNumber(pool.rate).times(pool.reserves).idiv(precision));
   }
   return toRet;
 }
@@ -106,7 +106,7 @@ var getY = function getY(i, j, x, xp, s) {
     new Date(s.futureATime),
     s.futureA
   );
-  var aNnF = ampF.times(tokensCount);
+  var aNnF = new BigNumber(ampF).times(tokensCount);
   var d = getD(xp, ampF);
 
   var prepareParams = function prepareParams(accum, value, iter) {

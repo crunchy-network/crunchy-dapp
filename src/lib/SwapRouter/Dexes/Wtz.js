@@ -1,4 +1,8 @@
-const { fromOpOpts, convertToMuTez, getContractAndStorage } = require("../utils.js");
+const {
+  fromOpOpts,
+  convertToMuTez,
+  getContractAndStorage,
+} = require("../utils.js");
 const { addTokenApprovalOperators } = require("../TokenTypes");
 const BigNumber = require("bignumber.js");
 
@@ -33,7 +37,10 @@ const buildDexOperation = async (dex, trade, walletAddress, tezos) => {
   const input = convertToMuTez(trade.input, trade.a);
   // const output = convertToMuTez(trade.output, trade.b);
 
-  const { contract: proxy } = await getContractAndStorage(process.env.VUE_APP_CONTRACTS_WTZ_PROXY, tezos);
+  const { contract: proxy } = await getContractAndStorage(
+    process.env.VUE_APP_CONTRACTS_WTZ_PROXY,
+    tezos
+  );
 
   let transfers = [];
   if (trade.a.assetSlug === "tez") {

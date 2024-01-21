@@ -704,12 +704,12 @@ export default {
     form: {
       async handler(val) {
         if (
-          !val.rewardTokenThumbnailUri
-          || !val.rewardTokenDecimals && (
-          val.rewardTokenType &&
-          val.rewardTokenAddress &&
-          (val.rewardTokenType === "fa1" || Number.isInteger(val.rewardTokenId))
-          )
+          !val.rewardTokenThumbnailUri ||
+          (!val.rewardTokenDecimals &&
+            val.rewardTokenType &&
+            val.rewardTokenAddress &&
+            (val.rewardTokenType === "fa1" ||
+              Number.isInteger(val.rewardTokenId)))
         ) {
           const validation = validateContractAddress(val.rewardTokenAddress);
           if (validation === ValidationResult.VALID) {
@@ -719,12 +719,12 @@ export default {
                 val.rewardTokenAddress,
                 val.rewardTokenId || 0
               );
-              
             } catch (e) {
-              rewardTokenMeta = this.farms.priceFeed.find((el) => 
-                                el.tokenAddress === val.rewardTokenAddress && 
-                                el.tokenId === val.rewardTokenId
-                              )
+              rewardTokenMeta = this.farms.priceFeed.find(
+                (el) =>
+                  el.tokenAddress === val.rewardTokenAddress &&
+                  el.tokenId === val.rewardTokenId
+              );
             }
             rewardTokenMeta.tokenAddress = val.rewardTokenAddress;
             rewardTokenMeta = farmUtils.overrideMetadata(rewardTokenMeta);
@@ -747,12 +747,19 @@ export default {
   },
   async created() {
     const vm = this;
-    await Promise.all([this.updateCurrentPrices(), this.updateLpTokens()]).then(() => {
-      vm.loading = false;
-    });
+    await Promise.all([this.updateCurrentPrices(), this.updateLpTokens()]).then(
+      () => {
+        vm.loading = false;
+      }
+    );
   },
   methods: {
-    ...mapActions(["connectWallet", "updateCurrentPrices", "updateLpTokens", "createFarm"]),
+    ...mapActions([
+      "connectWallet",
+      "updateCurrentPrices",
+      "updateLpTokens",
+      "createFarm",
+    ]),
 
     onSubmit() {
       const vm = this;
@@ -837,7 +844,11 @@ export default {
             t.tokenAddress.toLowerCase().includes(keywords.toLowerCase()))
         ) {
           t = farmUtils.overrideMetadata(t);
-          if (!Object.prototype.hasOwnProperty.call(t, "thumbnailUri") || t.thumbnailUri === null || !t.thumbnailUri) {
+          if (
+            !Object.prototype.hasOwnProperty.call(t, "thumbnailUri") ||
+            t.thumbnailUri === null ||
+            !t.thumbnailUri
+          ) {
             t.thumbnailUri =
               "https://static.thenounproject.com/png/796573-200.png";
           }
@@ -861,15 +872,26 @@ export default {
           (Object.prototype.hasOwnProperty.call(t, "tokenAddress") &&
             t.tokenAddress.toLowerCase().includes(keywords.toLowerCase()))
         ) {
-                    
           t = farmUtils.overrideMetadata(t);
-          if (!Object.prototype.hasOwnProperty.call(t, "thumbnailUri") || t.thumbnailUri === null || !t.thumbnailUri) {
+          if (
+            !Object.prototype.hasOwnProperty.call(t, "thumbnailUri") ||
+            t.thumbnailUri === null ||
+            !t.thumbnailUri
+          ) {
             t.thumbnailUri =
               "https://static.thenounproject.com/png/796573-200.png";
           }
           t.thumbnailUri = ipfs.transformUri(t.thumbnailUri);
-          const tokenPools = this.farms.tokenPools.filter((el) => el.lpToken?.tokenAddress === t.tokenAddress && el.lpToken?.tokenId === t.tokenId)
-          const thumbnailUris = tokenPools[0]?.tokens.map((el) => el?.token?.thumbnailUri !== null ? ipfs.transformUri(el.token.thumbnailUri) : el.token.thumbnailUri);
+          const tokenPools = this.farms.tokenPools.filter(
+            (el) =>
+              el.lpToken?.tokenAddress === t.tokenAddress &&
+              el.lpToken?.tokenId === t.tokenId
+          );
+          const thumbnailUris = tokenPools[0]?.tokens.map((el) =>
+            el?.token?.thumbnailUri !== null
+              ? ipfs.transformUri(el.token.thumbnailUri)
+              : el.token.thumbnailUri
+          );
           matches.push({
             value: t.symbol || t.name,
             type: t.tokenType,

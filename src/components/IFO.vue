@@ -88,7 +88,7 @@
                   </div>
                 </div>
 
-                <div class="detail-row" v-if="ifo.data.ended">
+                <div v-if="ifo.data.ended" class="detail-row">
                   <div class="data-col">
                     <p v-if="!ifo.data.harvesting">Harvesting Begins in:</p>
                     <p v-else>Harvesting Ends in:</p>
@@ -102,12 +102,20 @@
                   </div>
                 </div>
 
-                <div class="detail-row" v-if="!ifo.data.harvesting && ifo.data.harvestDuration">
+                <div
+                  v-if="!ifo.data.harvesting && ifo.data.harvestDuration"
+                  class="detail-row"
+                >
                   <div class="data-col">
                     <p>Harvest Lasts:</p>
                   </div>
                   <div class="data-col">
-                    <p>{{ ifo.data.harvestDuration | humanizeDuration({ units: ["d"] }) }}</p>
+                    <p>
+                      {{
+                        ifo.data.harvestDuration
+                          | humanizeDuration({ units: ["d"] })
+                      }}
+                    </p>
                   </div>
                 </div>
 
@@ -267,9 +275,7 @@
                   <el-col
                     :span="16"
                     style="font-size: 12px; font-weight: 600; text-align: right"
-                    >{{
-                      vueNumberFormat(ifo.data.userRecord.pendingHarvest)
-                    }}
+                    >{{ vueNumberFormat(ifo.data.userRecord.pendingHarvest) }}
                     {{ project.tokenSymbol }}</el-col
                   >
                 </el-row>
@@ -291,7 +297,20 @@
                   @click="harvestIfo"
                   >HARVEST</el-button
                 >
-                <el-button v-else :disabled="!ifo.data.started" type="primary" @click="showStakeDialog" style="border-radius: 10px; font-weight: bold; width: 100%; padding: 12px 20px; color: #ffffff;">FARM</el-button>
+                <el-button
+                  v-else
+                  :disabled="!ifo.data.started"
+                  type="primary"
+                  style="
+                    border-radius: 10px;
+                    font-weight: bold;
+                    width: 100%;
+                    padding: 12px 20px;
+                    color: #ffffff;
+                  "
+                  @click="showStakeDialog"
+                  >FARM</el-button
+                >
               </div>
             </div>
           </el-card></el-col
@@ -472,14 +491,12 @@
           "
         >
           <el-row type="flex" align="middle" justify="space-between">
-            <el-col :span="8" style="font-size: 12px" class="_info-card__title">BALANCE</el-col>
-            <el-col
-              :span="16"
-              style="font-weight: 600; text-align: right"
-              >{{
-                vueNumberFormat(wallet.balance.toNumber() / 1000000)
-              }}</el-col
+            <el-col :span="8" style="font-size: 12px" class="_info-card__title"
+              >BALANCE</el-col
             >
+            <el-col :span="16" style="font-weight: 600; text-align: right">{{
+              vueNumberFormat(wallet.balance.toNumber() / 1000000)
+            }}</el-col>
           </el-row>
         </div>
         <el-form-item
@@ -595,7 +612,7 @@ export default {
       const vm = this;
       this.loadIfoData().then(() => {
         vm.showTimer();
-      })
+      });
     },
     formatCount(value) {
       return value < 10 ? "0" + value : value;

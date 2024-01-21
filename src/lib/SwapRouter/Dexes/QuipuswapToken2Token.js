@@ -2,7 +2,7 @@ const {
   percentToDecimal,
   convertToMuTez,
   secondsFromNow,
-  isValidDexFee
+  isValidDexFee,
 } = require("../utils.js");
 const { addTokenApprovalOperators } = require("../TokenTypes");
 const { getAmmSwapOutput } = require("../SwapRates/amm");

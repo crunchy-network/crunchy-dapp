@@ -21,7 +21,7 @@ export default {
       const crnchyPriceXtz = crnchy?.quotes.find(
         (el) => el.token.tokenAddress === "tez"
       )?.quote;
-  
+
       const burned = new BigNumber(crunchyBurned)
         .times(crnchyPriceXtz)
         .toNumber();

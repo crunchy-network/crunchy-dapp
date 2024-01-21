@@ -6,14 +6,17 @@ const {
   secondsFromNow,
   convertToMuTez,
   fromOpOpts,
-  isValidDexFee
+  isValidDexFee,
 } = require("../utils.js");
 const { getAmmSwapOutput } = require("../SwapRates/amm");
 
 const FEE_DENOMINATOR = new BigNumber(1000000000000000000n);
 
 function getFees(fees) {
-  const { auctionFee, swapFee, interfaceFee } = fees;
+  const auctionFee = new BigNumber(fees.auctionFee);
+  const swapFee = new BigNumber(fees.swapFee);
+  const interfaceFee = new BigNumber(fees.interfaceFee);
+
   return auctionFee.plus(swapFee).plus(interfaceFee);
 }
 
@@ -81,7 +84,7 @@ const directTransaction = (dex, trade, walletAddres, input, output, tezos) => {
     input,
     output,
     null
-  )
+  );
 
   const operation = getTransactionType(trade);
   return operation(transfer, trade, walletAddres, input, tezos);
@@ -104,7 +107,7 @@ const invertTransaction = (dex, trade, walletAddres, input, output, tezos) => {
     input,
     output,
     null
-  )
+  );
 
   const operation = getTransactionType(trade);
   return operation(transfer, trade, walletAddres, input, tezos);

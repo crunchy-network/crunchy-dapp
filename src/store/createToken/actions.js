@@ -8,15 +8,11 @@ import axios from "axios";
 
 const uploadFileToNFTStorage = async (file) => {
   const form = new FormData();
-  form.append('asset', file);
+  form.append("asset", file);
 
-  const res = await axios.post(
-    "https://upload.crunchy.network/single",
-    form,
-    {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    }
-  );
+  const res = await axios.post("https://upload.crunchy.network/single", form, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
 
   return res.data.cid;
 };

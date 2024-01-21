@@ -5,6 +5,9 @@ export default {
   updateCurrentTrade(state, trade) {
     state.currentTrade = trade;
   },
+  updateTransactionParams(state, params) {
+    state.transactionParams = params;
+  },
   updateTokenList(state, tokens) {
     state.tokenList = tokens;
   },
@@ -25,5 +28,8 @@ export default {
   },
   updateDexLoading(state, payload) {
     state.dexApis[payload.dex].loading = payload.loading;
+  },
+  updateIsCalculatingBestRoute(state, payload) {
+    state.isCalculatingBestRoute = payload;
   },
 };

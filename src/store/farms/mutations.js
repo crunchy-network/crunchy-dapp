@@ -71,11 +71,10 @@ export default {
   updateTokenPools(state, tokenPools) {
     state.tokenPools = tokenPools;
   },
-  
+
   updateLpTokens(state, lpTokens) {
     state.lpTokens = lpTokens;
   },
-  
 
   updateFarmStorage(state, data) {
     state.storage.farms = data;
