@@ -130,7 +130,7 @@ export default {
             value: Number(element.mktCap),
           };
         });
-      
+
       this.updatedChartData.mktCap.days30 =
         this.getOverviewChart.mktCapAndVol1Mo.map((element) => {
           const timeUsdValue = tokenTracker.binarySearch(
@@ -171,7 +171,7 @@ export default {
             value: Number(element.totalVol),
           };
         });
-      
+
       this.updatedChartData.volume.days7 =
         this.getOverviewChart.mktCapAndVol1W.map((element) => {
           const timeUsdValue = tokenTracker.binarySearch(
@@ -191,7 +191,7 @@ export default {
             value: Number(element.totalVol),
           };
         });
-      
+
       this.updatedChartData.volume.days30 =
         this.getOverviewChart.mktCapAndVol1Mo.map((element) => {
           const timeUsdValue = tokenTracker.binarySearch(
@@ -400,7 +400,7 @@ export default {
               this.handlePrecision(param.seriesPrices.get(areaSeries)).precision
             );
             const precision = this.handlePrecision(price).precision
-           
+
             const mediaMaxWidth = 990;
             const tokenMetricsMargin = {};
             if(this.chartType === "mktCap") {
@@ -576,7 +576,8 @@ export default {
   -moz-osx-font-smoothing: grayscale;
 }
 @media (max-width: 576px) {
-  .overview-chart #volume
+  .overview-chart
+    #volume
     > div.tv-lightweight-charts
     > table
     > tr:nth-child(1)
@@ -584,11 +585,25 @@ export default {
     > div {
     width: 300px !important;
   }
-  .overview-chart #volume > div.tv-lightweight-charts > table > tr:nth-child(1) > td:nth-child(2) > div > canvas:nth-child(1){
+  .overview-chart
+    #volume
+    > div.tv-lightweight-charts
+    > table
+    > tr:nth-child(1)
+    > td:nth-child(2)
+    > div
+    > canvas:nth-child(1) {
     width: 300px !important;
   }
-  .overview-chart #volume > div.tv-lightweight-charts > table > tr:nth-child(1) > td:nth-child(2) > div > canvas:nth-child(2) {
+  .overview-chart
+    #volume
+    > div.tv-lightweight-charts
+    > table
+    > tr:nth-child(1)
+    > td:nth-child(2)
+    > div
+    > canvas:nth-child(2) {
     width: 300px !important;
-  } 
+  }
 }
 </style>

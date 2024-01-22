@@ -3,7 +3,7 @@ const { getQuipuCurveOutput } = require("../SwapRates/quipuCurve");
 const { addTokenApprovalOperators } = require("../TokenTypes");
 const { convertToMuTez, secondsFromNow, isValidDexFee } = require("../utils");
 
-const FEE_DENOMINATOR = new BigNumber(10000000000);
+const FEE_DENOMINATOR = new BigNumber(1000000000000000000n);
 
 function getAmountIn(input, token) {
   return input * 10 ** token.decimals;

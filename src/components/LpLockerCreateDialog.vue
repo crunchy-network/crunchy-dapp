@@ -39,9 +39,9 @@
                 ></el-avatar> -->
                 <el-avatar
                   v-if="
-                  Array.isArray(item.thumbnailUri) &&
-                  item.thumbnailUri.length > 0
-                "
+                    Array.isArray(item.thumbnailUri) &&
+                    item.thumbnailUri.length > 0
+                  "
                   :src="item.thumbnailUri[0]"
                   fit="cover"
                   shape="circle"
@@ -55,10 +55,10 @@
                   "
                 ></el-avatar>
                 <el-avatar
-                v-if="
-                  Array.isArray(item.thumbnailUri) &&
-                  item.thumbnailUri.length > 0
-                "
+                  v-if="
+                    Array.isArray(item.thumbnailUri) &&
+                    item.thumbnailUri.length > 0
+                  "
                   :src="item.thumbnailUri[1]"
                   fit="cover"
                   shape="circle"
@@ -658,7 +658,7 @@ export default {
       this.form.lpTokenAddress = i.address;
       this.form.lpTokenId = i.type === "fa2" ? i.tokenId : "";
       this.form.lpTokenThumbnailUri = i.thumbnailUri;
-      this.form.lpDexType = i.dexType;;
+      this.form.lpDexType = i.dexType;
       this.loading = true;
       this.getLpBalance({
         tokenAddress: i.address,

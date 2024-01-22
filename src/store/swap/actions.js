@@ -66,6 +66,10 @@ export default {
     state.commit("updateCurrentTrade", payload);
   },
 
+  updateTransactionParams(state, payload) {
+    state.commit("updateTransactionParams", payload);
+  },
+  
   async loadSwapPairs(state) {
     const dex = "core";
     const dexPools = await dexIndexer.getAllTokenPools();
@@ -96,6 +100,10 @@ export default {
   walletConnected({ dispatch }) {
     dispatch("updateDexApis");
   },
+
+  updateCalculatingBestRoute({ commit }, payload) {
+    commit("updateIsCalculatingBestRoute", payload);
+  }
 };
 // get price data
 // convert to route pairsisLoading

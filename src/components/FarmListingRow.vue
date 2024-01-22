@@ -529,7 +529,11 @@
             </p>
           </el-col>
 
-          <el-col v-else :span="isMobile ? 6 : 4" style="font-weight: bold; display: flex; align-items: center">
+          <el-col
+            v-else
+            :span="isMobile ? 6 : 4"
+            style="font-weight: bold; display: flex; align-items: center"
+          >
             <el-tooltip
               v-if="farm.errant"
               content="Farm Error"
@@ -592,15 +596,12 @@
             </el-tooltip>
             <p v-show="!isMobile">{{ farm.poolToken.symbol }}</p>
           </el-col>
-          <i
-              class="fas fa-arrow-alt-right"
-            ></i>
+          <i class="fas fa-arrow-alt-right"></i>
           <el-col
             class="farm-rewardToken"
             :span="isMobile ? 6 : 4"
             style="font-weight: bold; display: flex; align-items: center"
           >
-            
             <el-tooltip placement="top" effect="light">
               <div slot="content">
                 <div
@@ -808,7 +809,7 @@
                       >Harvest</el-button
                     >
                   </el-col>
-                  <el-col style="text-align: right" v-else :span="10">
+                  <el-col v-else style="text-align: right" :span="10">
                     {{ farm.multiplier }}x
                   </el-col>
                 </el-row>
@@ -1464,12 +1465,12 @@ export default {
   }
 }
 .fa-arrow-alt-right {
-  font-size: 24px; 
-  color: #999; 
-  margin-left: -10px; 
+  font-size: 24px;
+  color: #999;
+  margin-left: -10px;
   margin-right: 6px;
   @media (max-width: 450px) {
-    margin-left: -15px; 
+    margin-left: -15px;
   }
 }
 </style>

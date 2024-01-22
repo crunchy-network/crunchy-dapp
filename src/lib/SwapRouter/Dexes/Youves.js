@@ -3,7 +3,7 @@ const {
   convertToMuTez,
   secondsFromNow,
   fromOpOpts,
-  isValidDexFee
+  isValidDexFee,
 } = require("../utils");
 const { getFlatCfmmOutput } = require("../SwapRates/flat-cfmm");
 const { addTokenApprovalOperators } = require("../TokenTypes");

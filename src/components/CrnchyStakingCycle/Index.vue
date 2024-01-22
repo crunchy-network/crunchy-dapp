@@ -76,7 +76,7 @@
                     <el-button
                       v-if="myStakingPowerPct < 100 && activeTab !== 'current'"
                       type="text"
-                      style="font-weight: 500; font-size: 12px"
+                      style="font-weight: 500; font-size: 12px; padding-top: 0px; padding-bottom: 0px"
                       @click="showRestakeDialog"
                       >Increase</el-button
                     >
@@ -132,7 +132,7 @@
                   <h2 class="stake-text_big">
                     <el-button
                       type="text"
-                      style="font-weight: 500; font-size: 12px"
+                      style="font-weight: 500; font-size: 12px; padding-top: 0px; padding-bottom: 0px;"
                       @click="showRestakeDialog"
                       >Re-Stake</el-button
                     >
@@ -168,10 +168,7 @@
                     plain
                     type="primary"
                     class="btn-alt__3"
-                    style="
-                      font-weight: 700;
-                      text-transform: uppercase;
-                    "
+                    style="font-weight: 700; text-transform: uppercase"
                     @click="showUnstakeDialog"
                     >Un-stake
                   </el-button>
@@ -180,7 +177,7 @@
                     type="primary"
                     style="font-weight: 700; text-transform: uppercase"
                     @click="showStakeDialog"
-                    >stake
+                    >Stake
                   </el-button>
                 </el-row>
               </div>
@@ -269,15 +266,16 @@
                   </h2>
                 </el-col>
                 <el-col :span="8">
-                  <h2 class="stake-text_small">Current APR</h2>
+                  <h2 v-if="activeTab === 'current'" class="stake-text_small">Current APR</h2>
+                  <h2 v-else class="stake-text_small">Expected APR</h2>
                   <h2 style="margin-top: 6px" class="stake-text_big">
                     {{
-                      vueNumberFormat(36, {
+                      vueNumberFormat(myStakingSelectedCycle.apr, {
                         prefix: "",
                         suffix: "%",
                         decimal: ".",
                         thousand: ",",
-                        precision: 0,
+                        precision: myStakingSelectedCycle.apr < 1 ? 4 : 2,
                       })
                     }}
                   </h2>

@@ -5,9 +5,11 @@ import { getCurrContractId, projects } from "./tmp";
 export default {
   async updateIfoStorage({ state }) {
     const id = getCurrContractId();
-    return tzkt.getContractStorage(id || state.contracts.default).then((resp) => {
-      return resp.data;
-    });
+    return tzkt
+      .getContractStorage(id || state.contracts.default)
+      .then((resp) => {
+        return resp.data;
+      });
   },
 
   async updateIfoUserRecord({ rootState, state }) {
@@ -144,10 +146,11 @@ export default {
         .toNumber(),
       swapRate: BigNumber(storage.ifo.raisingGoal)
         .div(BigNumber(10).pow(6))
-        .div((
-          BigNumber(storage.ifo.offeringSupply)
-          .div(BigNumber(10).pow(projectJson.decimals || 6))
-        ))
+        .div(
+          BigNumber(storage.ifo.offeringSupply).div(
+            BigNumber(10).pow(projectJson.decimals || 6)
+          )
+        )
         .toNumber(),
       startTime: storage.ifo.startTime,
       endTime: storage.ifo.endTime,

@@ -45,7 +45,7 @@ const isValidDexFee = (feeAmount, pair) => {
   const finalFee = bigNumber / decimalMover;
   if (finalFee <= 0) return false;
   return true;
-}
+};
 
 module.exports = {
   percentToDecimal,
@@ -57,5 +57,5 @@ module.exports = {
   isTez,
   mockTezosNow,
   dateToSeconds,
-  isValidDexFee
+  isValidDexFee,
 };

@@ -5,11 +5,11 @@
     width="380px"
     class="stake-dialog"
   >
-    <p class="stake-infor" v-if="form.farm.poolToken.isQuipuLp">
+    <p v-if="form.farm.poolToken.isQuipuLp" class="stake-infor">
       Stake XTZ/{{ form.farm.poolToken.symbol }} LP tokens to earn
       {{ form.farm.rewardToken.symbol }}.
     </p>
-    <p class="stake-infor" v-else>
+    <p v-else class="stake-infor">
       Stake {{ form.farm.poolToken.symbol }} to earn
       {{ form.farm.rewardToken.symbol }}.
     </p>
