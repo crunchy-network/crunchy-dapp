@@ -472,8 +472,9 @@ export default {
 @import "~element-ui/packages/theme-chalk/src/common/var";
 
 #token-tracker {
+  // consistency, 120% -> 55px like in all other pages
   .el-divider--vertical {
-    height: 120% !important;
+    height: 55px !important;
   }
 
   .el-card.top {

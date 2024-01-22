@@ -537,13 +537,23 @@ export default {
       font-size: 24px !important;
       width: 24px !important;
     }
-    &:hover {
-      background: #9093991e !important;
-    }
     &.is-active {
       color: var(--color-menu-active) !important;
     }
   }
+
+  // add the hover animation on every item <<EXCEPT>> the first 2 items
+  .nav-menu-wrapper > .el-menu-item:not(:nth-child(-n+2)) {
+    &:hover {
+      background: #9093991e !important;
+    }
+  }
+
+  // Remove the "click" cursor on the first 2 items
+  .nav-menu-wrapper > .el-menu-item:nth-child(-n+2) {
+    cursor: default !important;
+  }
+
   .el-divider--vertical {
     height: 55px !important;
   }
