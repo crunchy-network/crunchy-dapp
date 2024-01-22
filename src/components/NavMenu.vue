@@ -117,18 +117,19 @@
                 active-class="is-active"
               >
                 <i v-if="mobile" class="fak fa-crunchy-swap-alt"></i>
-
                 <span>Swap</span>
               </router-link>
-              <!-- <router-link
+
+              <router-link
                 tag="li"
                 class="el-menu-item"
                 to="/stake"
                 active-class="is-active"
               >
-                <i v-if="mobile" class="fak fa-crunchy-swap-alt"></i>
+                <i v-if="mobile" class="fak fa-crunchy-staking"></i>
                 <span>Stake</span>
-              </router-link> -->
+              </router-link>
+
               <el-submenu
                 id="defi-menu"
                 :popper-append-to-body="false"
