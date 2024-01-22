@@ -50,10 +50,16 @@ export default {
           key: "0",
           select: "value",
         })
-        .then((resp) =>
-          resp.data && resp.data.length
-            ? BigNumber(resp.data[0]).div(BigNumber(10).pow(8)).toNumber()
-            : 0
+        .then((resp) => tzkt.getTokenBalance(
+            process.env.VUE_APP_CRUNCHY_ADMIN_WALLET, state.crnchyAddress, "0"
+          ).then(crnchyAdminSupply =>
+            resp.data && resp.data.length
+              ? BigNumber(resp.data[0])
+                  .minus(new BigNumber(crnchyAdminSupply))
+                  .div(BigNumber(10).pow(8))
+                  .toNumber()
+              : 0
+          )
         ),
     ]);
 
