@@ -131,7 +131,7 @@ export default {
       this.legendTab = val;
       if (val === "price") {
         if (this.$route.query.duration !== "1d") {
-          this.setDurationTab("1h");
+          this.setDurationTab("1d");
         }
       }
     },
@@ -139,7 +139,7 @@ export default {
     legendTab(val) {
       if (val === "price") {
         if (this.$route.query.duration !== "1d") {
-          this.setDurationTab("1h");
+          this.setDurationTab("1d");
         }
       }
     },
@@ -159,7 +159,7 @@ export default {
 
     if (this.legendTab === "price") {
       if (this.$route.query.duration !== "1d") {
-        this.setDurationTab("1h");
+        this.setDurationTab("1d");
       }
     }
   },
