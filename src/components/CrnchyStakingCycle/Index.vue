@@ -105,10 +105,7 @@
                 <el-col></el-col>
               </el-row>
               <el-row
-                v-else-if="
-                  crnchyStaking.myStaking.currentCycle.stakingPower > 0 ||
-                  crnchyStaking.myStaking.nextCycle.stakingPower > 0
-                "
+                v-else-if="crnchyStaking.myStaking.nextCycle.stakingPower > 0"
                 style="margin-top: 24px"
                 :gutter="24"
               >
