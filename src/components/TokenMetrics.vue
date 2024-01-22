@@ -121,7 +121,13 @@
             </el-col>
             <el-col><el-divider direction="horizontal"></el-divider></el-col>
             <el-col style="text-align: right"
-              >Total Supply
+              >
+              {{
+                getTokenOverview.tokenAddress ===
+                "KT1914CUZ7EegAFPbfgQMRkw8Uz5mYkEz2ui"
+                  ? "Circulating Supply"
+                  : "Total Supply"
+              }}
               <number-format
                 :precision="4"
                 :font-size="20"

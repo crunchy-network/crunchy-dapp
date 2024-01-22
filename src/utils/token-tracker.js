@@ -946,10 +946,24 @@ export default {
 
       const priceUsd = price.times(xtzUsd);
       element.usdValue = price.times(xtzUsd).toNumber();
+      
+      const totalSupply = new BigNumber(element.totalSupply)
+        .div(new BigNumber(10).pow(element.decimals));
+      
+      if (element.tokenAddress === process.env.VUE_APP_CONTRACTS_CRNCHY) {
+        const crnchyAdminSupply = await tzkt.getTokenBalance(
+          process.env.VUE_APP_CRUNCHY_ADMIN_WALLET,
+          element.tokenAddress,
+          element.tokenId
+        );
+        element.calcSupply = totalSupply
+                              .minus(new BigNumber(crnchyAdminSupply)
+                              .div(new BigNumber(10).pow(element.decimals)))
+                              .toNumber();
+      } else {
+        element.calcSupply = totalSupply.toNumber();
+      }
 
-      element.calcSupply = new BigNumber(element.totalSupply)
-        .div(new BigNumber(10).pow(element.decimals))
-        .toNumber();
 
       element.mktCap = new BigNumber(element.calcSupply)
         .times(element.currentPrice)
