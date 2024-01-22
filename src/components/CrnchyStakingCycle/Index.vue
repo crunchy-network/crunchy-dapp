@@ -23,8 +23,8 @@
                 "
               >
                 My Staking Summary
-                <span class="muted fs__12" style="float: right"
-                  >Cycle # {{ selectedCycle.cycleId }}
+                <span class="muted fs__12 staking-summary-sub">
+                  Cycle # {{ selectedCycle.cycleId }}
                   {{ selectedCycle.starts | moment("MMM DD YYYY HH:mm") }} -
                   {{ selectedCycle.ends | moment("MMM DD YYYY HH:mm") }}</span
                 >
@@ -112,7 +112,7 @@
                 style="margin-top: 24px"
                 :gutter="24"
               >
-                <el-col v-if="myLockEndsMs > 0" :span="8">
+                <el-col v-if="myLockEndsMs > 0" :span="24" class="flex-col">
                   <h2 class="stake-text_small">CRNCHY Unlocks</h2>
                   <h2 class="stake-text_big">
                     {{
@@ -281,7 +281,7 @@
                   </h2>
                 </el-col>
               </el-row>
-              <el-row style="margin-top: 24px" :gutter="24">
+              <el-row :gutter="24" class="row2">
                 <el-col :span="8">
                   <h2 v-if="activeTab === 'current'" class="stake-text_small">
                     Claimable Rewards
@@ -452,6 +452,16 @@ export default {
 .staking-details-row .el-col {
   display: flex;
   flex-direction: column;
+  @media (max-width: 450px) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+    width: 100%;
+  }
+}
+
+.flex-col {
+  flex-direction: column !important;
 }
 
 .stake-text_small {
@@ -475,4 +485,19 @@ export default {
 .muted {
   color: var(--color-subheading-text);
 }
+.staking-summary-sub {
+  float: right;
+  @media (max-width: 600px) {
+    float: none;
+    display: block;
+  }
+}
+
+.row2 {
+  margin-top: 24px;
+  @media (max-width: 600px) {
+    margin-top: 0;
+  }
+}
+
 </style>
