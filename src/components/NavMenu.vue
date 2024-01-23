@@ -103,7 +103,7 @@
               <router-link
                 tag="li"
                 class="el-menu-item"
-                :to="{ name: 'token' }"
+                :to="{ name: 'tokens' }"
                 exact
                 active-class="is-active"
               >
