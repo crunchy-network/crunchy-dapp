@@ -35,13 +35,13 @@
         >
           Wallet
         </button>
-        <button
+        <!-- <button
           class="tab-text"
           :style="isActiveTab('staking')"
           @click="setActiveTab('staking')"
         >
           Staked
-        </button>
+        </button> -->
 
         <button
           class="tab-text"
