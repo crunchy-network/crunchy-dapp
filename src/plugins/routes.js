@@ -22,7 +22,7 @@ Vue.use(VueRouter);
 
 const routes = [
   { name: "home", path: "/", component: Swap },
-  { name: "token", path: "/tokens", component: TokenTracker },
+  { name: "tokens", path: "/tokens", component: TokenTracker },
   {
     name: "home-view-wallet",
     path: "/wallet/:walletAddress",
