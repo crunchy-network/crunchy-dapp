@@ -61,7 +61,7 @@
         >
           <el-divider direction="vertical"></el-divider>
         </el-col> -->
-          <el-col :md="8">
+          <!-- <el-col :md="8">
             <el-card v-loading="loading" shadows="never">
               <div>
                 <p class="small-title">Staked Balance</p>
@@ -85,7 +85,7 @@
                 </h2>
               </div>
             </el-card>
-          </el-col>
+          </el-col> -->
           <!-- <el-col
           style="display: flex; justify-content: center; align-items: center"
           :sm="1"

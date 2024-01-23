@@ -95,6 +95,17 @@
                 exact
                 active-class="is-active"
               >
+                <i v-if="mobile" class="fak fa-crunchy-swap-alt"></i>
+                <span>Swap</span>
+              </router-link>
+
+              <router-link
+                tag="li"
+                class="el-menu-item"
+                :to="{ name: 'token' }"
+                exact
+                active-class="is-active"
+              >
                 <i v-if="mobile" class="fak fa-crunchy-home-alt"></i>
                 <span>Tokens</span>
               </router-link>
@@ -108,16 +119,6 @@
               >
                 <i v-if="mobile" class="fak fa-light fa-coins"></i>
                 <span>Portfolio</span>
-              </router-link>
-
-              <router-link
-                tag="li"
-                class="el-menu-item"
-                to="/swap"
-                active-class="is-active"
-              >
-                <i v-if="mobile" class="fak fa-crunchy-swap-alt"></i>
-                <span>Swap</span>
               </router-link>
 
               <router-link
