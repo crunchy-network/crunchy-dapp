@@ -92,7 +92,7 @@
                 tag="li"
                 class="el-menu-item"
                 :to="{ name: 'home' }"
-                exact
+                :exact="isRouteExact('home')"
                 active-class="is-active"
               >
                 <i v-if="mobile" class="fak fa-crunchy-swap-alt"></i>
@@ -458,6 +458,12 @@ export default {
           return this.$refs.menu.open(1);
         }
       }
+    },
+    isRouteExact(routeName) {
+      const currentRoute = this.$route;
+      const hasQueryParams = Object.keys(currentRoute.query).length > 0;
+
+      return currentRoute.name === routeName && !hasQueryParams;
     },
   },
 };
