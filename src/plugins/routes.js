@@ -68,7 +68,7 @@ const routes = [
   // { name: 'bakery', path: '/bakery', component: Bakery },
   { name: "fire-pit", path: "/fire-pit", component: FirePit },
   { name: "cr-dao", path: "/stake", component: CrnchyStaking },
-  { name: "swap", path: "/swap", component: Swap },
+  { name: "swap", path: "/swap", redirect: "/" },
 ];
 
 export default new VueRouter({
