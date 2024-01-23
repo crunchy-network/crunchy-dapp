@@ -1145,7 +1145,7 @@
                   <el-link
                     v-else-if="isFa1(farm.poolToken)"
                     style="color: #555cff; font-weight: 600"
-                    :href="`/#/swap?from=tez&to=${farm.poolToken.tokenAddress}_${farm.poolToken.tokenId}`"
+                    :href="`/#/?from=tez&to=${farm.poolToken.tokenAddress}_${farm.poolToken.tokenId}`"
                     target="_blank"
                     >Buy {{ farm.poolToken.symbol }}
                     <i class="far fa-external-link fa-icon-right"></i
@@ -1153,7 +1153,7 @@
                   <el-link
                     v-else-if="isFa2(farm.poolToken)"
                     style="color: #555cff; font-weight: 600"
-                    :href="`/#/swap?from=tez&to=${farm.poolToken.tokenAddress}_${farm.poolToken.tokenId}`"
+                    :href="`/#/?from=tez&to=${farm.poolToken.tokenAddress}_${farm.poolToken.tokenId}`"
                     target="_blank"
                     >Buy {{ farm.poolToken.symbol }}
                     <i class="far fa-external-link fa-icon-right"></i
