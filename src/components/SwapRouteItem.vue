@@ -46,6 +46,7 @@ import flame from "../assets/dex-icons/Flame.png";
 import dexter from "../assets/dex-icons/Dexter.png";
 import ctez from "../assets/dex-icons/Ctez.png";
 import yupana from "../assets/dex-icons/yupana.jpeg";
+import wtez from "../assets/dex-icons/wtez.png";
 
 export default {
   props: {
@@ -73,6 +74,7 @@ export default {
         Dexter: dexter,
         Spicy: spicy,
         WTZ: wtz,
+        wTEZ: wtez,
         Youves: youves,
         Ctez: ctez,
         Yupana: yupana
@@ -95,6 +97,7 @@ export default {
         Dexter: "Dexter",
         Spicy: "Spicy",
         WTZ: "WTZ",
+        wTEZ: "wTEZ",
         Youves: "Youves",
         Yupana: "Yupana",
         Ctez: "Ctez"
