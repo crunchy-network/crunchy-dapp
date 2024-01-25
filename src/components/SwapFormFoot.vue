@@ -233,7 +233,7 @@ export default {
         return this.priceImpact;
       } catch (error) {
         console.error("Error calculating price impact:", error);
-        this.priceImpact = ""; // Set to empty string in case of an error
+        this.priceImpact = "-"; // Set to empty string in case of an error
         return this.priceImpact;
       }
     },
