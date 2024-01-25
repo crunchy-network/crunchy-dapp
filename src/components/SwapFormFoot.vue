@@ -196,7 +196,7 @@ export default {
     },
     getCurrentTrade() {
       this.getPriceImpact();
-    }
+    },
   },
   methods: {
     ...mapActions(["updateForm"]),
@@ -221,15 +221,19 @@ export default {
     },
     async getPriceImpact() {
       try {
-        console.log(this.getCurrentTrade)
         const impact = await calculatePriceImpact(this.getCurrentTrade);
-        this.impactColor = impact > 5 ? "#FF4D4B" : "var(--color-menu-inactiv)";
-        // Update the priceImpact data property when the Promise resolves
-        this.priceImpact = `${impact}%`;
+        if (impact) {
+          this.impactColor =
+            impact > 5 ? "#FF4D4B" : "var(--color-menu-inactiv)";
+          // Update the priceImpact data property when the Promise resolves
+          this.priceImpact = `${impact}%`;
+          return this.priceImpact;
+        }
+        this.priceImpact = "-"; // Set to empty string in case of an error
         return this.priceImpact;
       } catch (error) {
         console.error("Error calculating price impact:", error);
-        this.priceImpact = ""; // Set to empty string in case of an error
+        this.priceImpact = "-"; // Set to empty string in case of an error
         return this.priceImpact;
       }
     },
