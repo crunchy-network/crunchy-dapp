@@ -93,6 +93,18 @@
                 class="el-menu-item"
                 :to="{ name: 'home' }"
                 exact
+                :class="$route.name === 'home' && 'is-active'"
+                :active-class="'is-active'"
+              >
+                <i v-if="mobile" class="fak fa-crunchy-swap-alt"></i>
+                <span>Swap</span>
+              </router-link>
+
+              <router-link
+                tag="li"
+                class="el-menu-item"
+                :to="{ name: 'tokens' }"
+                exact
                 active-class="is-active"
               >
                 <i v-if="mobile" class="fak fa-crunchy-home-alt"></i>
@@ -108,16 +120,6 @@
               >
                 <i v-if="mobile" class="fak fa-light fa-coins"></i>
                 <span>Portfolio</span>
-              </router-link>
-
-              <router-link
-                tag="li"
-                class="el-menu-item"
-                to="/swap"
-                active-class="is-active"
-              >
-                <i v-if="mobile" class="fak fa-crunchy-swap-alt"></i>
-                <span>Swap</span>
               </router-link>
 
               <router-link

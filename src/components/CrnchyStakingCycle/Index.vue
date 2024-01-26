@@ -76,7 +76,12 @@
                     <el-button
                       v-if="myStakingPowerPct < 100 && activeTab !== 'current'"
                       type="text"
-                      style="font-weight: 500; font-size: 12px; padding-top: 0px; padding-bottom: 0px"
+                      style="
+                        font-weight: 500;
+                        font-size: 12px;
+                        padding-top: 0px;
+                        padding-bottom: 0px;
+                      "
                       @click="showRestakeDialog"
                       >Increase</el-button
                     >
@@ -129,7 +134,12 @@
                   <h2 class="stake-text_big">
                     <el-button
                       type="text"
-                      style="font-weight: 500; font-size: 12px; padding-top: 0px; padding-bottom: 0px;"
+                      style="
+                        font-weight: 500;
+                        font-size: 12px;
+                        padding-top: 0px;
+                        padding-bottom: 0px;
+                      "
                       @click="showRestakeDialog"
                       >Re-Stake</el-button
                     >
@@ -263,7 +273,9 @@
                   </h2>
                 </el-col>
                 <el-col :span="8">
-                  <h2 v-if="activeTab === 'current'" class="stake-text_small">Current APR</h2>
+                  <h2 v-if="activeTab === 'current'" class="stake-text_small">
+                    Current APR
+                  </h2>
                   <h2 v-else class="stake-text_small">Expected APR</h2>
                   <h2 style="margin-top: 6px" class="stake-text_big">
                     {{
@@ -272,7 +284,7 @@
                         suffix: "%",
                         decimal: ".",
                         thousand: ",",
-                        precision: myStakingSelectedCycle.apr < 1 ? 4 : 2,
+                        precision: myStakingSelectedCycleApr,
                       })
                     }}
                   </h2>
@@ -374,8 +386,7 @@ export default {
 
     cycleOwnershipPct: function () {
       return (
-        (this.myStakingSelectedCycle.issued /
-          this.selectedCycle.totalIssued) *
+        (this.myStakingSelectedCycle.issued / this.selectedCycle.totalIssued) *
         100
       );
     },
@@ -400,6 +411,10 @@ export default {
         this.crnchyStaking.myStaking.lockEndTime.getTime() <
         new Date().getTime()
       );
+    },
+
+    myStakingSelectedCycleApr: function () {
+      return this.myStakingSelectedCycle.apr < 1 ? 4 : 2;
     },
   },
   methods: {
@@ -496,5 +511,4 @@ export default {
     margin-top: 0;
   }
 }
-
 </style>

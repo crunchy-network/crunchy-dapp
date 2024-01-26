@@ -77,7 +77,7 @@ export default {
 
     if (tokenMintableSupply) {
       batch = getBatch()
-        .withTransfer({ to: state.buyBackAndBurnAddress, amount: 5 })
+        .withTransfer({ to: state.buyBackAndBurnAddress, amount: 10 })
         .withOrigination({
           code: fa2DefiFixedSupply,
           storage: {
@@ -90,7 +90,7 @@ export default {
         });
     } else {
       batch = getBatch()
-        .withTransfer({ to: state.buyBackAndBurnAddress, amount: 5 })
+        .withTransfer({ to: state.buyBackAndBurnAddress, amount: 10 })
         .withOrigination({
           code: fa2DefiMintable,
           storage: {

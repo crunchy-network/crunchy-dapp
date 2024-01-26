@@ -407,6 +407,7 @@ export default {
         }
       } catch (error) {
         console.error(error); // Log the error for debugging purposes
+        this.updateCurrentTrade([]);
       } finally {
         this.updateCalculatingBestRoute(false); // Reset to false when the calculation is complete (whether it succeeded or failed)
       }

@@ -117,7 +117,7 @@
         </div>
 
         <div>
-          <router-link :to="`/swap?from=tez&to=${getTokenOverview.id}`">
+          <router-link :to="`/?from=tez&to=${getTokenOverview.id}`">
             <el-button round type="primary"> Swap </el-button>
           </router-link>
         </div>
