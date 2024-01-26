@@ -426,7 +426,7 @@ export default {
         (t) => t?.assetSlug === token?.assetSlug
       );
       if (found) {
-        return this.roundDown(found.availableBalance || found.balance, 6);
+        return found.availableBalance || found.balance;
       }
       return 0;
     },
@@ -455,7 +455,7 @@ export default {
       if (this.isMaxingOutXTZ(this.getSwapForm.inputToken, option)) {
         percentOf = percentOf - 0.1;
       }
-      this.updateForm({ inputAmount: this.roundDown(percentOf, 6) });
+      this.updateForm({ inputAmount: percentOf });
     },
     isMaxingOutXTZ(token, option) {
       return token.asset === "XTZ" && option === 100;
@@ -482,7 +482,7 @@ export default {
       const numStr = String(amount);
       // String Contains Decimal
       if (numStr.includes(".")) {
-        var decimals = parseInt(token.decimals);
+        let decimals = parseInt(token.decimals);
         if (isNaN(decimals)) {
           console.warn("NaN decimals for token", token);
           decimals = 6;
