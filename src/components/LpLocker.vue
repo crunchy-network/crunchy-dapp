@@ -13,10 +13,10 @@
             <h2
               style="
                 margin-top: 0;
-                margin-bottom: 5px;
+                margin-bottom: 4px;
                 font-weight: 700;
-                font-size: 28px;
-                line-height: 42px;
+                font-size: 24px;
+                line-height: 36px;
               "
             >
               Deep Freezers
@@ -25,8 +25,8 @@
               style="
                 color: var(--color-subheading-text);
                 font-weight: 400;
-                font-size: 16px;
-                line-height: 24px;
+                font-size: 14px;
+                line-height: 21px;
               "
               >Lock Liquidity Pool (LP) tokens and unlock at a fixed date.</span
             >

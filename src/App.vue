@@ -130,7 +130,7 @@ p {
   color: var(--primary-text);
 }
 .grid-content h2 + span {
-  font-weight: 300 !important;
+  font-weight: 400 !important;
 }
 .el-form--label-top .el-form-item__label {
   font-weight: 500 !important;
@@ -205,7 +205,7 @@ i.fa-icon-right {
 .el-main {
   padding-left: 40px !important;
   padding-right: 40px !important;
-  margin-top: 36px;
+  margin-top: 20px;
   @media (max-width: 450px) {
     padding-left: 10px !important;
     padding-right: 10px !important;

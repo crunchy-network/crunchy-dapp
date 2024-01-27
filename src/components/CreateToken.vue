@@ -4,17 +4,17 @@
     <nav-menu></nav-menu>
 
     <!-- class="hidden-sm-and-down" -->
-    <el-main style="margin-top: 90px">
+    <el-main>
       <el-row :gutter="20" type="flex" align="bottom">
         <el-col :span="24">
           <div class="grid-content">
-            <h2 style="margin-top: 0; margin-bottom: 5px">
+            <h2 style="font-weight: 700; font-size: 24px; margin-bottom: 4px">
               Create A Tezos Token
             </h2>
-            <span style="font-size: 14px"
-              >Create your own FA2.0 token on the Tezos blockchain. There is a 10
-              $XTZ fee to create a token that will be deposited in the Crunchy
-              DAO.</span
+            <span class="color__subheading fs__16 fw__4"
+              >Create your own FA2.0 token on the Tezos blockchain. There is a
+              10 $XTZ fee to create a token that will be deposited in the
+              Crunchy DAO.</span
             >
           </div>
         </el-col>
