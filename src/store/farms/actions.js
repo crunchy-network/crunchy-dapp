@@ -1843,7 +1843,7 @@ export default {
   },
 
   async createFarm({ state, rootState }, params) {
-    const farmContract = await getContract(state.contract);
+    const farmContract = await getContract(state.contract_v2);
     const crnchy = await getContract(state.crnchyAddress);
     const rewardToken = await getContract(params.rewardToken.tokenAddress);
 
