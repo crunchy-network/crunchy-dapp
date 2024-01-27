@@ -539,12 +539,27 @@ header .grid-content button.el-button {
   margin-bottom: 8px;
 }
 .stake-warning {
-  margin-top: 10px;
+  margin-bottom: 20px;
+  border: 2px solid #FFFFFF1A;
+  border-radius: 12px;
+  background: #FFFFFF1A;
+  padding: 8px;
+}
+.stake-warning__content {
   font-size: 14px;
   font-weight: 400;
   line-height: 21px;
+  letter-spacing: 0em;
   text-align: left;
-  color: #8c8d8f;
+  color: #FFFFFF;
+}
+.stake-warning__notice {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 21px;
+  letter-spacing: 0em;
+  text-align: left;
+  color: #FFFFFF;
 }
 .lock-dialog .el-date-editor.el-input,
 .lock-dialog .el-date-editor.el-input__inner {

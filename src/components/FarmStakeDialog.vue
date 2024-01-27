@@ -155,10 +155,18 @@
         type="success"
         size="small"
         round
-        style="margin-bottom: 22px"
+        style="margin-bottom: 20px"
         @click="form.input = form.farm.poolToken.balance"
         >USE MAX</el-button
       >
+      <div class="stake-warning" style="word-break: auto-phrase">
+        <span class="stake-warning__notice">NOTICE:</span>
+        <br />
+        <span class="stake-warning__content"
+          >Unclaimed deposits and rewards are subject to a 0.55% fee per day,
+          beginning 6 months after a farm completes.</span
+        >
+      </div>
       <el-button
         type="primary"
         style="
@@ -171,11 +179,6 @@
         @click="stakeFarm(form.farm.id)"
         >STAKE</el-button
       >
-      <p class="stake-warning" style="word-break: auto-phrase">
-        Crunchy Network is a tool that anyone can use to create a token or farm.
-        Please make sure you understand the risks of farming before staking into
-        a farm.
-      </p>
     </el-form>
   </el-dialog>
 </template>

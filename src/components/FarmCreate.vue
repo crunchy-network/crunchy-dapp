@@ -457,20 +457,15 @@
                     v-if="form.serviceFeeId && form.rewardTokenName"
                     :span="16"
                   >
-                    <div v-if="form.serviceFeeId === '0'">10,000 CRNCHY</div>
-                    <div v-if="form.serviceFeeId === '1'">50,000 CRNCHY</div>
-                    <div v-if="form.serviceFeeId === '2'">100,000 CRNCHY</div>
-                    <div v-if="form.serviceFeeId === '3'">500,000 CRNCHY</div>
+                    <div v-if="form.serviceFeeId === '0'">20 XTZ</div>
+                    <div v-if="form.serviceFeeId === '1'">100 XTZ</div>
+                    <div v-if="form.serviceFeeId === '2'">500 XTZ</div>
 
                     <div v-if="form.serviceFeeId === '0'">
                       {{ vueNumberFormat(form.rewardTokenAmount * 0.015) }}
                       {{ form.rewardTokenName }}
                     </div>
                     <div v-if="form.serviceFeeId === '1'">
-                      {{ vueNumberFormat(form.rewardTokenAmount * 0.01) }}
-                      {{ form.rewardTokenName }}
-                    </div>
-                    <div v-if="form.serviceFeeId === '2'">
                       {{ vueNumberFormat(form.rewardTokenAmount * 0.005) }}
                       {{ form.rewardTokenName }}
                     </div>
@@ -498,24 +493,19 @@
                     v-if="form.serviceFeeId && form.rewardTokenName"
                     :span="16"
                   >
-                    <div v-if="form.serviceFeeId === '0'">10,000 CRNCHY</div>
-                    <div v-if="form.serviceFeeId === '1'">50,000 CRNCHY</div>
-                    <div v-if="form.serviceFeeId === '2'">100,000 CRNCHY</div>
-                    <div v-if="form.serviceFeeId === '3'">500,000 CRNCHY</div>
+                    <div v-if="form.serviceFeeId === '0'">20 XTZ</div>
+                    <div v-if="form.serviceFeeId === '1'">100 XTZ</div>
+                    <div v-if="form.serviceFeeId === '2'">500 XTZ</div>
 
                     <div v-if="form.serviceFeeId === '0'">
                       {{ vueNumberFormat(form.rewardTokenAmount * 1.015) }}
                       {{ form.rewardTokenName }}
                     </div>
                     <div v-if="form.serviceFeeId === '1'">
-                      {{ vueNumberFormat(form.rewardTokenAmount * 1.01) }}
-                      {{ form.rewardTokenName }}
-                    </div>
-                    <div v-if="form.serviceFeeId === '2'">
                       {{ vueNumberFormat(form.rewardTokenAmount * 1.005) }}
                       {{ form.rewardTokenName }}
                     </div>
-                    <div v-if="form.serviceFeeId === '3'">
+                    <div v-if="form.serviceFeeId === '2'">
                       {{ vueNumberFormat(form.rewardTokenAmount * 1) }}
                       {{ form.rewardTokenName }}
                     </div>
@@ -632,10 +622,9 @@ export default {
         },
       },
       serviceFees: [
-        { value: "0", label: "10,000 CRNCHY + 1.5% of tokens" },
-        { value: "1", label: "50,000 CRNCHY + 1.0% of tokens" },
-        { value: "2", label: "100,000 CRNCHY + 0.5% of tokens" },
-        { value: "3", label: "500,000 CRNCHY + 0% of tokens" },
+        { value: "0", label: "20 XTZ - 1.5% of farm rewards" },
+        { value: "1", label: "100 XTZ - 0.5% of farm rewards" },
+        { value: "2", label: "500 XTZ - 0% of farm rewards" },
       ],
       rules: {
         poolTokenType: [{ required: true, message: "Select token type" }],
@@ -774,7 +763,7 @@ export default {
 
           let serviceFeeMultiplier = 1.015;
           if (vm.form.serviceFeeId === "1") {
-            serviceFeeMultiplier = 1.01;
+            serviceFeeMultiplier = 1.015;
           } else if (vm.form.serviceFeeId === "2") {
             serviceFeeMultiplier = 1.005;
           } else if (vm.form.serviceFeeId === "3") {
