@@ -16,9 +16,16 @@ import { BigNumber } from "bignumber.js";
 let updateXtzUsdVwapPromise;
 let updateCurrentPricesPromise;
 let updateFarmStoragePromise;
+let updateFarmUserRecordStoragePromise;
+let updateVaultStoragePromise;
 
 const tokenMetadataCache = {};
 const TEZ_AND_WRAPPED_TEZ_ADDRESSES = ["tez"];
+
+const getFarmContract = (farmId, state) => {
+  return Number(farmId) >= 1000 ? state.contractV2 : state.contract;
+}
+
 const getFarmTokenMetadata = async (address, tokenId) => {
   const cacheKey = `${address}:${tokenId}`;
   if (!Object.prototype.hasOwnProperty.call(tokenMetadataCache, cacheKey)) {
@@ -131,41 +138,70 @@ export default {
     return updateCurrentPricesPromise;
   },
 
-  async _updateFarmStorage({ commit, state, dispatch }) {
-    return tzkt.getContractBigMapKeys(state.contract, "farms").then((resp) => {
-      commit("updateFarmStorage", resp.data);
+  async _updateFarmStorage({ commit, state, dispatch }, contract) {
+    return tzkt.getContractBigMapKeys(contract, "farms").then((resp) => {
+      commit("updateFarmStorage", { contract, data: resp.data });
       setTimeout(() => {
-        updateFarmStoragePromise = dispatch("_updateFarmStorage");
+        updateFarmStoragePromise = dispatch("_updateFarmStorage", contract);
       }, 30 * 1000);
     });
   },
 
-  async updateFarmStorage({ dispatch }) {
+  async updateFarmStorage({ dispatch, state }) {
     if (!updateFarmStoragePromise) {
-      updateFarmStoragePromise = dispatch("_updateFarmStorage");
+      updateFarmStoragePromise = Promise.all([
+        dispatch("_updateFarmStorage", state.contract),
+        dispatch("_updateFarmStorage", state.contract2),
+      ]);
     }
     return updateFarmStoragePromise;
   },
 
-  async updateUserRecordStorage({ commit, state, rootState, dispatch }) {
+  async _updateUserRecordStorage(
+    { commit, state, rootState, dispatch },
+    contract
+  ) {
     if (!rootState.wallet.pkh) return;
     return tzkt
-      .getContractBigMapKeys(state.contract, "ledger", {
+      .getContractBigMapKeys(contract, "ledger", {
         "key.address": rootState.wallet.pkh,
         active: "true",
       })
       .then((resp) => {
-        commit("updateFarmUserRecordStorage", resp.data);
+        commit("updateFarmUserRecordStorage", { contract, data: resp.data });
         setTimeout(() => {
-          dispatch("updateUserRecordStorage");
+          updateFarmUserRecordStoragePromise = dispatch(
+            "_updateUserRecordStorage",
+            contract
+          );
         }, 30 * 1000);
       });
   },
 
-  async updateVaultStorage({ commit, state }) {
-    return tzkt.getContractBigMap(state.contract, "vaults").then((resp) => {
-      commit("updateVaultStorage", resp.data);
+  async updateUserRecordStorage({ dispatch, state, rootState }) {
+    if (!updateFarmUserRecordStoragePromise) {
+      updateFarmUserRecordStoragePromise = Promise.all([
+        dispatch("_updateUserRecordStorage", state.contract),
+        dispatch("_updateUserRecordStorage", state.contract2),
+      ]);
+    }
+    return updateFarmUserRecordStoragePromise;
+  },
+
+  async _updateVaultStorage({ commit, state, dispatch }, contract) {
+    return tzkt.getContractBigMap(contract, "vaults").then((resp) => {
+      commit("updateVaultStorage", { contract, data: resp.data });
     });
+  },
+
+  async updateVaultStorage({ dispatch, state }) {
+    if (!updateVaultStoragePromise) {
+      updateVaultStoragePromise = Promise.all([
+        dispatch("_updateVaultStorage", state.contract),
+        dispatch("_updateVaultStorage", state.contract2),
+      ]);
+    }
+    return updateVaultStoragePromise;
   },
 
   updateTotalTvlTez({ commit, state }) {
@@ -194,7 +230,9 @@ export default {
       ]);
 
       const farms = {};
-      for (const x of state.storage.farms) {
+      const storageFarms = [...state.storage.farms, ...state.storage.farmsV2];
+      console.log(storageFarms);
+      for (const x of storageFarms) {
         if (x.key === "13") continue; // bad catz
         if (x.key === "55") continue; // bad HEH -> CLOVER
 
@@ -216,6 +254,10 @@ export default {
         const endTimeD = new Date(x.value.endTime);
         const duration = endTimeD - startTimeD;
 
+        // Determine the contract based on farm version
+        const contract =
+          Number(x.key) >= 1000 ? state.contractV2 : state.contract;
+
         // baseline farm is complete check
         let isEnded = endTimeD < nowD;
 
@@ -233,7 +275,7 @@ export default {
         const f = merge(
           { id: x.key, ...x.value },
           {
-            contract: state.contract,
+            contract: contract,
             poolToken: {
               name: "???",
               symbol: "???",
@@ -1732,8 +1774,9 @@ export default {
 
   async stakeInFarm({ commit, dispatch, state, rootState }, payload) {
     const { farmId, amount } = payload;
+    const contract = getFarmContract(farmId, state)
     const farm = state.data[farmId];
-    const farmContract = await getContract(farm.contract);
+    const farmContract = await getContract(contract);
     const poolTokenContract = await getContract(farm.poolToken.address);
     const amountB = BigNumber(amount)
       .times(10 ** farm.poolToken.decimals)
@@ -1818,10 +1861,11 @@ export default {
   },
 
   async harvestAllFarms({ commit, state, dispatch }) {
-    const farmContract = await getContract(state.contract);
     const batch = getBatch();
     const harvestingFarms = [];
     for (const farmId in state.data) {
+      const contract = getFarmContract(farmId, state)
+      const farmContract = await getContract(contract);
       if (state.data[farmId].depositAmount && state.data[farmId].started) {
         harvestingFarms.push(farmId);
         batch.withContractCall(farmContract.methods.harvest(farmId));
@@ -1843,7 +1887,7 @@ export default {
   },
 
   async createFarm({ state, rootState }, params) {
-    const farmContract = await getContract(state.contract_v2);
+    const farmContract = await getContract(state.contractV2);
     const crnchy = await getContract(state.crnchyAddress);
     const rewardToken = await getContract(params.rewardToken.tokenAddress);
 
@@ -1861,7 +1905,7 @@ export default {
           {
             add_operator: {
               owner: rootState.wallet.pkh,
-              operator: state.contract,
+              operator: state.contractV2,
               token_id: 0,
             },
           },
@@ -1873,13 +1917,13 @@ export default {
               {
                 add_operator: {
                   owner: rootState.wallet.pkh,
-                  operator: state.contract,
+                  operator: state.contractV2,
                   token_id: params.rewardToken.tokenId,
                 },
               },
             ])
           : rewardToken.methods.approve(
-              state.contract,
+              state.contractV2,
               params.rewardSupplyApprove
             )
       )
@@ -1923,19 +1967,19 @@ export default {
               {
                 remove_operator: {
                   owner: rootState.wallet.pkh,
-                  operator: state.contract,
+                  operator: state.contractV2,
                   token_id: params.rewardToken.tokenId,
                 },
               },
             ])
-          : rewardToken.methods.approve(state.contract, 0)
+          : rewardToken.methods.approve(state.contractV2, 0)
       )
       .withContractCall(
         crnchy.methods.update_operators([
           {
             remove_operator: {
               owner: rootState.wallet.pkh,
-              operator: state.contract,
+              operator: state.contractV2,
               token_id: 0,
             },
           },
