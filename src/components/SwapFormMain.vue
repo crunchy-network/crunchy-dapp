@@ -151,6 +151,7 @@
 import { mapActions, mapGetters, mapState } from "vuex";
 import { getBestTrade } from "../utils/swapRouterHelper";
 import _ from "lodash";
+import BigNumber from "bignumber.js";
 import TokenSelectMenu from "./TokenSelectMenu.vue";
 import { buildRoutingFeeOperation } from "../utils/routing-fee";
 import { Tezos } from "../utils/tezos";
@@ -215,7 +216,7 @@ export default {
       if (this.homeWallet.loading) {
         return "";
       }
-      if (bal < this.getSwapForm.inputAmount) {
+      if (Number(bal) < this.getSwapForm.inputAmount) {
         return "Insufficient Balance";
       }
       return "";
@@ -236,7 +237,7 @@ export default {
       }
 
       const bal = this.getBalanceOfSelectedToken(this.getSwapForm.inputToken);
-      return bal < this.getSwapForm.inputAmount;
+      return Number(bal) < this.getSwapForm.inputAmount;
     },
   },
   watch: {
@@ -298,7 +299,7 @@ export default {
         return "Loading Balance";
       }
 
-      if (bal < this.getSwapForm.inputAmount) {
+      if (Number(bal) < this.getSwapForm.inputAmount) {
         return "Insufficient Balance";
       }
 
@@ -451,7 +452,10 @@ export default {
       const tokenBalance = this.getBalanceOfSelectedToken(
         this.getSwapForm.inputToken
       );
-      var percentOf = tokenBalance * (option / 100);
+      var percentOf = new BigNumber(tokenBalance)
+        .times(new BigNumber(option))
+        .div(100)
+        .toFixed();
       if (this.isMaxingOutXTZ(this.getSwapForm.inputToken, option)) {
         percentOf = percentOf - 0.1;
       }

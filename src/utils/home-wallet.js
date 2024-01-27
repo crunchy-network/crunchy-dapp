@@ -298,6 +298,7 @@ export default {
             balances[i]?.token?.contract?.alias,
           icon,
           balance: balance.toNumber(),
+          availableBalance: balance.toFixed(),
           price: price.toNumber(),
           name: priceObj?.name,
           priceChange1Day: price
