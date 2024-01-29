@@ -25,14 +25,27 @@
     </el-header> -->
     <nav-menu></nav-menu>
 
-    <el-main style="margin-top: 90px">
+    <el-main>
       <el-row :gutter="20" type="flex" align="bottom">
         <el-col :span="24">
           <div class="grid-content">
-            <h2 style="margin-top: 0; margin-bottom: 5px">
+            <h2 
+              style="
+                margin-top: 0;
+                margin-bottom: 4px;
+                font-weight: 700;
+                font-size: 24px;
+                line-height: 36px;
+              ">
               Mint WTZ/Redeem XTZ
             </h2>
-            <span style="font-size: 14px; color: var(--color-subheading-text)"
+            <span 
+              style="
+                color: var(--color-subheading-text);
+                font-weight: 400;
+                font-size: 14px;
+                line-height: 21px;
+              "
               >Just submit XTZ to start minting. Burn WTZ to redeem for
               XTZ.</span
             >

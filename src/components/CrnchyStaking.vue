@@ -12,10 +12,10 @@
             style="flex-wrap: wrap; row-gap: 20px"
           >
             <el-col :md="17">
-              <h2 style="font-weight: 600; font-size: 24px; margin: 0">
+              <h2 style="font-weight: 700; font-size: 24px; margin-bottom: 4px">
                 CRNCHY Staking Dashboard
               </h2>
-              <h2 style="margin: 0" class="color__subheading fs__16 fw__3">
+              <h2 style="margin: 0" class="color__subheading fs__16 fw__4">
                 The current participation status of CRNCHY stakers. Rewards are
                 accrued over a 7 day cycle and then claimable the following 7
                 day cycle.

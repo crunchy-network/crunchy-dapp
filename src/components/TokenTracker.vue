@@ -18,9 +18,9 @@
               <h2
                 style="
                   margin-top: 0;
-                  margin-bottom: 5px;
+                  margin-bottom: 4px;
                   font-weight: 700;
-                  font-size: 28px;
+                  font-size: 24px;
                   line-height: 42px;
                 "
               >
