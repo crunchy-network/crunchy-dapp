@@ -797,7 +797,7 @@ export default {
             bonuses: bonuses,
             serviceFeeId: vm.form.serviceFeeId,
           };
-          console.log(params)
+
           vm.loading = true;
           vm.createFarm(params)
             .then(() => {
