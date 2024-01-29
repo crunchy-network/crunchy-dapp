@@ -762,11 +762,11 @@ export default {
           }
 
           let serviceFeeMultiplier = 1.015;
-          if (vm.form.serviceFeeId === "1") {
+          if (vm.form.serviceFeeId === "0") {
             serviceFeeMultiplier = 1.015;
-          } else if (vm.form.serviceFeeId === "2") {
+          } else if (vm.form.serviceFeeId === "1") {
             serviceFeeMultiplier = 1.005;
-          } else if (vm.form.serviceFeeId === "3") {
+          } else if (vm.form.serviceFeeId === "2") {
             serviceFeeMultiplier = 1;
           }
 
@@ -797,6 +797,7 @@ export default {
             bonuses: bonuses,
             serviceFeeId: vm.form.serviceFeeId,
           };
+          console.log(params)
           vm.loading = true;
           vm.createFarm(params)
             .then(() => {

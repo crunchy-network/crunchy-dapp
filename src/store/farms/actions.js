@@ -8,10 +8,12 @@ import {
   getTokenMetadata,
   getContract,
   getBatch,
+  getTezosBatch,
   getWalletContract,
 } from "./../../utils/tezos";
 import merge from "deepmerge";
 import { BigNumber } from "bignumber.js";
+import { OpKind } from "@taquito/taquito";
 
 let updateXtzUsdVwapPromise;
 let updateCurrentPricesPromise;
@@ -24,7 +26,7 @@ const TEZ_AND_WRAPPED_TEZ_ADDRESSES = ["tez"];
 
 const getFarmContract = (farmId, state) => {
   return Number(farmId) >= 1000 ? state.contractV2 : state.contract;
-}
+};
 
 const getFarmTokenMetadata = async (address, tokenId) => {
   const cacheKey = `${address}:${tokenId}`;
@@ -1774,7 +1776,7 @@ export default {
 
   async stakeInFarm({ commit, dispatch, state, rootState }, payload) {
     const { farmId, amount } = payload;
-    const contract = getFarmContract(farmId, state)
+    const contract = getFarmContract(farmId, state);
     const farm = state.data[farmId];
     const farmContract = await getContract(contract);
     const poolTokenContract = await getContract(farm.poolToken.address);
@@ -1864,7 +1866,7 @@ export default {
     const batch = getBatch();
     const harvestingFarms = [];
     for (const farmId in state.data) {
-      const contract = getFarmContract(farmId, state)
+      const contract = getFarmContract(farmId, state);
       const farmContract = await getContract(contract);
       if (state.data[farmId].depositAmount && state.data[farmId].started) {
         harvestingFarms.push(farmId);
@@ -1888,9 +1890,16 @@ export default {
 
   async createFarm({ state, rootState }, params) {
     const farmContract = await getContract(state.contractV2);
-    const crnchy = await getContract(state.crnchyAddress);
+    // const crnchy = await getContract(state.crnchyAddress);
     const rewardToken = await getContract(params.rewardToken.tokenAddress);
-
+    let servicesFee;
+    if (params.serviceFeeId === "0") {
+      servicesFee = 20000000;
+    } else if (params.serviceFeeId === "1") {
+      servicesFee = 100000000;
+    } else if (params.serviceFeeId === "2") {
+      servicesFee = 500000000;
+    }
     let prevM = 0;
     const bonuses = [];
     for (const b of _.orderBy(params.bonuses, "endTime", "desc")) {
@@ -1899,93 +1908,85 @@ export default {
       prevM = m;
     }
 
-    const batch = await getBatch()
-      .withContractCall(
-        crnchy.methods.update_operators([
-          {
-            add_operator: {
-              owner: rootState.wallet.pkh,
-              operator: state.contractV2,
-              token_id: 0,
-            },
-          },
-        ])
-      )
-      .withContractCall(
-        params.rewardToken.tokenType === "fa2"
-          ? rewardToken.methods.update_operators([
-              {
-                add_operator: {
-                  owner: rootState.wallet.pkh,
-                  operator: state.contractV2,
-                  token_id: params.rewardToken.tokenId,
-                },
+    const addOperatorMethod =
+      params.rewardToken.tokenType === "fa2"
+        ? rewardToken.methods.update_operators([
+            {
+              add_operator: {
+                owner: rootState.wallet.pkh,
+                operator: state.contractV2,
+                token_id: params.rewardToken.tokenId,
               },
-            ])
-          : rewardToken.methods.approve(
-              state.contractV2,
-              params.rewardSupplyApprove
-            )
-      )
-      .withContractCall(
-        farmContract.methods.create(
-          // poolToken
-          params.poolToken.tokenAddress,
-          params.poolToken.tokenId,
-          params.poolToken.tokenType,
-          "unit",
-
-          // rewardToken
-          params.rewardToken.tokenAddress,
-          params.rewardToken.tokenId,
-          params.rewardToken.tokenType,
-          "unit",
-
-          // rewardSupply
-          params.rewardSupply,
-
-          // rewardPerSec
-          params.rewardPerSec,
-
-          // startTime, endTime
-          params.startTime.toISOString(),
-          params.endTime.toISOString(),
-
-          // lockDuration
-          params.lockDuration,
-
-          // bonuses
-          _.orderBy(bonuses, "endTime", "asc"),
-
-          // serviceFeeId
-          params.serviceFeeId
-        )
-      )
-      .withContractCall(
-        params.rewardToken.tokenType === "fa2"
-          ? rewardToken.methods.update_operators([
-              {
-                remove_operator: {
-                  owner: rootState.wallet.pkh,
-                  operator: state.contractV2,
-                  token_id: params.rewardToken.tokenId,
-                },
-              },
-            ])
-          : rewardToken.methods.approve(state.contractV2, 0)
-      )
-      .withContractCall(
-        crnchy.methods.update_operators([
-          {
-            remove_operator: {
-              owner: rootState.wallet.pkh,
-              operator: state.contractV2,
-              token_id: 0,
             },
-          },
-        ])
-      );
+          ])
+        : rewardToken.methods.approve(
+            state.contractV2,
+            params.rewardSupplyApprove
+          );
 
+    const removeOperatorMethod =
+      params.rewardToken.tokenType === "fa2"
+        ? rewardToken.methods.update_operators([
+            {
+              remove_operator: {
+                owner: rootState.wallet.pkh,
+                operator: state.contractV2,
+                token_id: params.rewardToken.tokenId,
+              },
+            },
+          ])
+        : rewardToken.methods.approve(state.contractV2, 0);
+    const createMethod = farmContract.methods.create(
+      // poolToken
+      params.poolToken.tokenAddress,
+      params.poolToken.tokenId,
+      params.poolToken.tokenType,
+      "unit",
+
+      // rewardToken
+      params.rewardToken.tokenAddress,
+      params.rewardToken.tokenId,
+      params.rewardToken.tokenType,
+      "unit",
+
+      // rewardSupply
+      params.rewardSupply,
+
+      // rewardPerSec
+      params.rewardPerSec,
+
+      // startTime, endTime
+      params.startTime.toISOString(),
+      params.endTime.toISOString(),
+
+      // lockDuration
+      params.lockDuration,
+
+      // bonuses
+      _.orderBy(bonuses, "endTime", "asc"),
+
+      // serviceFeeId
+      params.serviceFeeId
+    )
+    const operations = [
+      {
+        kind: OpKind.TRANSACTION,
+        ...addOperatorMethod.toTransferParams(),
+      },
+      {
+        kind: OpKind.TRANSACTION,
+        ...createMethod.toTransferParams({
+          mutez: true,
+          amount: servicesFee,
+        }),
+      },
+      {
+        kind: OpKind.TRANSACTION,
+        ...removeOperatorMethod.toTransferParams(),
+      },
+    ];
+
+    const batch = await getTezosBatch(operations);
     const tx = await batch.send();
     return tx.confirmation();
   },
