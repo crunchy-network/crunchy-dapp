@@ -4,12 +4,16 @@
     <nav-menu></nav-menu>
 
     <!-- class="hidden-sm-and-down" -->
-    <el-main style="margin-top: 90px">
+    <el-main>
       <el-row :gutter="20" type="flex" align="bottom">
         <el-col :span="24">
           <div class="grid-content">
-            <h2 style="margin-top: 0; margin-bottom: 5px">Create a Farm</h2>
-            <span style="font-size: 14px">Create your own farm</span>
+            <h2 style="font-weight: 700; font-size: 24px; margin-bottom: 4px">
+              Create a Farm
+            </h2>
+            <span class="color__subheading fs__16 fw__4"
+              >Create your own farm</span
+            >
           </div>
         </el-col>
       </el-row>
