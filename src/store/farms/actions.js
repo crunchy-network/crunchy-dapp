@@ -233,7 +233,6 @@ export default {
 
       const farms = {};
       const storageFarms = [...state.storage.farms, ...state.storage.farmsV2];
-      console.log(storageFarms);
       for (const x of storageFarms) {
         if (x.key === "13") continue; // bad catz
         if (x.key === "55") continue; // bad HEH -> CLOVER
@@ -1892,14 +1891,23 @@ export default {
     const farmContract = await getContract(state.contractV2);
     // const crnchy = await getContract(state.crnchyAddress);
     const rewardToken = await getContract(params.rewardToken.tokenAddress);
-    let servicesFee;
-    if (params.serviceFeeId === "0") {
-      servicesFee = 20000000;
-    } else if (params.serviceFeeId === "1") {
-      servicesFee = 100000000;
-    } else if (params.serviceFeeId === "2") {
-      servicesFee = 500000000;
+    
+    let serviceFeeWhiteList;
+    try {
+      const farmStorage = await farmContract.storage();
+      serviceFeeWhiteList = farmStorage.serviceFeeWhitelist;
+    } catch (error) {
+      console.error(`Error fetching farm contract storage: ${error}`);
     }
+    
+    let servicesFee = 0;
+
+    if (!serviceFeeWhiteList.includes(rootState.wallet.pkh)) {
+      const feeOptions = [20000000, 100000000, 500000000];
+      servicesFee = feeOptions[parseInt(params.serviceFeeId, 10)] || 0;
+    }
+
+    
     let prevM = 0;
     const bonuses = [];
     for (const b of _.orderBy(params.bonuses, "endTime", "desc")) {
