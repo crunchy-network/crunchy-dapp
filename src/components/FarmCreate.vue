@@ -202,15 +202,35 @@
                   ></el-date-picker>
                 </el-form-item>
 
-                <el-form-item label="Reward Deposit" prop="rewardTokenAmount">
-                  <el-input
-                    v-model="form.rewardTokenAmount"
-                    placeholder="Amount of Reward Tokens"
-                    style="width: 400px"
+                <div style="margin-bottom: 22px">
+                  <el-form-item
+                    style="margin-bottom: 0px"
+                    label="Reward Deposit"
+                    prop="rewardTokenAmount"
                   >
-                    <span slot="suffix">{{ form.rewardTokenName }}</span>
-                  </el-input>
-                </el-form-item>
+                    <el-input
+                      v-model="form.rewardTokenAmount"
+                      placeholder="Amount of Reward Tokens"
+                      style="width: 400px"
+                    >
+                      <span slot="suffix">{{ form.rewardTokenName }}</span>
+                    </el-input>
+                  </el-form-item>
+                  <div
+                    class="balance-section"
+                    style="display: flex; justify-content: flex-end"
+                  >
+                    Balance:
+                    {{
+                      formatDecimals(
+                        getBalanceOfSelectedToken(
+                          form.rewardTokenAddress + "_" + form.rewardTokenId
+                        ),
+                        form.rewardTokenDecimals
+                      )
+                    }}
+                  </div>
+                </div>
 
                 <el-form-item
                   v-for="(bonus, index) in form.bonuses"
@@ -652,7 +672,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["wallet", "farms"]),
+    ...mapState(["wallet", "farms", "homeWallet"]),
 
     rewardAmountPerSecond: function () {
       if (!this.form.rewardTokenAmount || !this.form.rewardTokenName) {
@@ -962,6 +982,37 @@ export default {
       this.form.rewardTokenDecimals = i.decimals;
       this.form.rewardTokenThumbnailUri = i.thumbnailUri;
     },
+
+    formatDecimals(amount, tokenDecimals, defaultTez = true) {
+      const numStr = String(amount);
+      // String Contains Decimal
+      if (numStr.includes(".")) {
+        let decimals = parseInt(tokenDecimals);
+        if (isNaN(decimals)) {
+          console.warn("NaN decimals for token");
+          decimals = 6;
+        }
+        if (defaultTez) {
+          decimals = Math.min(decimals, 6);
+        }
+        if (numStr.split(".")[1].length > decimals) {
+          amount = parseFloat(amount);
+          return amount.toFixed(decimals);
+        }
+      }
+      return amount;
+    },
+
+    getBalanceOfSelectedToken(tokenAssetSlug) {
+      if (tokenAssetSlug === undefined) return 0;
+      const found = this.homeWallet.assets.find(
+        (t) => t?.assetSlug === tokenAssetSlug
+      );
+      if (found) {
+        return found.availableBalance || found.balance;
+      }
+      return 0;
+    },
   },
 };
 </script>
@@ -975,5 +1026,15 @@ export default {
   width: 100%;
   max-width: 1450px;
   margin: 0 auto;
+}
+.balance-section {
+  * {
+    font-size: 12px;
+    font-weight: 500;
+  }
+  color: var(--color-subheading-text);
+  margin-right: calc(100% - 535px);
+  display: flex;
+  justify-content: space-between;
 }
 </style>
