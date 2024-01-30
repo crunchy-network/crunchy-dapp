@@ -3,14 +3,13 @@
     <!-- class="hidden-sm-and-down" -->
     <nav-menu> </nav-menu>
     <!-- class="hidden-sm-and-down" -->
-    <el-main style="margin-top: 90px">
+    <el-main>
       <el-row
         :gutter="20"
         type="flex"
         align="middle"
         style="
           margin-bottom: 24px;
-          margin-top: 40px;
           flex-wrap: wrap;
           row-gap: 10px;
         "
@@ -20,10 +19,10 @@
             <h2
               style="
                 margin-top: 0;
-                margin-bottom: 5px;
+                margin-bottom: 4px;
                 font-weight: 700;
-                font-size: 28px;
-                line-height: 42px;
+                font-size: 24px;
+                line-height: 36px;
               "
             >
               Farms & Gardens
@@ -32,8 +31,8 @@
               style="
                 color: var(--color-subheading-text);
                 font-weight: 400;
-                font-size: 16px;
-                line-height: 24px;
+                font-size: 14px;
+                line-height: 21px;
               "
               >Stake tokens to earn rewards or <strong>create</strong> your own
               farm to allow others to earn rewards staking your tokens.

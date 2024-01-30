@@ -18,9 +18,9 @@
               <h2
                 style="
                   margin-top: 0;
-                  margin-bottom: 5px;
+                  margin-bottom: 4px;
                   font-weight: 700;
-                  font-size: 28px;
+                  font-size: 24px;
                   line-height: 42px;
                 "
               >
@@ -472,8 +472,9 @@ export default {
 @import "~element-ui/packages/theme-chalk/src/common/var";
 
 #token-tracker {
+  // consistency, 120% -> 55px like in all other pages
   .el-divider--vertical {
-    height: 120% !important;
+    height: 55px !important;
   }
 
   .el-card.top {
