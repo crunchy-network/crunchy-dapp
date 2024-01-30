@@ -87,7 +87,7 @@ export default {
   updateFarmUserRecordStorage(state, { contract, data }) {
     if (contract === state.contract) {
       state.storage.userRecords = data;
-    } else if (contract === state.contract2) {
+    } else if (contract === state.contractV2) {
       state.storage.userRecordsV2 = data;
     }
   },
@@ -95,7 +95,7 @@ export default {
   updateVaultStorage(state, { contract, data }) {
     if (contract === state.contract) {
       state.storage.vaults = data;
-    } else if (contract === state.contract2) {
+    } else if (contract === state.contractV2) {
       state.storage.vaultsV2 = data;
     }
   },

@@ -153,7 +153,7 @@ export default {
     if (!updateFarmStoragePromise) {
       updateFarmStoragePromise = Promise.all([
         dispatch("_updateFarmStorage", state.contract),
-        dispatch("_updateFarmStorage", state.contract2),
+        dispatch("_updateFarmStorage", state.contractV2),
       ]);
     }
     return updateFarmStoragePromise;
@@ -184,7 +184,7 @@ export default {
     if (!updateFarmUserRecordStoragePromise) {
       updateFarmUserRecordStoragePromise = Promise.all([
         dispatch("_updateUserRecordStorage", state.contract),
-        dispatch("_updateUserRecordStorage", state.contract2),
+        dispatch("_updateUserRecordStorage", state.contractV2),
       ]);
     }
     return updateFarmUserRecordStoragePromise;
@@ -200,7 +200,7 @@ export default {
     if (!updateVaultStoragePromise) {
       updateVaultStoragePromise = Promise.all([
         dispatch("_updateVaultStorage", state.contract),
-        dispatch("_updateVaultStorage", state.contract2),
+        dispatch("_updateVaultStorage", state.contractV2),
       ]);
     }
     return updateVaultStoragePromise;
@@ -1435,9 +1435,11 @@ export default {
 
   async softUpdateFarm({ commit, state, rootState, dispatch }, farmId) {
     const farm = state.data[farmId];
+    const farms = Number(farmId) >= 1000 ? state.storage.farmsV2 : state.storage.farms;
+    const userRecords = Number(farmId) >= 1000 ? state.storage.userRecordsV2 : state.storage.userRecords;
 
     if (!rootState.wallet.pkh) {
-      const farmStorage = state.storage.farms.find(
+      const farmStorage = farms.find(
         (f) => f.key === farmId
       ).value;
 
@@ -1578,9 +1580,9 @@ export default {
     if (!farm.updating) {
       const userRecord = farmUtils.getUserRecord(
         farm,
-        state.storage.userRecords
+        userRecords
       );
-      const farmStorage = state.storage.farms.find(
+      const farmStorage = farms.find(
         (f) => f.key === farmId
       ).value;
       const currentRewardMultiplier =
@@ -1733,13 +1735,16 @@ export default {
     farmId
   ) {
     const farm = state.data[farmId];
+    const farms = Number(farmId) >= 1000 ? state.storage.farmsV2 : state.storage.farms;
+    const userRecords = Number(farmId) >= 1000 ? state.storage.userRecordsV2 : state.storage.userRecords;
+
     if (rootState.wallet.pkh) {
       const userRecord = farmUtils.getUserRecord(
         farm,
-        state.storage.userRecords
+        userRecords
       );
       if (userRecord.amount > 0) {
-        const farmStorage = state.storage.farms.find(
+        const farmStorage = farms.find(
           (f) => f.key === farmId
         ).value;
         const currentRewardMultiplier =
@@ -2015,8 +2020,7 @@ export default {
   },
 
   expandMyFarmRows({ commit, state, dispatch }) {
-    console.log(state.userData);
-    console.log(state.data);
+
     for (const farmId in state.userData) {
       dispatch("expandFarmRow", farmId);
     }
@@ -2276,7 +2280,6 @@ export default {
     for (const farmId in state.data) {
       commit("updateFarmLoading", { farmId, loading: true });
       dispatch("softUpdateFarm", farmId).then(() => {
-        console.log(farmId);
         commit("updateFarmLoading", { farmId, loading: false });
       });
     }
