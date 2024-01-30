@@ -14,6 +14,7 @@
   "startTime": "2021-08-28T10:00:00.000Z",
   "endTime": "2021-08-28T11:00:00.000Z",
   "harvestTime": "2021-08-28T11:00:00.000Z",
+  "harvestEndTime": "2021-08-29T11:00:00.000Z",
   "started": true,
   "ended": true,
   "harvesting": false,

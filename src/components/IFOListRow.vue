@@ -59,6 +59,8 @@
               <IFOTimeBubble
                 :date="new Date(project.startTime)"
                 :end-date="new Date(project.endTime)"
+                :harvest-date="new Date(project.harvestTime)"
+                :harvest-end-date="new Date(project.harvestEndTime)"
               />
             </el-col>
           </el-row>

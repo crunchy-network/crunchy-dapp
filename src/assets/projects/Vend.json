@@ -4,6 +4,8 @@
   "swapRate": 0.000133,
   "startTime": "2024-01-05T20:00:00Z",
   "endTime": "2024-01-15T20:00:00Z",
+  "harvestTime": "2024-01-25T20:00:00Z",
+  "harvestEndTime": "2024-04-24T20:00:00Z",
   "projectLogo": "vendcoin-logo.png",
   "tokenLogo": "vend.png",
   "contractId": "KT1D1HYPTz78zMYaAaMUhd9dbNcecTyft7DA",

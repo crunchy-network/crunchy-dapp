@@ -1,9 +1,18 @@
 <template>
   <div class="countdown">
-    <div
-      v-if="days > 0 || hours > 0 || minutes > 0 || seconds > 0"
-      class="countdown__bubble"
-    >
+    <div v-if="harvestEndDate < nowD" class="status completed">
+      Completed
+    </div>
+    <div v-else-if="harvestDate < nowD" class="status harvesting">
+      Harvesting
+    </div>
+    <div v-else-if="endDate < nowD" class="status pending-harvest">
+      Pending Harvest
+    </div>
+    <div v-else-if="date < nowD" class="status in-progress">
+      In Progress
+    </div>
+    <div v-else class="status countdown__bubble">
       <div v-if="days > 0" class="countdown__block">
         <div class="countdown__digit">{{ days | twoDigits }}</div>
         <div class="countdown__text">days</div>
@@ -21,11 +30,6 @@
         <div class="countdown__text">sec</div>
       </div>
     </div>
-    <div v-if="days <= 0 && hours <= 0 && minutes <= 0 && seconds <= 0">
-      <div :class="calcPlaceholderClass(endDate)">
-        {{ calcPlaceholderText(endDate) }}
-      </div>
-    </div>
   </div>
 </template>
 <script>
@@ -41,9 +45,12 @@ export default {
   props: {
     date: { type: Date, required: true },
     endDate: { type: Date, required: true },
+    harvestDate: { type: Date, required: true },
+    harvestEndDate: { type: Date, required: true },
   },
   data() {
     return {
+      nowD: new Date(),
       now: Math.trunc(new Date().getTime() / 1000),
       event: this.date,
       finish: false,
@@ -83,24 +90,6 @@ export default {
       }
     }, 1000);
   },
-  methods: {
-    calcPlaceholderText(endDate) {
-      const now = new Date();
-      if (now < endDate) {
-        return "In Progress";
-      } else {
-        return "Completed";
-      }
-    },
-    calcPlaceholderClass(endDate) {
-      const now = new Date();
-      if (now < endDate) {
-        return "inProgress";
-      } else {
-        return "completed";
-      }
-    },
-  },
 };
 </script>
 <style lang="scss">
@@ -129,21 +118,24 @@ export default {
     font-weight: bold;
     line-height: 1;
   }
-  .inProgress {
+  .status {
     padding: 5px 10px;
     border-radius: 20px;
-    border: 1px solid #0d63ff;
-    // background: rgba(13, 97, 255, 0.2);
+  }
+  .in-progress {
+    color: #555CFF;
+  }
+  .pending-harvest {
+    color: #F64947;
+  }
+  .harvesting {
+    color: #1EC37F;
   }
   .countdown__bubble {
-    padding: 5px 10px;
-    border-radius: 20px;
     // border: 1px solid #0D63FF;
     // background: rgba(13, 97, 255, 0.2);
   }
   .completed {
-    padding: 5px 10px;
-    border-radius: 20px;
     // border: 1px solid #F94E4E;
     // background: rgba(249, 78, 78, 0.2);
   }

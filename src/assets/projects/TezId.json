@@ -3,6 +3,8 @@
     "description": "TezID is an identity oracle for Tezos. It allows users to prove that they own certain digital property such as an email address, phone number and even government issued ID’s. Building on their secure proofsystem TezID aims to bring opt-in KYC proofs for the entire Tezos ecosystem! They will also bring custom prooftypes and decentralized proofs to the table in the future. Their token $IDZ will be used to incetivise TezID usage and reach, and to capture the value created by their oracle.",
     "startTime": "2021-09-12T14:00:00.000Z",
     "endTime": "2021-09-12T14:00:00.000Z",
+    "harvestTime": "2021-09-12T14:00:00.000Z",
+    "harvestEndTime": "2021-09-12T14:00:00.000Z",
     "projectLogo": "TezIdLogoLarge.png",
     "tokenLogo": "IDZ.png",
     "tokenName": "TezID",

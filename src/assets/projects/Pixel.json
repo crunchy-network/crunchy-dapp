@@ -4,6 +4,8 @@
     "swapRate": 0.0042,
     "startTime": "2021-11-18T17:40:00.000Z",
     "endTime": "2021-11-16T19:00:00.000Z",
+    "harvestTime": "2021-11-01T18:00:00Z",
+    "harvestEndTime": "2021-11-16T18:00:00.000Z",
     "projectLogo": "PixelLogoLarge.png",
     "tokenLogo": "POTUS.png",
     "contractId": "KT1PY1CauoknQQJV7tgD6z6CUKXyWWKNmN4Z",
