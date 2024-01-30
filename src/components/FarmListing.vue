@@ -527,6 +527,7 @@ export default {
   data() {
     return {
       activeTab: "allFarms",
+      defaultFilterOptions: ['farm', 'garden', 'flash', 'pending', 'running'],
       filterOptions: [
         {
           label: "Type",
@@ -622,7 +623,7 @@ export default {
       }
       this.$store.commit("updateFarmsFilters", filters);
     }
-
+    this.$store.commit("updateFarmsFilters", this.defaultFilterOptions);
     this.refresh();
   },
   methods: {
