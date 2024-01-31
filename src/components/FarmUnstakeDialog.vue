@@ -121,7 +121,7 @@
           margin-left: 0;
         "
         @click="unstakeFarm(form.farm.id)"
-        >UNSTAKE</el-button
+        >Unstake</el-button
       >
     </el-form>
   </el-dialog>

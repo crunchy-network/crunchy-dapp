@@ -160,8 +160,6 @@
         >USE MAX</el-button
       >
       <div class="stake-warning" style="word-break: auto-phrase">
-        <span class="stake-warning__notice">NOTICE:</span>
-        <br />
         <span class="stake-warning__content"
           >Unclaimed deposits and rewards are subject to a 0.55% fee per day,
           beginning 6 months after a farm completes.</span
@@ -177,7 +175,7 @@
           margin-left: 0;
         "
         @click="stakeFarm(form.farm.id)"
-        >STAKE</el-button
+        >Stake</el-button
       >
     </el-form>
   </el-dialog>
