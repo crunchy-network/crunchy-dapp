@@ -114,11 +114,12 @@
       <el-button
         type="primary"
         style="
-          border-radius: 12px;
+          border-radius: 20px;
           font-weight: bold;
           width: 100%;
-          padding: 20px;
+          padding: 6px 16px 6px 16px;
           margin-left: 0;
+          height: 40px;
         "
         @click="unstakeFarm(form.farm.id)"
         >Unstake</el-button
