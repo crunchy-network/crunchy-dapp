@@ -532,7 +532,6 @@ header .grid-content button.el-button {
   padding-right: 135px !important;
 }
 .stake-dialog .el-form-item__error {
-  right: 14px;
   left: auto;
 }
 .stake-infor {
