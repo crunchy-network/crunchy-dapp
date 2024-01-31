@@ -557,7 +557,7 @@ header .grid-content button.el-button {
   font-size: 12px;
   font-weight: 400;
   line-height: 18px;
-  color: #ffffff;
+  color: #8c8d8f;
 }
 .stake-warning__notice {
   font-size: 14px;
