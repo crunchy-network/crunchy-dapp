@@ -323,7 +323,7 @@
                   <el-row
                     v-show="!isMobile"
                     class="farm-box-title"
-                    style="margin-left: 15px; margin-bottom: 4px;"
+                    style="margin-left: 15px;"
                     :span="6"
                   >
                     My Farms
@@ -335,8 +335,7 @@
                       font-size: 14px;
                       font-weight: 600;
                       border-bottom: var(--line-border);
-                      padding-bottom: 14px;
-                      margin-bottom: 14px;
+                      padding-bottom: 4px;
                     "
                   >
                     <el-col :span="24">
@@ -476,7 +475,7 @@
                   <el-row
                     v-show="!isMobile"
                     class="farm-box-title"
-                    style="margin-left: 15px; margin-bottom: 4px"
+                    style="margin-left: 15px;"
                     :span="6"
                   >
                     All Farms
@@ -488,8 +487,7 @@
                       font-size: 14px;
                       font-weight: 600;
                       border-bottom: var(--line-border);
-                      padding-bottom: 14px;
-                      margin-bottom: 14px;
+                      padding-bottom: 4px;
                     "
                   >
                     <el-col :span="24">
@@ -499,6 +497,7 @@
                         align="middle"
                         style="
                           padding: 0 16px;
+                          padding-bottom: 4px;
                           color: var(--color-subheading-text) !important;
                         "
                       >
