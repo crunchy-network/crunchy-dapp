@@ -20,13 +20,7 @@
           :gutter="20"
           class="farm-row"
           :class="{ expanded: farm.rowExpanded }"
-          style="
-            padding-left: 0;
-            padding-right: 0;
-            margin-left: 0;
-            margin-right: 0;
-            color: var(--primary-text);
-          "
+          style="margin-left: 0; margin-right: 0; color: var(--primary-text)"
           type="flex"
           align="middle"
         >
@@ -750,7 +744,12 @@
           ></el-col>
         </el-row>
         <collapse-transition :duration="250" name="slide">
-          <div v-show="(farm.rowExpandedMyFarm && farmType === 'myFarm') || (farm.rowExpandedAllFarm && farmType === 'allFarm')">
+          <div
+            v-show="
+              (farm.rowExpandedMyFarm && farmType === 'myFarm') ||
+              (farm.rowExpandedAllFarm && farmType === 'allFarm')
+            "
+          >
             <el-row
               class="row-expanded"
               type="flex"
