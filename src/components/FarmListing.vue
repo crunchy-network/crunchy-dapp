@@ -209,17 +209,7 @@
           :sm="24"
           style="display: flex; justify-content: space-between"
         >
-          <el-button
-            v-show="isMobile"
-            type="primary"
-            round
-            style="font-weight: bold"
-            @click="$router.push({ name: 'farm-create' })"
-          >
-            + Create a Farm
-          </el-button>
-
-          <span class="farm-search-filter-wrapper">
+          <span class="btns-wrapper">
             <el-input
               :sm="8"
               :value="farms.searchInput"
@@ -257,7 +247,7 @@
 
           <span>
             <el-button
-              v-show="!isMobile"
+              class="create-farm-btn"
               type="primary"
               round
               style="font-weight: bold; margin-right: 16px"
@@ -266,7 +256,7 @@
               + Create a Farm
             </el-button>
             <el-button
-              v-show="!isMobile"
+              class="harvest-farm-btn"
               type="primary"
               plain
               :disabled="wallet.connected === false"
@@ -287,31 +277,10 @@
         </el-col>
       </el-row>
 
-      <el-row
-        class="myFarm"
-        style="margin-top: 16px; display: flex; justify-content: space-between"
-      >
+      <el-row class="myFarm" style="margin-top: 16px">
         <el-col v-show="isMobile" class="farm-box-title" :span="6">
           My Farms
         </el-col>
-        <el-button
-          v-show="isMobile"
-          type="primary"
-          plain
-          :disabled="wallet.connected === false"
-          style="
-            border-radius: 10px;
-            font-weight: bold;
-            padding-left: 48px;
-            padding-right: 48px;
-            margin-left: 5px;
-            background: var(--color-alt-btn);
-            color: #fff;
-            border: 1px solid var(--color-alt-btn);
-          "
-          @click="harvestAllFarms"
-          >Harvest All</el-button
-        >
       </el-row>
 
       <el-row type="flex" class="farm-list" style="margin-top: 8px">
@@ -323,7 +292,7 @@
                   <el-row
                     v-show="!isMobile"
                     class="farm-box-title"
-                    style="margin-left: 15px;"
+                    style="margin-left: 15px"
                     :span="6"
                   >
                     My Farms
@@ -475,7 +444,7 @@
                   <el-row
                     v-show="!isMobile"
                     class="farm-box-title"
-                    style="margin-left: 15px;"
+                    style="margin-left: 15px"
                     :span="6"
                   >
                     All Farms
@@ -876,7 +845,7 @@ export default {
     width: 50%;
     border: 0 !important;
   }
-  .farm-search-filter-wrapper {
+  .btns-wrapper {
     width: 52%;
   }
   .farm-box-title {
@@ -931,8 +900,16 @@ export default {
       letter-spacing: 0.02em;
       text-align: left;
     }
-    .farm-search-filter-wrapper {
+    .btns-wrapper {
       width: 100%;
+    }
+    .create-farm-btn {
+      width: 100%;
+      margin-bottom: 16px;
+    }
+    .harvest-farm-btn {
+      width: 100%;
+      margin-left: 0;
     }
     .farm-search-filter {
       flex-direction: column;
@@ -950,10 +927,6 @@ export default {
     }
     .myFarm {
       margin-top: 40px !important;
-    }
-    .myFarm::before,
-    .myFarm::after {
-      display: none;
     }
     .farm-box-title {
       align-items: center;
