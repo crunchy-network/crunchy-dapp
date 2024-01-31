@@ -103,4 +103,8 @@ export default {
       state.storage.vaultsV2 = data;
     }
   },
+
+  updateFirstLoad(state, firstLoad) {
+    state.firstLoad = firstLoad;
+  }
 };

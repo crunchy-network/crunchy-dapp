@@ -2161,6 +2161,9 @@ export default {
 
     // Update userFarm
     if (userFarm) {
+      // firstLoad search
+      const firstLoad = state.firstLoad;
+
       // keyword search
       let keywordsMatch = true;
       if (state.searchInput.length) {
@@ -2265,20 +2268,24 @@ export default {
 
       // all groups must match
       const visible =
-        keywordsMatch &&
-        typeMatches &&
-        stakedMatches &&
-        statusMatches &&
-        badgeMatches;
+        firstLoad ||
+        (
+          keywordsMatch &&
+          typeMatches &&
+          stakedMatches &&
+          statusMatches &&
+          badgeMatches
+        );
 
       commit("updateUserFarmVisible", { farmId, visible });
     }
   },
 
-  filterAllFarmRows({ state, dispatch }) {
+  filterAllFarmRows({ state, dispatch, commit }) {
     for (const farmId in state.data) {
       dispatch("filterFarmRow", farmId);
     }
+    commit("updateFirstLoad", false);
   },
 
   async walletConnected({ commit, state, dispatch }) {
@@ -2290,4 +2297,8 @@ export default {
       });
     }
   },
+
+  updateFirstLoad({ commit }, firstLoad) {
+    commit("updateFirstLoad", firstLoad);
+  }
 };

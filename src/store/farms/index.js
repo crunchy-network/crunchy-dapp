@@ -3,6 +3,7 @@ import mutations from "./mutations";
 
 export default {
   state: {
+    firstLoad: false,
     loading: false,
     expanded: false,
     myFarmExpanded: false,

@@ -695,6 +695,7 @@ export default {
       "collapseMyFarmRows",
       "filterAllFarmRows",
       "searchAllFarmRows",
+      "updateFirstLoad",
     ]),
 
     setActiveTab(val) {
@@ -709,6 +710,7 @@ export default {
     },
 
     refresh() {
+      this.updateFirstLoad(true);
       this.fetchAllFarms();
     },
 
