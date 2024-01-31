@@ -1203,7 +1203,7 @@
               <el-col
                 v-if="farm.errant === false"
                 :span="isMobile ? 24 : 8"
-                style="padding: 10px 20px; border-right: var(--line-border)"
+                style="padding: 10px 20px;"
               >
                 <div style="margin-bottom: 8px">
                   <strong
