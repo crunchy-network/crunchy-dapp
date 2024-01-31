@@ -543,9 +543,13 @@ header .grid-content button.el-button {
 }
 .stake-warning {
   margin-bottom: 20px;
-  border: 2px solid #ffffff1a;
-  border-radius: 12px;
-  background: #ffffff1a;
+  border-radius: 8px;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #303135 !important;
+  color: #ffffff;
   padding: 10px;
   text-align: center;
 }

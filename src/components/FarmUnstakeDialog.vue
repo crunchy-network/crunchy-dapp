@@ -107,7 +107,7 @@
         type="success"
         size="small"
         round
-        style="margin-top: 14px; margin-bottom: 22px"
+        style="margin-top: 8px; margin-bottom: 22px"
         @click="form.input = form.farm.depositAmount"
         >USE MAX</el-button
       >
