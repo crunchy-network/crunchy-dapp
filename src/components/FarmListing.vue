@@ -909,7 +909,7 @@ export default {
     }
     .harvest-farm-btn {
       width: 100%;
-      margin-left: 0;
+      margin-left: 0 !important;
     }
     .farm-search-filter {
       flex-direction: column;
