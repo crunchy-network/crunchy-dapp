@@ -294,6 +294,8 @@ export default {
             apr: "~",
             multiplier: "1",
             rowExpanded: false,
+            rowExpandedMyFarm: false,
+            rowExpandedAllFarm: false,
             init: false,
             loading: false,
             updating: false,
@@ -2006,12 +2008,14 @@ export default {
     return tx.confirmation();
   },
 
-  expandFarmRow({ commit }, farmId) {
-    commit("updateFarmRowExpanded", { farmId, rowExpanded: true });
+  expandFarmRow({ commit }, payload) {
+    const { farmId, farmType } = payload;
+    commit("updateFarmRowExpanded", { farmId, farmType, rowExpanded: true });
   },
 
-  collapseFarmRow({ commit }, farmId) {
-    commit("updateFarmRowExpanded", { farmId, rowExpanded: false });
+  collapseFarmRow({ commit }, payload) {
+    const { farmId, farmType } = payload;
+    commit("updateFarmRowExpanded", { farmId, farmType, rowExpanded: false });
   },
 
   expandAllFarmRows({ commit, state, dispatch }) {

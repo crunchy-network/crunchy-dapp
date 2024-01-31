@@ -417,6 +417,7 @@
                     :farm-tab="activeTab"
                     :farm="farm"
                     :show-usd="showUsd"
+                    :farm-type="'myFarm'"
                     @request-unstake-farm="showUnstakeDialogMyFarm"
                     @request-stake-farm="showStakeDialogMyFarm"
                   >
@@ -546,6 +547,7 @@
                     :farm-tab="activeTab"
                     :farm="farm"
                     :show-usd="showUsd"
+                    :farm-type="'allFarm'"
                     @request-unstake-farm="showUnstakeDialogMyFarm"
                     @request-stake-farm="showStakeDialogAllFarm"
                   >

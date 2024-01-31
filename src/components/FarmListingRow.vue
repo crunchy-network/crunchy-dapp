@@ -10,7 +10,8 @@
         v-loading="farm.loading"
         style="border: var(--line-border); border-radius: 14px"
         :style="[
-          farm.rowExpanded
+          (farm.rowExpandedMyFarm && farmType === 'myFarm') ||
+          (farm.rowExpandedAllFarm && farmType === 'allFarm')
             ? { borderColor: 'var(--border-color)' }
             : { borderColor: 'transparent !important' },
         ]"
@@ -718,32 +719,38 @@
             >{{ farm.multiplier }}x</el-col
           >
           <el-col
-            v-if="farm.rowExpanded === false"
+            v-if="
+              (farm.rowExpandedMyFarm === false && farmType === 'myFarm') ||
+              (farm.rowExpandedAllFarm === false && farmType === 'allFarm')
+            "
             :span="3"
             style="text-align: right; display: flex; justify-content: end"
             ><el-button
               type="text"
               style="font-weight: bold; display: flex; align-items: center"
-              @click="expandFarmRow(farm.id)"
+              @click="expandFarmRow({ farmId: farm.id, farmType })"
             >
               <span v-show="!isMobile">View Details</span>
               <i class="fas fa-chevron-down fa-icon-right"></i></el-button
           ></el-col>
           <el-col
-            v-if="farm.rowExpanded === true"
+            v-if="
+              (farm.rowExpandedMyFarm === true && farmType === 'myFarm') ||
+              (farm.rowExpandedAllFarm === true && farmType === 'allFarm')
+            "
             :span="3"
             style="text-align: right; display: flex; justify-content: end"
             ><el-button
               type="text"
               style="font-weight: bold; display: flex; align-items: center"
-              @click="collapseFarmRow(farm.id)"
+              @click="collapseFarmRow({ farmId: farm.id, farmType })"
             >
               <span v-show="!isMobile">Hide Details</span>
               <i class="fas fa-chevron-up fa-icon-right"></i></el-button
           ></el-col>
         </el-row>
         <collapse-transition :duration="250" name="slide">
-          <div v-show="farm.rowExpanded">
+          <div v-show="(farm.rowExpandedMyFarm && farmType === 'myFarm') || (farm.rowExpandedAllFarm && farmType === 'allFarm')">
             <el-row
               class="row-expanded"
               type="flex"
@@ -1203,7 +1210,7 @@
               <el-col
                 v-if="farm.errant === false"
                 :span="isMobile ? 24 : 8"
-                style="padding: 10px 20px;"
+                style="padding: 10px 20px"
               >
                 <div style="margin-bottom: 8px">
                   <strong
@@ -1362,6 +1369,10 @@ export default {
     },
     showUsd: {
       type: Boolean,
+      required: true,
+    },
+    farmType: {
+      type: String,
       required: true,
     },
   },

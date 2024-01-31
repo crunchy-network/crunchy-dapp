@@ -31,8 +31,12 @@ export default {
     }
   },
 
-  updateFarmRowExpanded(state, { farmId, rowExpanded }) {
-    state.data[farmId].rowExpanded = rowExpanded;
+  updateFarmRowExpanded(state, { farmId, farmType, rowExpanded }) {
+    if (farmType === "myFarm") {
+      state.data[farmId].rowExpandedMyFarm = rowExpanded;
+    } else {
+      state.data[farmId].rowExpandedAllFarm = rowExpanded;
+    }
   },
 
   updateFarmVisible(state, { farmId, visible }) {
