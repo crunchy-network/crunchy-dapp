@@ -155,7 +155,7 @@
         type="success"
         size="small"
         round
-        style="margin-bottom: 20px"
+        style="margin-top: 8px; margin-bottom: 22px"
         @click="form.input = form.farm.poolToken.balance"
         >USE MAX</el-button
       >

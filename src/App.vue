@@ -536,7 +536,9 @@ header .grid-content button.el-button {
   left: auto;
 }
 .stake-infor {
+  margin-top: 14px;
   margin-bottom: 8px;
+  font-weight: 200;
 }
 .stake-warning {
   margin-bottom: 20px;

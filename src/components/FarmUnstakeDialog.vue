@@ -5,11 +5,15 @@
     width="380px"
     class="stake-dialog"
   >
-    <p v-if="form.farm.poolToken.isQuipuLp" style="word-break: normal">
+    <p
+      v-if="form.farm.poolToken.isQuipuLp"
+      style="word-break: normal"
+      class="stake-infor"
+    >
       Withdrawing XTZ/{{ form.farm.poolToken.symbol }} LP tokens will reduce
       your ability to earn {{ form.farm.rewardToken.symbol }}.
     </p>
-    <p v-else style="word-break: normal">
+    <p v-else style="word-break: normal" class="stake-infor">
       Withdrawing {{ form.farm.poolToken.symbol }} will reduce your ability to
       earn {{ form.farm.rewardToken.symbol }}.
     </p>
@@ -103,7 +107,7 @@
         type="success"
         size="small"
         round
-        style="margin-bottom: 22px"
+        style="margin-top: 8px; margin-bottom: 22px"
         @click="form.input = form.farm.depositAmount"
         >USE MAX</el-button
       >
