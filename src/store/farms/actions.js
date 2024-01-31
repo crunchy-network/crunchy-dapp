@@ -8,7 +8,6 @@ import {
   getTokenMetadata,
   getContract,
   getBatch,
-  getTezosBatch,
   getWalletContract,
 } from "./../../utils/tezos";
 import merge from "deepmerge";
@@ -1869,9 +1868,12 @@ export default {
   async harvestAllFarms({ commit, state, dispatch }) {
     const batch = getBatch();
     const harvestingFarms = [];
+    const contractV1 = await getContract(state.contract);
+    const contractV2 = await getContract(state.contractV2);
+
     for (const farmId in state.data) {
       const contract = getFarmContract(farmId, state);
-      const farmContract = await getContract(contract);
+      const farmContract = contract === state.contractV2 ? contractV2 : contractV1;
       if (state.data[farmId].depositAmount && state.data[farmId].started) {
         harvestingFarms.push(farmId);
         batch.withContractCall(farmContract.methods.harvest(farmId));
@@ -1999,7 +2001,7 @@ export default {
       },
     ];
 
-    const batch = await getTezosBatch(operations);
+    const batch = await getBatch(operations);
     const tx = await batch.send();
     return tx.confirmation();
   },

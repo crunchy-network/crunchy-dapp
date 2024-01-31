@@ -61,13 +61,9 @@ const getWalletContract = async (address) => {
   return Tezos.wallet.at(address);
 };
 
-const getBatch = () => {
-  return Tezos.wallet.batch([]);
-};
-
-const getTezosBatch = (operations) => {
+const getBatch = (operations = []) => {
   return Tezos.wallet.batch(operations);
-}
+};
 
 export {
   Tezos,
@@ -79,6 +75,5 @@ export {
   getContractViews,
   getContract,
   getBatch,
-  getTezosBatch,
   getWalletContract,
 };
