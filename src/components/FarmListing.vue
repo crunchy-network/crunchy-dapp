@@ -323,7 +323,7 @@
                   <el-row
                     v-show="!isMobile"
                     class="farm-box-title"
-                    style="margin-left: 15px"
+                    style="margin-left: 15px; margin-bottom: 4px;"
                     :span="6"
                   >
                     My Farms
@@ -476,7 +476,7 @@
                   <el-row
                     v-show="!isMobile"
                     class="farm-box-title"
-                    style="margin-left: 15px"
+                    style="margin-left: 15px; margin-bottom: 4px"
                     :span="6"
                   >
                     All Farms

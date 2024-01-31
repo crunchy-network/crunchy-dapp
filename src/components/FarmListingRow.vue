@@ -19,7 +19,13 @@
           :gutter="20"
           class="farm-row"
           :class="{ expanded: farm.rowExpanded }"
-          style="margin-left: 0; margin-right: 0; color: var(--primary-text)"
+          style="
+            padding-left: 0;
+            padding-right: 0;
+            margin-left: 0;
+            margin-right: 0;
+            color: var(--primary-text);
+          "
           type="flex"
           align="middle"
         >
