@@ -428,7 +428,7 @@
 
                   <el-row
                     v-if="myOrderedFarms.length === 0"
-                    style="text-align: center"
+                    style="text-align: center; padding-top: 16px"
                   >
                     <span
                       style="
