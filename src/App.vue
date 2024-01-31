@@ -362,7 +362,9 @@ header .grid-content button.el-button {
 #farm-listing .el-input__inner {
   border-radius: 24px !important;
   color: var(--primary-text) !important;
-  background: transparent !important;
+  background: var(--background-card) !important;
+  border: var(--line-border);
+  box-shadow: 0 0px 12px 0 rgba(0, 0, 0, 0.25) !important;
 }
 
 .search-input .el-input__prefix {
@@ -541,9 +543,9 @@ header .grid-content button.el-button {
 }
 .stake-warning {
   margin-bottom: 20px;
-  border: 2px solid #FFFFFF1A;
+  border: 2px solid #ffffff1a;
   border-radius: 12px;
-  background: #FFFFFF1A;
+  background: #ffffff1a;
   padding: 8px;
 }
 .stake-warning__content {
@@ -552,7 +554,7 @@ header .grid-content button.el-button {
   line-height: 21px;
   letter-spacing: 0em;
   text-align: left;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 .stake-warning__notice {
   font-size: 14px;
@@ -560,7 +562,7 @@ header .grid-content button.el-button {
   line-height: 21px;
   letter-spacing: 0em;
   text-align: left;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 .lock-dialog .el-date-editor.el-input,
 .lock-dialog .el-date-editor.el-input__inner {
@@ -612,7 +614,6 @@ header .grid-content button.el-button {
   border-radius: 16px !important;
 }
 
-#farm-listing .el-input__inner,
 #nft-wallet-view .el-input__inner {
   border-radius: 24px !important;
   color: var(--primary-text) !important;
