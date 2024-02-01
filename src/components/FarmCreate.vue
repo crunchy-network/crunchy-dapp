@@ -4,12 +4,16 @@
     <nav-menu></nav-menu>
 
     <!-- class="hidden-sm-and-down" -->
-    <el-main style="margin-top: 90px">
+    <el-main>
       <el-row :gutter="20" type="flex" align="bottom">
         <el-col :span="24">
           <div class="grid-content">
-            <h2 style="margin-top: 0; margin-bottom: 5px">Create a Farm</h2>
-            <span style="font-size: 14px">Create your own farm</span>
+            <h2 style="font-weight: 700; font-size: 24px; margin-bottom: 4px">
+              Create a Farm
+            </h2>
+            <span class="color__subheading fs__16 fw__4"
+              >Create your own farm</span
+            >
           </div>
         </el-col>
       </el-row>
@@ -202,15 +206,35 @@
                   ></el-date-picker>
                 </el-form-item>
 
-                <el-form-item label="Reward Deposit" prop="rewardTokenAmount">
-                  <el-input
-                    v-model="form.rewardTokenAmount"
-                    placeholder="Amount of Reward Tokens"
-                    style="width: 400px"
+                <div style="margin-bottom: 22px">
+                  <el-form-item
+                    style="margin-bottom: 0px"
+                    label="Reward Deposit"
+                    prop="rewardTokenAmount"
                   >
-                    <span slot="suffix">{{ form.rewardTokenName }}</span>
-                  </el-input>
-                </el-form-item>
+                    <el-input
+                      v-model="form.rewardTokenAmount"
+                      placeholder="Amount of Reward Tokens"
+                      style="width: 400px"
+                    >
+                      <span slot="suffix">{{ form.rewardTokenName }}</span>
+                    </el-input>
+                  </el-form-item>
+                  <div
+                    class="balance-section"
+                    style="display: flex; justify-content: flex-end"
+                  >
+                    Balance:
+                    {{
+                      formatDecimals(
+                        getBalanceOfSelectedToken(
+                          form.rewardTokenAddress + "_" + form.rewardTokenId
+                        ),
+                        form.rewardTokenDecimals
+                      )
+                    }}
+                  </div>
+                </div>
 
                 <el-form-item
                   v-for="(bonus, index) in form.bonuses"
@@ -457,20 +481,15 @@
                     v-if="form.serviceFeeId && form.rewardTokenName"
                     :span="16"
                   >
-                    <div v-if="form.serviceFeeId === '0'">10,000 CRNCHY</div>
-                    <div v-if="form.serviceFeeId === '1'">50,000 CRNCHY</div>
-                    <div v-if="form.serviceFeeId === '2'">100,000 CRNCHY</div>
-                    <div v-if="form.serviceFeeId === '3'">500,000 CRNCHY</div>
+                    <div v-if="form.serviceFeeId === '0'">20 XTZ</div>
+                    <div v-if="form.serviceFeeId === '1'">100 XTZ</div>
+                    <div v-if="form.serviceFeeId === '2'">500 XTZ</div>
 
                     <div v-if="form.serviceFeeId === '0'">
                       {{ vueNumberFormat(form.rewardTokenAmount * 0.015) }}
                       {{ form.rewardTokenName }}
                     </div>
                     <div v-if="form.serviceFeeId === '1'">
-                      {{ vueNumberFormat(form.rewardTokenAmount * 0.01) }}
-                      {{ form.rewardTokenName }}
-                    </div>
-                    <div v-if="form.serviceFeeId === '2'">
                       {{ vueNumberFormat(form.rewardTokenAmount * 0.005) }}
                       {{ form.rewardTokenName }}
                     </div>
@@ -498,24 +517,19 @@
                     v-if="form.serviceFeeId && form.rewardTokenName"
                     :span="16"
                   >
-                    <div v-if="form.serviceFeeId === '0'">10,000 CRNCHY</div>
-                    <div v-if="form.serviceFeeId === '1'">50,000 CRNCHY</div>
-                    <div v-if="form.serviceFeeId === '2'">100,000 CRNCHY</div>
-                    <div v-if="form.serviceFeeId === '3'">500,000 CRNCHY</div>
+                    <div v-if="form.serviceFeeId === '0'">20 XTZ</div>
+                    <div v-if="form.serviceFeeId === '1'">100 XTZ</div>
+                    <div v-if="form.serviceFeeId === '2'">500 XTZ</div>
 
                     <div v-if="form.serviceFeeId === '0'">
                       {{ vueNumberFormat(form.rewardTokenAmount * 1.015) }}
                       {{ form.rewardTokenName }}
                     </div>
                     <div v-if="form.serviceFeeId === '1'">
-                      {{ vueNumberFormat(form.rewardTokenAmount * 1.01) }}
-                      {{ form.rewardTokenName }}
-                    </div>
-                    <div v-if="form.serviceFeeId === '2'">
                       {{ vueNumberFormat(form.rewardTokenAmount * 1.005) }}
                       {{ form.rewardTokenName }}
                     </div>
-                    <div v-if="form.serviceFeeId === '3'">
+                    <div v-if="form.serviceFeeId === '2'">
                       {{ vueNumberFormat(form.rewardTokenAmount * 1) }}
                       {{ form.rewardTokenName }}
                     </div>
@@ -632,10 +646,9 @@ export default {
         },
       },
       serviceFees: [
-        { value: "0", label: "10,000 CRNCHY + 1.5% of tokens" },
-        { value: "1", label: "50,000 CRNCHY + 1.0% of tokens" },
-        { value: "2", label: "100,000 CRNCHY + 0.5% of tokens" },
-        { value: "3", label: "500,000 CRNCHY + 0% of tokens" },
+        { value: "0", label: "20 XTZ - 1.5% of farm rewards" },
+        { value: "1", label: "100 XTZ - 0.5% of farm rewards" },
+        { value: "2", label: "500 XTZ - 0% of farm rewards" },
       ],
       rules: {
         poolTokenType: [{ required: true, message: "Select token type" }],
@@ -663,7 +676,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["wallet", "farms"]),
+    ...mapState(["wallet", "farms", "homeWallet"]),
 
     rewardAmountPerSecond: function () {
       if (!this.form.rewardTokenAmount || !this.form.rewardTokenName) {
@@ -773,11 +786,11 @@ export default {
           }
 
           let serviceFeeMultiplier = 1.015;
-          if (vm.form.serviceFeeId === "1") {
-            serviceFeeMultiplier = 1.01;
-          } else if (vm.form.serviceFeeId === "2") {
+          if (vm.form.serviceFeeId === "0") {
+            serviceFeeMultiplier = 1.015;
+          } else if (vm.form.serviceFeeId === "1") {
             serviceFeeMultiplier = 1.005;
-          } else if (vm.form.serviceFeeId === "3") {
+          } else if (vm.form.serviceFeeId === "2") {
             serviceFeeMultiplier = 1;
           }
 
@@ -808,6 +821,7 @@ export default {
             bonuses: bonuses,
             serviceFeeId: vm.form.serviceFeeId,
           };
+
           vm.loading = true;
           vm.createFarm(params)
             .then(() => {
@@ -972,6 +986,37 @@ export default {
       this.form.rewardTokenDecimals = i.decimals;
       this.form.rewardTokenThumbnailUri = i.thumbnailUri;
     },
+
+    formatDecimals(amount, tokenDecimals, defaultTez = true) {
+      const numStr = String(amount);
+      // String Contains Decimal
+      if (numStr.includes(".")) {
+        let decimals = parseInt(tokenDecimals);
+        if (isNaN(decimals)) {
+          console.warn("NaN decimals for token");
+          decimals = 6;
+        }
+        if (defaultTez) {
+          decimals = Math.min(decimals, 6);
+        }
+        if (numStr.split(".")[1].length > decimals) {
+          amount = parseFloat(amount);
+          return amount.toFixed(decimals);
+        }
+      }
+      return amount;
+    },
+
+    getBalanceOfSelectedToken(tokenAssetSlug) {
+      if (tokenAssetSlug === undefined) return 0;
+      const found = this.homeWallet.assets.find(
+        (t) => t?.assetSlug === tokenAssetSlug
+      );
+      if (found) {
+        return found.availableBalance || found.balance;
+      }
+      return 0;
+    },
   },
 };
 </script>
@@ -985,5 +1030,15 @@ export default {
   width: 100%;
   max-width: 1450px;
   margin: 0 auto;
+}
+.balance-section {
+  * {
+    font-size: 12px;
+    font-weight: 500;
+  }
+  color: var(--color-subheading-text);
+  margin-right: calc(100% - 535px);
+  display: flex;
+  justify-content: space-between;
 }
 </style>

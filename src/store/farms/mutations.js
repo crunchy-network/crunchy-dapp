@@ -31,8 +31,12 @@ export default {
     }
   },
 
-  updateFarmRowExpanded(state, { farmId, rowExpanded }) {
-    state.data[farmId].rowExpanded = rowExpanded;
+  updateFarmRowExpanded(state, { farmId, farmType, rowExpanded }) {
+    if (farmType === "myFarms") {
+      state.data[farmId].rowExpandedMyFarm = rowExpanded;
+    } else {
+      state.data[farmId].rowExpandedAllFarm = rowExpanded;
+    }
   },
 
   updateFarmVisible(state, { farmId, visible }) {
@@ -76,15 +80,31 @@ export default {
     state.lpTokens = lpTokens;
   },
 
-  updateFarmStorage(state, data) {
-    state.storage.farms = data;
+  updateFarmStorage(state, { contract, data }) {
+    if (contract === state.contract) {
+      state.storage.farms = data;
+    } else if (contract === state.contractV2) {
+      state.storage.farmsV2 = data;
+    }
   },
 
-  updateFarmUserRecordStorage(state, data) {
-    state.storage.userRecords = data;
+  updateFarmUserRecordStorage(state, { contract, data }) {
+    if (contract === state.contract) {
+      state.storage.userRecords = data;
+    } else if (contract === state.contractV2) {
+      state.storage.userRecordsV2 = data;
+    }
   },
 
-  updateVaultStorage(state, data) {
-    state.storage.vaults = data;
+  updateVaultStorage(state, { contract, data }) {
+    if (contract === state.contract) {
+      state.storage.vaults = data;
+    } else if (contract === state.contractV2) {
+      state.storage.vaultsV2 = data;
+    }
   },
+
+  updateFirstLoad(state, firstLoad) {
+    state.firstLoad = firstLoad;
+  }
 };

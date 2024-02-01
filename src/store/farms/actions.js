@@ -12,13 +12,21 @@ import {
 } from "./../../utils/tezos";
 import merge from "deepmerge";
 import { BigNumber } from "bignumber.js";
+import { OpKind } from "@taquito/taquito";
 
 let updateXtzUsdVwapPromise;
 let updateCurrentPricesPromise;
 let updateFarmStoragePromise;
+let updateFarmUserRecordStoragePromise;
+let updateVaultStoragePromise;
 
 const tokenMetadataCache = {};
 const TEZ_AND_WRAPPED_TEZ_ADDRESSES = ["tez"];
+
+const getFarmContract = (farmId, state) => {
+  return Number(farmId) >= 1000 ? state.contractV2 : state.contract;
+};
+
 const getFarmTokenMetadata = async (address, tokenId) => {
   const cacheKey = `${address}:${tokenId}`;
   if (!Object.prototype.hasOwnProperty.call(tokenMetadataCache, cacheKey)) {
@@ -131,41 +139,70 @@ export default {
     return updateCurrentPricesPromise;
   },
 
-  async _updateFarmStorage({ commit, state, dispatch }) {
-    return tzkt.getContractBigMapKeys(state.contract, "farms").then((resp) => {
-      commit("updateFarmStorage", resp.data);
+  async _updateFarmStorage({ commit, state, dispatch }, contract) {
+    return tzkt.getContractBigMapKeys(contract, "farms").then((resp) => {
+      commit("updateFarmStorage", { contract, data: resp.data });
       setTimeout(() => {
-        updateFarmStoragePromise = dispatch("_updateFarmStorage");
+        updateFarmStoragePromise = dispatch("_updateFarmStorage", contract);
       }, 30 * 1000);
     });
   },
 
-  async updateFarmStorage({ dispatch }) {
+  async updateFarmStorage({ dispatch, state }) {
     if (!updateFarmStoragePromise) {
-      updateFarmStoragePromise = dispatch("_updateFarmStorage");
+      updateFarmStoragePromise = Promise.all([
+        dispatch("_updateFarmStorage", state.contract),
+        dispatch("_updateFarmStorage", state.contractV2),
+      ]);
     }
     return updateFarmStoragePromise;
   },
 
-  async updateUserRecordStorage({ commit, state, rootState, dispatch }) {
+  async _updateUserRecordStorage(
+    { commit, state, rootState, dispatch },
+    contract
+  ) {
     if (!rootState.wallet.pkh) return;
     return tzkt
-      .getContractBigMapKeys(state.contract, "ledger", {
+      .getContractBigMapKeys(contract, "ledger", {
         "key.address": rootState.wallet.pkh,
         active: "true",
       })
       .then((resp) => {
-        commit("updateFarmUserRecordStorage", resp.data);
+        commit("updateFarmUserRecordStorage", { contract, data: resp.data });
         setTimeout(() => {
-          dispatch("updateUserRecordStorage");
+          updateFarmUserRecordStoragePromise = dispatch(
+            "_updateUserRecordStorage",
+            contract
+          );
         }, 30 * 1000);
       });
   },
 
-  async updateVaultStorage({ commit, state }) {
-    return tzkt.getContractBigMap(state.contract, "vaults").then((resp) => {
-      commit("updateVaultStorage", resp.data);
+  async updateUserRecordStorage({ dispatch, state, rootState }) {
+    if (!updateFarmUserRecordStoragePromise) {
+      updateFarmUserRecordStoragePromise = Promise.all([
+        dispatch("_updateUserRecordStorage", state.contract),
+        dispatch("_updateUserRecordStorage", state.contractV2),
+      ]);
+    }
+    return updateFarmUserRecordStoragePromise;
+  },
+
+  async _updateVaultStorage({ commit, state, dispatch }, contract) {
+    return tzkt.getContractBigMap(contract, "vaults").then((resp) => {
+      commit("updateVaultStorage", { contract, data: resp.data });
     });
+  },
+
+  async updateVaultStorage({ dispatch, state }) {
+    if (!updateVaultStoragePromise) {
+      updateVaultStoragePromise = Promise.all([
+        dispatch("_updateVaultStorage", state.contract),
+        dispatch("_updateVaultStorage", state.contractV2),
+      ]);
+    }
+    return updateVaultStoragePromise;
   },
 
   updateTotalTvlTez({ commit, state }) {
@@ -194,7 +231,8 @@ export default {
       ]);
 
       const farms = {};
-      for (const x of state.storage.farms) {
+      const storageFarms = [...state.storage.farms, ...state.storage.farmsV2];
+      for (const x of storageFarms) {
         if (x.key === "13") continue; // bad catz
         if (x.key === "55") continue; // bad HEH -> CLOVER
 
@@ -216,6 +254,10 @@ export default {
         const endTimeD = new Date(x.value.endTime);
         const duration = endTimeD - startTimeD;
 
+        // Determine the contract based on farm version
+        const contract =
+          Number(x.key) >= 1000 ? state.contractV2 : state.contract;
+
         // baseline farm is complete check
         let isEnded = endTimeD < nowD;
 
@@ -233,7 +275,7 @@ export default {
         const f = merge(
           { id: x.key, ...x.value },
           {
-            contract: state.contract,
+            contract: contract,
             poolToken: {
               name: "???",
               symbol: "???",
@@ -252,6 +294,8 @@ export default {
             apr: "~",
             multiplier: "1",
             rowExpanded: false,
+            rowExpandedMyFarm: false,
+            rowExpandedAllFarm: false,
             init: false,
             loading: false,
             updating: false,
@@ -1392,9 +1436,11 @@ export default {
 
   async softUpdateFarm({ commit, state, rootState, dispatch }, farmId) {
     const farm = state.data[farmId];
+    const farms = Number(farmId) >= 1000 ? state.storage.farmsV2 : state.storage.farms;
+    const userRecords = Number(farmId) >= 1000 ? state.storage.userRecordsV2 : state.storage.userRecords;
 
     if (!rootState.wallet.pkh) {
-      const farmStorage = state.storage.farms.find(
+      const farmStorage = farms.find(
         (f) => f.key === farmId
       ).value;
 
@@ -1535,9 +1581,9 @@ export default {
     if (!farm.updating) {
       const userRecord = farmUtils.getUserRecord(
         farm,
-        state.storage.userRecords
+        userRecords
       );
-      const farmStorage = state.storage.farms.find(
+      const farmStorage = farms.find(
         (f) => f.key === farmId
       ).value;
       const currentRewardMultiplier =
@@ -1690,13 +1736,16 @@ export default {
     farmId
   ) {
     const farm = state.data[farmId];
+    const farms = Number(farmId) >= 1000 ? state.storage.farmsV2 : state.storage.farms;
+    const userRecords = Number(farmId) >= 1000 ? state.storage.userRecordsV2 : state.storage.userRecords;
+
     if (rootState.wallet.pkh) {
       const userRecord = farmUtils.getUserRecord(
         farm,
-        state.storage.userRecords
+        userRecords
       );
       if (userRecord.amount > 0) {
-        const farmStorage = state.storage.farms.find(
+        const farmStorage = farms.find(
           (f) => f.key === farmId
         ).value;
         const currentRewardMultiplier =
@@ -1732,8 +1781,9 @@ export default {
 
   async stakeInFarm({ commit, dispatch, state, rootState }, payload) {
     const { farmId, amount } = payload;
+    const contract = getFarmContract(farmId, state);
     const farm = state.data[farmId];
-    const farmContract = await getContract(farm.contract);
+    const farmContract = await getContract(contract);
     const poolTokenContract = await getContract(farm.poolToken.address);
     const amountB = BigNumber(amount)
       .times(10 ** farm.poolToken.decimals)
@@ -1818,10 +1868,14 @@ export default {
   },
 
   async harvestAllFarms({ commit, state, dispatch }) {
-    const farmContract = await getContract(state.contract);
     const batch = getBatch();
     const harvestingFarms = [];
+    const contractV1 = await getContract(state.contract);
+    const contractV2 = await getContract(state.contractV2);
+
     for (const farmId in state.data) {
+      const contract = getFarmContract(farmId, state);
+      const farmContract = contract === state.contractV2 ? contractV2 : contractV1;
       if (state.data[farmId].depositAmount && state.data[farmId].started) {
         harvestingFarms.push(farmId);
         batch.withContractCall(farmContract.methods.harvest(farmId));
@@ -1843,10 +1897,26 @@ export default {
   },
 
   async createFarm({ state, rootState }, params) {
-    const farmContract = await getContract(state.contract);
-    const crnchy = await getContract(state.crnchyAddress);
+    const farmContract = await getContract(state.contractV2);
+    // const crnchy = await getContract(state.crnchyAddress);
     const rewardToken = await getContract(params.rewardToken.tokenAddress);
+    
+    let serviceFeeWhiteList;
+    try {
+      const farmStorage = await farmContract.storage();
+      serviceFeeWhiteList = farmStorage.serviceFeeWhitelist;
+    } catch (error) {
+      console.error(`Error fetching farm contract storage: ${error}`);
+    }
+    
+    let servicesFee = 0;
 
+    if (!serviceFeeWhiteList.includes(rootState.wallet.pkh)) {
+      const feeOptions = [20000000, 100000000, 500000000];
+      servicesFee = feeOptions[parseInt(params.serviceFeeId, 10)] || 0;
+    }
+
+    
     let prevM = 0;
     const bonuses = [];
     for (const b of _.orderBy(params.bonuses, "endTime", "desc")) {
@@ -1855,131 +1925,124 @@ export default {
       prevM = m;
     }
 
-    const batch = await getBatch()
-      .withContractCall(
-        crnchy.methods.update_operators([
-          {
-            add_operator: {
-              owner: rootState.wallet.pkh,
-              operator: state.contract,
-              token_id: 0,
-            },
-          },
-        ])
-      )
-      .withContractCall(
-        params.rewardToken.tokenType === "fa2"
-          ? rewardToken.methods.update_operators([
-              {
-                add_operator: {
-                  owner: rootState.wallet.pkh,
-                  operator: state.contract,
-                  token_id: params.rewardToken.tokenId,
-                },
+    const addOperatorMethod =
+      params.rewardToken.tokenType === "fa2"
+        ? rewardToken.methods.update_operators([
+            {
+              add_operator: {
+                owner: rootState.wallet.pkh,
+                operator: state.contractV2,
+                token_id: params.rewardToken.tokenId,
               },
-            ])
-          : rewardToken.methods.approve(
-              state.contract,
-              params.rewardSupplyApprove
-            )
-      )
-      .withContractCall(
-        farmContract.methods.create(
-          // poolToken
-          params.poolToken.tokenAddress,
-          params.poolToken.tokenId,
-          params.poolToken.tokenType,
-          "unit",
-
-          // rewardToken
-          params.rewardToken.tokenAddress,
-          params.rewardToken.tokenId,
-          params.rewardToken.tokenType,
-          "unit",
-
-          // rewardSupply
-          params.rewardSupply,
-
-          // rewardPerSec
-          params.rewardPerSec,
-
-          // startTime, endTime
-          params.startTime.toISOString(),
-          params.endTime.toISOString(),
-
-          // lockDuration
-          params.lockDuration,
-
-          // bonuses
-          _.orderBy(bonuses, "endTime", "asc"),
-
-          // serviceFeeId
-          params.serviceFeeId
-        )
-      )
-      .withContractCall(
-        params.rewardToken.tokenType === "fa2"
-          ? rewardToken.methods.update_operators([
-              {
-                remove_operator: {
-                  owner: rootState.wallet.pkh,
-                  operator: state.contract,
-                  token_id: params.rewardToken.tokenId,
-                },
-              },
-            ])
-          : rewardToken.methods.approve(state.contract, 0)
-      )
-      .withContractCall(
-        crnchy.methods.update_operators([
-          {
-            remove_operator: {
-              owner: rootState.wallet.pkh,
-              operator: state.contract,
-              token_id: 0,
             },
-          },
-        ])
-      );
+          ])
+        : rewardToken.methods.approve(
+            state.contractV2,
+            params.rewardSupplyApprove
+          );
 
+    const removeOperatorMethod =
+      params.rewardToken.tokenType === "fa2"
+        ? rewardToken.methods.update_operators([
+            {
+              remove_operator: {
+                owner: rootState.wallet.pkh,
+                operator: state.contractV2,
+                token_id: params.rewardToken.tokenId,
+              },
+            },
+          ])
+        : rewardToken.methods.approve(state.contractV2, 0);
+    const createMethod = farmContract.methods.create(
+      // poolToken
+      params.poolToken.tokenAddress,
+      params.poolToken.tokenId,
+      params.poolToken.tokenType,
+      "unit",
+
+      // rewardToken
+      params.rewardToken.tokenAddress,
+      params.rewardToken.tokenId,
+      params.rewardToken.tokenType,
+      "unit",
+
+      // rewardSupply
+      params.rewardSupply,
+
+      // rewardPerSec
+      params.rewardPerSec,
+
+      // startTime, endTime
+      params.startTime.toISOString(),
+      params.endTime.toISOString(),
+
+      // lockDuration
+      params.lockDuration,
+
+      // bonuses
+      _.orderBy(bonuses, "endTime", "asc"),
+
+      // serviceFeeId
+      params.serviceFeeId
+    )
+    const operations = [
+      {
+        kind: OpKind.TRANSACTION,
+        ...addOperatorMethod.toTransferParams(),
+      },
+      {
+        kind: OpKind.TRANSACTION,
+        ...createMethod.toTransferParams({
+          mutez: true,
+          amount: servicesFee,
+        }),
+      },
+      {
+        kind: OpKind.TRANSACTION,
+        ...removeOperatorMethod.toTransferParams(),
+      },
+    ];
+
+    const batch = await getBatch(operations);
     const tx = await batch.send();
     return tx.confirmation();
   },
 
-  expandFarmRow({ commit }, farmId) {
-    commit("updateFarmRowExpanded", { farmId, rowExpanded: true });
+  expandFarmRow({ commit }, payload) {
+    const { farmId, farmType } = payload;
+    commit("updateFarmRowExpanded", { farmId, farmType, rowExpanded: true });
   },
 
-  collapseFarmRow({ commit }, farmId) {
-    commit("updateFarmRowExpanded", { farmId, rowExpanded: false });
+  collapseFarmRow({ commit }, payload) {
+    const { farmId, farmType } = payload;
+    commit("updateFarmRowExpanded", { farmId, farmType, rowExpanded: false });
   },
 
-  expandAllFarmRows({ commit, state, dispatch }) {
+  expandAllFarmRows({ commit, state, dispatch }, farmType) {
     for (const farmId in state.data) {
-      dispatch("expandFarmRow", farmId);
+      dispatch("expandFarmRow", {farmId: farmId, farmType});
     }
     commit("updateFarmsExpanded", true);
   },
 
-  expandMyFarmRows({ commit, state, dispatch }) {
-    console.log(state.userData);
-    console.log(state.data);
+  expandMyFarmRows({ commit, state, dispatch }, farmType) {
+
     for (const farmId in state.userData) {
-      dispatch("expandFarmRow", farmId);
+      dispatch("expandFarmRow", {farmId: farmId, farmType});
     }
     commit("updateMyFarmsExpanded", true);
   },
 
-  collapseAllFarmRows({ commit, state, dispatch }) {
+  collapseAllFarmRows({ commit, state, dispatch }, farmType) {
     for (const farmId in state.data) {
-      dispatch("collapseFarmRow", farmId);
+      dispatch("collapseFarmRow", {farmId:farmId, farmType});
     }
     commit("updateFarmsExpanded", false);
   },
 
-  collapseMyFarmRows({ commit, state, dispatch }) {
+  collapseMyFarmRows({ commit, state, dispatch }, farmType) {
     for (const farmId in state.userData) {
-      dispatch("collapseFarmRow", farmId);
+      dispatch("collapseFarmRow", {farmId:farmId, farmType});
     }
     commit("updateMyFarmsExpanded", false);
   },
@@ -2098,6 +2161,9 @@ export default {
 
     // Update userFarm
     if (userFarm) {
+      // firstLoad search
+      const firstLoad = state.firstLoad;
+
       // keyword search
       let keywordsMatch = true;
       if (state.searchInput.length) {
@@ -2202,17 +2268,20 @@ export default {
 
       // all groups must match
       const visible =
-        keywordsMatch &&
-        typeMatches &&
-        stakedMatches &&
-        statusMatches &&
-        badgeMatches;
+        firstLoad ||
+        (
+          keywordsMatch &&
+          typeMatches &&
+          stakedMatches &&
+          statusMatches &&
+          badgeMatches
+        );
 
       commit("updateUserFarmVisible", { farmId, visible });
     }
   },
 
-  filterAllFarmRows({ state, dispatch }) {
+  filterAllFarmRows({ state, dispatch, commit }) {
     for (const farmId in state.data) {
       dispatch("filterFarmRow", farmId);
     }
@@ -2223,9 +2292,12 @@ export default {
     for (const farmId in state.data) {
       commit("updateFarmLoading", { farmId, loading: true });
       dispatch("softUpdateFarm", farmId).then(() => {
-        console.log(farmId);
         commit("updateFarmLoading", { farmId, loading: false });
       });
     }
   },
+
+  updateFirstLoad({ commit }, firstLoad) {
+    commit("updateFirstLoad", firstLoad);
+  }
 };

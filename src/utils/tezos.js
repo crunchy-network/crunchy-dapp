@@ -61,8 +61,8 @@ const getWalletContract = async (address) => {
   return Tezos.wallet.at(address);
 };
 
-const getBatch = () => {
-  return Tezos.wallet.batch([]);
+const getBatch = (operations = []) => {
+  return Tezos.wallet.batch(operations);
 };
 
 export {
