@@ -2018,31 +2018,31 @@ export default {
     commit("updateFarmRowExpanded", { farmId, farmType, rowExpanded: false });
   },
 
-  expandAllFarmRows({ commit, state, dispatch }) {
+  expandAllFarmRows({ commit, state, dispatch }, farmType) {
     for (const farmId in state.data) {
-      dispatch("expandFarmRow", farmId);
+      dispatch("expandFarmRow", {farmId: farmId, farmType});
     }
     commit("updateFarmsExpanded", true);
   },
 
-  expandMyFarmRows({ commit, state, dispatch }) {
+  expandMyFarmRows({ commit, state, dispatch }, farmType) {
 
     for (const farmId in state.userData) {
-      dispatch("expandFarmRow", farmId);
+      dispatch("expandFarmRow", {farmId: farmId, farmType});
     }
     commit("updateMyFarmsExpanded", true);
   },
 
-  collapseAllFarmRows({ commit, state, dispatch }) {
+  collapseAllFarmRows({ commit, state, dispatch }, farmType) {
     for (const farmId in state.data) {
-      dispatch("collapseFarmRow", farmId);
+      dispatch("collapseFarmRow", {farmId:farmId, farmType});
     }
     commit("updateFarmsExpanded", false);
   },
 
-  collapseMyFarmRows({ commit, state, dispatch }) {
+  collapseMyFarmRows({ commit, state, dispatch }, farmType) {
     for (const farmId in state.userData) {
-      dispatch("collapseFarmRow", farmId);
+      dispatch("collapseFarmRow", {farmId:farmId, farmType});
     }
     commit("updateMyFarmsExpanded", false);
   },

@@ -10,8 +10,8 @@
         v-loading="farm.loading"
         style="border: var(--line-border); border-radius: 14px"
         :style="[
-          (farm.rowExpandedMyFarm && farmType === 'myFarm') ||
-          (farm.rowExpandedAllFarm && farmType === 'allFarm')
+          (farm.rowExpandedMyFarm && farmType === 'myFarms') ||
+          (farm.rowExpandedAllFarm && farmType === 'allFarms')
             ? { borderColor: 'var(--border-color)' }
             : { borderColor: 'transparent !important' },
         ]"
@@ -714,8 +714,8 @@
           >
           <el-col
             v-if="
-              (farm.rowExpandedMyFarm === false && farmType === 'myFarm') ||
-              (farm.rowExpandedAllFarm === false && farmType === 'allFarm')
+              (farm.rowExpandedMyFarm === false && farmType === 'myFarms') ||
+              (farm.rowExpandedAllFarm === false && farmType === 'allFarms')
             "
             :span="3"
             style="text-align: right; display: flex; justify-content: end"
@@ -729,8 +729,8 @@
           ></el-col>
           <el-col
             v-if="
-              (farm.rowExpandedMyFarm === true && farmType === 'myFarm') ||
-              (farm.rowExpandedAllFarm === true && farmType === 'allFarm')
+              (farm.rowExpandedMyFarm === true && farmType === 'myFarms') ||
+              (farm.rowExpandedAllFarm === true && farmType === 'allFarms')
             "
             :span="3"
             style="text-align: right; display: flex; justify-content: end"
@@ -746,8 +746,8 @@
         <collapse-transition :duration="250" name="slide">
           <div
             v-show="
-              (farm.rowExpandedMyFarm && farmType === 'myFarm') ||
-              (farm.rowExpandedAllFarm && farmType === 'allFarm')
+              (farm.rowExpandedMyFarm && farmType === 'myFarms') ||
+              (farm.rowExpandedAllFarm && farmType === 'allFarms')
             "
           >
             <el-row

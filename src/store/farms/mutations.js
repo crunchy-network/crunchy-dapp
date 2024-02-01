@@ -32,7 +32,7 @@ export default {
   },
 
   updateFarmRowExpanded(state, { farmId, farmType, rowExpanded }) {
-    if (farmType === "myFarm") {
+    if (farmType === "myFarms") {
       state.data[farmId].rowExpandedMyFarm = rowExpanded;
     } else {
       state.data[farmId].rowExpandedAllFarm = rowExpanded;

@@ -364,7 +364,7 @@
                           <el-button
                             type="text"
                             style="font-weight: bold"
-                            @click="expandMyFarmRows"
+                            @click="expandMyFarmRows('myFarms')"
                           >
                             <span v-show="!isMobile">Expand All</span>
                             <i
@@ -382,7 +382,7 @@
                           <el-button
                             type="text"
                             style="font-weight: bold"
-                            @click="collapseMyFarmRows"
+                            @click="collapseMyFarmRows('myFarms')"
                           >
                             <span v-show="!isMobile">Collapse All</span>
                             <i
@@ -417,7 +417,7 @@
                     :farm-tab="activeTab"
                     :farm="farm"
                     :show-usd="showUsd"
-                    :farm-type="'myFarm'"
+                    :farm-type="'myFarms'"
                     @request-unstake-farm="showUnstakeDialogMyFarm"
                     @request-stake-farm="showStakeDialogMyFarm"
                   >
@@ -510,7 +510,7 @@
                           <el-button
                             type="text"
                             style="font-weight: bold"
-                            @click="expandAllFarmRows"
+                            @click="expandAllFarmRows('allFarms')"
                           >
                             <span v-show="!isMobile">Expand All</span>
                             <i
@@ -527,7 +527,7 @@
                           <el-button
                             type="text"
                             style="font-weight: bold"
-                            @click="collapseAllFarmRows"
+                            @click="collapseAllFarmRows('allFarms')"
                           >
                             <span v-show="!isMobile">Collapse All</span>
                             <i
@@ -547,7 +547,7 @@
                     :farm-tab="activeTab"
                     :farm="farm"
                     :show-usd="showUsd"
-                    :farm-type="'allFarm'"
+                    :farm-type="'allFarms'"
                     @request-unstake-farm="showUnstakeDialogMyFarm"
                     @request-stake-farm="showStakeDialogAllFarm"
                   >
