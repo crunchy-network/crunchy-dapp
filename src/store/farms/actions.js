@@ -2285,7 +2285,6 @@ export default {
     for (const farmId in state.data) {
       dispatch("filterFarmRow", farmId);
     }
-    commit("updateFirstLoad", false);
   },
 
   async walletConnected({ commit, state, dispatch }) {

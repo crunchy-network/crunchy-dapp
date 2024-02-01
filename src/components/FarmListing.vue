@@ -733,6 +733,7 @@ export default {
         },
       });
       this.$store.commit("updateFarmsFilters", filters);
+      this.updateFirstLoad(false);
       this.filterAllFarmRows();
     },
 
