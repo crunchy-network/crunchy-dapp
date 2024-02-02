@@ -722,6 +722,7 @@ export default {
         },
       });
       this.$store.commit("updateFarmsSearchInput", input);
+      this.updateFirstLoad(false);
       this.filterAllFarmRows();
     },
 
