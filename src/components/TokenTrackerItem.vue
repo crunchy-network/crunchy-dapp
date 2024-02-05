@@ -11,7 +11,7 @@
         <router-link
           tag="a"
           class="link-text"
-          :to="{ name: 'home' }"
+          :to="{ name: 'tokens' }"
           type="text"
           style="
             font-weight: 600;
