@@ -166,34 +166,37 @@ export default {
         this.form.farm.depositAmount >= 0.0001 ||
         !this.form.farm.depositAmount
       ) {
-        this.form.input = Number(
-          this.vueNumberFormat(this.form.farm.depositAmount).replace(/,/g, '')
+        this.form.input = this.toFixedWithCommas(
+          this.form.farm.depositAmount,
+          2
         );
       } else if (this.form.farm.depositAmount >= 0.000001) {
-        this.form.input = Number(
-          this.vueNumberFormat(this.form.farm.depositAmount, {
-            precision: 6,
-          }).replace(/,/g, '')
+        this.form.input = this.toFixedWithCommas(
+          this.form.farm.depositAmount,
+          6
         );
       } else if (this.form.farm.depositAmount >= 0.00000001) {
-        this.form.input = Number(
-          this.vueNumberFormat(this.form.farm.depositAmount, {
-            precision: 8,
-          }).replace(/,/g, '')
+        this.form.input = this.toFixedWithCommas(
+          this.form.farm.depositAmount,
+          8
         );
       } else if (this.form.farm.depositAmount >= 0.000000000001) {
-        this.form.input = Number(
-          this.vueNumberFormat(this.form.farm.depositAmount, {
-            precision: 12,
-          }).replace(/,/g, '')
+        this.form.input = this.toFixedWithCommas(
+          this.form.farm.depositAmount,
+          12
         );
       } else {
-        this.form.input = Number(
-          this.vueNumberFormat(this.form.farm.depositAmount, {
-            precision: 18,
-          }).replace(/,/g, '')
+        this.form.input = this.toFixedWithCommas(
+          this.form.farm.depositAmount,
+          18
         );
       }
+    },
+
+    toFixedWithCommas(number, precision) {
+      return parseFloat(
+        this.vueNumberFormat(number, { precision }).replace(/,/g, "")
+      ).toFixed(precision);
     },
 
     async showDialog(farmId) {
