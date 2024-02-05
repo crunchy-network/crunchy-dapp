@@ -108,7 +108,7 @@
         size="small"
         round
         style="margin-top: 8px; margin-bottom: 22px"
-        @click="form.input = form.farm.depositAmount"
+        @click="setMaxInput"
         >USE MAX</el-button
       >
       <el-button
@@ -160,6 +160,41 @@ export default {
   },
   methods: {
     ...mapActions(["unstakeFromFarm", "initFarm", "softUpdateFarm"]),
+
+    setMaxInput() {
+      if (
+        this.form.farm.depositAmount >= 0.0001 ||
+        !this.form.farm.depositAmount
+      ) {
+        this.form.input = Number(
+          this.vueNumberFormat(this.form.farm.depositAmount).replace(/,/g, '')
+        );
+      } else if (this.form.farm.depositAmount >= 0.000001) {
+        this.form.input = Number(
+          this.vueNumberFormat(this.form.farm.depositAmount, {
+            precision: 6,
+          }).replace(/,/g, '')
+        );
+      } else if (this.form.farm.depositAmount >= 0.00000001) {
+        this.form.input = Number(
+          this.vueNumberFormat(this.form.farm.depositAmount, {
+            precision: 8,
+          }).replace(/,/g, '')
+        );
+      } else if (this.form.farm.depositAmount >= 0.000000000001) {
+        this.form.input = Number(
+          this.vueNumberFormat(this.form.farm.depositAmount, {
+            precision: 12,
+          }).replace(/,/g, '')
+        );
+      } else {
+        this.form.input = Number(
+          this.vueNumberFormat(this.form.farm.depositAmount, {
+            precision: 18,
+          }).replace(/,/g, '')
+        );
+      }
+    },
 
     async showDialog(farmId) {
       this.form.input = "";
