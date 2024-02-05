@@ -155,7 +155,7 @@ export default {
         ? "0.000000000001"
         : this.form.farm.poolToken.isSpicyLp
         ? "0.000000000000000001"
-        : "0.000001";
+        : "0.000000000001";
     },
   },
   methods: {
