@@ -313,6 +313,8 @@
                         type="flex"
                         align="middle"
                         style="
+                          margin-left: 10px;
+                          margin-right: 5px;
                           padding: 0 16px;
                           color: var(--color-subheading-text) !important;
                         "
@@ -466,8 +468,9 @@
                         type="flex"
                         align="middle"
                         style="
+                          margin-left: 10px;
+                          margin-right: 5px;
                           padding: 0 16px;
-                          padding-bottom: 4px;
                           color: var(--color-subheading-text) !important;
                         "
                       >
