@@ -29,8 +29,8 @@ const sixMonthAgo = new Date(Date.now() - sixMonthInMiliSecond).toISOString();
 const oneYearAgo = new Date(Date.now() - oneYearInMiliSecond).toISOString();
 const TEZ_AND_WRAPPED_TEZ_ADDRESSES = [
   "tez",
-  "KT1UpeXdK6AJbX58GJ92pLZVCucn2DR8Nu4b",
   "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn",
+  "KT1UpeXdK6AJbX58GJ92pLZVCucn2DR8Nu4b",
 ];
 
 // const TOO_FEW_TVL_POOL_ADDRESSES = ["KT1FDyQgVeU7pwJ3wKcEQbxp6PzQZgcumZxz"];
