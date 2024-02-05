@@ -166,10 +166,7 @@ export default {
         this.form.farm.depositAmount >= 0.0001 ||
         !this.form.farm.depositAmount
       ) {
-        this.form.input = this.toFixedWithCommas(
-          this.form.farm.depositAmount,
-          2
-        );
+        this.form.input = this.form.farm.depositAmount;
       } else if (this.form.farm.depositAmount >= 0.000001) {
         this.form.input = this.toFixedWithCommas(
           this.form.farm.depositAmount,
