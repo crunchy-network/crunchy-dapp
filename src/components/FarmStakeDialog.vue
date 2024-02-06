@@ -6,7 +6,7 @@
     class="stake-dialog"
   >
     <p v-if="form.farm.poolToken.isQuipuLp" class="stake-infor">
-      Stake XTZ/{{ form.farm.poolToken.symbol }} LP tokens to earn
+      Stake {{ form.farm.poolToken.symbol }} LP tokens to earn
       {{ form.farm.rewardToken.symbol }}.
     </p>
     <p v-else class="stake-infor">
@@ -146,7 +146,7 @@
       >
         <el-input v-model="form.input" label="Stake Tokens">
           <span v-if="form.farm.poolToken.isQuipuLp" slot="suffix"
-            >XTZ/{{ form.farm.poolToken.symbol }} LP</span
+            >{{ form.farm.poolToken.symbol }} LP</span
           >
           <span v-else slot="suffix">{{ form.farm.poolToken.symbol }}</span>
         </el-input>
