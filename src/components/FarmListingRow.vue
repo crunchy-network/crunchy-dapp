@@ -1035,7 +1035,7 @@
                       farm.poolToken.isQuipuLp && isFa1(farm.poolToken)
                     "
                     style="color: #555cff; font-weight: 600"
-                    :href="`https://quipuswap.com/liquidity/add/tez-${farm.poolToken.realTokenAddress}`"
+                    :href="getQuipuLiquidityUrl(farm.poolToken)"
                     target="_blank"
                     >Get {{ farm.poolToken.symbol }} LP
                     <i class="far fa-external-link fa-icon-right"></i
@@ -1045,7 +1045,7 @@
                       farm.poolToken.isQuipuLp && isFa2(farm.poolToken)
                     "
                     style="color: #555cff; font-weight: 600"
-                    :href="`https://quipuswap.com/liquidity/add/tez-${farm.poolToken.realTokenAddress}_${farm.poolToken.realTokenId}`"
+                    :href="getQuipuLiquidityUrl(farm.poolToken)"
                     target="_blank"
                     >Get {{ farm.poolToken.symbol }} LP
                     <i class="far fa-external-link fa-icon-right"></i
@@ -1413,6 +1413,22 @@ export default {
 
     isFa2(token) {
       return farmUtils.isFa2(token);
+    },
+
+    getQuipuLiquidityUrl(poolToken, isFA1) {
+      if (this.isFa1(poolToken)) {
+        if (poolToken.token1.tokenAddress !== "tez") {
+          return `https://quipuswap.com/liquidity/add/tez-${poolToken.token1.tokenAddress}`;
+        } else {
+          return `https://quipuswap.com/liquidity/add/tez-${poolToken.token2.tokenAddress}`;
+        }
+      } else if (this.isFa2(poolToken)) {
+        if (poolToken.token1.tokenAddress !== "tez") {
+          return `https://quipuswap.com/liquidity/add/tez-${poolToken.token1.tokenAddress}_${poolToken.token1.tokenId}`;
+        } else {
+          return `https://quipuswap.com/liquidity/add/tez-${poolToken.token2.tokenAddress}_${poolToken.token2.tokenId}`;
+        }
+      }
     },
 
     formatNumShorthand(value, precision) {
