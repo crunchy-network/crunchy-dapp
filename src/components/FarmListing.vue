@@ -677,8 +677,11 @@ export default {
   },
 
   created() {
+    this.$store.commit("updateFarmsFilters", this.defaultFilterOptions);
+    this.refresh();
+
     if (this.$route.query.q) {
-      this.$store.commit("updateFarmsSearchInput", this.$route.query.q);
+      this.updateSearchInput(this.$route.query.q);
     }
 
     if (this.$route.query.f) {
@@ -686,10 +689,8 @@ export default {
       if (!Array.isArray(filters)) {
         filters = [filters];
       }
-      this.$store.commit("updateFarmsFilters", filters);
+      this.updateFilters(filters);
     }
-    this.$store.commit("updateFarmsFilters", this.defaultFilterOptions);
-    this.refresh();
   },
   methods: {
     ...mapActions([
@@ -717,18 +718,20 @@ export default {
       }
     },
 
-    refresh() {
+    async refresh() {
       this.updateFirstLoad(true);
-      this.fetchAllFarms();
+      await this.fetchAllFarms();
     },
 
     updateSearchInput(input) {
-      this.$router.replace({
-        query: {
-          ...this.$route.query,
-          q: input,
-        },
-      });
+      if (this.$route.query.q !== input) {
+        this.$router.replace({
+          query: {
+            ...this.$route.query,
+            q: input,
+          },
+        });
+      }
       this.$store.commit("updateFarmsSearchInput", input);
       this.updateFirstLoad(false);
       this.filterAllFarmRows();
