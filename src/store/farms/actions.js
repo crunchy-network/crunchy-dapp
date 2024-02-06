@@ -2066,7 +2066,8 @@ export default {
           .includes(state.searchInput.toLowerCase()) ||
         farm.rewardToken.name
           .toLowerCase()
-          .includes(state.searchInput.toLowerCase())
+          .includes(state.searchInput.toLowerCase()) ||
+        farm.id === state.searchInput
       ) {
         keywordsMatch = true;
       } else {
@@ -2179,7 +2180,8 @@ export default {
             .includes(state.searchInput.toLowerCase()) ||
           userFarm.rewardToken.name
             .toLowerCase()
-            .includes(state.searchInput.toLowerCase())
+            .includes(state.searchInput.toLowerCase()) ||
+          userFarm.id === state.searchInput
         ) {
           keywordsMatch = true;
         } else {

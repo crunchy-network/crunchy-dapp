@@ -277,6 +277,7 @@
         </el-col>
       </el-row>
 
+      <template v-if="farms.searchInput.length === 0 || myOrderedFarmsVisible > 0">
       <el-row class="myFarm" style="margin-top: 16px">
         <el-col v-show="isMobile" class="farm-box-title" :span="6">
           My Farms
@@ -398,7 +399,7 @@
                   </el-row>
 
                   <el-row
-                    v-if="myOrderedFarms.length === 0"
+                    v-if="myOrderedFarmsVisible === 0"
                     style="text-align: center; padding-top: 16px"
                   >
                     <span
@@ -430,8 +431,8 @@
           </div>
         </el-col>
       </el-row>
-      <FarmStakeDialog ref="stakeDialog" />
-      <FarmUnstakeDialog ref="unstakeDialog" />
+
+      </template>
 
       <el-row style="margin-top: 16px">
         <el-col v-show="isMobile" :span="24" class="farm-box-title">
@@ -664,6 +665,10 @@ export default {
         ["ended", "badges.core", "tvlTez"],
         ["asc", "desc", "desc"]
       );
+    },
+
+    myOrderedFarmsVisible: function () {
+      return this.myOrderedFarms.filter(f => f.visible).length;
     },
 
     totalFarms: function () {
