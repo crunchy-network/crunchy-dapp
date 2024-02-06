@@ -194,6 +194,12 @@ export default {
       badges.core = true;
     }
 
+    // crunchy treasury
+    if (farm.owner === "tz1KhF8F19J94sKjSZjFGNRgnd65Yawqvsr6") {
+      badges.verified = true;
+      badges.core = true;
+    }
+
     // crunchy4
     if (farm.owner === "tz1ZZZPNqHprYjJzxXS6HfucYKKgHZUsVu1z") {
       badges.verified = true;
