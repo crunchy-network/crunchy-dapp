@@ -596,6 +596,78 @@ header .grid-content button.el-button {
   text-transform: none !important;
 }
 
+#farm-create  {
+  .el-form-item__label {
+    width: 200px !important;
+    text-align: left;
+  }
+  .el-form-item__content {
+    margin-left: 0px !important;
+    width: 100%;
+    div {
+      padding-left: 0 !important;
+    }
+  }
+  .el-form-item {
+    display: flex;
+    flex-direction: column;
+  }
+  .el-date-editor.el-input__inner {
+    width: 100% !important;
+    display: flex;
+    justify-content: space-evenly;
+  }
+  .token {
+    display: flex;
+    .el-form-item {
+      flex: 1;
+      overflow: hidden;
+    }
+    .el-form-item:first-child {
+      flex: 0 0 80%;
+    }
+    .el-form-item:nth-child(2) {
+      .el-form-item__content {
+        width: 100%;
+        div {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+      }
+      }
+    }
+  }
+  .serviceFee {
+    .el-form-item__content {
+      div {
+        width: 100% !important;
+      }
+    }
+  }
+  .rewardAmount {
+    display: flex;
+    flex: 1;
+    .el-form-item:first-child {
+      flex: 0 0 100%;
+    }
+    .el-input {
+      width: 100% !important;
+    }
+  }
+  .bonus {
+    display: flex;
+    flex: 1;
+    .el-date-editor.el-input {
+      width: 50% !important;
+    }
+    .el-form-item:first-child {
+      flex: 0 0 100%;
+    }
+    .el-form-item__content div {
+      width: 35% !important;
+    }
+  }
+}
+
 .el-table th {
   padding-bottom: 20px !important;
 }
