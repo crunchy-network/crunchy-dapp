@@ -617,6 +617,15 @@ header .grid-content button.el-button {
     display: flex;
     justify-content: space-evenly;
   }
+  .box-card-summary {
+    display: flex;
+    flex-direction: column;
+    .el-card__body {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+  }
   .token {
     display: flex;
     .el-form-item {
@@ -636,14 +645,14 @@ header .grid-content button.el-button {
       }
     }
   }
-  .serviceFee {
+  .service-fee {
     .el-form-item__content {
       div {
         width: 100% !important;
       }
     }
   }
-  .rewardAmount {
+  .reward-amount {
     display: flex;
     flex: 1;
     .el-form-item:first-child {

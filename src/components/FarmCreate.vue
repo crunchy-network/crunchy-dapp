@@ -206,7 +206,7 @@
                 </el-form-item>
 
                 <div
-                  class="rewardAmount"
+                  class="reward-amount"
                   style="margin-bottom: 22px; display: flex"
                 >
                   <el-form-item
@@ -248,7 +248,7 @@
                 </div>
 
                 <el-form-item
-                  class="serviceFee"
+                  class="service-fee"
                   label="Service Fee"
                   prop="serviceFeeId"
                 >
@@ -319,7 +319,11 @@
 
           <el-col :span="8" class="farm-summary">
             <div class="grid-content" style="height: 100%">
-              <el-card class="box-card" shadow="always" style="height: 100%">
+              <el-card
+                class="box-card-summary"
+                shadow="always"
+                style="height: 100%"
+              >
                 <h3
                   style="
                     margin-top: 0;
@@ -907,12 +911,14 @@ export default {
     ]),
 
     setBalanceSectionRight() {
-      // Get the .balance-section element
-      const balanceSection = this.$el.querySelector(".balance-section");
+      // Set right property of balance section
+      this.$nextTick(() => {
+        const balanceSection = this.$el.querySelector(".balance-section");
 
-      // Set the right property to 100% of the width
-      const width = balanceSection.offsetWidth;
-      balanceSection.style.right = width + "px";
+        // Set the right property to 100% of the width
+        const width = balanceSection.offsetWidth;
+        balanceSection.style.right = width + "px";
+      });
     },
 
     onSubmit() {
@@ -1145,14 +1151,7 @@ export default {
           return amount.toFixed(decimals);
         }
       }
-      // Set right property of balance section
-      this.$nextTick(() => {
-        const balanceSection = this.$el.querySelector(".balance-section");
-
-        // Set the right property to 100% of the width
-        const width = balanceSection.offsetWidth;
-        balanceSection.style.right = width + "px";
-      });
+      this.setBalanceSectionRight();
 
       return amount;
     },
@@ -1180,9 +1179,6 @@ export default {
   width: 100%;
   max-width: 1450px;
   margin: 0 auto;
-  .create-farm-wrapper {
-    margin-top: 100% !important;
-  }
   .balance-section {
     * {
       font-size: 12px;
