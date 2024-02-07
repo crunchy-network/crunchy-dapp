@@ -1181,7 +1181,7 @@ export default {
   max-width: 1450px;
   margin: 0 auto;
   .create-farm-wrapper {
-    margin-top: 70% !important;
+    margin-top: 100% !important;
   }
   .balance-section {
     * {
