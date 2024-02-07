@@ -208,28 +208,28 @@ export default {
 
     setMaxInput() {
       if (
-        this.form.farm.depositAmount >= 0.0001 ||
-        !this.form.farm.depositAmount
+        this.form.farm.poolToken.balance >= 0.0001 ||
+        !this.form.farm.poolToken.balance
       ) {
-        this.form.input = this.form.farm.depositAmount;
-      } else if (this.form.farm.depositAmount >= 0.000001) {
+        this.form.input = this.form.farm.poolToken.balance;
+      } else if (this.form.farm.poolToken.balance >= 0.000001) {
         this.form.input = this.toFixedWithCommas(
-          this.form.farm.depositAmount,
+          this.form.farm.poolToken.balance,
           6
         );
-      } else if (this.form.farm.depositAmount >= 0.00000001) {
+      } else if (this.form.farm.poolToken.balance >= 0.00000001) {
         this.form.input = this.toFixedWithCommas(
-          this.form.farm.depositAmount,
+          this.form.farm.poolToken.balance,
           8
         );
-      } else if (this.form.farm.depositAmount >= 0.000000000001) {
+      } else if (this.form.farm.poolToken.balance >= 0.000000000001) {
         this.form.input = this.toFixedWithCommas(
-          this.form.farm.depositAmount,
+          this.form.farm.poolToken.balance,
           12
         );
       } else {
         this.form.input = this.toFixedWithCommas(
-          this.form.farm.depositAmount,
+          this.form.farm.poolToken.balance,
           18
         );
       }
