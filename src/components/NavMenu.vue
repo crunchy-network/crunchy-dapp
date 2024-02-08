@@ -196,6 +196,15 @@
                 <router-link
                   tag="li"
                   class="el-menu-item submenu-item"
+                  :to="{ name: 'farm-listing' }"
+                  active-class="is-active"
+                >
+                  <i class="fak fa-crunchy-farm-alt"></i>
+                  <span>Farms</span>
+                </router-link>
+                <router-link
+                  tag="li"
+                  class="el-menu-item submenu-item"
                   :to="{ name: 'create-token' }"
                   active-class="is-active"
                 >
@@ -212,21 +221,12 @@
                   :to="{ name: 'airdrop-tool' }"
                   active-class="is-active"
                 >
-                  <img
-                    src="./../assets/svg-icons/coin.svg"
+                  <i class="fa-light fa-parachute-box"></i>
+                  <!-- <img
                     class="coin-icon"
                     style="margin-right: 14px"
-                  />
+                  /> -->
                   <span>Airdrop Tool</span>
-                </router-link>
-                <router-link
-                  tag="li"
-                  class="el-menu-item submenu-item"
-                  :to="{ name: 'farm-listing' }"
-                  active-class="is-active"
-                >
-                  <i class="fak fa-crunchy-farm-alt"></i>
-                  <span>Farms</span>
                 </router-link>
                 <router-link
                   tag="li"
