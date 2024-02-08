@@ -2,7 +2,7 @@ import Vue from "vue";
 import App from "./App.vue";
 import "./plugins/element.js";
 import "./plugins/axios.js";
-import VueNumberFormat from "vue-number-format";
+import VueNumberFormat from "@igortrindade/vue-number-format";
 import VueMoment from "vue-moment";
 import router from "./plugins/routes.js";
 import store from "./store";
