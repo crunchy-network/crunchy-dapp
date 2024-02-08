@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 // import Home from './../components/Home.vue'
+import AirdropTool from "./../components/AirdropTool.vue";
 import LpLocker from "./../components/LpLocker.vue";
 import LpLockerItem from "./../components/LpLockerItem.vue";
 import FarmListing from "./../components/FarmListing.vue";
@@ -69,6 +70,7 @@ const routes = [
   { name: "fire-pit", path: "/fire-pit", component: FirePit },
   { name: "cr-dao", path: "/stake", component: CrnchyStaking },
   { name: "swap", path: "/swap", redirect: "/" },
+  { name: "airdrop-tool", path: "/airdrop", component: AirdropTool },
 ];
 
 export default new VueRouter({
