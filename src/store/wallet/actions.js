@@ -1,4 +1,5 @@
 import { BigNumber } from "bignumber.js";
+import { BeaconEvent } from "@airgap/beacon-sdk";
 import {
   requestPermissions,
   getActiveAccount,
@@ -53,7 +54,7 @@ export default {
     }
   },
 
-  async checkWalletConnected({ commit, dispatch }) {
+  async checkWalletConnected({ commit, state, dispatch }) {
     wallet.client.getActiveAccount().then((account) => {
       if (account) {
         commit("updateWallet", {
@@ -70,6 +71,15 @@ export default {
         });
         dispatch("updateWalletBalance");
         dispatch("walletConnected");
+      } else {
+        clearInterval(state.updateBalanceInt);
+        commit("updateWallet", {
+          connected: false,
+          pkh: "",
+          pkhDomain: Promise.resolve(""),
+          updateBalanceInt: null,
+        });
+        dispatch("updateWalletBalance");
       }
     });
   },
@@ -79,4 +89,12 @@ export default {
       dispatch("checkWalletConnected");
     });
   },
+
+  async initWallet({ dispatch }) {
+    dispatch("checkWalletConnected");
+    wallet.client.subscribeToEvent(BeaconEvent.ACTIVE_ACCOUNT_SET, async (account) => {
+      dispatch("checkWalletConnected");
+    });
+  }
+
 };

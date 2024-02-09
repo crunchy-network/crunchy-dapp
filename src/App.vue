@@ -68,7 +68,7 @@
 export default {
   name: "App",
   created() {
-    this.$store.dispatch("checkWalletConnected");
+    this.$store.dispatch("initWallet");
   },
 };
 </script>

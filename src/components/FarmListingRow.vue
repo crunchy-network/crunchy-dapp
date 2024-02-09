@@ -1244,7 +1244,9 @@
                       font-weight: 600;
                       text-transform: uppercase;
                     "
-                    >Farming complete</strong
+                    >Farming was completed on
+                    {{ farm.endTime | moment("dddd, MMMM Do YYYY, h:mm a") }}
+                    {{ localAbbrevTimeZone }}</strong
                   >
                 </div>
                 <el-row type="flex" align="middle" justify="space-between">
