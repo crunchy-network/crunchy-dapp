@@ -626,6 +626,9 @@ header .grid-content button.el-button {
       flex-direction: column;
     }
   }
+  .create-farm-wrapper {
+    margin-top: auto;
+  }
   .token {
     display: flex;
     .el-form-item {
