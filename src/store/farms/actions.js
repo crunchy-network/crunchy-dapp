@@ -45,6 +45,12 @@ const getFarmTokenMetadata = async (address, tokenId) => {
   return tokenMetadataCache[cacheKey];
 };
 
+const shouldHarvest = (farmData) => {
+  const rewardsAvailable = farmData.rewardsEarned > 0;
+
+  return farmData.depositAmount && farmData.started && rewardsAvailable;
+};
+
 export default {
   async _updateXtzUsdVwap({ commit, dispatch }) {
     return tzkt.getXtzUsdPrice().then((price) => {
@@ -1436,13 +1442,15 @@ export default {
 
   async softUpdateFarm({ commit, state, rootState, dispatch }, farmId) {
     const farm = state.data[farmId];
-    const farms = Number(farmId) >= 1000 ? state.storage.farmsV2 : state.storage.farms;
-    const userRecords = Number(farmId) >= 1000 ? state.storage.userRecordsV2 : state.storage.userRecords;
+    const farms =
+      Number(farmId) >= 1000 ? state.storage.farmsV2 : state.storage.farms;
+    const userRecords =
+      Number(farmId) >= 1000
+        ? state.storage.userRecordsV2
+        : state.storage.userRecords;
 
     if (!rootState.wallet.pkh) {
-      const farmStorage = farms.find(
-        (f) => f.key === farmId
-      ).value;
+      const farmStorage = farms.find((f) => f.key === farmId).value;
 
       let tvlTez = 0;
       if (farm.poolToken.isLbLp) {
@@ -1579,13 +1587,8 @@ export default {
     }
 
     if (!farm.updating) {
-      const userRecord = farmUtils.getUserRecord(
-        farm,
-        userRecords
-      );
-      const farmStorage = farms.find(
-        (f) => f.key === farmId
-      ).value;
+      const userRecord = farmUtils.getUserRecord(farm, userRecords);
+      const farmStorage = farms.find((f) => f.key === farmId).value;
       const currentRewardMultiplier =
         farmUtils.getCurrentRewardMultiplier(farmStorage);
 
@@ -1736,18 +1739,17 @@ export default {
     farmId
   ) {
     const farm = state.data[farmId];
-    const farms = Number(farmId) >= 1000 ? state.storage.farmsV2 : state.storage.farms;
-    const userRecords = Number(farmId) >= 1000 ? state.storage.userRecordsV2 : state.storage.userRecords;
+    const farms =
+      Number(farmId) >= 1000 ? state.storage.farmsV2 : state.storage.farms;
+    const userRecords =
+      Number(farmId) >= 1000
+        ? state.storage.userRecordsV2
+        : state.storage.userRecords;
 
     if (rootState.wallet.pkh) {
-      const userRecord = farmUtils.getUserRecord(
-        farm,
-        userRecords
-      );
+      const userRecord = farmUtils.getUserRecord(farm, userRecords);
       if (userRecord.amount > 0) {
-        const farmStorage = farms.find(
-          (f) => f.key === farmId
-        ).value;
+        const farmStorage = farms.find((f) => f.key === farmId).value;
         const currentRewardMultiplier =
           farmUtils.getCurrentRewardMultiplier(farmStorage);
         const pendingRewards = farmUtils.estimatePendingRewards(
@@ -1873,10 +1875,12 @@ export default {
     const contractV1 = await getContract(state.contract);
     const contractV2 = await getContract(state.contractV2);
 
+    console.log(state.data);
     for (const farmId in state.data) {
       const contract = getFarmContract(farmId, state);
-      const farmContract = contract === state.contractV2 ? contractV2 : contractV1;
-      if (state.data[farmId].depositAmount && state.data[farmId].started) {
+      const farmContract =
+        contract === state.contractV2 ? contractV2 : contractV1;
+      if (shouldHarvest(state.data[farmId])) {
         harvestingFarms.push(farmId);
         batch.withContractCall(farmContract.methods.harvest(farmId));
       }
@@ -1900,7 +1904,7 @@ export default {
     const farmContract = await getContract(state.contractV2);
     // const crnchy = await getContract(state.crnchyAddress);
     const rewardToken = await getContract(params.rewardToken.tokenAddress);
-    
+
     let serviceFeeWhiteList;
     try {
       const farmStorage = await farmContract.storage();
@@ -1908,7 +1912,7 @@ export default {
     } catch (error) {
       console.error(`Error fetching farm contract storage: ${error}`);
     }
-    
+
     let servicesFee = 0;
 
     if (!serviceFeeWhiteList.includes(rootState.wallet.pkh)) {
@@ -1916,7 +1920,6 @@ export default {
       servicesFee = feeOptions[parseInt(params.serviceFeeId, 10)] || 0;
     }
 
-    
     let prevM = 0;
     const bonuses = [];
     for (const b of _.orderBy(params.bonuses, "endTime", "desc")) {
@@ -1984,7 +1987,7 @@ export default {
 
       // serviceFeeId
       params.serviceFeeId
-    )
+    );
     const operations = [
       {
         kind: OpKind.TRANSACTION,
@@ -2020,29 +2023,28 @@ export default {
 
   expandAllFarmRows({ commit, state, dispatch }, farmType) {
     for (const farmId in state.data) {
-      dispatch("expandFarmRow", {farmId: farmId, farmType});
+      dispatch("expandFarmRow", { farmId: farmId, farmType });
     }
     commit("updateFarmsExpanded", true);
   },
 
   expandMyFarmRows({ commit, state, dispatch }, farmType) {
-
     for (const farmId in state.userData) {
-      dispatch("expandFarmRow", {farmId: farmId, farmType});
+      dispatch("expandFarmRow", { farmId: farmId, farmType });
     }
     commit("updateMyFarmsExpanded", true);
   },
 
   collapseAllFarmRows({ commit, state, dispatch }, farmType) {
     for (const farmId in state.data) {
-      dispatch("collapseFarmRow", {farmId:farmId, farmType});
+      dispatch("collapseFarmRow", { farmId: farmId, farmType });
     }
     commit("updateFarmsExpanded", false);
   },
 
   collapseMyFarmRows({ commit, state, dispatch }, farmType) {
     for (const farmId in state.userData) {
-      dispatch("collapseFarmRow", {farmId:farmId, farmType});
+      dispatch("collapseFarmRow", { farmId: farmId, farmType });
     }
     commit("updateMyFarmsExpanded", false);
   },
@@ -2271,13 +2273,11 @@ export default {
       // all groups must match
       const visible =
         firstLoad ||
-        (
-          keywordsMatch &&
+        (keywordsMatch &&
           typeMatches &&
           stakedMatches &&
           statusMatches &&
-          badgeMatches
-        );
+          badgeMatches);
 
       commit("updateUserFarmVisible", { farmId, visible });
     }
@@ -2301,5 +2301,5 @@ export default {
 
   updateFirstLoad({ commit }, firstLoad) {
     commit("updateFirstLoad", firstLoad);
-  }
+  },
 };
