@@ -1232,7 +1232,7 @@ export default {
       display: flex;
       justify-content: end;
       margin-top: -15px;
-      position: relative;
+      position: static;
     }
   }
 }
