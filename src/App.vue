@@ -909,6 +909,32 @@ button {
   background-color: #9093991e !important;
 }
 
+.el-date-range-picker .el-picker-panel__body {
+  @media (max-width: 450px) {
+    min-width: 100% !important;
+  }
+}
+.el-picker-panel {
+  @media (max-width: 450px) {
+    left: 0px !important;
+    width: 100% !important;
+  }
+}
+
+.el-date-range-picker {
+  top: 632px !important;
+  @media (max-width: 450px) {
+    top: 675px !important;
+  }
+}
+.el-date-range-picker__header div,
+.el-date-table td span,
+.el-input--small .el-input__inner
+ {
+  @media (max-width: 450px) {
+    font-size: 11px !important;
+  }
+}
 .el-picker-panel__icon-btn,
 .el-date-picker__header-label,
 .el-date-range-picker .el-picker-panel__content,

@@ -914,9 +914,10 @@ export default {
       // Set right property of balance section
       this.$nextTick(() => {
         const balanceSection = this.$el.querySelector(".balance-section");
-
+        console.log(balanceSection)
         // Set the right property to 100% of the width
         const width = balanceSection.offsetWidth;
+        console.log(width)
         balanceSection.style.right = width + "px";
       });
     },
@@ -1140,7 +1141,7 @@ export default {
       if (numStr.includes(".")) {
         let decimals = parseInt(tokenDecimals);
         if (isNaN(decimals)) {
-          console.warn("NaN decimals for token");
+          // console.warn("NaN decimals for token");
           decimals = 6;
         }
         if (defaultTez) {
@@ -1148,6 +1149,7 @@ export default {
         }
         if (numStr.split(".")[1].length > decimals) {
           amount = parseFloat(amount);
+          this.setBalanceSectionRight();
           return amount.toFixed(decimals);
         }
       }
@@ -1196,9 +1198,6 @@ export default {
     .el-main {
       overflow: hidden;
     }
-    .create-farm-wrapper {
-      margin-top: 50% !important;
-    }
     .farm-input,
     .farm-summary {
       margin-top: 20px;
@@ -1233,7 +1232,7 @@ export default {
       display: flex;
       justify-content: end;
       margin-top: -15px;
-      position: static;
+      position: relative;
     }
   }
 }
