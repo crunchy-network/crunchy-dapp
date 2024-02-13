@@ -12,7 +12,7 @@
               Create a Farm
             </h2>
             <span class="color__subheading fs__16 fw__4"
-              >Create your own farm</span
+              >Enter details below to create your own farm.</span
             >
           </div>
         </el-col>
@@ -25,8 +25,13 @@
         label-width="135px"
         label-position="right"
       >
-        <el-row :gutter="20" type="flex" style="margin-top: 25px">
-          <el-col :span="16">
+        <el-row
+          class="farm-wrapper"
+          :gutter="20"
+          type="flex"
+          style="margin-top: 25px"
+        >
+          <el-col :span="16" class="farm-input">
             <div class="grid-content" style="height: 100%">
               <el-card
                 v-loading="loading"
@@ -37,162 +42,156 @@
                 <el-alert
                   title="Helpful Tip"
                   type="info"
-                  description="Search for tokens instead of looking up the contract info. All tokens on QuipuSwap will come up in the search."
+                  description="Don’t waste time looking up your tokens contract details. Simply search for your token by typing in its name and selecting it."
                   class="_info-card"
                   :closable="false"
                   style="margin-bottom: 18px"
                 >
                 </el-alert>
 
-                <el-form-item label="Pool Token" required>
-                  <el-col :span="5" style="padding-right: 10px">
-                    <el-form-item prop="poolTokenType">
-                      <el-select
-                        v-model="form.poolTokenType"
-                        placeholder="Token Type"
-                      >
-                        <el-option label="FA2" value="fa2"></el-option>
-                        <el-option label="FA1.2" value="fa1"></el-option>
-                      </el-select>
-                    </el-form-item>
-                  </el-col>
-                  <el-col
-                    :span="14"
-                    style="padding-left: 10px; padding-right: 10px"
-                  >
-                    <el-form-item prop="poolTokenAddress">
-                      <el-autocomplete
-                        v-model="form.poolTokenAddress"
-                        class="el-input"
-                        :fetch-suggestions="queryPoolTokens"
-                        :trigger-on-focus="false"
-                        placeholder="Search for Token or Enter Token Address"
-                        @select="handlePoolTokenSelect"
-                      >
-                        <template slot-scope="{ item }">
-                          <div style="padding: 6px 0">
-                            <el-avatar
-                              v-if="
-                                item.isLp &&
-                                Array.isArray(item.thumbnailUri) &&
-                                item.thumbnailUri?.length > 0
-                              "
-                              :src="item.thumbnailUri[0]"
-                              fit="cover"
-                              shape="circle"
-                              :size="40"
-                              style="
-                                position: relative;
-                                border: 4px solid #fff;
-                                vertical-align: middle;
-                                margin-left: -18px;
-                                margin-right: 14px;
-                              "
-                            ></el-avatar>
-                            <el-avatar
-                              v-if="
-                                item.isLp &&
-                                Array.isArray(item.thumbnailUri) &&
-                                item.thumbnailUri?.length > 0
-                              "
-                              :src="item.thumbnailUri[1]"
-                              fit="cover"
-                              shape="circle"
-                              :size="40"
-                              style="
-                                position: relative;
-                                border: 4px solid #fff;
-                                vertical-align: middle;
-                                margin-left: -18px;
-                                margin-right: 14px;
-                              "
-                            ></el-avatar>
-                            <el-avatar
-                              v-if="!item.isLp"
-                              :src="item.thumbnailUri"
-                              fit="cover"
-                              shape="circle"
-                              :size="40"
-                              style="
-                                position: relative;
-                                border: 4px solid #fff;
-                                vertical-align: middle;
-                                margin-left: 22px;
-                                margin-right: 14px;
-                              "
-                            ></el-avatar>
-                            {{ item.value }}
-                          </div>
-                        </template>
-                      </el-autocomplete>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="5" style="padding-left: 10px">
-                    <el-form-item prop="poolTokenId">
-                      <el-input
-                        v-model="form.poolTokenId"
-                        placeholder="Token Id"
-                        :disabled="form.poolTokenType === 'fa1'"
-                      ></el-input>
-                    </el-form-item>
-                  </el-col>
-                </el-form-item>
+                <div class="token">
+                  <el-form-item label="Pool Token" required>
+                    <el-col
+                      :span="24"
+                      style="padding-left: 10px; padding-right: 10px"
+                    >
+                      <el-form-item prop="poolTokenAddress">
+                        <el-autocomplete
+                          v-model="form.poolTokenAddress"
+                          class="el-input"
+                          :fetch-suggestions="queryPoolTokens"
+                          :trigger-on-focus="false"
+                          :placeholder="
+                            isMobile
+                              ? 'Search or enter address'
+                              : 'Search for a token or enter a token address'
+                          "
+                          @select="handlePoolTokenSelect"
+                        >
+                          <template slot-scope="{ item }">
+                            <div style="padding: 6px 0">
+                              <el-avatar
+                                v-if="
+                                  item.isLp &&
+                                  Array.isArray(item.thumbnailUri) &&
+                                  item.thumbnailUri?.length > 0
+                                "
+                                :src="item.thumbnailUri[0]"
+                                fit="cover"
+                                shape="circle"
+                                :size="40"
+                                style="
+                                  position: relative;
+                                  border: 4px solid #fff;
+                                  vertical-align: middle;
+                                  margin-left: -18px;
+                                  margin-right: 14px;
+                                "
+                              ></el-avatar>
+                              <el-avatar
+                                v-if="
+                                  item.isLp &&
+                                  Array.isArray(item.thumbnailUri) &&
+                                  item.thumbnailUri?.length > 0
+                                "
+                                :src="item.thumbnailUri[1]"
+                                fit="cover"
+                                shape="circle"
+                                :size="40"
+                                style="
+                                  position: relative;
+                                  border: 4px solid #fff;
+                                  vertical-align: middle;
+                                  margin-left: -18px;
+                                  margin-right: 14px;
+                                "
+                              ></el-avatar>
+                              <el-avatar
+                                v-if="!item.isLp"
+                                :src="item.thumbnailUri"
+                                fit="cover"
+                                shape="circle"
+                                :size="40"
+                                style="
+                                  position: relative;
+                                  border: 4px solid #fff;
+                                  vertical-align: middle;
+                                  margin-left: 22px;
+                                  margin-right: 14px;
+                                "
+                              ></el-avatar>
+                              {{ item.value }}
+                            </div>
+                          </template>
+                        </el-autocomplete>
+                      </el-form-item>
+                    </el-col>
+                  </el-form-item>
+                  <el-form-item label="Token ID" required>
+                    <el-col :span="24" style="padding-left: 10px">
+                      <el-form-item prop="poolTokenId">
+                        <el-input
+                          v-model="form.poolTokenId"
+                          :placeholder="isMobile ? '0' : 'Usually 0'"
+                          :disabled="form.poolTokenType === 'fa1'"
+                        ></el-input>
+                      </el-form-item>
+                    </el-col>
+                  </el-form-item>
+                </div>
 
-                <el-form-item label="Reward Token" required>
-                  <el-col :span="5" style="padding-right: 10px">
-                    <el-form-item prop="rewardTokenType">
-                      <el-select
-                        v-model="form.rewardTokenType"
-                        placeholder="Token Type"
-                      >
-                        <el-option label="FA2" value="fa2"></el-option>
-                        <el-option label="FA1.2" value="fa1"></el-option>
-                      </el-select>
-                    </el-form-item>
-                  </el-col>
-                  <el-col
-                    :span="14"
-                    style="padding-left: 10px; padding-right: 10px"
-                  >
-                    <el-form-item prop="rewardTokenAddress">
-                      <el-autocomplete
-                        v-model="form.rewardTokenAddress"
-                        class="el-input"
-                        :fetch-suggestions="queryRewardTokens"
-                        :trigger-on-focus="false"
-                        placeholder="Search for Token or Enter Token Address"
-                        @select="handleRewardTokenSelect"
-                      >
-                        <template slot-scope="{ item }">
-                          <div style="padding: 6px 0">
-                            <el-avatar
-                              :src="item.thumbnailUri"
-                              fit="cover"
-                              shape="circle"
-                              :size="40"
-                              style="
-                                position: relative;
-                                border: 4px solid #fff;
-                                vertical-align: middle;
-                                margin-right: 14px;
-                              "
-                            ></el-avatar>
-                            {{ item.value }}
-                          </div>
-                        </template>
-                      </el-autocomplete>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="5" style="padding-left: 10px">
-                    <el-form-item prop="rewardTokenId">
-                      <el-input
-                        v-model="form.rewardTokenId"
-                        placeholder="Token Id"
-                        :disabled="form.rewardTokenType === 'fa1'"
-                      ></el-input>
-                    </el-form-item>
-                  </el-col>
-                </el-form-item>
+                <div class="token">
+                  <el-form-item label="Reward Token" required>
+                    <el-col
+                      :span="24"
+                      style="padding-left: 10px; padding-right: 10px"
+                    >
+                      <el-form-item prop="rewardTokenAddress">
+                        <el-autocomplete
+                          v-model="form.rewardTokenAddress"
+                          class="el-input"
+                          :fetch-suggestions="queryRewardTokens"
+                          :trigger-on-focus="false"
+                          :placeholder="
+                            isMobile
+                              ? 'Search or enter address'
+                              : 'Search for a token or enter a token address'
+                          "
+                          @select="handleRewardTokenSelect"
+                        >
+                          <template slot-scope="{ item }">
+                            <div style="padding: 6px 0">
+                              <el-avatar
+                                :src="item.thumbnailUri"
+                                fit="cover"
+                                shape="circle"
+                                :size="40"
+                                style="
+                                  position: relative;
+                                  border: 4px solid #fff;
+                                  vertical-align: middle;
+                                  margin-right: 14px;
+                                "
+                              ></el-avatar>
+                              {{ item.value }}
+                            </div>
+                          </template>
+                        </el-autocomplete>
+                      </el-form-item>
+                    </el-col>
+                  </el-form-item>
+                  <el-form-item label="Token ID" required>
+                    <el-col :span="24" style="padding-left: 10px">
+                      <el-form-item prop="rewardTokenId">
+                        <el-input
+                          v-model="form.rewardTokenId"
+                          :placeholder="isMobile ? '0' : 'Usually 0'"
+                          :disabled="form.rewardTokenType === 'fa1'"
+                        ></el-input>
+                      </el-form-item>
+                    </el-col>
+                  </el-form-item>
+                </div>
 
                 <el-form-item label="Timeframe" prop="startEndTime">
                   <el-date-picker
@@ -206,10 +205,13 @@
                   ></el-date-picker>
                 </el-form-item>
 
-                <div style="margin-bottom: 22px">
+                <div
+                  class="reward-amount"
+                  style="margin-bottom: 22px; display: flex"
+                >
                   <el-form-item
                     style="margin-bottom: 0px"
-                    label="Reward Deposit"
+                    label="Reward Deposit Amount"
                     prop="rewardTokenAmount"
                   >
                     <el-input
@@ -220,10 +222,7 @@
                       <span slot="suffix">{{ form.rewardTokenName }}</span>
                     </el-input>
                   </el-form-item>
-                  <div
-                    class="balance-section"
-                    style="display: flex; justify-content: flex-end"
-                  >
+                  <div v-show="!isMobile" class="balance-section">
                     Balance:
                     {{
                       formatDecimals(
@@ -236,48 +235,26 @@
                   </div>
                 </div>
 
-                <el-form-item
-                  v-for="(bonus, index) in form.bonuses"
-                  :key="`bonus-${index}`"
-                  :label="index === 0 ? 'Bonus Periods' : ''"
-                >
-                  <el-date-picker
-                    v-model="bonus.endTime"
-                    type="datetime"
-                    placeholder="Bonus Period Ends"
-                    :default-time="'12:00:00'"
-                    :picker-options="pickerOptions"
-                  ></el-date-picker>
-                  <el-input
-                    v-model="bonus.multiplier"
-                    placeholder="Multiplier"
-                    style="margin-left: 20px; margin-right: 20px; width: 125px"
-                  >
-                    <span slot="suffix">X</span>
-                  </el-input>
-                  <el-button
-                    type="info"
-                    plain
-                    style="border-radius: 10px; padding: 10px 12px"
-                    class="_action-btn"
-                    @click="addBonus(index)"
-                    ><i class="fas fa-plus"></i
-                  ></el-button>
-                  <el-button
-                    :disabled="index === 0"
-                    type="info"
-                    plain
-                    style="border-radius: 10px; padding: 10px 12px"
-                    class="_action-btn"
-                    @click="removeBonus(index)"
-                    ><i class="fas fa-minus"></i
-                  ></el-button>
-                </el-form-item>
+                <div v-show="isMobile" class="balance-section">
+                  Balance:
+                  {{
+                    formatDecimals(
+                      getBalanceOfSelectedToken(
+                        form.rewardTokenAddress + "_" + form.rewardTokenId
+                      ),
+                      form.rewardTokenDecimals
+                    )
+                  }}
+                </div>
 
-                <el-form-item label="Service Fee" prop="serviceFeeId">
+                <el-form-item
+                  class="service-fee"
+                  label="Service Fee"
+                  prop="serviceFeeId"
+                >
                   <el-select
                     v-model="form.serviceFeeId"
-                    placeholder="Select Service Fee"
+                    placeholder="Select a Service Fee"
                     style="width: 400px"
                   >
                     <el-option
@@ -289,20 +266,91 @@
                     </el-option>
                   </el-select>
                 </el-form-item>
+
+                <div
+                  class="bonus"
+                  style="display: flex; flex-direction: column"
+                >
+                  <el-form-item
+                    v-for="(bonus, index) in form.bonuses"
+                    :key="`bonus-${index}`"
+                    :label="index === 0 ? 'Bonus Periods (Optional)' : ''"
+                  >
+                    <el-date-picker
+                      v-model="bonus.endTime"
+                      type="datetime"
+                      placeholder="Bonus Period Ends"
+                      :default-time="'12:00:00'"
+                      :picker-options="pickerOptions"
+                    ></el-date-picker>
+                    <el-input
+                      v-model="bonus.multiplier"
+                      placeholder="Multiplier"
+                      style="
+                        margin-left: 20px;
+                        margin-right: 20px;
+                        width: 125px;
+                      "
+                    >
+                      <span slot="suffix">X</span>
+                    </el-input>
+                    <el-button
+                      type="info"
+                      plain
+                      style="border-radius: 10px; padding: 10px 12px"
+                      class="_action-btn"
+                      @click="addBonus(index)"
+                      ><i class="fas fa-plus"></i
+                    ></el-button>
+                    <el-button
+                      :disabled="index === 0"
+                      type="info"
+                      plain
+                      style="border-radius: 10px; padding: 10px 12px"
+                      class="_action-btn"
+                      @click="removeBonus(index)"
+                      ><i class="fas fa-minus"></i
+                    ></el-button>
+                  </el-form-item>
+                </div>
               </el-card>
             </div>
           </el-col>
 
-          <el-col :span="8">
+          <el-col :span="8" class="farm-summary">
             <div class="grid-content" style="height: 100%">
-              <el-card class="box-card" shadow="always" style="height: 100%">
-                <h3 style="margin-top: 0">Farm Summary</h3>
+              <el-card
+                class="box-card-summary"
+                shadow="always"
+                style="height: 100%"
+              >
+                <h3
+                  style="
+                    margin-top: 0;
+                    color: #8c8d8f;
+                    font-size: 16px;
+                    font-weight: 600;
+                    line-height: 24px;
+                    letter-spacing: 0em;
+                    text-align: left;
+                  "
+                >
+                  Farm Summary
+                </h3>
                 <el-row
                   type="flex"
                   align="middle"
                   style="font-size: 14px; margin-bottom: 14px"
                 >
-                  <el-col :span="8" style="font-weight: bold"
+                  <el-col
+                    :span="8"
+                    style="
+                      font-size: 14px;
+                      font-weight: 400;
+                      line-height: 21px;
+                      letter-spacing: 0em;
+                      text-align: left;
+                    "
                     >Pool Token:</el-col
                   >
                   <el-col
@@ -382,7 +430,16 @@
                   align="middle"
                   style="font-size: 14px; margin-bottom: 14px"
                 >
-                  <el-col :span="8" style="font-weight: bold"
+                  <el-col
+                    :span="8"
+                    style="
+                      font-family: Poppins;
+                      font-size: 14px;
+                      font-weight: 400;
+                      line-height: 21px;
+                      letter-spacing: 0em;
+                      text-align: left;
+                    "
                     >Reward Token:</el-col
                   >
                   <el-col v-if="form.rewardTokenName.length" :span="16">
@@ -408,7 +465,18 @@
                   type="flex"
                   style="font-size: 14px; margin-bottom: 14px"
                 >
-                  <el-col :span="8" style="font-weight: bold">Starts:</el-col>
+                  <el-col
+                    :span="8"
+                    style="
+                      font-family: Poppins;
+                      font-size: 14px;
+                      font-weight: 400;
+                      line-height: 21px;
+                      letter-spacing: 0em;
+                      text-align: left;
+                    "
+                    >Starts:</el-col
+                  >
                   <el-col v-if="form.startEndTime.length" :span="16">{{
                     form.startEndTime[0]
                   }}</el-col>
@@ -420,7 +488,18 @@
                   type="flex"
                   style="font-size: 14px; margin-bottom: 14px"
                 >
-                  <el-col :span="8" style="font-weight: bold">Ends:</el-col>
+                  <el-col
+                    :span="8"
+                    style="
+                      font-family: Poppins;
+                      font-size: 14px;
+                      font-weight: 400;
+                      line-height: 21px;
+                      letter-spacing: 0em;
+                      text-align: left;
+                    "
+                    >Ends:</el-col
+                  >
                   <el-col v-if="form.startEndTime.length" :span="16">{{
                     form.startEndTime[1]
                   }}</el-col>
@@ -435,7 +514,16 @@
                   type="flex"
                   style="font-size: 14px; margin-bottom: 14px"
                 >
-                  <el-col :span="8" style="font-weight: bold"
+                  <el-col
+                    :span="8"
+                    style="
+                      font-family: Poppins;
+                      font-size: 14px;
+                      font-weight: 400;
+                      line-height: 21px;
+                      letter-spacing: 0em;
+                      text-align: left;
+                    "
                     >Total Rewards:</el-col
                   >
                   <el-col v-if="form.rewardTokenAmount" :span="16"
@@ -448,7 +536,16 @@
                   type="flex"
                   style="font-size: 14px; margin-bottom: 14px"
                 >
-                  <el-col :span="8" style="font-weight: bold"
+                  <el-col
+                    :span="8"
+                    style="
+                      font-family: Poppins;
+                      font-size: 14px;
+                      font-weight: 400;
+                      line-height: 21px;
+                      letter-spacing: 0em;
+                      text-align: left;
+                    "
                     >Rewards/Sec:</el-col
                   >
                   <el-col v-if="rewardAmountPerSecond" :span="16"
@@ -474,7 +571,16 @@
                   type="flex"
                   style="font-size: 14px; margin-bottom: 14px"
                 >
-                  <el-col :span="8" style="font-weight: bold"
+                  <el-col
+                    :span="8"
+                    style="
+                      font-family: Poppins;
+                      font-size: 14px;
+                      font-weight: 400;
+                      line-height: 21px;
+                      letter-spacing: 0em;
+                      text-align: left;
+                    "
                     >Service Fee:</el-col
                   >
                   <el-col
@@ -510,7 +616,16 @@
                   type="flex"
                   style="font-size: 14px; margin-bottom: 14px"
                 >
-                  <el-col :span="8" style="font-weight: bold"
+                  <el-col
+                    :span="8"
+                    style="
+                      font-family: Poppins;
+                      font-size: 14px;
+                      font-weight: 400;
+                      line-height: 21px;
+                      letter-spacing: 0em;
+                      text-align: left;
+                    "
                     >Total Required:</el-col
                   >
                   <el-col
@@ -543,21 +658,35 @@
                     >--</el-col
                   >
                 </el-row>
+                <el-row class="create-farm-wrapper" :gutter="20" type="flex">
+                  <el-col
+                    :span="8"
+                    :offset="16"
+                    style="
+                      display: flex;
+                      justify-content: end;
+                      text-align: right;
+                    "
+                  >
+                    <el-button
+                      v-if="wallet.connected"
+                      type="primary"
+                      style="
+                        border-radius: 10px;
+                        font-size: 13px;
+                        font-weight: 700;
+                        line-height: 20px;
+                        letter-spacing: 1.25px;
+                        text-align: center;
+                      "
+                      @click="onSubmit"
+                      >CREATE YOUR FARM</el-button
+                    >
+                    <connect-button v-if="wallet.connected === false" />
+                  </el-col>
+                </el-row>
               </el-card>
             </div>
-          </el-col>
-        </el-row>
-
-        <el-row :gutter="20" type="flex" style="margin-top: 25px">
-          <el-col :span="8" :offset="16" style="text-align: right">
-            <el-button
-              v-if="wallet.connected"
-              type="primary"
-              style="border-radius: 10px; font-weight: bold"
-              @click="onSubmit"
-              >Create Farm</el-button
-            >
-            <connect-button v-if="wallet.connected === false" />
           </el-col>
         </el-row>
       </el-form>
@@ -581,6 +710,9 @@ export default {
   components: {
     NavMenu,
     ConnectButton,
+  },
+  mounted() {
+    this.setBalanceSectionRight();
   },
   data() {
     var validateTokenAddress = (rule, value, callback) => {
@@ -678,6 +810,10 @@ export default {
   computed: {
     ...mapState(["wallet", "farms", "homeWallet"]),
 
+    isMobile() {
+      return window.innerWidth <= 450;
+    },
+
     rewardAmountPerSecond: function () {
       if (!this.form.rewardTokenAmount || !this.form.rewardTokenName) {
         return 0;
@@ -773,6 +909,18 @@ export default {
       "updateLpTokens",
       "createFarm",
     ]),
+
+    setBalanceSectionRight() {
+      // Set right property of balance section
+      this.$nextTick(() => {
+        const balanceSection = this.$el.querySelector(".balance-section");
+        console.log(balanceSection)
+        // Set the right property to 100% of the width
+        const width = balanceSection.offsetWidth;
+        console.log(width)
+        balanceSection.style.right = width + "px";
+      });
+    },
 
     onSubmit() {
       const vm = this;
@@ -993,7 +1141,7 @@ export default {
       if (numStr.includes(".")) {
         let decimals = parseInt(tokenDecimals);
         if (isNaN(decimals)) {
-          console.warn("NaN decimals for token");
+          // console.warn("NaN decimals for token");
           decimals = 6;
         }
         if (defaultTez) {
@@ -1001,9 +1149,12 @@ export default {
         }
         if (numStr.split(".")[1].length > decimals) {
           amount = parseFloat(amount);
+          this.setBalanceSectionRight();
           return amount.toFixed(decimals);
         }
       }
+      this.setBalanceSectionRight();
+
       return amount;
     },
 
@@ -1030,15 +1181,59 @@ export default {
   width: 100%;
   max-width: 1450px;
   margin: 0 auto;
-}
-.balance-section {
-  * {
-    font-size: 12px;
-    font-weight: 500;
+  .balance-section {
+    * {
+      font-size: 12px;
+      font-weight: 500;
+    }
+    white-space: nowrap;
+    color: var(--color-subheading-text);
+    position: relative;
+    top: 11px;
   }
-  color: var(--color-subheading-text);
-  margin-right: calc(100% - 535px);
-  display: flex;
-  justify-content: space-between;
+}
+
+@media (max-width: 991px) {
+  #farm-create {
+    .el-main {
+      overflow: hidden;
+    }
+    .farm-input,
+    .farm-summary {
+      margin-top: 20px;
+      width: 100% !important;
+    }
+    .farm-wrapper {
+      display: flex;
+      flex-direction: column;
+    }
+    .el-select {
+      width: 100% !important;
+    }
+    .token {
+      .el-form-item:first-child {
+        flex: 0 0 70% !important;
+      }
+    }
+    .bonus {
+      .el-date-editor.el-input {
+        width: 100% !important;
+      }
+      .el-form-item:first-child {
+        flex: 0 0 100%;
+      }
+      .el-form-item__content div {
+        margin-right: 24px !important;
+        margin-left: 0px !important;
+        width: 70% !important;
+      }
+    }
+    .balance-section {
+      display: flex;
+      justify-content: end;
+      margin-top: -15px;
+      position: static;
+    }
+  }
 }
 </style>
