@@ -660,60 +660,6 @@ export default {
         element.id = element.tokenAddress + "_" + element.tokenId;
         const tokenMetadata = updatedIndexerTokens[element.id];
 
-        /**
-     *Calculate aggregated price 
-     weighted on tvl from Plenty, Spicy and Quipu
-      */
-        let totalReserves = 0;
-        let aggregatedClose = 0;
-        let close = 0;
-
-        for (const quoteData of element.quotes) {
-          // Exclude aggregated price calculation from volatile pool
-          const isQuoteInVolatilePricePool = TOO_FEW_TVL_POOL_ADDRESSES.some(
-            (pool) =>
-              pool.poolAddress === quoteData.pool.dex.address &&
-              pool.poolId === quoteData.pool.poolId
-          );
-          if (isQuoteInVolatilePricePool) {
-            continue;
-          }
-
-          const foundPool = allTokenPool.find(
-            (el) =>
-              quoteData.pool.poolId === el.poolId &&
-              quoteData.pool.dex.address === el.dex.address &&
-              quoteData.pool.dex.type === el.dex.type
-          );
-          const foundToken = foundPool.tokens.find(
-            (el) =>
-              element.tokenAddress === el.token.tokenAddress &&
-              element.tokenId === el.token.tokenId
-          );
-          const reserves = parseFloat(foundToken.reserves);
-
-          const quoteTokenPriceInTez = getQuoteTokenPriceInTez(
-            allTokenSpot,
-            allTokenSpot,
-            quoteData
-          );
-          close = TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(
-            quoteData.token.tokenAddress
-          )
-            ? Number(quoteData.quote)
-            : Number(quoteData.quote) * Number(quoteTokenPriceInTez);
-
-          // NaN and Alien dex type error
-          if (isNaN(close) || quoteData.pool.dex.type === "alien") {
-            continue;
-          }
-
-          totalReserves += reserves;
-          aggregatedClose += reserves * close;
-        }
-
-        element.aggregatedPrice = aggregatedClose / totalReserves;
-
         const tokenQuote1D = allQuotes1D.find(
           (ele) =>
             ele.tokenAddress === element.tokenAddress &&
@@ -791,6 +737,69 @@ export default {
           // Calculate total volume 24h in xtz
           volume24Xtz = new BigNumber(volume24Xtz).plus(e.volume24).toNumber();
         });
+
+                /**
+        *Calculate aggregated price 
+        weighted on tvl from Plenty, Spicy and Quipu
+        */
+        let totalReserves = 0;
+        let aggregatedClose = 0;
+        let close = 0;
+
+        for (const quoteData of element.quotes) {
+          // Exclude aggregated price calculation from volatile pool
+          const isQuoteInVolatilePricePool = TOO_FEW_TVL_POOL_ADDRESSES.some(
+            (pool) =>
+              pool.poolAddress === quoteData.pool.dex.address &&
+              pool.poolId === quoteData.pool.poolId
+          );
+          
+          const pool = element.exchanges.find(
+            (exchange) =>
+              quoteData.pool.dex.address === exchange.dex.address &&
+              quoteData.pool.dex.type === exchange.dex.type
+          );
+          const poolHasVolume = pool.volume24.toNumber() > 0;
+          
+          if (isQuoteInVolatilePricePool || !poolHasVolume) {
+            continue;
+          }
+
+          const foundPool = allTokenPool.find(
+            (el) =>
+              quoteData.pool.poolId === el.poolId &&
+              quoteData.pool.dex.address === el.dex.address &&
+              quoteData.pool.dex.type === el.dex.type
+          );
+          const foundToken = foundPool.tokens.find(
+            (el) =>
+              element.tokenAddress === el.token.tokenAddress &&
+              element.tokenId === el.token.tokenId
+          );
+          const reserves = parseFloat(foundToken.reserves);
+
+          const quoteTokenPriceInTez = getQuoteTokenPriceInTez(
+            allTokenSpot,
+            allTokenSpot,
+            quoteData
+          );
+          close = TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(
+            quoteData.token.tokenAddress
+          )
+            ? Number(quoteData.quote)
+            : Number(quoteData.quote) * Number(quoteTokenPriceInTez);
+
+          // NaN and Alien dex type error
+          if (isNaN(close) || quoteData.pool.dex.type === "alien") {
+            continue;
+          }
+          
+          totalReserves += reserves;
+          aggregatedClose += reserves * close;
+        }
+
+        element.aggregatedPrice = aggregatedClose / totalReserves;
+
 
         /**
          *Calculate tvl for each exchange
