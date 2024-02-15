@@ -759,9 +759,9 @@ export default {
               quoteData.pool.dex.address === exchange.dex.address &&
               quoteData.pool.dex.type === exchange.dex.type
           );
-          const poolHasVolume = pool.volume24.toNumber() > 0;
+          const poolHas24hVolume = pool.volume24.toNumber() > 0;
           
-          if (isQuoteInVolatilePricePool || !poolHasVolume) {
+          if (isQuoteInVolatilePricePool || !poolHas24hVolume) {
             continue;
           }
 
