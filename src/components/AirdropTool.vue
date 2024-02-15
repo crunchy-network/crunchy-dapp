@@ -21,7 +21,6 @@
       <el-row style="display: flex">
         <el-col :span="14" style="padding-right: 40px">
           <el-card
-            v-loading="loading"
             shadow="always"
             class="box-card"
             style="height: 100%; flex: 1"
@@ -39,54 +38,16 @@
                 </el-col>
               </el-row>
               <el-col :span="14" style="margin-bottom: 0px">
-                <el-form-item prop="poolTokenAddress">
+                <el-form-item prop="tokenAddress" style="margin-bottom: 0px">
                   <el-autocomplete
-                    v-model="tokenAddress"
+
                     class="el-input"
-                    :fetch-suggestions="queryPoolTokens"
                     :trigger-on-focus="false"
                     placeholder="Search for Token or Enter Token Address"
                   >
                     <template slot-scope="{ item }">
                       <div style="padding: 6px 0">
                         <el-avatar
-                          v-if="
-                            item.isLp &&
-                            Array.isArray(item.thumbnailUri) &&
-                            item.thumbnailUri?.length > 0
-                          "
-                          :src="item.thumbnailUri[0]"
-                          fit="cover"
-                          shape="circle"
-                          :size="40"
-                          style="
-                            position: relative;
-                            border: 4px solid #fff;
-                            vertical-align: middle;
-                            margin-left: -18px;
-                            margin-right: 14px;
-                          "
-                        ></el-avatar>
-                        <el-avatar
-                          v-if="
-                            item.isLp &&
-                            Array.isArray(item.thumbnailUri) &&
-                            item.thumbnailUri?.length > 0
-                          "
-                          :src="item.thumbnailUri[1]"
-                          fit="cover"
-                          shape="circle"
-                          :size="40"
-                          style="
-                            position: relative;
-                            border: 4px solid #fff;
-                            vertical-align: middle;
-                            margin-left: -18px;
-                            margin-right: 14px;
-                          "
-                        ></el-avatar>
-                        <el-avatar
-                          v-if="!item.isLp"
                           :src="item.thumbnailUri"
                           fit="cover"
                           shape="circle"
@@ -95,10 +56,10 @@
                             position: relative;
                             border: 4px solid #fff;
                             vertical-align: middle;
-                            margin-left: 22px;
                             margin-right: 14px;
                           "
-                        ></el-avatar>
+                        >
+                        </el-avatar>
                         {{ item.value }}
                       </div>
                     </template>
@@ -106,7 +67,11 @@
                 </el-form-item>
               </el-col>
               <el-form-item prop="poolTokenType">
-                <el-select placeholder="Token Type" style="margin-left: 40px">
+                <el-select
+                  v-model="form.tokenType"
+                  placeholder="Token Type"
+                  style="margin-left: 40px"
+                >
                   <el-option label="FA2" value="fa2"></el-option>
                   <el-option label="FA1.2" value="fa1"></el-option>
                 </el-select>
@@ -155,19 +120,6 @@
                     >
                       <i class="fa-regular fa-info-circle"></i>
                     </el-tooltip>
-                    <div
-                      v-for="(address, index) in displayedAirdropAddresses"
-                      :key="index"
-                    >
-                      <el-input
-                        :id="'airdrop-address-' + index"
-                        v-model="airdropAddresses[index]"
-                        class="el-input"
-                        type="text"
-                        placeholder="Address to receive airdrop"
-                        style="margin-right: 30px; margin-bottom: 10px"
-                      />
-                    </div>
                   </el-form-item>
                 </el-col>
                 <el-col :span="10">
@@ -178,19 +130,42 @@
                     class="color__subheading"
                   >
                     Airdrop Amount
-                    <div v-for="i in 10" :key="i">
-                      <el-input
-                        :id="'airdrop-amount-' + i"
-                        v-model="airdropAmounts[i]"
-                        class="el-input"
-                        style="margin-bottom: 10px"
-                        type="text"
-                        placeholder="10,000..."
-                      />
-                    </div>
                   </el-form-item>
                 </el-col>
               </el-row>
+              <div style="max-height: 600px; overflow: auto">
+                <el-row>
+                  <div
+                    v-for="(entry, index) in displayedAirdropEntries"
+                    :key="index"
+                  >
+                    <el-col :span="14">
+                      <el-form-item style="margin-bottom: 10px">
+                        <el-input
+                          :id="'airdrop-address-' + index"
+                          v-model="form.airdropEntries[index].address"
+                          class="el-input"
+                          type="text"
+                          placeholder="Address to receive airdrop"
+                        />
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                      <el-form-item
+                        style="margin-left: 40px; margin-bottom: 10px"
+                      >
+                        <el-input
+                          :id="'airdrop-amount-' + index"
+                          v-model="form.airdropEntries[index].amount"
+                          class="el-input"
+                          type="text"
+                          placeholder="10,000..."
+                        />
+                      </el-form-item>
+                    </el-col>
+                  </div>
+                </el-row>
+              </div>
               <div
                 style="
                   cursor: pointer;
@@ -209,7 +184,6 @@
         </el-col>
         <el-col :span="10">
           <el-card
-            v-loading="loading"
             shadow="always"
             class="box-card"
             style="height: 100%; flex: 1"
@@ -226,7 +200,7 @@
               </el-row>
               <el-row style="margin-bottom: 15px">
                 <el-col :span="12">
-                  <span> {{ tokenToAirdrop }}</span>
+                  <span> {{ form.tokenSymbol }}</span>
                 </el-col>
                 <el-col :span="12" style="text-align: right">
                   <span> {{ totalAirdropAmount }}</span>
@@ -240,16 +214,33 @@
                   <span class="color__subheading">Airdrop Amount</span>
                 </el-col>
               </el-row>
-              <el-row v-for="(address, index) in airdropAddresses" :key="index">
-                <el-col :span="12">
-                  <span>{{ address }}</span>
-                </el-col>
-                <el-col :span="12" style="text-align: right">
-                  <span>{{ airdropAmounts[index] }}</span>
-                </el-col>
-              </el-row>
+              <div style="padding-right: 5px; max-height: 675px; overflow: auto">
+                <el-row
+                  v-for="(entry, index) in form.airdropEntries"
+                  :key="'summary-' + index"
+                >
+                  <el-col :span="12">
+                    <span>{{ entry.address }}</span>
+                  </el-col>
+                  <el-col :span="12" style="text-align: right">
+                    <span>{{ entry.amount }}</span>
+                  </el-col>
+                </el-row>
+              </div>
             </div>
           </el-card>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20" type="flex" style="margin-top: 25px">
+        <el-col :span="8" :offset="16" style="text-align: right">
+          <el-button
+            v-if="wallet.connected"
+            type="primary"
+            style="border-radius: 10px; font-weight: bold"
+            @click="onSubmit"
+            >AIRDROP TOKENS</el-button
+          >
+          <connect-button v-if="wallet.connected === false" />
         </el-col>
       </el-row>
     </el-main>
@@ -257,6 +248,10 @@
 </template>
 
 <script>
+// import _ from "lodash";
+import { mapState } from "vuex";
+import ipfs from "./../utils/ipfs";
+import farmUtils from "./../utils/farm";
 import NavMenu from "./NavMenu.vue";
 import ConnectButton from "./ConnectButton.vue";
 
@@ -268,25 +263,73 @@ export default {
   },
   data() {
     return {
-      showPopup: false,
+      form: {
+        tokenSymbol: "XTZ",
+        tokenAddress: "",
+        tokenType: "",
+        airdropEntries: Array(10)
+          .fill()
+          .map(() => ({ address: "", amount: "" })),
+      },
       numRows: 10,
-      tokenToAirdrop: "XTZ",
-      tokenAddress: "",
-      airdropAddresses: [1233, 1234, 1235, 1236, 1237, 1238, 1239, 1240, 1241, 1242],
-      airdropAmounts: [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000],
     };
   },
   computed: {
+    ...mapState(["wallet", "homeWallet"]),
     totalAirdropAmount() {
-      return this.airdropAmounts.reduce((a, b) => a + b, 0);
+      return this.form.airdropEntries.reduce(
+        (total, entry) => total + parseFloat(entry.amount || 0),
+        0
+      );
     },
-    displayedAirdropAddresses() {
-      return this.airdropAddresses.slice(0, this.numRows);
+    displayedAirdropEntries() {
+      return this.form.airdropEntries.slice(0, this.numRows);
     },
   },
   methods: {
     addRows() {
+      for (let i = 0; i < 10; i++) {
+        this.form.airdropEntries.push({ address: "", amount: "" });
+      }
       this.numRows += 10;
+    },
+    queryTokens(keywords, cb) {
+      const matches = [];
+      for (let t of this.farms.priceFeed) {
+        if (
+          (Object.prototype.hasOwnProperty.call(t, "name") &&
+            t?.name?.toLowerCase().includes(keywords.toLowerCase())) ||
+          (Object.prototype.hasOwnProperty.call(t, "symbol") &&
+            t?.symbol?.toLowerCase().includes(keywords.toLowerCase())) ||
+          (Object.prototype.hasOwnProperty.call(t, "tokenAddress") &&
+            t.tokenAddress.toLowerCase().includes(keywords.toLowerCase()))
+        ) {
+          t = farmUtils.overrideMetadata(t);
+          if (
+            !Object.prototype.hasOwnProperty.call(t, "thumbnailUri") ||
+            t.thumbnailUri === null ||
+            !t.thumbnailUri
+          ) {
+            t.thumbnailUri =
+              "https://static.thenounproject.com/png/796573-200.png";
+          }
+          t.thumbnailUri = ipfs.transformUri(t.thumbnailUri);
+          matches.push({
+            value: t.symbol || t.name,
+            type: t.tokenType,
+            address: t.tokenAddress,
+            tokenId: t.tokenId || 0,
+            isLp: false,
+            thumbnailUri: t.thumbnailUri,
+          });
+        }
+      }
+      cb(matches);
+    },
+    onTokenSelect(item) {
+      this.form.tokenAddress = item.address;
+      this.form.tokenSymbol = item.value;
+      this.form.tokenType = item.type === "fa2" ? "fa2" : "fa1";
     },
   },
 };
