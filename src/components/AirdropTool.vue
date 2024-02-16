@@ -84,8 +84,9 @@
                   style="height: 35px; margin-bottom: 0px"
                 >
                   Upload Airdrop List From Our
-                  <a href="Template" style="color: #555cff"> Template</a>.
-                  (Optional)
+                  <a href="/airdrop-template.csv" style="color: #555cff">
+                    Template</a
+                  >. (Optional)
                 </el-form-item>
               </el-row>
               <el-button
@@ -101,9 +102,16 @@
                   padding: 5px 10px;
                   margin-bottom: 10px;
                 "
+                @click="triggerFileInput"
               >
                 UPLOAD AIRDROP FILE
               </el-button>
+              <input
+                ref="fileInput"
+                type="file"
+                style="display: none"
+                @change="handleFileUpload"
+              />
               <el-row style="margin-bottom: 0px">
                 <el-col :span="14">
                   <el-form-item
@@ -214,7 +222,9 @@
                   <span class="color__subheading">Airdrop Amount</span>
                 </el-col>
               </el-row>
-              <div style="padding-right: 5px; max-height: 675px; overflow: auto">
+              <div
+                style="padding-right: 5px; max-height: 675px; overflow: auto"
+              >
                 <el-row
                   v-for="(entry, index) in form.airdropEntries"
                   :key="'summary-' + index"
@@ -248,7 +258,6 @@
 </template>
 
 <script>
-// import _ from "lodash";
 import { mapState } from "vuex";
 import ipfs from "./../utils/ipfs";
 import farmUtils from "./../utils/farm";
@@ -264,7 +273,7 @@ export default {
   data() {
     return {
       form: {
-        tokenSymbol: "XTZ",
+        tokenSymbol: "--",
         tokenAddress: "",
         tokenType: "",
         airdropEntries: Array(10)
@@ -330,6 +339,30 @@ export default {
       this.form.tokenAddress = item.address;
       this.form.tokenSymbol = item.value;
       this.form.tokenType = item.type === "fa2" ? "fa2" : "fa1";
+    },
+    triggerFileInput() {
+      this.$refs.fileInput.click();
+    },
+    handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const csvContent = e.target.result;
+          this.parseCsvContent(csvContent);
+        };
+        reader.readAsText(file);
+      }
+    },
+    parseCsvContent(csvContent) {
+      const rows = csvContent.split("\n").filter(Boolean);
+      const newEntries = rows.map((row) => {
+        const [address, amountString] = row.split(",");
+        const amount = parseFloat(amountString.trim());
+        return { address: address.trim(), amount: amount };
+      });
+      this.form.airdropEntries = newEntries;
+      this.numRows = newEntries.length;
     },
   },
 };
