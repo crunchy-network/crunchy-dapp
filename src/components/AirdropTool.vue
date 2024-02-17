@@ -147,7 +147,7 @@
                   </el-form-item>
                 </el-col>
               </el-row>
-              <div style="max-height: 600px; overflow: auto">
+              <div style="max-height: 500px; overflow: auto">
                 <el-row>
                   <div
                     v-for="(entry, index) in displayedAirdropEntries"
@@ -229,7 +229,7 @@
                 </el-col>
               </el-row>
               <div
-                style="padding-right: 5px; max-height: 675px; overflow: auto"
+                style="padding-right: 5px; max-height: 575px; overflow: auto"
               >
                 <el-row
                   v-for="(entry, index) in form.airdropEntries"
@@ -436,8 +436,21 @@ export default {
       this.form.airdropEntries = newEntries;
       this.numRows = newEntries.length;
     },
+    convertAirdropEntriesToObject(entriesArray) {
+      const entriesObject = {};
+      entriesArray.forEach((entry) => {
+        if (entry.address && !isNaN(parseFloat(entry.amount))) {
+          entriesObject[entry.address.trim()] = parseFloat(entry.amount);
+        }
+      });
+      return entriesObject;
+    },
     onSubmit() {
       console.log("FORM DATA::::", this.form);
+      const entriesObject = this.convertAirdropEntriesToObject(
+        this.form.airdropEntries
+      );
+      console.log("Prepared Entries for Submission:", entriesObject);
     },
   },
 };
