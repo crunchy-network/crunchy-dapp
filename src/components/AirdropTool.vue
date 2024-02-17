@@ -30,20 +30,22 @@
                 <el-col :span="10" style="height: 40px">
                   <el-form-item
                     label
-                    for="token-to-airdrop"
+                    for="tokenAddress"
                     class="color__subheading"
                   >
                     Token to Airdrop
                   </el-form-item>
                 </el-col>
               </el-row>
-              <el-col :span="14" style="margin-bottom: 0px">
-                <el-form-item prop="tokenAddress" style="margin-bottom: 0px">
+              <el-row>
+                <el-form-item :span="14" prop="tokenAddress" style="margin-bottom: 0px">
                   <el-autocomplete
-
+                    v-model="form.tokenAddress"
                     class="el-input"
+                    :fetch-suggestions="queryTokens"
                     :trigger-on-focus="false"
                     placeholder="Search for Token or Enter Token Address"
+                    @select="onTokenSelect"
                   >
                     <template slot-scope="{ item }">
                       <div style="padding: 6px 0">
@@ -65,17 +67,17 @@
                     </template>
                   </el-autocomplete>
                 </el-form-item>
-              </el-col>
-              <el-form-item prop="poolTokenType">
-                <el-select
-                  v-model="form.tokenType"
-                  placeholder="Token Type"
-                  style="margin-left: 40px"
-                >
-                  <el-option label="FA2" value="fa2"></el-option>
-                  <el-option label="FA1.2" value="fa1"></el-option>
-                </el-select>
-              </el-form-item>
+                <el-form-item :span="10" prop="poolTokenType">
+                  <el-select
+                    v-model="form.tokenType"
+                    placeholder="Token Type"
+                    style="margin-left: 40px"
+                  >
+                    <el-option label="FA2" value="fa2"></el-option>
+                    <el-option label="FA1.2" value="fa1"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-row>
               <el-row>
                 <el-form-item
                   label
@@ -258,11 +260,13 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 import ipfs from "./../utils/ipfs";
 import farmUtils from "./../utils/farm";
 import NavMenu from "./NavMenu.vue";
 import ConnectButton from "./ConnectButton.vue";
+import { getTokenMetadata } from "../utils/tezos";
+import { ValidationResult, validateContractAddress } from "@taquito/utils";
 
 export default {
   name: "AirdropTool",
@@ -273,9 +277,13 @@ export default {
   data() {
     return {
       form: {
+        tokenName: "",
+        tokenId: "",
+        tokenDecimals: "",
         tokenSymbol: "--",
         tokenAddress: "",
         tokenType: "",
+        tokenThumbnailUri: "",
         airdropEntries: Array(10)
           .fill()
           .map(() => ({ address: "", amount: "" })),
@@ -284,7 +292,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["wallet", "homeWallet"]),
+    ...mapState(["wallet", "farms", "homeWallet"]),
     totalAirdropAmount() {
       return this.form.airdropEntries.reduce(
         (total, entry) => total + parseFloat(entry.amount || 0),
@@ -295,7 +303,64 @@ export default {
       return this.form.airdropEntries.slice(0, this.numRows);
     },
   },
+  watch: {
+    form: {
+      async handler(val) {
+        if (
+          !val.tokenThumbnailUri ||
+          (!val.tokenDecimals &&
+            val.tokenType &&
+            val.tokenAddress &&
+            (val.tokenType === "fa1" || Number.isInteger(val.tokenId)))
+        ) {
+          const validation = validateContractAddress(val.tokenAddress);
+          if (validation === ValidationResult.VALID) {
+            let tokenMeta;
+            try {
+              tokenMeta = await getTokenMetadata(
+                val.tokenAddress,
+                val.tokenId || 0
+              );
+            } catch (e) {
+              tokenMeta = this.farms.priceFeed.find(
+                (el) =>
+                  el.tokenAddress === val.tokenAddress &&
+                  el.tokenId === val.tokenId
+              );
+            }
+            tokenMeta.tokenAddress = val.tokenAddress;
+            tokenMeta = farmUtils.overrideMetadata(tokenMeta);
+            this.form.tokenName = tokenMeta.symbol || tokenMeta.name;
+            this.form.tokenDecimals = tokenMeta.decimals;
+            this.form.tokenThumbnailUri = ipfs.transformUri(
+              tokenMeta.thumbnailUri
+            );
+          }
+        } else {
+          const validation = validateContractAddress(val.tokenAddress);
+          if (validation !== ValidationResult.VALID) {
+            this.form.tokenThumbnailUri = "";
+          }
+        }
+      },
+      deep: true,
+    },
+  },
+  async created() {
+    const vm = this;
+    await Promise.all([this.updateCurrentPrices(), this.updateLpTokens()]).then(
+      () => {
+        vm.loading = false;
+      }
+    );
+  },
   methods: {
+    ...mapActions([
+      "connectWallet",
+      "updateCurrentPrices",
+      "updateLpTokens",
+      "createFarm",
+    ]),
     addRows() {
       for (let i = 0; i < 10; i++) {
         this.form.airdropEntries.push({ address: "", amount: "" });
@@ -336,9 +401,12 @@ export default {
       cb(matches);
     },
     onTokenSelect(item) {
-      this.form.tokenAddress = item.address;
       this.form.tokenSymbol = item.value;
       this.form.tokenType = item.type === "fa2" ? "fa2" : "fa1";
+      this.form.tokenAddress = item.address;
+      this.form.tokenId = item.tokenId;
+      this.form.tokenDecimals = item.decimals;
+      this.form.tokenThumbnailUri = item.thumbnailUri;
     },
     triggerFileInput() {
       this.$refs.fileInput.click();
@@ -363,6 +431,9 @@ export default {
       });
       this.form.airdropEntries = newEntries;
       this.numRows = newEntries.length;
+    },
+    onSubmit() {
+      console.log("FORM DATA::::", this.form);
     },
   },
 };
