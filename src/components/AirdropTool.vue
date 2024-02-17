@@ -38,6 +38,7 @@
                 </el-col>
               </el-row>
               <el-row>
+              <el-col :span="14" style="margin-bottom: 0px">
                 <el-form-item :span="14" prop="tokenAddress" style="margin-bottom: 0px">
                   <el-autocomplete
                     v-model="form.tokenAddress"
@@ -67,7 +68,9 @@
                     </template>
                   </el-autocomplete>
                 </el-form-item>
-                <el-form-item :span="10" prop="poolTokenType">
+              </el-col>
+              <el-col :span="10" style="margin-bottom: 0px">
+                <el-form-item :span="10" prop="tokenType">
                   <el-select
                     v-model="form.tokenType"
                     placeholder="Token Type"
@@ -77,6 +80,7 @@
                     <el-option label="FA1.2" value="fa1"></el-option>
                   </el-select>
                 </el-form-item>
+              </el-col>
               </el-row>
               <el-row>
                 <el-form-item
@@ -102,7 +106,7 @@
                   background-color: transparent;
                   color: white;
                   padding: 5px 10px;
-                  margin-bottom: 10px;
+                  margin-bottom: 15px;
                 "
                 @click="triggerFileInput"
               >
@@ -199,7 +203,7 @@
             style="height: 100%; flex: 1"
           >
             <div class="summary">
-              <h3 style="margin-top: 0px">Airdrop Summary</h3>
+              <h3 style="margin-top: 7px">Airdrop Summary</h3>
               <el-row>
                 <el-col :span="12">
                   <span class="color__subheading">Token to Airdrop</span>
