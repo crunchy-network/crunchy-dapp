@@ -191,6 +191,9 @@ export default {
     },
 
     toFixedWithCommas(number, precision) {
+      if (this.form.farm.poolToken.isSpicyLp) {
+        precision = 18;
+      }
       return parseFloat(
         this.vueNumberFormat(number, { precision }).replace(/,/g, "")
       ).toFixed(precision);
