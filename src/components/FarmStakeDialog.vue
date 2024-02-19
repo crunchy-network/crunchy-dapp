@@ -207,6 +207,11 @@ export default {
     ...mapActions(["stakeInFarm", "initFarm", "getPoolTokenBalance"]),
 
     setMaxInput() {
+      console.log(this.form.farm.poolToken.balance);
+      console.log(
+        this.form.farm.poolToken.balance >= 0.000000000001,
+        Number(this.form.farm.poolToken.balance) >= 0.000000000001
+      );
       if (
         this.form.farm.poolToken.balance >= 0.0001 ||
         !this.form.farm.poolToken.balance
@@ -236,6 +241,9 @@ export default {
     },
 
     toFixedWithCommas(number, precision) {
+      if (this.form.farm.poolToken.isSpicyLp) {
+        precision = 18;
+      }
       return parseFloat(
         this.vueNumberFormat(number, { precision }).replace(/,/g, "")
       ).toFixed(precision);
