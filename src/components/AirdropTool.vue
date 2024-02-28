@@ -433,8 +433,8 @@ export default {
         const amount = parseFloat(amountString.trim());
         return { address: address.trim(), amount: amount };
       });
-      this.form.airdropEntries = newEntries;
-      this.numRows = newEntries.length;
+      this.form.airdropEntries = [...this.form.airdropEntries, ...newEntries];
+      this.numRows = this.form.airdropEntries.length;
     },
     convertAirdropEntriesToObject(entriesArray) {
       const entriesObject = {};
