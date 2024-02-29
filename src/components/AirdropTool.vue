@@ -272,8 +272,13 @@
           </el-card>
         </el-col>
       </el-row>
-      <el-row :gutter="20" type="flex" style="margin-top: 25px">
-        <el-col :span="8" :offset="16" style="text-align: right">
+      <el-row :gutter="20">
+        <el-col
+          id="submit-airdrop"
+          :span="24"
+          :xs="24"
+          style="text-align: right; margin-top: 15px"
+        >
           <el-button
             v-if="wallet.connected"
             type="primary"
@@ -526,6 +531,10 @@ export default {
   }
   #template-tool {
     height: auto;
+  }
+  #submit-airdrop {
+    margin-top: 0px !important;
+    padding-right: 10px !important;
   }
   .el-form-item {
     width: 100%;
