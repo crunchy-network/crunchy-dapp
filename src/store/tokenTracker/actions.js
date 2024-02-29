@@ -1,5 +1,6 @@
 import tokenTracker from "../../utils/token-tracker";
 import tokensBlocked from "../../tokensBlocked.json";
+import tokensUnRanked from "../../tokensUnranked.json";
 import _ from "lodash";
 import tzkt from "../../utils/tzkt";
 
@@ -79,7 +80,9 @@ export default {
 
   async sortTokensTracked({ commit, state }, tokens) {
     for (const [i, token] of Object.entries(tokens)) {
-      tokens[i].isRanked = token.tokenTvl >= 5000 ? 1 : 0;
+      tokens[i].isRanked =
+        !tokensUnRanked.includes(`${token.tokenAddress}_${token.tokenId}`) &&
+        token.tokenTvl >= 5000;
     }
     const orderedTokens = _.orderBy(
       tokens,
