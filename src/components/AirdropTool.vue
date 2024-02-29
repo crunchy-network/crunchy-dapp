@@ -136,7 +136,10 @@
                   />
                 </el-col>
               </el-row>
-              <el-row id="airdrop-entries-headers" style="margin-bottom: 0px; width: 100%">
+              <el-row
+                id="airdrop-entries-headers"
+                style="margin-bottom: 0px; width: 100%"
+              >
                 <el-col :span="14" :xs="12">
                   <el-form-item
                     label
@@ -168,11 +171,12 @@
               </el-row>
               <div style="max-height: 500px; overflow: auto">
                 <el-row>
-                  <div id="airdrop-entries"
+                  <div
                     v-for="(entry, index) in displayedAirdropEntries"
+                    id="airdrop-entries"
                     :key="index"
                   >
-                    <el-col :span="14" >
+                    <el-col :span="14">
                       <el-form-item style="margin-bottom: 10px">
                         <el-input
                           :id="'airdrop-address-' + index"
@@ -184,7 +188,8 @@
                       </el-form-item>
                     </el-col>
                     <el-col :span="10">
-                      <el-form-item id="airdrop-amount"
+                      <el-form-item
+                        id="airdrop-amount"
                         style="margin-left: 40px; margin-bottom: 10px"
                       >
                         <el-input
@@ -223,7 +228,7 @@
           >
             <div class="summary">
               <h3 style="margin-top: 7px">Airdrop Summary</h3>
-              <el-row>
+              <el-row id="summary-headers">
                 <el-col :span="12">
                   <span class="color__subheading">Token to Airdrop</span>
                 </el-col>
@@ -231,7 +236,7 @@
                   <span class="color__subheading">Total Airdrop Amount</span>
                 </el-col>
               </el-row>
-              <el-row style="margin-bottom: 15px">
+              <el-row id="summary-token-total" style="margin-bottom: 15px">
                 <el-col :span="12">
                   <span> {{ form.tokenSymbol }}</span>
                 </el-col>
@@ -239,7 +244,7 @@
                   <span> {{ totalAirdropAmount }}</span>
                 </el-col>
               </el-row>
-              <el-row>
+              <el-row id="summary-entries">
                 <el-col :span="12">
                   <span class="color__subheading">Airdrop Address</span>
                 </el-col>
@@ -252,6 +257,7 @@
               >
                 <el-row
                   v-for="(entry, index) in form.airdropEntries"
+                  id="summary-entries"
                   :key="'summary-' + index"
                 >
                   <el-col :span="12">
@@ -509,7 +515,15 @@ export default {
     padding: 0 !important;
     width: 80% !important;
   }
-
+  #summary-headers {
+    flex-direction: row;
+  }
+  #summary-token-total {
+    flex-direction: row;
+  }
+  #summary-entries {
+    flex-direction: row;
+  }
   #template-tool {
     height: auto;
   }
