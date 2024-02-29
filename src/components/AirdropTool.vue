@@ -1,7 +1,7 @@
 <template>
   <div id="airdrop-tool" class="create-token">
     <nav-menu></nav-menu>
-    <el-main>
+    <el-main class="airdrop-tool">
       <el-row class="bottom-margin" :gutter="20" type="flex" align="bottom">
         <el-col :span="24">
           <div class="grid-content">
@@ -460,8 +460,12 @@ export default {
 @import "../crunchy-variables.scss";
 @import "~element-ui/packages/theme-chalk/src/common/var";
 .airdrop-tool {
-  display: flex;
-  flex-direction: row;
+  position: relative;
+  width: 100%;
+  max-width: 1450px;
+  margin: 0 auto;
+  padding-left: 40px;
+  text-transform: none !important;
 }
 .info-icon {
   position: relative;
