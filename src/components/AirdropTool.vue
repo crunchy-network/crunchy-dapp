@@ -89,9 +89,13 @@
                   class="color__subheading"
                   style="height: 35px; margin-bottom: 0px"
                 >
-                  Upload Airdrop List From Our
-                  <a href="/airdrop-template.csv" style="color: #555cff">
+                  Upload Airdrop List from our
+                  <a href="/airdrop-template.csv" style="color: #555cff; text-decoration: none;">
                     Template</a
+                  >
+                  or use our
+                  <a href="/airdrop-template.csv" style="color: #555cff; text-decoration: none;">
+                    Airdrop List Tool</a
                   >. (Optional)
                 </el-form-item>
               </el-row>
@@ -99,7 +103,7 @@
                 id="airdrop-file"
                 type="file"
                 plain
-                style="border-radius: 10px; padding: 10px 12px; margin-top: 5px"
+                style="border-radius: 10px; padding: 10px 12px; margin-top: 5px; margin-bottom: 20px;"
                 class="_action-btn"
                 @click="triggerFileInput"
               >
