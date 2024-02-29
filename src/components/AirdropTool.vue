@@ -98,16 +98,9 @@
               <el-button
                 id="airdrop-file"
                 type="file"
-                style="
-                  font-size: 12px;
-                  border: 1px, solid, #555cff;
-                  border-color: #555cff;
-                  border-radius: 20px;
-                  background-color: transparent;
-                  color: white;
-                  padding: 5px 10px;
-                  margin-bottom: 15px;
-                "
+                plain
+                style="border-radius: 10px; padding: 10px 12px; margin-top: 5px"
+                class="_action-btn"
                 @click="triggerFileInput"
               >
                 UPLOAD AIRDROP FILE
@@ -467,9 +460,27 @@ export default {
   padding-left: 40px;
   text-transform: none !important;
 }
-.info-icon {
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
+
+@media (max-width: 991px) {
+  .airdrop-tool,
+  .el-row {
+    flex-direction: column; /* Stack elements vertically */
+    padding-left: 20; /* Adjust padding for smaller screens */
+  }
+
+  .el-col {
+    /* Ensure each column takes full width on small screens */
+    width: 100%;
+    max-width: 100%; /* Override any max-width for columns */
+    margin: 0; /* Reset margins if any */
+    padding-right: 0;
+  }
+
+  .box-card {
+    /* Adjust card styling for mobile */
+    margin-bottom: 20px; /* Add some space between stacked cards */
+  }
+
+  /* You might want to adjust padding, margins, or other styles for smaller screens */
 }
 </style>
