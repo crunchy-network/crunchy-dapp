@@ -88,57 +88,61 @@
                   </el-form-item>
                 </el-col>
               </el-row>
-              <el-row>
-                <el-form-item
-                  label
-                  for="airdrop-file"
-                  class="color__subheading"
-                  style="height: 35px; margin-bottom: 0px"
-                >
-                  Upload Airdrop List from our
-                  <a
-                    href="/airdrop-template.csv"
-                    style="color: #555cff; text-decoration: none"
+              <el-row id="template-tool">
+                <el-col :span="24">
+                  <el-form-item
+                    label
+                    for="airdrop-file"
+                    class="color__subheading"
+                    style="margin-bottom: 0px; width: 100%"
                   >
-                    Template</a
+                    Upload Airdrop List from our
+                    <a
+                      href="/airdrop-template.csv"
+                      style="color: #555cff; text-decoration: none"
+                    >
+                      Template</a
+                    >
+                    or use our
+                    <a
+                      href="/airdrop-template.csv"
+                      style="color: #555cff; text-decoration: none"
+                    >
+                      Airdrop List Tool</a
+                    >. (Optional)
+                  </el-form-item>
+                </el-col>
+                <el-col>
+                  <el-button
+                    id="airdrop-file"
+                    type="file"
+                    plain
+                    style="
+                      border-radius: 10px;
+                      padding: 10px 12px;
+                      margin-top: 5px;
+                      margin-bottom: 20px;
+                    "
+                    class="_action-btn"
+                    @click="triggerFileInput"
                   >
-                  or use our
-                  <a
-                    href="/airdrop-template.csv"
-                    style="color: #555cff; text-decoration: none"
-                  >
-                    Airdrop List Tool</a
-                  >. (Optional)
-                </el-form-item>
+                    UPLOAD AIRDROP FILE
+                  </el-button>
+                  <input
+                    ref="fileInput"
+                    type="file"
+                    style="display: none"
+                    @change="handleFileUpload"
+                  />
+                </el-col>
               </el-row>
-              <el-button
-                id="airdrop-file"
-                type="file"
-                plain
-                style="
-                  border-radius: 10px;
-                  padding: 10px 12px;
-                  margin-top: 5px;
-                  margin-bottom: 20px;
-                "
-                class="_action-btn"
-                @click="triggerFileInput"
-              >
-                UPLOAD AIRDROP FILE
-              </el-button>
-              <input
-                ref="fileInput"
-                type="file"
-                style="display: none"
-                @change="handleFileUpload"
-              />
-              <el-row style="margin-bottom: 0px">
-                <el-col :span="14">
+              <el-row id="airdrop-entries-headers" style="margin-bottom: 0px; width: 100%">
+                <el-col :span="14" :xs="12">
                   <el-form-item
                     label
                     for="airdrop-address"
                     class="color__subheading"
-                    style="margin-bottom: 0px"
+                    style="margin-bottom: 0px; line-height: 1.5 !important"
                   >
                     Airdrop Address(s)
                     <el-tooltip
@@ -150,8 +154,9 @@
                     </el-tooltip>
                   </el-form-item>
                 </el-col>
-                <el-col :span="10">
+                <el-col :span="10" :xs="12">
                   <el-form-item
+                    id="airdrop-amount-header"
                     style="margin-left: 40px; margin-bottom: 0px"
                     label
                     for="airdrop-amount"
@@ -163,23 +168,23 @@
               </el-row>
               <div style="max-height: 500px; overflow: auto">
                 <el-row>
-                  <div
+                  <div id="airdrop-entries"
                     v-for="(entry, index) in displayedAirdropEntries"
                     :key="index"
                   >
-                    <el-col :span="14">
+                    <el-col :span="14" >
                       <el-form-item style="margin-bottom: 10px">
                         <el-input
                           :id="'airdrop-address-' + index"
                           v-model="form.airdropEntries[index].address"
                           class="el-input"
                           type="text"
-                          placeholder="Address to receive airdrop"
+                          placeholder="Airdrop Address..."
                         />
                       </el-form-item>
                     </el-col>
                     <el-col :span="10">
-                      <el-form-item
+                      <el-form-item id="airdrop-amount"
                         style="margin-left: 40px; margin-bottom: 10px"
                       >
                         <el-input
@@ -480,8 +485,34 @@ export default {
   margin: 0 auto;
   text-transform: none !important;
 }
+#template-tool {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: left;
+}
+
+::v-deep .el-form-item__content {
+  line-height: 1.5 !important;
+}
 
 @media (max-width: 991px) {
+  #airdrop-entries-headers {
+    flex-direction: row;
+  }
+  #airdrop-entries {
+    display: flex;
+    flex-direction: row;
+  }
+  #airdrop-amount {
+    margin-left: 20px !important;
+    padding: 0 !important;
+    width: 80% !important;
+  }
+
+  #template-tool {
+    height: auto;
+  }
   .el-form-item {
     width: 100%;
   }
@@ -500,6 +531,7 @@ export default {
   }
 
   .el-col {
+    padding-right: 0 !important;
     width: 100%;
     max-width: 100%;
   }
