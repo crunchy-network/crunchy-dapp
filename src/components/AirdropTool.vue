@@ -38,49 +38,55 @@
                 </el-col>
               </el-row>
               <el-row>
-              <el-col :span="14" style="margin-bottom: 0px">
-                <el-form-item :span="14" prop="tokenAddress" style="margin-bottom: 0px">
-                  <el-autocomplete
-                    v-model="form.tokenAddress"
-                    class="el-input"
-                    :fetch-suggestions="queryTokens"
-                    :trigger-on-focus="false"
-                    placeholder="Search for Token or Enter Token Address"
-                    @select="onTokenSelect"
+                <el-col :span="14" style="margin-bottom: 0px">
+                  <el-form-item
+                    :span="14"
+                    prop="tokenAddress"
+                    style="margin-bottom: 0px"
                   >
-                    <template slot-scope="{ item }">
-                      <div style="padding: 6px 0">
-                        <el-avatar
-                          :src="item.thumbnailUri"
-                          fit="cover"
-                          shape="circle"
-                          :size="40"
-                          style="
-                            position: relative;
-                            border: 4px solid #fff;
-                            vertical-align: middle;
-                            margin-right: 14px;
-                          "
-                        >
-                        </el-avatar>
-                        {{ item.value }}
-                      </div>
-                    </template>
-                  </el-autocomplete>
-                </el-form-item>
-              </el-col>
-              <el-col :span="10" style="margin-bottom: 0px">
-                <el-form-item :span="10" prop="tokenType">
-                  <el-select
-                    v-model="form.tokenType"
-                    placeholder="Token Type"
-                    style="margin-left: 40px"
-                  >
-                    <el-option label="FA2" value="fa2"></el-option>
-                    <el-option label="FA1.2" value="fa1"></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
+                    <el-autocomplete
+                      id="token-input"
+                      v-model="form.tokenAddress"
+                      class="el-input"
+                      :fetch-suggestions="queryTokens"
+                      :trigger-on-focus="false"
+                      placeholder="Search for Token or Enter Token Address"
+                      @select="onTokenSelect"
+                    >
+                      <template slot-scope="{ item }">
+                        <div style="padding: 6px 0">
+                          <el-avatar
+                            :src="item.thumbnailUri"
+                            fit="cover"
+                            shape="circle"
+                            :size="40"
+                            style="
+                              position: relative;
+                              border: 4px solid #fff;
+                              vertical-align: middle;
+                              margin-right: 14px;
+                            "
+                          >
+                          </el-avatar>
+                          {{ item.value }}
+                        </div>
+                      </template>
+                    </el-autocomplete>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="10" style="margin-bottom: 0px">
+                  <el-form-item :span="10" prop="tokenType">
+                    <el-select
+                      id="token-type"
+                      v-model="form.tokenType"
+                      placeholder="Token Type"
+                      style="margin-left: 40px"
+                    >
+                      <el-option label="FA2" value="fa2"></el-option>
+                      <el-option label="FA1.2" value="fa1"></el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
               </el-row>
               <el-row>
                 <el-form-item
@@ -90,11 +96,17 @@
                   style="height: 35px; margin-bottom: 0px"
                 >
                   Upload Airdrop List from our
-                  <a href="/airdrop-template.csv" style="color: #555cff; text-decoration: none;">
+                  <a
+                    href="/airdrop-template.csv"
+                    style="color: #555cff; text-decoration: none"
+                  >
                     Template</a
                   >
                   or use our
-                  <a href="/airdrop-template.csv" style="color: #555cff; text-decoration: none;">
+                  <a
+                    href="/airdrop-template.csv"
+                    style="color: #555cff; text-decoration: none"
+                  >
                     Airdrop List Tool</a
                   >. (Optional)
                 </el-form-item>
@@ -103,7 +115,12 @@
                 id="airdrop-file"
                 type="file"
                 plain
-                style="border-radius: 10px; padding: 10px 12px; margin-top: 5px; margin-bottom: 20px;"
+                style="
+                  border-radius: 10px;
+                  padding: 10px 12px;
+                  margin-top: 5px;
+                  margin-bottom: 20px;
+                "
                 class="_action-btn"
                 @click="triggerFileInput"
               >
@@ -461,30 +478,35 @@ export default {
   width: 100%;
   max-width: 1450px;
   margin: 0 auto;
-  padding-left: 40px;
   text-transform: none !important;
 }
 
 @media (max-width: 991px) {
-  .airdrop-tool,
+  .el-form-item {
+    width: 100%;
+  }
+  .el-select {
+    margin-left: 0 !important;
+    width: 100%;
+  }
+
+  ::v-deep #token-input {
+    margin-bottom: 10px;
+    width: 100%;
+  }
   .el-row {
-    flex-direction: column; /* Stack elements vertically */
-    padding-left: 20; /* Adjust padding for smaller screens */
+    display: flex;
+    flex-direction: column;
   }
 
   .el-col {
-    /* Ensure each column takes full width on small screens */
     width: 100%;
-    max-width: 100%; /* Override any max-width for columns */
-    margin: 0; /* Reset margins if any */
-    padding-right: 0;
+    max-width: 100%;
   }
 
   .box-card {
-    /* Adjust card styling for mobile */
-    margin-bottom: 20px; /* Add some space between stacked cards */
+    margin-bottom: 20px;
+    width: 100%;
   }
-
-  /* You might want to adjust padding, margins, or other styles for smaller screens */
 }
 </style>
