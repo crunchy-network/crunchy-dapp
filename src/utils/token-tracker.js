@@ -61,6 +61,43 @@ const TOO_FEW_TVL_POOL_ADDRESSES = [
   },
 ];
 
+function findTokensForExchange(element, exchange) {
+  const token = exchange.tokens.find(
+    (ele) =>
+      ele.token.tokenAddress === element.tokenAddress &&
+      ele.token.tokenId === element.tokenId
+  );
+  const poolToken = exchange.tokens.find(
+    (ele) =>
+      ele.token.tokenAddress !== element.tokenAddress ||
+      (ele.token.tokenAddress === element.tokenAddress &&
+        ele.token.tokenId !== element.tokenId)
+  );
+  return { token, poolToken };
+}
+
+function calculateTokenReserves(token, dexType) {
+  let tokenReserves = 0;
+  if (dexType === "alien") {
+    tokenReserves =
+      token.reserves /
+      (ALIEN_FEE_DENOMINATOR * Math.pow(10, token.token.decimals));
+  } else {
+    tokenReserves = token.reserves / Math.pow(10, token.token.decimals);
+  }
+
+  return tokenReserves;
+}
+
+function getCfmmPrice(sqrtPrice, tokenA, tokenB) {
+  console.log(tokenB.token.decimals - tokenA.token.decimals)
+  const sqrtPriceBigNumber = new BigNumber(sqrtPrice);
+  return sqrtPriceBigNumber
+    .times(sqrtPriceBigNumber)
+    .div(Math.pow(2, 192))
+    // .times(tokenB.token.decimals - tokenA.token.decimals)
+    .toNumber();
+}
 function findPoolPairedWithTez(quotes) {
   let poolPriceInTez = 0;
   if (!quotes) {
@@ -663,7 +700,7 @@ export default {
         const element = allTokenSpot[outerIndex];
         element.id = element.tokenAddress + "_" + element.tokenId;
         const tokenMetadata = updatedIndexerTokens[element.id];
-        
+
         /**
         *Calculate aggregated price 
         weighted on tvl from Plenty, Spicy and Quipu
@@ -767,11 +804,25 @@ export default {
             );
 
             // Get the price for quote
-            midPrice = TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(
-              pool1D.token.tokenAddress
-            )
-              ? pool1D.buckets[0].close
-              : pool1D.buckets[0].close * quoteTokenPriceInTez;
+            if (e.dex.type === "quipuswap_v3") {
+              const sqrtPriceElement = e.params.find(
+                (element) => element.name === "sqrt_price"
+              );
+              let sqrtPrice;
+              if (sqrtPriceElement) {
+                sqrtPrice = sqrtPriceElement.value.replace(/^"(.*)"$/, "$1");
+              } else {
+                console.log("sqrt_price element not found in the array.");
+              }
+              const { token, poolToken } = findTokensForExchange(element, e);
+              midPrice = getCfmmPrice(sqrtPrice, token, poolToken);
+            } else {
+              midPrice = TEZ_AND_WRAPPED_TEZ_ADDRESSES.includes(
+                pool1D.token.tokenAddress
+              )
+                ? pool1D.buckets[0].close
+                : pool1D.buckets[0].close * quoteTokenPriceInTez;
+            }
 
             const dateChecker = new Date(oneDayAgo);
             // Set the time components to zero
@@ -800,27 +851,12 @@ export default {
          *Calculate tvl for each exchange
          */
         element.exchanges.forEach((e, index) => {
-          const token = e.tokens.find(
-            (ele) =>
-              ele.token.tokenAddress === element.tokenAddress &&
-              ele.token.tokenId === element.tokenId
-          );
-
-          let tokenReserves = 0;
-          if (e.dex.type === "alien") {
-            tokenReserves =
-              token.reserves /
-              (ALIEN_FEE_DENOMINATOR * Math.pow(10, token.token.decimals));
-          } else {
-            tokenReserves = token.reserves / Math.pow(10, token.token.decimals);
-          }
+          const { token } = findTokensForExchange(element, e);
+          const tokenReserves = calculateTokenReserves(token, e.dex.type);
           element.exchanges[index].tokenTvl =
-            new BigNumber(tokenReserves * element.aggregatedPrice).toNumber() ||
-            0;
+            new BigNumber(tokenReserves * e.midPrice).toNumber() || 0;
           element.exchanges[index].tokenTvlUsd =
-            new BigNumber(
-              tokenReserves * element.aggregatedPrice * xtzUSD
-            ).toNumber() || 0;
+            new BigNumber(tokenReserves * e.midPrice * xtzUSD).toNumber() || 0;
           // Push the exchange with too few tvl to the list
           if (element.exchanges[index].tokenTvl < 5) {
             TOO_FEW_TVL_POOL_ADDRESSES.push({
@@ -950,10 +986,11 @@ export default {
 
       const priceUsd = price.times(xtzUsd);
       element.usdValue = price.times(xtzUsd).toNumber();
-      
-      const totalSupply = new BigNumber(element.totalSupply)
-        .div(new BigNumber(10).pow(element.decimals));
-      
+
+      const totalSupply = new BigNumber(element.totalSupply).div(
+        new BigNumber(10).pow(element.decimals)
+      );
+
       if (element.tokenAddress === process.env.VUE_APP_CONTRACTS_CRNCHY) {
         const crnchyAdminSupply = await tzkt.getTokenBalance(
           process.env.VUE_APP_CRUNCHY_ADMIN_WALLET,
@@ -961,13 +998,15 @@ export default {
           element.tokenId
         );
         element.calcSupply = totalSupply
-                              .minus(new BigNumber(crnchyAdminSupply)
-                              .div(new BigNumber(10).pow(element.decimals)))
-                              .toNumber();
+          .minus(
+            new BigNumber(crnchyAdminSupply).div(
+              new BigNumber(10).pow(element.decimals)
+            )
+          )
+          .toNumber();
       } else {
         element.calcSupply = totalSupply.toNumber();
       }
-
 
       element.mktCap = new BigNumber(element.calcSupply)
         .times(element.currentPrice)
