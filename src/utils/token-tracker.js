@@ -671,6 +671,11 @@ export default {
         let totalReserves = 0;
         let aggregatedClose = 0;
         let close = 0;
+        if(element.tokenAddress === "KT1UQVEDf4twF2eMbrCKQAxN7YYunTAiCTTm") {
+          console.log(element)
+          console.log(element.quotes)
+        }
+        
 
         for (const quoteData of element.quotes) {
           // Exclude aggregated price calculation from volatile pool
@@ -797,9 +802,9 @@ export default {
         });
 
         /**
-         *Calculate tvl for each exchange
+         * Calculate tvl for each exchange
          */
-        element.exchanges.forEach((e, index) => {
+        element.exchanges = element.exchanges.filter((e, index) => {
           const token = e.tokens.find(
             (ele) =>
               ele.token.tokenAddress === element.tokenAddress &&
@@ -815,19 +820,20 @@ export default {
             tokenReserves = token.reserves / Math.pow(10, token.token.decimals);
           }
           element.exchanges[index].tokenTvl =
-            new BigNumber(tokenReserves * element.aggregatedPrice).toNumber() ||
-            0;
+            new BigNumber(tokenReserves * element.aggregatedPrice).toNumber() || 0;
           element.exchanges[index].tokenTvlUsd =
             new BigNumber(
               tokenReserves * element.aggregatedPrice * xtzUSD
             ).toNumber() || 0;
-          // Push the exchange with too few tvl to the list
+          // Remove the exchange with too few tvl from the array
           if (element.exchanges[index].tokenTvl < 5) {
             TOO_FEW_TVL_POOL_ADDRESSES.push({
               poolAddress: element.exchanges[index].dex.address,
               poolId: element.exchanges[index].poolId,
             });
+            return false; // Exclude the exchange from the exchanges array
           }
+          return true; // Include the exchange in the exchanges array
         });
         /**
          *Calculate total tvl and volume for each token
@@ -852,6 +858,11 @@ export default {
             highestTvl = tvl;
             highestTvlExchange = exchange;
           }
+        }
+
+        // No pool paired with token
+        if(!highestTvlExchange) {
+          continue;
         }
 
         const highestTvlPairedToken = highestTvlExchange.tokens.find(
