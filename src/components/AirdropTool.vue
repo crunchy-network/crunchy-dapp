@@ -238,7 +238,22 @@
               </el-row>
               <el-row id="summary-token-total" style="margin-bottom: 15px">
                 <el-col :span="12">
-                  <span> {{ form.tokenSymbol }}</span>
+                  <span>{{ form.tokenSymbol }}</span>
+                  <el-avatar
+                    v-if="form.tokenThumbnailUri"
+                    :src="form.tokenThumbnailUri"
+                    fit="cover"
+                    shape="circle"
+                    :size="15"
+                    style="
+                      position: relative;
+                      border: 4px solid #fff;
+                      vertical-align: middle;
+                      margin-left: 5px;
+                      margin-bottom: 4px;
+                    "
+                  >
+                  </el-avatar>
                 </el-col>
                 <el-col :span="12" style="text-align: right">
                   <span> {{ totalAirdropAmount }}</span>
