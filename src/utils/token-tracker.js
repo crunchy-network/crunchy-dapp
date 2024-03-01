@@ -671,11 +671,6 @@ export default {
         let totalReserves = 0;
         let aggregatedClose = 0;
         let close = 0;
-        if(element.tokenAddress === "KT1UQVEDf4twF2eMbrCKQAxN7YYunTAiCTTm") {
-          console.log(element)
-          console.log(element.quotes)
-        }
-        
 
         for (const quoteData of element.quotes) {
           // Exclude aggregated price calculation from volatile pool
