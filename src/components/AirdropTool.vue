@@ -27,7 +27,7 @@
           >
             <el-form>
               <el-row>
-                <el-col :span="10" style="height: 40px">
+                <el-col :span="10" style="height: 30px">
                   <el-form-item
                     label
                     for="tokenAddress"
