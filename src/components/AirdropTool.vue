@@ -105,8 +105,8 @@
                     >
                     or use our
                     <a
-                      href="/airdrop-template.csv"
                       style="color: #555cff; text-decoration: none"
+                      @click.prevent="toggleAirdropListTool"
                     >
                       Airdrop List Tool</a
                     >. (Optional)
@@ -305,6 +305,57 @@
         </el-col>
       </el-row>
     </el-main>
+    <el-dialog
+      :visible.sync="showAirdropListTool"
+      :before-close="handleClose"
+      width="400px"
+      class="airdrop-list-dialog"
+    >
+      <div class="dialog-header">
+        <h1 style="margin-bottom: 15px; margin-top: 5px">Airdrop List Tool</h1>
+        <p style="font-weight: 200; margin-bottom: 15px">
+          Search a specific token and then click generate to create a list of
+          token holders.
+        </p>
+        <span style="margin-bottom: 20px">Enter a Token Name or Address</span>
+      </div>
+      <el-form :model="form">
+        <el-form-item
+          prop="listTokenAddress"
+          style="margin-bottom: 5px; margin-top: 5px"
+        >
+          <el-autocomplete
+            id="list-token-input"
+            v-model="form.listTokenAddress"
+            class="el-input"
+            :fetch-suggestions="queryTokens"
+            :trigger-on-focus="false"
+            placeholder="Search for Token or Enter Token Address"
+            @select="onListTokenSelect"
+          >
+            <template slot-scope="{ item }">
+              <div class="autocomplete-item">
+                <el-avatar
+                  :src="item.thumbnailUri"
+                  fit="cover"
+                  shape="circle"
+                  size="40"
+                  class="autocomplete-avatar"
+                ></el-avatar>
+                {{ item.value }}
+              </div>
+            </template>
+          </el-autocomplete>
+        </el-form-item>
+        <span style="margin-top: 5px">Wallet Addresses: 0</span>
+      </el-form>
+      <el-button
+        type="primary"
+        style="margin-top: 20px; width: 100%; justify-content: center"
+        @click="generateList"
+        >Generate List</el-button
+      >
+    </el-dialog>
   </div>
 </template>
 
@@ -314,6 +365,7 @@ import ipfs from "./../utils/ipfs";
 import farmUtils from "./../utils/farm";
 import NavMenu from "./NavMenu.vue";
 import ConnectButton from "./ConnectButton.vue";
+import AirdropListTool from "./AirdropListTool.vue";
 import { getTokenMetadata } from "../utils/tezos";
 import { ValidationResult, validateContractAddress } from "@taquito/utils";
 
@@ -322,9 +374,11 @@ export default {
   components: {
     NavMenu,
     ConnectButton,
+    AirdropListTool,
   },
   data() {
     return {
+      showAirdropListTool: false,
       form: {
         tokenName: "",
         tokenId: "",
@@ -496,6 +550,9 @@ export default {
         this.form.airdropEntries
       );
       console.log("Prepared Entries for Submission:", entriesObject);
+    },
+    toggleAirdropListTool() {
+      this.showAirdropListTool = !this.showAirdropListTool;
     },
   },
 };
