@@ -99,7 +99,7 @@
                     Upload Airdrop List from our
                     <a
                       href="/airdrop-template.csv"
-                      style="color: #555cff; text-decoration: none"
+                      style="color: #555cff; text-decoration: none; cursor:pointer;"
                     >
                       Template</a
                     >
@@ -371,6 +371,31 @@
       <div class="loading-container" v-loading="isPending" style="padding: 30px">
   </div>
     </el-dialog>
+    <el-dialog
+  :visible.sync="isSuccess"
+  :before-close="handleClose"
+  width="400px"
+  class="airdrop-list-dialog"
+>
+  <div class="dialog-header">
+    <h1 style="margin-bottom: 15px; margin-top: 5px">Airdrop Completed!</h1>
+    <p style="font-weight: 200; margin-bottom: 20px">
+      Tokens have been airdropped. Check the transaction link below to verify the airdrop was successful.
+    </p>
+    <span class="color__subheading" style="margin-bottom: 5px">Transaction</span>
+    <div style="display: flex; align-items: center;">
+      <a
+        :href="'https://better-call.dev/' + successTx"
+        target="_blank"
+        style="color: #555cff; max-width: calc(100% - 30px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight:600;"
+      >
+        {{ successTx.substr(0, 15) + '...' + successTx.substr(-8) }}
+      </a>
+        <i class="el-icon-copy-document" style="cursor: pointer; padding-left: 10px; color: #555cff !important;" @click="copyToClipboard(successTx)"></i>
+    </div>
+  </div>
+</el-dialog>
+
   </div>
 </template>
 
@@ -382,7 +407,6 @@ import NavMenu from "./NavMenu.vue";
 import ConnectButton from "./ConnectButton.vue";
 import { getTokenMetadata } from "../utils/tezos";
 import { ValidationResult, validateContractAddress } from "@taquito/utils";
-import { set } from "lodash";
 
 export default {
   name: "AirdropTool",
@@ -395,6 +419,7 @@ export default {
       showAirdropListTool: false,
       isPending: false,
       isSuccess: false,
+      successTx: "xt1djaksk83fnnjk!349fnjcxjsdvnskai9ed3ndjjka",
       form: {
         tokenName: "",
         tokenId: "",
