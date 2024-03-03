@@ -277,6 +277,7 @@
         </el-col>
       </el-row>
 
+      <template v-if="farms.searchInput.length === 0 || myOrderedFarmsVisible > 0">
       <el-row class="myFarm" style="margin-top: 16px">
         <el-col v-show="isMobile" class="farm-box-title" :span="6">
           My Farms
@@ -313,6 +314,8 @@
                         type="flex"
                         align="middle"
                         style="
+                          margin-left: 10px;
+                          margin-right: 5px;
                           padding: 0 16px;
                           color: var(--color-subheading-text) !important;
                         "
@@ -396,7 +399,7 @@
                   </el-row>
 
                   <el-row
-                    v-if="myOrderedFarms.length === 0"
+                    v-if="myOrderedFarmsVisible === 0"
                     style="text-align: center; padding-top: 16px"
                   >
                     <span
@@ -428,8 +431,8 @@
           </div>
         </el-col>
       </el-row>
-      <FarmStakeDialog ref="stakeDialog" />
-      <FarmUnstakeDialog ref="unstakeDialog" />
+
+      </template>
 
       <el-row style="margin-top: 16px">
         <el-col v-show="isMobile" :span="24" class="farm-box-title">
@@ -466,8 +469,9 @@
                         type="flex"
                         align="middle"
                         style="
+                          margin-left: 10px;
+                          margin-right: 5px;
                           padding: 0 16px;
-                          padding-bottom: 4px;
                           color: var(--color-subheading-text) !important;
                         "
                       >
@@ -663,14 +667,21 @@ export default {
       );
     },
 
+    myOrderedFarmsVisible: function () {
+      return this.myOrderedFarms.filter(f => f.visible).length;
+    },
+
     totalFarms: function () {
       return Object.values(this.farms.data).length;
     },
   },
 
   created() {
+    this.$store.commit("updateFarmsFilters", this.defaultFilterOptions);
+    this.refresh();
+
     if (this.$route.query.q) {
-      this.$store.commit("updateFarmsSearchInput", this.$route.query.q);
+      this.updateSearchInput(this.$route.query.q);
     }
 
     if (this.$route.query.f) {
@@ -678,10 +689,8 @@ export default {
       if (!Array.isArray(filters)) {
         filters = [filters];
       }
-      this.$store.commit("updateFarmsFilters", filters);
+      this.updateFilters(filters);
     }
-    this.$store.commit("updateFarmsFilters", this.defaultFilterOptions);
-    this.refresh();
   },
   methods: {
     ...mapActions([
@@ -709,19 +718,22 @@ export default {
       }
     },
 
-    refresh() {
+    async refresh() {
       this.updateFirstLoad(true);
-      this.fetchAllFarms();
+      await this.fetchAllFarms();
     },
 
     updateSearchInput(input) {
-      this.$router.replace({
-        query: {
-          ...this.$route.query,
-          q: input,
-        },
-      });
+      if (this.$route.query.q !== input) {
+        this.$router.replace({
+          query: {
+            ...this.$route.query,
+            q: input,
+          },
+        });
+      }
       this.$store.commit("updateFarmsSearchInput", input);
+      this.updateFirstLoad(false);
       this.filterAllFarmRows();
     },
 

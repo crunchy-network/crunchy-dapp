@@ -68,7 +68,7 @@
 export default {
   name: "App",
   created() {
-    this.$store.dispatch("checkWalletConnected");
+    this.$store.dispatch("initWallet");
   },
 };
 </script>
@@ -596,6 +596,90 @@ header .grid-content button.el-button {
   text-transform: none !important;
 }
 
+#farm-create  {
+  .el-form-item__label {
+    width: 200px !important;
+    text-align: left;
+  }
+  .el-form-item__content {
+    margin-left: 0px !important;
+    width: 100%;
+    div {
+      padding-left: 0 !important;
+    }
+  }
+  .el-form-item {
+    display: flex;
+    flex-direction: column;
+  }
+  .el-date-editor.el-input__inner {
+    width: 100% !important;
+    display: flex;
+    justify-content: space-evenly;
+  }
+  .box-card-summary {
+    display: flex;
+    flex-direction: column;
+    .el-card__body {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+  }
+  .create-farm-wrapper {
+    margin-top: auto;
+  }
+  .token {
+    display: flex;
+    .el-form-item {
+      flex: 1;
+      overflow: hidden;
+    }
+    .el-form-item:first-child {
+      flex: 0 0 80%;
+    }
+    .el-form-item:nth-child(2) {
+      .el-form-item__content {
+        width: 100%;
+        div {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+      }
+      }
+    }
+  }
+  .service-fee {
+    .el-form-item__content {
+      div {
+        width: 100% !important;
+      }
+    }
+  }
+  .reward-amount {
+    display: flex;
+    flex: 1;
+    .el-form-item:first-child {
+      flex: 0 0 100%;
+    }
+    .el-input {
+      width: 100% !important;
+    }
+  }
+  .bonus {
+    display: flex;
+    flex: 1;
+    .el-date-editor.el-input {
+      width: 50% !important;
+    }
+    .el-form-item:first-child {
+      flex: 0 0 100%;
+    }
+    .el-form-item__content div {
+      width: 35% !important;
+    }
+  }
+}
+
 .el-table th {
   padding-bottom: 20px !important;
 }
@@ -825,6 +909,32 @@ button {
   background-color: #9093991e !important;
 }
 
+.el-date-range-picker .el-picker-panel__body {
+  @media (max-width: 450px) {
+    min-width: 100% !important;
+  }
+}
+.el-picker-panel {
+  @media (max-width: 450px) {
+    left: 0px !important;
+    width: 100% !important;
+  }
+}
+
+.el-date-range-picker {
+  top: 632px !important;
+  @media (max-width: 450px) {
+    top: 675px !important;
+  }
+}
+.el-date-range-picker__header div,
+.el-date-table td span,
+.el-input--small .el-input__inner
+ {
+  @media (max-width: 450px) {
+    font-size: 11px !important;
+  }
+}
 .el-picker-panel__icon-btn,
 .el-date-picker__header-label,
 .el-date-range-picker .el-picker-panel__content,

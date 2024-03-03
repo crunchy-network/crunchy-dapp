@@ -29,8 +29,8 @@ const sixMonthAgo = new Date(Date.now() - sixMonthInMiliSecond).toISOString();
 const oneYearAgo = new Date(Date.now() - oneYearInMiliSecond).toISOString();
 const TEZ_AND_WRAPPED_TEZ_ADDRESSES = [
   "tez",
-  "KT1UpeXdK6AJbX58GJ92pLZVCucn2DR8Nu4b",
   "KT1PnUZCp3u2KzWr93pn4DD7HAJnm3rWVrgn",
+  "KT1UpeXdK6AJbX58GJ92pLZVCucn2DR8Nu4b",
 ];
 
 // const TOO_FEW_TVL_POOL_ADDRESSES = ["KT1FDyQgVeU7pwJ3wKcEQbxp6PzQZgcumZxz"];
@@ -53,6 +53,10 @@ const TOO_FEW_TVL_POOL_ADDRESSES = [
   },
   {
     poolAddress: "KT1H5b7LxEExkFd2Tng77TfuWbM5aPvHstPr",
+    poolId: 0,
+  },
+  {
+    poolAddress: "KT1AXHdYKmE68ta5NQbvsTfTvx9NfJrKY9Xa",
     poolId: 0,
   },
 ];
@@ -659,11 +663,11 @@ export default {
         const element = allTokenSpot[outerIndex];
         element.id = element.tokenAddress + "_" + element.tokenId;
         const tokenMetadata = updatedIndexerTokens[element.id];
-
+        
         /**
-     *Calculate aggregated price 
-     weighted on tvl from Plenty, Spicy and Quipu
-      */
+        *Calculate aggregated price 
+        weighted on tvl from Plenty, Spicy and Quipu
+        */
         let totalReserves = 0;
         let aggregatedClose = 0;
         let close = 0;

@@ -108,7 +108,7 @@
         size="small"
         round
         style="margin-top: 8px; margin-bottom: 22px"
-        @click="form.input = form.farm.depositAmount"
+        @click="setMaxInput"
         >USE MAX</el-button
       >
       <el-button
@@ -155,11 +155,49 @@ export default {
         ? "0.000000000001"
         : this.form.farm.poolToken.isSpicyLp
         ? "0.000000000000000001"
-        : "0.000001";
+        : "0.000000000001";
     },
   },
   methods: {
     ...mapActions(["unstakeFromFarm", "initFarm", "softUpdateFarm"]),
+
+    setMaxInput() {
+      if (
+        this.form.farm.depositAmount >= 0.0001 ||
+        !this.form.farm.depositAmount
+      ) {
+        this.form.input = this.form.farm.depositAmount;
+      } else if (this.form.farm.depositAmount >= 0.000001) {
+        this.form.input = this.toFixedWithCommas(
+          this.form.farm.depositAmount,
+          6
+        );
+      } else if (this.form.farm.depositAmount >= 0.00000001) {
+        this.form.input = this.toFixedWithCommas(
+          this.form.farm.depositAmount,
+          8
+        );
+      } else if (this.form.farm.depositAmount >= 0.000000000001) {
+        this.form.input = this.toFixedWithCommas(
+          this.form.farm.depositAmount,
+          12
+        );
+      } else {
+        this.form.input = this.toFixedWithCommas(
+          this.form.farm.depositAmount,
+          18
+        );
+      }
+    },
+
+    toFixedWithCommas(number, precision) {
+      if (this.form.farm.poolToken.isSpicyLp) {
+        precision = 18;
+      }
+      return parseFloat(
+        this.vueNumberFormat(number, { precision }).replace(/,/g, "")
+      ).toFixed(precision);
+    },
 
     async showDialog(farmId) {
       this.form.input = "";

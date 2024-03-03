@@ -6,7 +6,7 @@
     class="stake-dialog"
   >
     <p v-if="form.farm.poolToken.isQuipuLp" class="stake-infor">
-      Stake XTZ/{{ form.farm.poolToken.symbol }} LP tokens to earn
+      Stake {{ form.farm.poolToken.symbol }} LP tokens to earn
       {{ form.farm.rewardToken.symbol }}.
     </p>
     <p v-else class="stake-infor">
@@ -146,7 +146,7 @@
       >
         <el-input v-model="form.input" label="Stake Tokens">
           <span v-if="form.farm.poolToken.isQuipuLp" slot="suffix"
-            >XTZ/{{ form.farm.poolToken.symbol }} LP</span
+            >{{ form.farm.poolToken.symbol }} LP</span
           >
           <span v-else slot="suffix">{{ form.farm.poolToken.symbol }}</span>
         </el-input>
@@ -156,7 +156,7 @@
         size="small"
         round
         style="margin-top: 8px; margin-bottom: 22px"
-        @click="form.input = form.farm.poolToken.balance"
+        @click="setMaxInput"
         >USE MAX</el-button
       >
       <div class="stake-warning" style="word-break: auto-phrase">
@@ -205,6 +205,49 @@ export default {
   },
   methods: {
     ...mapActions(["stakeInFarm", "initFarm", "getPoolTokenBalance"]),
+
+    setMaxInput() {
+      console.log(this.form.farm.poolToken.balance);
+      console.log(
+        this.form.farm.poolToken.balance >= 0.000000000001,
+        Number(this.form.farm.poolToken.balance) >= 0.000000000001
+      );
+      if (
+        this.form.farm.poolToken.balance >= 0.0001 ||
+        !this.form.farm.poolToken.balance
+      ) {
+        this.form.input = this.form.farm.poolToken.balance;
+      } else if (this.form.farm.poolToken.balance >= 0.000001) {
+        this.form.input = this.toFixedWithCommas(
+          this.form.farm.poolToken.balance,
+          6
+        );
+      } else if (this.form.farm.poolToken.balance >= 0.00000001) {
+        this.form.input = this.toFixedWithCommas(
+          this.form.farm.poolToken.balance,
+          8
+        );
+      } else if (this.form.farm.poolToken.balance >= 0.000000000001) {
+        this.form.input = this.toFixedWithCommas(
+          this.form.farm.poolToken.balance,
+          12
+        );
+      } else {
+        this.form.input = this.toFixedWithCommas(
+          this.form.farm.poolToken.balance,
+          18
+        );
+      }
+    },
+
+    toFixedWithCommas(number, precision) {
+      if (this.form.farm.poolToken.isSpicyLp) {
+        precision = 18;
+      }
+      return parseFloat(
+        this.vueNumberFormat(number, { precision }).replace(/,/g, "")
+      ).toFixed(precision);
+    },
 
     async showDialog(farmId) {
       this.form.input = "";
