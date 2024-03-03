@@ -105,7 +105,7 @@
                     >
                     or use our
                     <a
-                      style="color: #555cff; text-decoration: none"
+                      style="color: #555cff; text-decoration: none; cursor: pointer;"
                       @click.prevent="toggleAirdropListTool"
                     >
                       Airdrop List Tool</a
@@ -365,7 +365,6 @@ import ipfs from "./../utils/ipfs";
 import farmUtils from "./../utils/farm";
 import NavMenu from "./NavMenu.vue";
 import ConnectButton from "./ConnectButton.vue";
-import AirdropListTool from "./AirdropListTool.vue";
 import { getTokenMetadata } from "../utils/tezos";
 import { ValidationResult, validateContractAddress } from "@taquito/utils";
 
@@ -374,7 +373,6 @@ export default {
   components: {
     NavMenu,
     ConnectButton,
-    AirdropListTool,
   },
   data() {
     return {
