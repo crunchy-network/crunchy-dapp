@@ -298,7 +298,7 @@
             v-if="wallet.connected"
             type="primary"
             style="border-radius: 10px; font-weight: bold"
-            @click="onSubmit"
+            @click="toggleIsLoading"
             >AIRDROP TOKENS</el-button
           >
           <connect-button v-if="wallet.connected === false" />
@@ -356,6 +356,21 @@
         >Generate List</el-button
       >
     </el-dialog>
+    <el-dialog
+      :visible.sync="isPending"
+      :before-close="handleClose"
+      width="400px"
+      class="airdrop-list-dialog"
+    >
+      <div class="dialog-header">
+        <h1 style="margin-bottom: 15px; margin-top: 5px">Airdropping Tokens</h1>
+        <p style="font-weight: 200; margin-bottom: 15px">
+          Tokens are being airdropped and a link to the transaction will be displayed below once it has been accepted by the blockchain.
+        </p>
+      </div>
+      <div class="loading-container" v-loading="isPending" style="padding: 30px">
+  </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -367,6 +382,7 @@ import NavMenu from "./NavMenu.vue";
 import ConnectButton from "./ConnectButton.vue";
 import { getTokenMetadata } from "../utils/tezos";
 import { ValidationResult, validateContractAddress } from "@taquito/utils";
+import { set } from "lodash";
 
 export default {
   name: "AirdropTool",
@@ -377,6 +393,8 @@ export default {
   data() {
     return {
       showAirdropListTool: false,
+      isPending: false,
+      isSuccess: false,
       form: {
         tokenName: "",
         tokenId: "",
@@ -551,6 +569,13 @@ export default {
     },
     toggleAirdropListTool() {
       this.showAirdropListTool = !this.showAirdropListTool;
+    },
+    toggleIsLoading() {
+      this.isPending = !this.isPending;
+      setTimeout(() => {
+        this.isSuccess = true;
+        this.isPending = false;
+      }, 5000);
     },
   },
 };
