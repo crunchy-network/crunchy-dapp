@@ -372,28 +372,29 @@
   </div>
     </el-dialog>
     <el-dialog
-  :visible.sync="isSuccess"
-  :before-close="handleClose"
-  width="400px"
-  class="airdrop-list-dialog"
->
-  <div class="dialog-header">
-    <h1 style="margin-bottom: 15px; margin-top: 5px">Airdrop Completed!</h1>
-    <p style="font-weight: 200; margin-bottom: 20px">
-      Tokens have been airdropped. Check the transaction link below to verify the airdrop was successful.
-    </p>
-    <span class="color__subheading" style="margin-bottom: 5px">Transaction</span>
-    <div style="display: flex; align-items: center;">
-      <a
-        :href="'https://better-call.dev/' + successTx"
-        target="_blank"
-        style="color: #555cff; max-width: calc(100% - 30px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight:600;"
-      >
-        {{ successTx.substr(0, 15) + '...' + successTx.substr(-8) }}
-      </a>
-        <i class="el-icon-copy-document" style="cursor: pointer; padding-left: 10px; color: #555cff !important;" @click="copyToClipboard(successTx)"></i>
+      :visible.sync="isSuccess"
+      :before-close="handleClose"
+      width="400px"
+      class="airdrop-list-dialog"
+    >
+    <div class="dialog-header">
+      <h1 style="margin-bottom: 15px; margin-top: 5px">Airdrop Completed!</h1>
+      <p style="font-weight: 200; margin-bottom: 20px">
+        Tokens have been airdropped. Check the transaction link below to verify the airdrop was successful.
+      </p>
+      <span class="color__subheading" style="margin-bottom: 5px">Transaction</span>
+      <div style="display: flex; align-items: center;">
+        <a
+          :href="'https://better-call.dev/' + successTx"
+          target="_blank"
+          style="color: #555cff; max-width: calc(100% - 30px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight:600;"
+        >
+          {{ successTx.substr(0, 15) + '...' + successTx.substr(-8) }}
+        </a>
+          <i class="el-icon-copy-document" style="cursor: pointer; padding-left: 10px; color: #555cff !important;"
+          @click="copySuccessTx"></i>
+      </div>
     </div>
-  </div>
 </el-dialog>
 
   </div>
@@ -601,6 +602,18 @@ export default {
         this.isSuccess = true;
         this.isPending = false;
       }, 5000);
+    },
+    copySuccessTx() {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(this.successTx)
+          .then(() => {
+          })
+          .catch(err => {
+            console.error('Failed to copy: ', err);
+          });
+      } else {
+        console.error('Clipboard API not available.');
+      }
     },
   },
 };
