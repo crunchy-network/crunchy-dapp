@@ -585,6 +585,11 @@ export default {
     display: flex;
     flex-direction: row;
   }
+  #airdrop-amount-header {
+    margin-left: 20px !important;
+    padding: 0 !important;
+    width: 80% !important;
+  }
   #airdrop-amount {
     margin-left: 20px !important;
     padding: 0 !important;
