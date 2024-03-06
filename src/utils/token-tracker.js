@@ -15,7 +15,7 @@ const oneDayInMiliSecond = oneHourInMiliSecond * 24;
 const oneWeekInMiliSecond = oneDayInMiliSecond * 7;
 const oneMonthInMiliSecond = oneDayInMiliSecond * 30;
 const oneMonthAndOneDayInMiliSecond = oneDayInMiliSecond * 31;
-const twoMonthInMiliSecond = oneDayInMiliSecond * 60;
+// const twoMonthInMiliSecond = oneDayInMiliSecond * 60;
 const sixMonthInMiliSecond = oneDayInMiliSecond * 180;
 const oneYearInMiliSecond = oneDayInMiliSecond * 360;
 const oneDayAgo = new Date(Date.now() - oneDayInMiliSecond).toISOString();
@@ -24,7 +24,7 @@ const oneMonthAgo = new Date(Date.now() - oneMonthInMiliSecond).toISOString();
 const oneMonthAndOneDayAgo = new Date(
   Date.now() - oneMonthAndOneDayInMiliSecond
 ).toISOString();
-const twoMonthAgo = new Date(Date.now() - twoMonthInMiliSecond).toISOString();
+// const twoMonthAgo = new Date(Date.now() - twoMonthInMiliSecond).toISOString();
 const sixMonthAgo = new Date(Date.now() - sixMonthInMiliSecond).toISOString();
 const oneYearAgo = new Date(Date.now() - oneYearInMiliSecond).toISOString();
 const TEZ_AND_WRAPPED_TEZ_ADDRESSES = [
@@ -233,7 +233,7 @@ function modifyQuotes(quotes, allTokenQuotes, type) {
     // Only get element from two months for 1d chart
     if (type === "1d") {
       quote.buckets = quote.buckets.filter(
-        (bucket) => new Date(bucket.bucket) > new Date(twoMonthAgo)
+        (bucket) => new Date(bucket.bucket) > new Date(oneYearAgo)
       );
     }
     quote.buckets.map((bucket) => {
@@ -797,9 +797,9 @@ export default {
         });
 
         /**
-         *Calculate tvl for each exchange
+         * Calculate tvl for each exchange
          */
-        element.exchanges.forEach((e, index) => {
+        element.exchanges = element.exchanges.filter((e, index) => {
           const token = e.tokens.find(
             (ele) =>
               ele.token.tokenAddress === element.tokenAddress &&
@@ -815,19 +815,20 @@ export default {
             tokenReserves = token.reserves / Math.pow(10, token.token.decimals);
           }
           element.exchanges[index].tokenTvl =
-            new BigNumber(tokenReserves * element.aggregatedPrice).toNumber() ||
-            0;
+            new BigNumber(tokenReserves * element.aggregatedPrice).toNumber() || 0;
           element.exchanges[index].tokenTvlUsd =
             new BigNumber(
               tokenReserves * element.aggregatedPrice * xtzUSD
             ).toNumber() || 0;
-          // Push the exchange with too few tvl to the list
+          // Remove the exchange with too few tvl from the array
           if (element.exchanges[index].tokenTvl < 5) {
             TOO_FEW_TVL_POOL_ADDRESSES.push({
               poolAddress: element.exchanges[index].dex.address,
               poolId: element.exchanges[index].poolId,
             });
+            return false; // Exclude the exchange from the result array
           }
+          return true; // Include the exchange in the result array
         });
         /**
          *Calculate total tvl and volume for each token
@@ -852,6 +853,11 @@ export default {
             highestTvl = tvl;
             highestTvlExchange = exchange;
           }
+        }
+
+        // Token without any paired pools
+        if(!highestTvlExchange) {
+          continue;
         }
 
         const highestTvlPairedToken = highestTvlExchange.tokens.find(
