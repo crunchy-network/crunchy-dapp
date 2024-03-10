@@ -25,7 +25,7 @@
             class="box-card"
             style="height: 100%; flex: 1"
           >
-            <el-form>
+            <el-form ref="form" :model="form" :rules="rules">
               <el-row>
                 <el-col :span="10" style="height: 30px">
                   <el-form-item
@@ -42,6 +42,7 @@
                   <el-form-item
                     :span="14"
                     prop="tokenAddress"
+                    required
                     style="margin-bottom: 0px"
                   >
                     <el-autocomplete
@@ -75,7 +76,7 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="10" style="margin-bottom: 0px">
-                  <el-form-item :span="10" prop="tokenType">
+                  <el-form-item :span="10" prop="tokenType" required>
                     <el-select
                       id="token-type"
                       v-model="form.tokenType"
@@ -99,13 +100,21 @@
                     Upload Airdrop List from our
                     <a
                       href="/airdrop-template.csv"
-                      style="color: #555cff; text-decoration: none; cursor:pointer;"
+                      style="
+                        color: #555cff;
+                        text-decoration: none;
+                        cursor: pointer;
+                      "
                     >
                       Template</a
                     >
                     or use our
                     <a
-                      style="color: #555cff; text-decoration: none; cursor: pointer;"
+                      style="
+                        color: #555cff;
+                        text-decoration: none;
+                        cursor: pointer;
+                      "
                       @click.prevent="toggleAirdropListTool"
                     >
                       Airdrop List Tool</a
@@ -177,7 +186,12 @@
                     :key="index"
                   >
                     <el-col :span="14">
-                      <el-form-item style="margin-bottom: 10px">
+                      <el-form-item
+                        :prop="'airdropEntries[' + index + '].address'"
+                        :rules="addressRules"
+                        style="margin-bottom: 10px"
+                        required
+                      >
                         <el-input
                           :id="'airdrop-address-' + index"
                           v-model="form.airdropEntries[index].address"
@@ -190,7 +204,10 @@
                     <el-col :span="10">
                       <el-form-item
                         id="airdrop-amount"
-                        style="margin-left: 40px; margin-bottom: 10px"
+                        :prop="'airdropEntries[' + index + '].amount'"
+                        :rules="amountRules"
+                        style="margin-left: 40px; margin-bottom: 20px"
+                        required
                       >
                         <el-input
                           :id="'airdrop-amount-' + index"
@@ -307,7 +324,6 @@
     </el-main>
     <el-dialog
       :visible.sync="showAirdropListTool"
-      :before-close="handleClose"
       width="400px"
       class="airdrop-list-dialog"
     >
@@ -358,45 +374,63 @@
     </el-dialog>
     <el-dialog
       :visible.sync="isPending"
-      :before-close="handleClose"
       width="400px"
       class="airdrop-list-dialog"
     >
       <div class="dialog-header">
         <h1 style="margin-bottom: 15px; margin-top: 5px">Airdropping Tokens</h1>
         <p style="font-weight: 200; margin-bottom: 15px">
-          Tokens are being airdropped and a link to the transaction will be displayed below once it has been accepted by the blockchain.
+          Tokens are being airdropped and a link to the transaction will be
+          displayed below once it has been accepted by the blockchain.
         </p>
       </div>
-      <div class="loading-container" v-loading="isPending" style="padding: 30px">
-  </div>
+      <div
+        v-loading="isPending"
+        class="loading-container"
+        style="padding: 30px"
+      ></div>
     </el-dialog>
     <el-dialog
       :visible.sync="isSuccess"
-      :before-close="handleClose"
       width="400px"
       class="airdrop-list-dialog"
     >
-    <div class="dialog-header">
-      <h1 style="margin-bottom: 15px; margin-top: 5px">Airdrop Completed!</h1>
-      <p style="font-weight: 200; margin-bottom: 20px">
-        Tokens have been airdropped. Check the transaction link below to verify the airdrop was successful.
-      </p>
-      <span class="color__subheading" style="margin-bottom: 5px">Transaction</span>
-      <div style="display: flex; align-items: center;">
-        <a
-          :href="'https://better-call.dev/' + successTx"
-          target="_blank"
-          style="color: #555cff; max-width: calc(100% - 30px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight:600;"
+      <div class="dialog-header">
+        <h1 style="margin-bottom: 15px; margin-top: 5px">Airdrop Completed!</h1>
+        <p style="font-weight: 200; margin-bottom: 20px">
+          Tokens have been airdropped. Check the transaction link below to
+          verify the airdrop was successful.
+        </p>
+        <span class="color__subheading" style="margin-bottom: 5px"
+          >Transaction</span
         >
-          {{ successTx.substr(0, 15) + '...' + successTx.substr(-8) }}
-        </a>
-          <i class="el-icon-copy-document" style="cursor: pointer; padding-left: 10px; color: #555cff !important;"
-          @click="copySuccessTx"></i>
+        <div style="display: flex; align-items: center">
+          <a
+            :href="'https://better-call.dev/' + successTx"
+            target="_blank"
+            style="
+              color: #555cff;
+              max-width: calc(100% - 30px);
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              font-weight: 600;
+            "
+          >
+            {{ successTx.substr(0, 15) + "..." + successTx.substr(-8) }}
+          </a>
+          <i
+            class="el-icon-copy-document"
+            style="
+              cursor: pointer;
+              padding-left: 10px;
+              color: #555cff !important;
+            "
+            @click="copySuccessTx"
+          ></i>
+        </div>
       </div>
-    </div>
-</el-dialog>
-
+    </el-dialog>
   </div>
 </template>
 
@@ -407,7 +441,12 @@ import farmUtils from "./../utils/farm";
 import NavMenu from "./NavMenu.vue";
 import ConnectButton from "./ConnectButton.vue";
 import { getTokenMetadata } from "../utils/tezos";
-import { ValidationResult, validateContractAddress } from "@taquito/utils";
+import tzDomains from "../utils/tezos-domains";
+import {
+  ValidationResult,
+  validateContractAddress,
+  validateAddress,
+} from "@taquito/utils";
 
 export default {
   name: "AirdropTool",
@@ -437,6 +476,26 @@ export default {
     };
   },
   computed: {
+    addressRules() {
+      return [
+        { required: true, message: "Address is required" },
+        {
+          validator: this.validateAirdropAddress,
+          message: "Address is not valid",
+        },
+      ];
+    },
+    amountRules() {
+      return [
+        { required: true, message: "Enter an amount" },
+        {
+          type: "number",
+          min: 1,
+          message: "Enter a valid amount",
+          transform: (v) => Number(v),
+        },
+      ];
+    },
     ...mapState(["wallet", "farms", "homeWallet"]),
     totalAirdropAmount() {
       return this.form.airdropEntries.reduce(
@@ -506,6 +565,31 @@ export default {
       "updateLpTokens",
       "createFarm",
     ]),
+    async validateAirdropAddress(rule, value, callback) {
+      if (value === "") {
+        callback(new Error("Enter token address"));
+      } else {
+        const validation = validateAddress(value);
+        if (validation !== ValidationResult.VALID) {
+          try {
+            const resolvedAddress = await tzDomains.resolveNameToAddress(value);
+            const resolvedValidation = validateAddress(resolvedAddress);
+            if (resolvedValidation !== ValidationResult.VALID) {
+              callback(new Error("Enter valid token address"));
+            } else {
+              callback();
+            }
+          } catch (error) {
+            console.error("Error resolving domain name:", error);
+            callback(
+              new Error("Address resolution failed or address is invalid")
+            );
+          }
+        } else {
+          callback();
+        }
+      }
+    },
     addRows() {
       for (let i = 0; i < 10; i++) {
         this.form.airdropEntries.push({ address: "", amount: "" });
@@ -552,6 +636,9 @@ export default {
       this.form.tokenId = item.tokenId;
       this.form.tokenDecimals = item.decimals;
       this.form.tokenThumbnailUri = item.thumbnailUri;
+    },
+    onListTokenSelect(item) {
+      this.form.listTokenAddress = item.address;
     },
     triggerFileInput() {
       this.$refs.fileInput.click();
@@ -605,14 +692,14 @@ export default {
     },
     copySuccessTx() {
       if (navigator.clipboard) {
-        navigator.clipboard.writeText(this.successTx)
-          .then(() => {
-          })
-          .catch(err => {
-            console.error('Failed to copy: ', err);
+        navigator.clipboard
+          .writeText(this.successTx)
+          .then(() => {})
+          .catch((err) => {
+            console.error("Failed to copy: ", err);
           });
       } else {
-        console.error('Clipboard API not available.');
+        console.error("Clipboard API not available.");
       }
     },
   },
