@@ -363,7 +363,9 @@
             </template>
           </el-autocomplete>
         </el-form-item>
-        <span style="margin-top: 5px">Wallet Addresses: 0</span>
+        <span style="margin-top: 5px"
+          >Wallet Addresses: {{ listToolHoldersCount }}</span
+        >
       </el-form>
       <el-button
         type="primary"
@@ -447,6 +449,7 @@ import {
   validateContractAddress,
   validateAddress,
 } from "@taquito/utils";
+import tzKT from "../utils/tzkt";
 
 export default {
   name: "AirdropTool",
@@ -456,6 +459,8 @@ export default {
   },
   data() {
     return {
+      listToolHoldersCount: "",
+      listToolAddresses: [],
       showAirdropListTool: false,
       isPending: false,
       isSuccess: false,
@@ -639,6 +644,10 @@ export default {
     },
     onListTokenSelect(item) {
       this.form.listTokenAddress = item.address;
+      tzKT.getTokenHolders(item.address).then((result) => {
+        this.listToolHoldersCount = result.totalHolders;
+        this.listToolAddresses = result.addresses;
+      });
     },
     triggerFileInput() {
       this.$refs.fileInput.click();
@@ -701,6 +710,17 @@ export default {
       } else {
         console.error("Clipboard API not available.");
       }
+    },
+    generateList() {
+      const csvContent = this.listToolAddresses.join("\n");
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "addresses.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     },
   },
 };
