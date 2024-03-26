@@ -15,11 +15,11 @@
               A 10 $XTZ fee will be charged for this service.</span
             >
           </div>
-          <div style="height: 20px"></div>
+          <div style="height: 24px"></div>
         </el-col>
       </el-row>
       <el-row style="display: flex">
-        <el-col :span="14" style="padding-right: 40px">
+        <el-col :span="14" style="padding-right: 42px">
           <el-card
             shadow="always"
             class="box-card"
@@ -27,7 +27,7 @@
           >
             <el-form ref="form" :model="form" :rules="rules">
               <el-row>
-                <el-col :span="10" style="height: 30px">
+                <el-col :span="10" style="height: 32px">
                   <el-form-item
                     label
                     for="tokenAddress"
@@ -55,7 +55,7 @@
                       @select="onTokenSelect"
                     >
                       <template slot-scope="{ item }">
-                        <div style="padding: 6px 0">
+                        <div style="padding: 8px 0">
                           <el-avatar
                             :src="item.thumbnailUri"
                             fit="cover"
@@ -65,7 +65,7 @@
                               position: relative;
                               border: 4px solid #fff;
                               vertical-align: middle;
-                              margin-right: 14px;
+                              margin-right: 16px;
                             "
                           >
                           </el-avatar>
@@ -81,7 +81,7 @@
                       id="token-type"
                       v-model="form.tokenType"
                       placeholder="Token Type"
-                      style="margin-left: 40px"
+                      style="margin-left: 42px"
                     >
                       <el-option label="FA2" value="fa2"></el-option>
                       <el-option label="FA1.2" value="fa1"></el-option>
@@ -128,9 +128,9 @@
                     plain
                     style="
                       border-radius: 10px;
-                      padding: 10px 12px;
-                      margin-top: 5px;
-                      margin-bottom: 20px;
+                      padding: 8px 16px;
+                      margin-top: 8px;
+                      margin-bottom: 24px;
                     "
                     class="_action-btn"
                     @click="triggerFileInput"
@@ -169,7 +169,7 @@
                 <el-col :span="10" :xs="12">
                   <el-form-item
                     id="airdrop-amount-header"
-                    style="margin-left: 40px; margin-bottom: 0px"
+                    style="margin-left: 42px; margin-bottom: 0px"
                     label
                     for="airdrop-amount"
                     class="color__subheading"
@@ -189,7 +189,7 @@
                       <el-form-item
                         :prop="'airdropEntries[' + index + '].address'"
                         :rules="addressRules"
-                        style="margin-bottom: 10px"
+                        style="margin-bottom: 8px"
                         required
                       >
                         <el-input
@@ -206,7 +206,7 @@
                         id="airdrop-amount"
                         :prop="'airdropEntries[' + index + '].amount'"
                         :rules="amountRules"
-                        style="margin-left: 40px; margin-bottom: 20px"
+                        style="margin-left: 42px; margin-bottom: 24px"
                         required
                       >
                         <el-input
@@ -244,7 +244,7 @@
             style="height: 100%; flex: 1"
           >
             <div class="summary">
-              <h3 style="margin-top: 7px">Airdrop Summary</h3>
+              <h3 style="margin-top: 8px">Airdrop Summary</h3>
               <el-row id="summary-headers">
                 <el-col :span="12">
                   <span class="color__subheading">Token to Airdrop</span>
@@ -253,7 +253,7 @@
                   <span class="color__subheading">Total Airdrop Amount</span>
                 </el-col>
               </el-row>
-              <el-row id="summary-token-total" style="margin-bottom: 15px">
+              <el-row id="summary-token-total" style="margin-bottom: 16px">
                 <el-col :span="12">
                   <span>{{ form.tokenSymbol }}</span>
                   <el-avatar
@@ -266,8 +266,8 @@
                       position: relative;
                       border: 4px solid #fff;
                       vertical-align: middle;
-                      margin-left: 5px;
-                      margin-bottom: 4px;
+                      margin-left: 8px;
+                      margin-bottom: 8px;
                     "
                   >
                   </el-avatar>
@@ -285,7 +285,7 @@
                 </el-col>
               </el-row>
               <div
-                style="padding-right: 5px; max-height: 575px; overflow: auto"
+                style="padding-right: 8px; max-height: 575px; overflow: auto"
               >
                 <el-row
                   v-for="(entry, index) in form.airdropEntries"
@@ -309,7 +309,7 @@
           id="submit-airdrop"
           :span="24"
           :xs="24"
-          style="text-align: right; margin-top: 15px"
+          style="text-align: right; margin-top: 16px"
         >
           <el-button
             v-if="wallet.connected"
@@ -328,17 +328,17 @@
       class="airdrop-list-dialog"
     >
       <div class="dialog-header">
-        <h1 style="margin-bottom: 15px; margin-top: 5px">Airdrop List Tool</h1>
-        <p style="font-weight: 200; margin-bottom: 15px">
+        <h1 style="margin-bottom: 16px; margin-top: 8px">Airdrop List Tool</h1>
+        <p style="font-weight: 200; margin-bottom: 16px">
           Search a specific token and then click generate to create a list of
           token holders.
         </p>
-        <span style="margin-bottom: 20px">Enter a Token Name or Address</span>
+        <span style="margin-bottom: 24px">Enter a Token Name or Address</span>
       </div>
       <el-form :model="form">
         <el-form-item
           prop="listTokenAddress"
-          style="margin-bottom: 5px; margin-top: 5px"
+          style="margin-bottom: 8px; margin-top: 8px"
         >
           <el-autocomplete
             id="list-token-input"
@@ -363,13 +363,13 @@
             </template>
           </el-autocomplete>
         </el-form-item>
-        <span style="margin-top: 5px"
+        <span style="margin-top: 8px"
           >Wallet Addresses: {{ listToolHoldersCount }}</span
         >
       </el-form>
       <el-button
         type="primary"
-        style="margin-top: 20px; width: 100%; justify-content: center"
+        style="margin-top: 24px; width: 100%; justify-content: center"
         @click="generateList"
         >Generate List</el-button
       >
@@ -380,8 +380,8 @@
       class="airdrop-list-dialog"
     >
       <div class="dialog-header">
-        <h1 style="margin-bottom: 15px; margin-top: 5px">Airdropping Tokens</h1>
-        <p style="font-weight: 200; margin-bottom: 15px">
+        <h1 style="margin-bottom: 16px; margin-top: 8px">Airdropping Tokens</h1>
+        <p style="font-weight: 200; margin-bottom: 16px">
           Tokens are being airdropped and a link to the transaction will be
           displayed below once it has been accepted by the blockchain.
         </p>
@@ -389,7 +389,7 @@
       <div
         v-loading="isPending"
         class="loading-container"
-        style="padding: 30px"
+        style="padding: 32px"
       ></div>
     </el-dialog>
     <el-dialog
@@ -398,12 +398,12 @@
       class="airdrop-list-dialog"
     >
       <div class="dialog-header">
-        <h1 style="margin-bottom: 15px; margin-top: 5px">Airdrop Completed!</h1>
-        <p style="font-weight: 200; margin-bottom: 20px">
+        <h1 style="margin-bottom: 16px; margin-top: 8px">Airdrop Completed!</h1>
+        <p style="font-weight: 200; margin-bottom: 24px">
           Tokens have been airdropped. Check the transaction link below to
           verify the airdrop was successful.
         </p>
-        <span class="color__subheading" style="margin-bottom: 5px"
+        <span class="color__subheading" style="margin-bottom: 8px"
           >Transaction</span
         >
         <div style="display: flex; align-items: center">
@@ -425,7 +425,7 @@
             class="el-icon-copy-document"
             style="
               cursor: pointer;
-              padding-left: 10px;
+              padding-left: 8px;
               color: #555cff !important;
             "
             @click="copySuccessTx"
@@ -756,12 +756,12 @@ export default {
     flex-direction: row;
   }
   #airdrop-amount-header {
-    margin-left: 20px !important;
+    margin-left: 24px !important;
     padding: 0 !important;
     width: 80% !important;
   }
   #airdrop-amount {
-    margin-left: 20px !important;
+    margin-left: 24px !important;
     padding: 0 !important;
     width: 80% !important;
   }
@@ -779,7 +779,7 @@ export default {
   }
   #submit-airdrop {
     margin-top: 0px !important;
-    padding-right: 10px !important;
+    padding-right: 8px !important;
   }
   .el-form-item {
     width: 100%;
@@ -790,7 +790,7 @@ export default {
   }
 
   ::v-deep #token-input {
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     width: 100%;
   }
   .el-row {
@@ -805,7 +805,7 @@ export default {
   }
 
   .box-card {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
     width: 100%;
   }
 }
