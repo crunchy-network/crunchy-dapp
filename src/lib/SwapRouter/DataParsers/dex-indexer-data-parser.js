@@ -8,13 +8,22 @@ const isPoolBelowMinThreshold = (mutez) => {
 };
 
 const shouldSkip = (dex) => {
+  if (config.excludedDexes.includes(dex.dex_address)) {
+    return true;
+  }
+
   for (const pool of dex.pools) {
     if (config.excludedTokens.includes(pool.token.symbol)) {
       return true;
     }
 
+    // if (config.excludedDexes.includes(dex.dex_address)) {
+    //   console.log(dex)
+    //   return true;
+    // }
+
     if (
-      ["XTZ", "WTZ"].includes(pool.token.symbol) &&
+      ["XTZ", "WTZ", "ctez"].includes(pool.token.symbol) &&
       isPoolBelowMinThreshold(pool.reserves)
     ) {
       return true;
@@ -57,14 +66,14 @@ const getDexName = (dexType) => {
     return "Dexter";
   }
 
-  if(dexType === "ctez") {
+  if (dexType === "ctez") {
     return "Ctez";
   }
 
-  if(dexType === "yupana") {
+  if (dexType === "yupana") {
     return "Yupana";
   }
-  
+
   return pascalCase(dexType);
 };
 
