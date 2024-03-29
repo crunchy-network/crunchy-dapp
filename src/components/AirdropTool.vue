@@ -333,7 +333,7 @@
           Search a specific token and then click generate to create a list of
           token holders.
         </p>
-        <span style="margin-bottom: 24px">Enter a Token Name or Address</span>
+        <span class="color__subheading">Enter a Token Name or Address</span>
       </div>
       <el-form :model="form">
         <el-form-item
@@ -341,6 +341,7 @@
           style="margin-bottom: 8px; margin-top: 8px"
         >
           <el-autocomplete
+            style="margin-bottom: 16px"
             id="list-token-input"
             v-model="form.listTokenAddress"
             class="el-input"
@@ -362,14 +363,29 @@
               </div>
             </template>
           </el-autocomplete>
+          <span style="margin-right: 8px" class="color__subheading">Minimum tokens held
+            <el-tooltip
+              :content="'Enter the minimum number of tokens an address must hold to be included in the list. Default is 0 (all addresses).'"
+              placement="top"
+              effect="light"
+              class="tooltip-custom"
+            >
+              <i class="fa-regular fa-info-circle"></i>
+            </el-tooltip>
+          </span>
+          <el-input
+            style="margin-top: 8px; margin-bottom: 8px"
+            v-model="form.minTokens"
+            class="el-input"
+            type="number"
+            placeholder="0"
+          ></el-input>
         </el-form-item>
-        <span style="margin-top: 8px"
-          >Wallet Addresses: {{ listToolHoldersCount }}</span
-        >
+        <span class="color__subheading">Wallet Addresses: {{ listToolHoldersCount }}</span>
       </el-form>
       <el-button
         type="primary"
-        style="margin-top: 24px; width: 100%; justify-content: center"
+        style="margin-top: 16px; width: 100%; justify-content: center"
         @click="generateList"
         >Generate List</el-button
       >

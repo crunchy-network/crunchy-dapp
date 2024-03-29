@@ -16,35 +16,57 @@
     "event-pubsub" "4.3.0"
     "js-message" "1.0.7"
 
+<<<<<<< HEAD
 "@airgap/beacon-blockchain-substrate@4.1.1-beta.5":
   "integrity" "sha512-j9a3uKvf+G1b+R77Kiix4iVyI0ogaKdz3JT+eeRUExNANLe4D5bPj0GETEzENaGWQoguqhpyLo9eXykKasUZsA=="
   "resolved" "https://registry.npmjs.org/@airgap/beacon-blockchain-substrate/-/beacon-blockchain-substrate-4.1.1-beta.5.tgz"
   "version" "4.1.1-beta.5"
+=======
+"@airgap/beacon-blockchain-substrate@4.1.3-beta.0":
+  version "4.1.3-beta.0"
+  resolved "https://registry.yarnpkg.com/@airgap/beacon-blockchain-substrate/-/beacon-blockchain-substrate-4.1.3-beta.0.tgz#a495f53353721f5a11b89c5fa80bd902f16ff0d3"
+  integrity sha512-DWGMqXflUuENqZIVroSv6axuGDtxzqzfGLMtaAg87RgryOyw9uNoBtzDnMDi1rkBsufBt/jQaQjK4B7YcfPbrw==
+>>>>>>> 04bcff84647469917328f0deb63f5803b903d8a7
   dependencies:
-    "@airgap/beacon-types" "4.1.1-beta.5"
-    "@airgap/beacon-ui" "4.1.1-beta.5"
+    "@airgap/beacon-types" "4.1.3-beta.0"
+    "@airgap/beacon-ui" "4.1.3-beta.0"
 
+<<<<<<< HEAD
 "@airgap/beacon-blockchain-tezos@4.1.1-beta.5":
   "integrity" "sha512-LOhtroLpJXX39kUBksfSlAPxezn7Id2sg6m/z54M+UnhKrg6xuPDjxiSgIFwSISs2yceecRq3EiU+aMx/kE3eA=="
   "resolved" "https://registry.npmjs.org/@airgap/beacon-blockchain-tezos/-/beacon-blockchain-tezos-4.1.1-beta.5.tgz"
   "version" "4.1.1-beta.5"
+=======
+"@airgap/beacon-blockchain-tezos@4.1.3-beta.0":
+  version "4.1.3-beta.0"
+  resolved "https://registry.yarnpkg.com/@airgap/beacon-blockchain-tezos/-/beacon-blockchain-tezos-4.1.3-beta.0.tgz#843f9fbc1779c44809679fc3257e4273962454cf"
+  integrity sha512-QJZvtFiPuqcU+jiSFHR239d5OrOFvlyTTWSKLVHLD17vxqak+2rwX+exYF5uwJofOEIj+eXJLVEeLT6doPdoPw==
+>>>>>>> 04bcff84647469917328f0deb63f5803b903d8a7
   dependencies:
-    "@airgap/beacon-types" "4.1.1-beta.5"
-    "@airgap/beacon-ui" "4.1.1-beta.5"
+    "@airgap/beacon-types" "4.1.3-beta.0"
+    "@airgap/beacon-ui" "4.1.3-beta.0"
 
+<<<<<<< HEAD
 "@airgap/beacon-core@4.1.1-beta.5":
   "integrity" "sha512-04HEmObFlDXhMOlVwmwtyLBSt/fQpxaCgvMniyed+4cflLmfPrEKL8R+LBZXHoMUC0nxdt41GBEEhStZbgozjA=="
   "resolved" "https://registry.npmjs.org/@airgap/beacon-core/-/beacon-core-4.1.1-beta.5.tgz"
   "version" "4.1.1-beta.5"
+=======
+"@airgap/beacon-core@4.1.3-beta.0":
+  version "4.1.3-beta.0"
+  resolved "https://registry.yarnpkg.com/@airgap/beacon-core/-/beacon-core-4.1.3-beta.0.tgz#53d1eb232ca421ba787fd4853ef149acb739231a"
+  integrity sha512-TEOdJVdctnUaXl6bMJ5lF7Aek7NPqtnoPKWnk7VAoeRZyaSBwtZVSYBwfMJiB2/R4abg2mbAGSFDDvwTL+uA/g==
+>>>>>>> 04bcff84647469917328f0deb63f5803b903d8a7
   dependencies:
-    "@airgap/beacon-types" "4.1.1-beta.5"
-    "@airgap/beacon-utils" "4.1.1-beta.5"
+    "@airgap/beacon-types" "4.1.3-beta.0"
+    "@airgap/beacon-utils" "4.1.3-beta.0"
     "@stablelib/ed25519" "^1.0.3"
     "@stablelib/nacl" "^1.0.4"
     "@stablelib/utf8" "^1.0.1"
     "@stablelib/x25519-session" "^1.0.4"
     "bs58check" "2.1.2"
 
+<<<<<<< HEAD
 "@airgap/beacon-core@4.1.2":
   "integrity" "sha512-joSwBjvZtDBP6QQdg82Hhqq1T0PA3TQsEhoa2kZG80g48ADb7jD8i8sMSabnYmnglfirUhauBExFHKIzjQf2yA=="
   "resolved" "https://registry.npmjs.org/@airgap/beacon-core/-/beacon-core-4.1.2.tgz"
@@ -118,11 +140,54 @@
   "integrity" "sha512-EyBXVb3RZIgfOBsDEFVdga0Omy02F57Jb35YWT0qFmQqywYeceYU8oxfjzsVsdiX+6GOdlQYtxtB9Xq0SbPBIg=="
   "resolved" "https://registry.npmjs.org/@airgap/beacon-transport-postmessage/-/beacon-transport-postmessage-4.1.1-beta.5.tgz"
   "version" "4.1.1-beta.5"
+=======
+"@airgap/beacon-dapp@4.1.2", "@airgap/beacon-dapp@4.1.3-beta.0":
+  version "4.1.3-beta.0"
+  resolved "https://registry.yarnpkg.com/@airgap/beacon-dapp/-/beacon-dapp-4.1.3-beta.0.tgz#cf63eedfa4a2dfee7273ce4a21d1182370efc53b"
+  integrity sha512-PAOULBZgl1Ow8DcbkOWvlX7k+d2Wjk/SkvuLHwcpO16CdRldBdwsprRR8OIJcI58o3gywxYaDc8z6wFFJ1CXeQ==
   dependencies:
-    "@airgap/beacon-core" "4.1.1-beta.5"
-    "@airgap/beacon-types" "4.1.1-beta.5"
-    "@airgap/beacon-utils" "4.1.1-beta.5"
+    "@airgap/beacon-core" "4.1.3-beta.0"
+    "@airgap/beacon-transport-matrix" "4.1.3-beta.0"
+    "@airgap/beacon-transport-postmessage" "4.1.3-beta.0"
+    "@airgap/beacon-transport-walletconnect" "4.1.3-beta.0"
+    "@airgap/beacon-ui" "4.1.3-beta.0"
 
+"@airgap/beacon-sdk@4.1.3-beta.0":
+  version "4.1.3-beta.0"
+  resolved "https://registry.yarnpkg.com/@airgap/beacon-sdk/-/beacon-sdk-4.1.3-beta.0.tgz#976176c8d3766731f2fdfd33936f95e42b963f01"
+  integrity sha512-LFfOvtg4GvDmFTorMxcKnm7T0ic0eA28fzOvJmWeRoAX39ELQ3X6/wlKikZjeevEpbQuaj3eO+Z0tXjR67NrBw==
+  dependencies:
+    "@airgap/beacon-blockchain-substrate" "4.1.3-beta.0"
+    "@airgap/beacon-blockchain-tezos" "4.1.3-beta.0"
+    "@airgap/beacon-core" "4.1.3-beta.0"
+    "@airgap/beacon-dapp" "4.1.3-beta.0"
+    "@airgap/beacon-transport-matrix" "4.1.3-beta.0"
+    "@airgap/beacon-transport-postmessage" "4.1.3-beta.0"
+    "@airgap/beacon-types" "4.1.3-beta.0"
+    "@airgap/beacon-ui" "4.1.3-beta.0"
+    "@airgap/beacon-utils" "4.1.3-beta.0"
+    "@airgap/beacon-wallet" "4.1.3-beta.0"
+
+"@airgap/beacon-transport-matrix@4.1.3-beta.0":
+  version "4.1.3-beta.0"
+  resolved "https://registry.yarnpkg.com/@airgap/beacon-transport-matrix/-/beacon-transport-matrix-4.1.3-beta.0.tgz#4fab277accf7eae9d5536be81a29a5016f3bf366"
+  integrity sha512-DBhcZPhUk+64Pn4EjMz5QST+/dTf+FWokTMmzfBbjy9rSDRNN1Jke1go2vTXmnH/o/+aM7U73DikRcq/Ri9USw==
+  dependencies:
+    "@airgap/beacon-core" "4.1.3-beta.0"
+    "@airgap/beacon-utils" "4.1.3-beta.0"
+    axios "^1.6.2"
+
+"@airgap/beacon-transport-postmessage@4.1.3-beta.0":
+  version "4.1.3-beta.0"
+  resolved "https://registry.yarnpkg.com/@airgap/beacon-transport-postmessage/-/beacon-transport-postmessage-4.1.3-beta.0.tgz#d5e290cfef8f3366967651f5bc1f833c839778c8"
+  integrity sha512-WsP/zy7XmIanQEGFlr4KoNH4kaX8cldrQ0Jjhrhjji9mbzuR8572cntvT3+AcMKl7POboMfOWhDKIJLg8Pocjw==
+>>>>>>> 04bcff84647469917328f0deb63f5803b903d8a7
+  dependencies:
+    "@airgap/beacon-core" "4.1.3-beta.0"
+    "@airgap/beacon-types" "4.1.3-beta.0"
+    "@airgap/beacon-utils" "4.1.3-beta.0"
+
+<<<<<<< HEAD
 "@airgap/beacon-transport-postmessage@4.1.2":
   "integrity" "sha512-PRStWtJgt5zOTDXdm3rYIoL+A8044jPGaDri7NdhCauRJMBbKtTnbFidZL9juN3Jd3LOIwsnBKpCJaBwipHmTw=="
   "resolved" "https://registry.npmjs.org/@airgap/beacon-transport-postmessage/-/beacon-transport-postmessage-4.1.2.tgz"
@@ -136,12 +201,19 @@
   "integrity" "sha512-stoDzBJNXC9BcWmhnsXRVlxPJe2T67B3vp0QJJRU3Jj5+nYC0zCxWoKmO3/DK6DfKVRJKOUc2g3iW44ggGteMQ=="
   "resolved" "https://registry.npmjs.org/@airgap/beacon-transport-walletconnect/-/beacon-transport-walletconnect-4.1.1-beta.5.tgz"
   "version" "4.1.1-beta.5"
+=======
+"@airgap/beacon-transport-walletconnect@4.1.3-beta.0":
+  version "4.1.3-beta.0"
+  resolved "https://registry.yarnpkg.com/@airgap/beacon-transport-walletconnect/-/beacon-transport-walletconnect-4.1.3-beta.0.tgz#90d8480b2192d99d2bb099a938c091093bfb2b42"
+  integrity sha512-jc/vNiQaVLPhxnpa1BEGhp8KjRu6wiJBAGHz+j3pSWkjdFSVNJr1Y4HrU0c3vUbL455FZKge14z16hjN4IUUOg==
+>>>>>>> 04bcff84647469917328f0deb63f5803b903d8a7
   dependencies:
-    "@airgap/beacon-core" "4.1.1-beta.5"
-    "@airgap/beacon-types" "4.1.1-beta.5"
-    "@airgap/beacon-utils" "4.1.1-beta.5"
+    "@airgap/beacon-core" "4.1.3-beta.0"
+    "@airgap/beacon-types" "4.1.3-beta.0"
+    "@airgap/beacon-utils" "4.1.3-beta.0"
     "@walletconnect/sign-client" "2.11.0"
 
+<<<<<<< HEAD
 "@airgap/beacon-transport-walletconnect@4.1.2":
   "integrity" "sha512-UprF/BuiAj7sOai+jkyEPaoWNwYu1I/75hKHMAVd9fmzpk3zJmGLXkliJc2OOiqkDI8wfnwUnILeBzCFIOSUhg=="
   "resolved" "https://registry.npmjs.org/@airgap/beacon-transport-walletconnect/-/beacon-transport-walletconnect-4.1.2.tgz"
@@ -194,6 +266,32 @@
   "integrity" "sha512-WAkl14ImigPi0FzwyWjzGM1G6VZYkr78S86IJiCsFYHtU0A0FZ+fDTr/dpOaz4B3YZ3vo9F51VInWQWqduwBTQ=="
   "resolved" "https://registry.npmjs.org/@airgap/beacon-utils/-/beacon-utils-4.1.1-beta.5.tgz"
   "version" "4.1.1-beta.5"
+=======
+"@airgap/beacon-types@4.1.3-beta.0":
+  version "4.1.3-beta.0"
+  resolved "https://registry.yarnpkg.com/@airgap/beacon-types/-/beacon-types-4.1.3-beta.0.tgz#5094ed12c8536c6396618080eb382da0d045ec45"
+  integrity sha512-iOnfVwx2J3lALpVkhIhEQIoBvw3tdQ/bOrTaSWQJA2DZxP/vRVeqxd5OsIoRZj4S8hM9Z8V1IhPDfOHG8TdzLg==
+  dependencies:
+    "@types/chrome" "0.0.246"
+
+"@airgap/beacon-ui@4.1.3-beta.0":
+  version "4.1.3-beta.0"
+  resolved "https://registry.yarnpkg.com/@airgap/beacon-ui/-/beacon-ui-4.1.3-beta.0.tgz#63ef3b36f76714cef0d6b7811b00a7235abba593"
+  integrity sha512-L1FhhlZY3BgZoydNPPiQ9LRlr3TFkBwc7J8qjXpfEiq34Dwjv6uGatLFv9qRihIThnblNr/pwYzsyOCZXR3L6A==
+  dependencies:
+    "@airgap/beacon-core" "4.1.3-beta.0"
+    "@airgap/beacon-transport-postmessage" "4.1.3-beta.0"
+    "@airgap/beacon-types" "4.1.3-beta.0"
+    "@airgap/beacon-utils" "4.1.3-beta.0"
+    "@walletconnect/utils" "2.11.0"
+    qrcode-svg "^1.1.0"
+    solid-js "^1.7.11"
+
+"@airgap/beacon-utils@4.1.3-beta.0":
+  version "4.1.3-beta.0"
+  resolved "https://registry.yarnpkg.com/@airgap/beacon-utils/-/beacon-utils-4.1.3-beta.0.tgz#b6dcbab50ca238f5b7f644ced1f12cc3ed5871f3"
+  integrity sha512-32HC1cSZuz4mWIMz7Hc2fIy6HDmW67rx1IeCTBribSRZiqV32NW9fF9kvdtu7w4w6K+K+57m5Aa1gX6u4tIsjA==
+>>>>>>> 04bcff84647469917328f0deb63f5803b903d8a7
   dependencies:
     "@stablelib/ed25519" "^1.0.3"
     "@stablelib/nacl" "^1.0.4"
@@ -212,14 +310,21 @@
     "@stablelib/utf8" "^1.0.1"
     "bs58check" "2.1.2"
 
+<<<<<<< HEAD
 "@airgap/beacon-wallet@4.1.1-beta.5":
   "integrity" "sha512-rOapiQU/kQbh394bw9/8WOjFLfgwXzFddFNnM1DypK5dvJXDb8MPLDs4NZS/edNLMmTShBNdoI9dymo8DAoftA=="
   "resolved" "https://registry.npmjs.org/@airgap/beacon-wallet/-/beacon-wallet-4.1.1-beta.5.tgz"
   "version" "4.1.1-beta.5"
+=======
+"@airgap/beacon-wallet@4.1.3-beta.0":
+  version "4.1.3-beta.0"
+  resolved "https://registry.yarnpkg.com/@airgap/beacon-wallet/-/beacon-wallet-4.1.3-beta.0.tgz#ddad6e3b5b8f9c010a07068fa666cbdd10ffe558"
+  integrity sha512-mR+Ag5hTtke0lk1oLM2iagfXzm2TFLxs2QYOzaavig/PGWP2KiaGUir7H5s8Khj+OKu7vP/zm2g2/VM6/ZnnUg==
+>>>>>>> 04bcff84647469917328f0deb63f5803b903d8a7
   dependencies:
-    "@airgap/beacon-core" "4.1.1-beta.5"
-    "@airgap/beacon-transport-matrix" "4.1.1-beta.5"
-    "@airgap/beacon-transport-postmessage" "4.1.1-beta.5"
+    "@airgap/beacon-core" "4.1.3-beta.0"
+    "@airgap/beacon-transport-matrix" "4.1.3-beta.0"
+    "@airgap/beacon-transport-postmessage" "4.1.3-beta.0"
 
 "@ampproject/remapping@^2.2.0":
   "integrity" "sha512-lFMjJTrFL3j7L9yBxwYfCq2k6qqwHyzuUl/XBnif78PWTJYyL/dfowQHWE3sp6U6ZzqWiiIZnpTMO96zhkjwtg=="
