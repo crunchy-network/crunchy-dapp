@@ -343,25 +343,31 @@
           <el-autocomplete
             style="margin-bottom: 16px"
             id="list-token-input"
-            v-model="form.listTokenAddress"
+            v-model="listToolTokenAddress"
             class="el-input"
             :fetch-suggestions="queryTokens"
             :trigger-on-focus="false"
             placeholder="Search for Token or Enter Token Address"
             @select="onListTokenSelect"
           >
-            <template slot-scope="{ item }">
-              <div class="autocomplete-item">
-                <el-avatar
-                  :src="item.thumbnailUri"
-                  fit="cover"
-                  shape="circle"
-                  size="40"
-                  class="autocomplete-avatar"
-                ></el-avatar>
-                {{ item.value }}
-              </div>
-            </template>
+          <template slot-scope="{ item }">
+            <div style="padding: 8px 0">
+              <el-avatar
+                :src="item.thumbnailUri"
+                fit="cover"
+                shape="circle"
+                :size="40"
+                style="
+                  position: relative;
+                  border: 4px solid #fff;
+                  vertical-align: middle;
+                  margin-right: 16px;
+                "
+              >
+              </el-avatar>
+              {{ item.value }}
+            </div>
+          </template>
           </el-autocomplete>
           <span style="margin-right: 8px" class="color__subheading">Minimum tokens held
             <el-tooltip
@@ -375,10 +381,11 @@
           </span>
           <el-input
             style="margin-top: 8px; margin-bottom: 8px"
-            v-model="form.minTokens"
+            v-model="minTokensForListTool"
             class="el-input"
             type="number"
             placeholder="0"
+            @input="onMinTokensInput"
           ></el-input>
         </el-form-item>
         <span class="color__subheading">Wallet Addresses: {{ listToolHoldersCount }}</span>
@@ -475,8 +482,10 @@ export default {
   },
   data() {
     return {
+      listToolTokenAddress: "",
+      minTokensForListTool: 0,
       listToolHoldersCount: "",
-      listToolAddresses: [],
+      listToolHolderAddresses: [],
       showAirdropListTool: false,
       isPending: false,
       isSuccess: false,
@@ -659,11 +668,22 @@ export default {
       this.form.tokenThumbnailUri = item.thumbnailUri;
     },
     onListTokenSelect(item) {
-      this.form.listTokenAddress = item.address;
-      tzKT.getTokenHolders(item.address).then((result) => {
-        this.listToolHoldersCount = result.totalHolders;
-        this.listToolAddresses = result.addresses;
-      });
+      this.listToolTokenAddress = item.address;
+      this.onMinTokensInput(item.address);
+    },
+    onMinTokensInput() {
+      this.listToolHoldersCount = 0;
+      this.listToolHolderAddresses = [];
+      tzKT
+        .getTokenHoldersByBalance(
+          this.listToolTokenAddress,
+          this.minTokensForListTool
+        ).then((result) => {
+          this.listToolHolderAddresses = result;
+          this.listToolHoldersCount = result.length;
+        }).catch((error) => {
+          console.error("Error filtering token holders: ", error);
+        });
     },
     triggerFileInput() {
       this.$refs.fileInput.click();
@@ -728,7 +748,7 @@ export default {
       }
     },
     generateList() {
-      const csvContent = this.listToolAddresses.join("\n");
+      const csvContent = this.listToolHolderAddresses.join("\n");
       const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");

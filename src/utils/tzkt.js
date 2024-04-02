@@ -64,43 +64,21 @@ export default {
       return res.data;
     });
   },
-  async getTotalHolders(contractAddress) {
-    return makeRequest(`/v1/tokens/?contract=${contractAddress}`).then(
-      (res) => {
-        return res.data[0].holdersCount;
-      }
-    );
-  },
-
-  async getAddresses(contractAddress) {
-    let allAddresses = [];
+  async getTokenHoldersByBalance(contractAddress, minTokens) {
+    let filteredAddresses = [];
     let offset = 0;
     const limit = 1000;
-
-    async function fetchAddresses() {
+    const fetchAddresses = async () => {
       const response = await makeRequest(
-        `/v1/tokens/balances?token.contract=${contractAddress}&balance.ne=0&select=account.address%20as%20holder&offset=${offset}&limit=${limit}`
+        `/v1/tokens/balances?token.contract=${contractAddress}&balance.ge=${minTokens}&select=account.address%20as%20holder&offset=${offset}&limit=${limit}`
       );
-
-      allAddresses = [...allAddresses, ...response.data];
+      filteredAddresses = [...filteredAddresses, ...response.data];
       offset += limit;
-
       if (response.data.length === limit) {
         await fetchAddresses();
       }
-    }
-
-    await fetchAddresses();
-
-    return allAddresses;
-  },
-
-  async getTokenHolders(contractAddress) {
-    const totalHolders = await this.getTotalHolders(contractAddress);
-    const addresses = await this.getAddresses(contractAddress);
-    return {
-      totalHolders,
-      addresses,
     };
+    await fetchAddresses();
+    return filteredAddresses;
   },
 };
