@@ -19,7 +19,7 @@
         </el-col>
       </el-row>
       <el-row style="display: flex">
-        <el-col :span="14" style="padding-right: 42px">
+        <el-col :span="14" style="padding-right: 40px">
           <el-card
             shadow="always"
             class="box-card"
@@ -81,7 +81,7 @@
                       id="token-type"
                       v-model="form.tokenType"
                       placeholder="Token Type"
-                      style="margin-left: 42px"
+                      style="margin-left: 32px"
                     >
                       <el-option label="FA2" value="fa2"></el-option>
                       <el-option label="FA1.2" value="fa1"></el-option>
@@ -169,7 +169,7 @@
                 <el-col :span="10" :xs="12">
                   <el-form-item
                     id="airdrop-amount-header"
-                    style="margin-left: 42px; margin-bottom: 0px"
+                    style="margin-left: 32px; margin-bottom: 0px"
                     label
                     for="airdrop-amount"
                     class="color__subheading"
@@ -178,7 +178,7 @@
                   </el-form-item>
                 </el-col>
               </el-row>
-              <div style="max-height: 500px; overflow: auto">
+              <div style="max-height: 664px; overflow: auto">
                 <el-row>
                   <div
                     v-for="(entry, index) in displayedAirdropEntries"
@@ -187,9 +187,9 @@
                   >
                     <el-col :span="14">
                       <el-form-item
+                        style="margin-bottom: 16px;"
                         :prop="'airdropEntries[' + index + '].address'"
                         :rules="addressRules"
-                        style="margin-bottom: 8px"
                         required
                       >
                         <el-input
@@ -206,7 +206,7 @@
                         id="airdrop-amount"
                         :prop="'airdropEntries[' + index + '].amount'"
                         :rules="amountRules"
-                        style="margin-left: 42px; margin-bottom: 24px"
+                        style="margin-left: 32px; margin-bottom: 8px"
                         required
                       >
                         <el-input
@@ -285,7 +285,7 @@
                 </el-col>
               </el-row>
               <div
-                style="padding-right: 8px; max-height: 575px; overflow: auto"
+                style="padding-right: 8px; max-height: 600px; overflow: auto"
               >
                 <el-row
                   v-for="(entry, index) in form.airdropEntries"
@@ -295,7 +295,7 @@
                   <el-col :span="12">
                     <span>{{ entry.address }}</span>
                   </el-col>
-                  <el-col :span="12" style="text-align: right">
+                  <el-col :span="12" style="text-align: right; max-height: 56px;">
                     <span>{{ entry.amount }}</span>
                   </el-col>
                 </el-row>
