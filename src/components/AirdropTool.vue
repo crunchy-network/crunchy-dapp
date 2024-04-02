@@ -246,15 +246,20 @@
             <div class="summary">
               <h3 style="margin-top: 8px">Airdrop Summary</h3>
               <el-row id="summary-headers">
-                <el-col :span="12">
+                <el-col :span="9">
                   <span class="color__subheading">Token to Airdrop</span>
                 </el-col>
-                <el-col :span="12" style="text-align: right">
+                <el-col :span="7">
                   <span class="color__subheading">Total Airdrop Amount</span>
                 </el-col>
+
+                <el-col :span="8" style="text-align: right">
+                  <span class="color__subheading">Total Addresses</span>
+                </el-col>
+
               </el-row>
               <el-row id="summary-token-total" style="margin-bottom: 16px">
-                <el-col :span="12">
+                <el-col :span="9">
                   <span>{{ form.tokenSymbol }}</span>
                   <el-avatar
                     v-if="form.tokenThumbnailUri"
@@ -272,8 +277,11 @@
                   >
                   </el-avatar>
                 </el-col>
-                <el-col :span="12" style="text-align: right">
+                <el-col :span="7">
                   <span> {{ totalAirdropAmount }}</span>
+                </el-col>
+                <el-col :span="8" style="text-align: right">
+                  <span> {{ totalValidAirdropEntries }}</span>
                 </el-col>
               </el-row>
               <el-row id="summary-entries">
@@ -506,6 +514,9 @@ export default {
     };
   },
   computed: {
+    totalValidAirdropEntries() {
+      return this.form.airdropEntries.filter(entry => entry.address.trim() !== '' && entry.amount.trim() !== '').length;
+    },
     addressRules() {
       return [
         { required: true, message: "Address is required" },
