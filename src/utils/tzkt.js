@@ -64,4 +64,21 @@ export default {
       return res.data;
     });
   },
+  async getTokenHoldersByBalance(contractAddress, minTokens) {
+    let filteredAddresses = [];
+    let offset = 0;
+    const limit = 1000;
+    const fetchAddresses = async () => {
+      const response = await makeRequest(
+        `/v1/tokens/balances?token.contract=${contractAddress}&balance.ge=${minTokens}&select=account.address%20as%20holder&offset=${offset}&limit=${limit}`
+      );
+      filteredAddresses = [...filteredAddresses, ...response.data];
+      offset += limit;
+      if (response.data.length === limit) {
+        await fetchAddresses();
+      }
+    };
+    await fetchAddresses();
+    return filteredAddresses;
+  },
 };

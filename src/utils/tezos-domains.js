@@ -13,4 +13,9 @@ export default {
       return res || fallback || address;
     });
   },
+  async resolveNameToAddress(name) {
+    return client.resolver.resolveNameToAddress(name).then((res) => {
+      return res || null;
+    });
+  },
 };
