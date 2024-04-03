@@ -293,7 +293,7 @@
                 </el-col>
               </el-row>
               <div
-                style="padding-right: 8px; max-height: 600px; overflow: auto"
+                style="padding-right: 8px; max-height: 728px; overflow: auto"
               >
                 <el-row
                   v-for="(entry, index) in form.airdropEntries"
@@ -508,14 +508,18 @@ export default {
         tokenThumbnailUri: "",
         airdropEntries: Array(10)
           .fill()
-          .map(() => ({ address: "", amount: "" })),
+          .map(() => ({ address: "", amount: null })),
       },
       numRows: 10,
     };
   },
   computed: {
     totalValidAirdropEntries() {
-      return this.form.airdropEntries.filter(entry => entry.address.trim() !== '' && entry.amount.trim() !== '').length;
+      return this.form.airdropEntries.filter(entry =>
+        entry.address.trim() !== '' &&
+        !isNaN(entry.amount) &&
+        entry.amount > 0
+      ).length;
     },
     addressRules() {
       return [
@@ -714,8 +718,11 @@ export default {
       const rows = csvContent.split("\n").filter(Boolean);
       const newEntries = rows.map((row) => {
         const [address, amountString] = row.split(",");
-        const amount = parseFloat(amountString.trim());
+        const amount = parseFloat(amountString);
         return { address: address.trim(), amount: amount };
+      });
+      this.form.airdropEntries = this.form.airdropEntries.filter((entry) => {
+        return entry.address !== "" && !isNaN(parseFloat(entry.amount));
       });
       this.form.airdropEntries = [...this.form.airdropEntries, ...newEntries];
       this.numRows = this.form.airdropEntries.length;
