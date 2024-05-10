@@ -11,7 +11,7 @@ Tezos.setPackerProvider(new MichelCodecPacker());
 const wallet = new BeaconWallet({
   name: process.env.VUE_APP_TEZOS_DAPP_NAME,
   preferredNetwork: process.env.VUE_APP_TEZOS_NETWORK,
-  iconUrl: "https://bafkreifcxtpqojfllakxbhkmy5qfcur7izyyr2e7c6ukm7y43v3scgsszi.ipfs.nftstorage.link/",
+  iconUrl: "https://crunchy.network/logo.png",
   colorMode: "light",
   featuredWallets: ["temple", "kukai", "plenty", "airgap"],
   walletConnectOptions: {
